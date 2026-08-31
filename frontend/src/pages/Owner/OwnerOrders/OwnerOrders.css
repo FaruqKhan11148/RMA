@@ -1,0 +1,326 @@
+.owner_orders {
+  min-height: calc(100vh - 120px);
+  padding: 30px 20px 90px;
+  box-sizing: border-box;
+  background: #f7f7f7;
+}
+
+/* HEADER */
+
+.owner_orders_header {
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto 25px;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+}
+
+.owner_orders_header h1 {
+  margin: 0 0 5px;
+  font-size: 26px;
+}
+
+.owner_orders_header p {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.owner_orders_back {
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* FILTERS */
+
+.owner_order_filters {
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto 25px;
+}
+
+.owner_order_filters h2 {
+  margin: 0 0 12px;
+  font-size: 18px;
+}
+
+.owner_filter_buttons {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 5px;
+}
+
+.owner_filter_button {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  padding: 9px 12px;
+
+  border: 1px solid #ddd;
+  border-radius: 20px;
+
+  background: white;
+
+  color: #444;
+  font-size: 13px;
+
+  cursor: pointer;
+}
+
+.owner_filter_button span {
+  min-width: 18px;
+  height: 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #eee;
+  color: #555;
+
+  font-size: 11px;
+}
+
+.owner_filter_button.active {
+  background: #222;
+  border-color: #222;
+  color: white;
+}
+
+.owner_filter_button.active span {
+  background: white;
+  color: #222;
+}
+
+/* ORDERS */
+
+.owner_orders_list {
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.owner_order_card {
+  padding: 18px;
+  box-sizing: border-box;
+
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+}
+
+/* TOP */
+
+.owner_order_top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 15px;
+  gap: 10px;
+}
+
+.owner_order_top strong {
+  font-size: 15px;
+}
+
+/* STATUS */
+
+.order_status {
+  padding: 5px 9px;
+  border-radius: 20px;
+
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.order_status.pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.order_status.accepted {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.order_status.preparing {
+  background: #e8f0ff;
+  color: #2455a4;
+}
+
+.order_status.ready {
+  background: #e7f7ed;
+  color: #23733d;
+}
+
+.order_status.completed {
+  background: #e8e8e8;
+  color: #444;
+}
+
+.order_status.rejected {
+  background: #fde8e8;
+  color: #a33;
+}
+
+/* CUSTOMER */
+
+.owner_order_info h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.owner_order_info p {
+  margin: 5px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+/* ITEMS */
+
+.owner_order_items {
+  margin-top: 12px;
+  padding: 10px 12px;
+
+  border-radius: 8px;
+  background: #f7f7f7;
+}
+
+.owner_order_items p {
+  margin: 5px 0;
+  color: #444;
+}
+
+/* TOTAL */
+
+.owner_order_total {
+  display: block;
+  margin-top: 14px;
+  font-size: 19px;
+}
+
+/* ACTIONS */
+
+.owner_order_actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.owner_order_actions button {
+  flex: 1;
+
+  padding: 12px;
+
+  border-radius: 9px;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  cursor: pointer;
+}
+
+.accept_order_button {
+  border: none;
+  background: #222;
+  color: white;
+}
+
+.reject_order_button {
+  border: 1px solid #ddd;
+  background: white;
+  color: #222;
+}
+
+.owner_order_actions button:active {
+  transform: scale(0.98);
+}
+
+/* COMPLETED / REJECTED */
+
+.order_completed_message,
+.order_rejected_message {
+  margin: 0;
+  padding: 11px;
+
+  text-align: center;
+
+  border-radius: 8px;
+
+  font-size: 14px;
+}
+
+.order_completed_message {
+  background: #e7f7ed;
+  color: #23733d;
+}
+
+.order_rejected_message {
+  background: #fde8e8;
+  color: #a33;
+}
+
+/* NO ORDERS */
+
+.owner_no_orders {
+  padding: 35px 20px;
+
+  border: 1px solid #ddd;
+  border-radius: 12px;
+
+  background: white;
+
+  text-align: center;
+}
+
+.owner_no_orders h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.owner_no_orders p {
+  margin: 0;
+  color: #777;
+  font-size: 14px;
+}
+
+/* MOBILE */
+
+@media (max-width: 480px) {
+  .owner_orders {
+    padding: 20px 15px 60px;
+  }
+
+  .owner_orders_header h1 {
+    font-size: 23px;
+  }
+
+  .owner_order_card {
+    padding: 16px;
+  }
+
+  .owner_order_actions {
+    flex-direction: column;
+  }
+
+  .owner_order_actions button {
+    width: 100%;
+  }
+}

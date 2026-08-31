@@ -1,0 +1,204 @@
+.home {
+  width: 100%;
+  min-height: calc(100vh - 120px);
+
+  padding: 25px 16px 90px 15px;
+
+  box-sizing: border-box;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.home_header {
+  margin-bottom: 30px;
+}
+
+.home_greeting {
+  font-size: 14px;
+
+  margin-bottom: 6px;
+}
+
+.home_header h1 {
+  font-size: 28px;
+  line-height: 1.2;
+
+  margin-bottom: 10px;
+}
+
+.home_header > p:last-child {
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* =========================
+   ACTIONS
+========================= */
+
+.home_actions {
+  display: flex;
+  flex-direction: column;
+
+  gap: 12px;
+
+  margin-bottom: 35px;
+}
+
+/* QR CARD */
+
+.qr_action {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 16px;
+
+  padding: 20px;
+
+  text-align: left;
+
+  border: none;
+  border-radius: 14px;
+
+  cursor: pointer;
+}
+
+.action_icon {
+  width: 58px;
+  height: 58px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border: 1px solid black;
+  border-radius: 10px;
+
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.action_content h2 {
+  font-size: 18px;
+
+  margin-bottom: 5px;
+}
+
+.action_content p {
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* FIND SHOP */
+
+.find_action {
+  width: 100%;
+  height: 54px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 0 18px;
+
+  border: 1px solid #ddd;
+  border-radius: 10px;
+
+  background: white;
+
+  font-size: 16px;
+
+  cursor: pointer;
+
+  text-align: left;
+}
+
+.find_icon {
+  font-size: 18px;
+}
+
+/* =========================
+   MY SHOPS
+========================= */
+
+.my_shops {
+  width: 100%;
+}
+
+.section_title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 15px;
+}
+
+.section_title h2 {
+  font-size: 20px;
+}
+
+.section_title button {
+  border: none;
+
+  background: transparent;
+
+  font-size: 13px;
+
+  cursor: pointer;
+}
+
+/* SHOP CARD */
+
+.shop_card {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  padding: 18px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #ddd;
+  border-radius: 12px;
+}
+
+.shop_card_info {
+  min-width: 0;
+}
+
+.shop_card_info h3 {
+  font-size: 16px;
+
+  margin-bottom: 5px;
+}
+
+.shop_card_info p {
+  font-size: 13px;
+
+  margin-bottom: 5px;
+}
+
+.shop_card_info span {
+  font-size: 12px;
+}
+
+.shop_order_button {
+  padding: 9px 14px;
+
+  border: none;
+  border-radius: 7px;
+
+  cursor: pointer;
+
+  flex-shrink: 0;
+}

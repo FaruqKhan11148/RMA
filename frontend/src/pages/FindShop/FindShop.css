@@ -1,0 +1,70 @@
+.find_shop {
+  width: 100%;
+  min-height: calc(100vh - 120px);
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+
+  padding: 40px 20px;
+
+  box-sizing: border-box;
+}
+
+.find_shop_content {
+  width: 100%;
+  max-width: 420px;
+}
+
+.find_shop_content h1 {
+  font-size: 28px;
+  margin-bottom: 12px;
+}
+
+.find_shop_content > p {
+  font-size: 15px;
+  line-height: 1.5;
+
+  margin-bottom: 30px;
+}
+
+.find_shop form {
+  display: flex;
+  flex-direction: column;
+}
+
+.find_shop label {
+  font-size: 14px;
+  font-weight: 600;
+
+  margin-bottom: 8px;
+}
+
+.find_shop input {
+  width: 100%;
+  height: 52px;
+
+  padding: 0 15px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #ccc;
+  border-radius: 8px;
+
+  font-size: 16px;
+
+  margin-bottom: 15px;
+}
+
+.find_shop form button {
+  width: 100%;
+  height: 52px;
+
+  border: none;
+  border-radius: 8px;
+
+  font-size: 16px;
+  font-weight: 600;
+
+  cursor: pointer;
+}

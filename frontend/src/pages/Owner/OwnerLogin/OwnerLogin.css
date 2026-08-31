@@ -1,0 +1,148 @@
+.owner_login {
+  min-height: calc(100vh - 120px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 20px 90px;
+  box-sizing: border-box;
+}
+
+.owner_login_card {
+  width: 100%;
+  max-width: 420px;
+  padding: 30px 20px;
+  box-sizing: border-box;
+  border: 1px solid #ddd;
+  border-radius: 16px;
+  background: white;
+}
+
+.owner_login_header {
+  text-align: center;
+
+  margin-bottom: 30px;
+}
+
+.owner_logo {
+  width: 65px;
+  height: 65px;
+  margin: 0 auto 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #222;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.owner_login_header h1 {
+  margin: 0 0 10px;
+  font-size: 24px;
+}
+
+.owner_login_header p {
+  margin: 0;
+  color: #777;
+  line-height: 1.5;
+}
+
+.owner_login_form {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 18px;
+}
+
+.owner_login_form label {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 8px;
+
+  font-size: 14px;
+
+  font-weight: 500;
+}
+
+.owner_login_form input {
+  width: 100%;
+
+  padding: 14px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #ccc;
+
+  border-radius: 10px;
+
+  font-size: 15px;
+
+  outline: none;
+}
+
+.owner_login_form input:focus {
+  border-color: #222;
+}
+
+.owner_login_error {
+  margin: -5px 0 0;
+
+  color: #d00000;
+
+  font-size: 14px;
+}
+
+.owner_login_button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 5px;
+  border: none;
+  border-radius: 10px;
+  background: #222;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.owner_login_button:hover {
+  opacity: 0.9;
+}
+
+.owner_login_button:disabled {
+  opacity: 0.6;
+
+  cursor: not-allowed;
+}
+
+.owner_login_footer {
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+  text-align: center;
+}
+
+.owner_login_footer p {
+  margin: 0 0 8px;
+
+  color: #777;
+
+  font-size: 14px;
+}
+
+.owner_login_footer button {
+  border: none;
+
+  background: transparent;
+
+  color: #222;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+}

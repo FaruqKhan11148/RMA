@@ -1,0 +1,259 @@
+.shop {
+  width: 100%;
+
+  min-height: calc(100vh - 120px);
+
+  padding: 20px 16px 90px;
+
+  box-sizing: border-box;
+}
+
+/* =========================
+   SHOP HEADER
+========================= */
+
+.shop_header {
+  padding: 10px 0 25px;
+
+  border-bottom: 1px solid #eee;
+}
+
+.shop_id {
+  font-size: 12px;
+
+  margin-bottom: 8px;
+}
+
+.shop_header h1 {
+  font-size: 27px;
+  line-height: 1.2;
+
+  margin-bottom: 10px;
+}
+
+.shop_description {
+  font-size: 14px;
+  line-height: 1.5;
+
+  margin-bottom: 15px;
+}
+
+.shop_status {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  font-size: 13px;
+}
+
+.status_open {
+  padding: 5px 9px;
+
+  border-radius: 6px;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status_closed {
+  padding: 5px 9px;
+
+  border-radius: 6px;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* =========================
+   ORDER OPTIONS
+========================= */
+
+.order_options {
+  display: flex;
+
+  gap: 10px;
+
+  padding: 20px 0;
+}
+
+.order_options button {
+  flex: 1;
+
+  height: 48px;
+
+  border: 1px solid #ddd;
+
+  border-radius: 8px;
+
+  background: white;
+
+  font-size: 14px;
+
+  cursor: pointer;
+}
+
+/* =========================
+   CATEGORIES
+========================= */
+
+.categories {
+  padding: 10px 0 25px;
+}
+
+.categories h2 {
+  font-size: 20px;
+
+  margin-bottom: 15px;
+}
+
+.category_list {
+  display: flex;
+
+  gap: 8px;
+
+  overflow-x: auto;
+
+  padding-bottom: 5px;
+}
+
+.category_list button {
+  flex-shrink: 0;
+
+  padding: 9px 15px;
+
+  border: 1px solid #ddd;
+
+  border-radius: 20px;
+
+  background: white;
+
+  font-size: 13px;
+
+  cursor: pointer;
+}
+
+/* =========================
+   PRODUCTS
+========================= */
+
+.products_header {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 15px;
+}
+
+.products_header h2 {
+  font-size: 20px;
+}
+
+.products_header span {
+  font-size: 13px;
+}
+
+/* =========================
+   PRODUCT CARD
+========================= */
+
+.product_list {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+}
+
+.product_card {
+  width: 100%;
+
+  min-height: 90px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  padding: 15px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #eee;
+
+  border-radius: 10px;
+}
+
+.product_info {
+  min-width: 0;
+}
+
+.product_info h3 {
+  font-size: 16px;
+
+  margin-bottom: 5px;
+}
+
+.product_info p {
+  font-size: 13px;
+
+  margin-bottom: 7px;
+}
+
+.product_info strong {
+  font-size: 15px;
+}
+
+.category_active {
+  font-weight: 600;
+
+  border: 2px solid black !important;
+}
+
+.order_type_active {
+  border: 2px solid black !important;
+  font-weight: 600;
+}
+
+.add_button {
+  min-width: 65px;
+
+  height: 38px;
+
+  border: 1px solid #ddd;
+
+  border-radius: 7px;
+
+  background: white;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  flex-shrink: 0;
+}
+
+/* =========================
+   NOT FOUND
+========================= */
+
+.shop_not_found {
+  min-height: calc(100vh - 120px);
+
+  padding: 40px 20px;
+
+  text-align: center;
+}
+
+.shop_not_found h1 {
+  font-size: 26px;
+
+  margin-bottom: 10px;
+}
+
+.shop_not_found p {
+  font-size: 14px;
+}

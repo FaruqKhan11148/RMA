@@ -1,0 +1,420 @@
+.owner_register {
+  min-height: calc(100vh - 60px);
+
+  margin-top: 60px;
+
+  padding: 40px 20px 80px;
+
+  box-sizing: border-box;
+
+  background: #f7f7f7;
+}
+
+/* CARD */
+
+.owner_register_card {
+  width: 100%;
+  max-width: 850px;
+
+  margin: 0 auto;
+
+  padding: 35px;
+
+  box-sizing: border-box;
+
+  background: white;
+
+  border: 1px solid #ddd;
+  border-radius: 12px;
+}
+
+/* HEADER */
+
+.owner_register_header {
+  text-align: center;
+
+  margin-bottom: 35px;
+}
+
+.owner_logo {
+  width: 55px;
+  height: 55px;
+
+  margin: 0 auto 15px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #222;
+  color: white;
+
+  border-radius: 10px;
+
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.owner_register_header h1 {
+  margin: 0 0 8px;
+
+  font-size: 28px;
+}
+
+.owner_register_header p {
+  margin: 0;
+
+  color: #666;
+
+  font-size: 14px;
+}
+
+/* FORM */
+
+.owner_register_form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 25px;
+}
+
+/* SECTIONS */
+
+.register_section {
+  padding: 22px;
+
+  border: 1px solid #e1e1e1;
+  border-radius: 10px;
+
+  background: #fafafa;
+}
+
+.register_section h2 {
+  margin: 0 0 20px;
+
+  font-size: 18px;
+}
+
+.section_description {
+  margin: -10px 0 18px;
+
+  color: #666;
+
+  font-size: 13px;
+}
+
+/* LABELS */
+
+.register_section label {
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+
+  margin-bottom: 16px;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.register_section label:last-child {
+  margin-bottom: 0;
+}
+
+/* INPUTS */
+
+.register_section input,
+.register_section textarea {
+  width: 100%;
+
+  padding: 11px 12px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #ccc;
+  border-radius: 7px;
+
+  background: white;
+
+  font-family: inherit;
+  font-size: 14px;
+
+  outline: none;
+
+  transition: border 0.2s ease;
+}
+
+.register_section input:focus,
+.register_section textarea:focus {
+  border-color: #222;
+}
+
+.register_section textarea {
+  min-height: 90px;
+
+  resize: vertical;
+}
+
+/* CHECKBOX */
+
+.checkbox_label {
+  flex-direction: row !important;
+
+  align-items: center;
+
+  gap: 10px !important;
+
+  margin-bottom: 12px !important;
+
+  font-weight: 500 !important;
+}
+
+.checkbox_label input {
+  width: auto;
+
+  cursor: pointer;
+}
+
+/* PRODUCTS */
+
+.product_form {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 10px;
+}
+
+.product_form input {
+  width: 100%;
+}
+
+.product_form button {
+  grid-column: span 2;
+
+  height: 42px;
+
+  border: none;
+  border-radius: 7px;
+
+  background: #222;
+  color: white;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: background 0.2s ease;
+}
+
+.product_form button:hover {
+  background: #444;
+}
+
+/* REGISTERED PRODUCTS */
+
+.registered_products {
+  display: flex;
+  flex-direction: column;
+
+  gap: 10px;
+
+  margin-top: 18px;
+}
+
+.registered_product {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  padding: 14px;
+
+  background: white;
+
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.registered_product > div {
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+.registered_product strong {
+  font-size: 14px;
+}
+
+.registered_product span {
+  color: #666;
+
+  font-size: 12px;
+}
+
+.registered_product button {
+  flex-shrink: 0;
+
+  padding: 7px 10px;
+
+  border: 1px solid #ddd;
+  border-radius: 6px;
+
+  background: white;
+  color: #c00;
+
+  font-size: 12px;
+
+  cursor: pointer;
+}
+
+.registered_product button:hover {
+  background: #f5f5f5;
+}
+
+/* ERROR */
+
+.owner_register_error {
+  margin: 0;
+
+  padding: 11px 13px;
+
+  border: 1px solid #f0bcbc;
+  border-radius: 7px;
+
+  background: #fff3f3;
+  color: #c00;
+
+  font-size: 13px;
+}
+
+/* SUBMIT */
+
+.owner_register_button {
+  width: 100%;
+
+  height: 46px;
+
+  border: none;
+  border-radius: 8px;
+
+  background: #222;
+  color: white;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: background 0.2s ease;
+}
+
+.owner_register_button:hover {
+  background: #444;
+}
+
+.owner_register_button:disabled {
+  opacity: 0.6;
+
+  cursor: not-allowed;
+}
+
+/* FOOTER */
+
+.owner_register_footer {
+  margin-top: 25px;
+
+  text-align: center;
+
+  font-size: 13px;
+}
+
+.owner_register_footer p {
+  margin: 0 0 8px;
+
+  color: #666;
+}
+
+.owner_register_footer button {
+  padding: 0;
+
+  border: none;
+
+  background: none;
+
+  color: #222;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.owner_register_footer button:hover {
+  text-decoration: underline;
+}
+
+/* TABLET */
+
+@media (max-width: 700px) {
+  .owner_register {
+    padding: 25px 15px 60px;
+  }
+
+  .owner_register_card {
+    padding: 25px 18px;
+  }
+
+  .product_form {
+    grid-template-columns: 1fr;
+  }
+
+  .product_form button {
+    grid-column: span 1;
+  }
+}
+
+/* MOBILE */
+
+@media (max-width: 480px) {
+  .owner_register {
+    padding: 20px 10px 60px;
+  }
+
+  .owner_register_card {
+    padding: 22px 14px;
+
+    border-radius: 9px;
+  }
+
+  .owner_register_header {
+    margin-bottom: 25px;
+  }
+
+  .owner_register_header h1 {
+    font-size: 23px;
+  }
+
+  .owner_register_header p {
+    font-size: 13px;
+  }
+
+  .register_section {
+    padding: 17px;
+  }
+
+  .register_section h2 {
+    font-size: 16px;
+  }
+
+  .registered_product {
+    align-items: flex-start;
+  }
+
+  .registered_product button {
+    margin-top: 2px;
+  }
+}

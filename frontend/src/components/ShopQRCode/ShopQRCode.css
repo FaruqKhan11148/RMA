@@ -1,0 +1,111 @@
+.shop_qr_section {
+  margin-top: 25px;
+  padding: 25px;
+
+  border: 1px solid #ddd;
+  border-radius: 10px;
+
+  background: white;
+
+  text-align: center;
+}
+
+.shop_qr_section h2 {
+  margin: 0 0 8px;
+
+  font-size: 20px;
+}
+
+.shop_qr_section > p {
+  margin: 0 0 20px;
+
+  color: #666;
+
+  font-size: 13px;
+}
+
+.shop_qr_code {
+  width: 240px;
+  height: 240px;
+
+  margin: 0 auto 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #ddd;
+  border-radius: 8px;
+
+  background: white;
+}
+
+.shop_qr_shop_id {
+  display: flex;
+  flex-direction: column;
+
+  gap: 5px;
+
+  margin-bottom: 10px;
+}
+
+.shop_qr_shop_id span {
+  color: #666;
+
+  font-size: 12px;
+}
+
+.shop_qr_shop_id strong {
+  font-size: 18px;
+
+  letter-spacing: 0.5px;
+}
+
+.shop_qr_url {
+  margin: 0 0 18px !important;
+
+  color: #777 !important;
+
+  font-size: 11px !important;
+
+  word-break: break-all;
+}
+
+.shop_qr_download_button {
+  width: 100%;
+  height: 44px;
+
+  border: none;
+  border-radius: 8px;
+
+  background: #222;
+  color: white;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: background 0.2s ease;
+}
+
+.shop_qr_download_button:hover {
+  background: #444;
+}
+
+.shop_qr_download_button:active {
+  transform: scale(0.98);
+}
+
+/* MOBILE */
+
+@media (max-width: 480px) {
+  .shop_qr_section {
+    padding: 20px 15px;
+  }
+
+  .shop_qr_code {
+    width: 210px;
+    height: 210px;
+  }
+}

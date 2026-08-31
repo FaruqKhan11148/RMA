@@ -1,0 +1,199 @@
+.delivery_status {
+  min-height: calc(100vh - 120px);
+  padding: 30px 20px 90px;
+  box-sizing: border-box;
+  background: #f7f7f7;
+}
+
+.delivery_status_header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.delivery_status_header h1 {
+  margin: 0 0 10px;
+  font-size: 28px;
+}
+
+.delivery_status_header p {
+  margin: 0;
+  color: #666;
+}
+
+.order_status_card {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 25px;
+  box-sizing: border-box;
+  border: 1px solid #ddd;
+  border-radius: 15px;
+  background: white;
+  text-align: center;
+}
+
+.status_icon {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 15px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #222;
+  color: white;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.order_status_card h2 {
+  margin: 0 0 10px;
+  font-size: 22px;
+}
+
+.order_status_card > p {
+  color: #666;
+  line-height: 1.5;
+}
+
+.status_steps {
+  margin-top: 30px;
+  text-align: left;
+}
+
+.status_step {
+  display: flex;
+  gap: 15px;
+  padding: 15px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.status_step:last-child {
+  border-bottom: none;
+}
+
+.status_step > span {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eee;
+  color: #777;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.status_step.active > span {
+  background: #222;
+  color: white;
+}
+
+.status_step strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.status_step p {
+  margin: 0;
+  color: #777;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.rejected_card .status_icon {
+  background: #222;
+}
+
+.home_button {
+  display: block;
+  width: 100%;
+  max-width: 500px;
+  margin: 20px auto 0;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  background: #222;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.home_button:hover {
+  opacity: 0.9;
+}
+
+.order_details {
+  width: 100%;
+  max-width: 500px;
+  margin: 20px auto 0;
+  padding: 20px;
+  box-sizing: border-box;
+  border: 1px solid #ddd;
+  border-radius: 15px;
+  background: white;
+}
+
+.order_details h2 {
+  margin: 0 0 15px;
+  font-size: 20px;
+}
+
+.order_details p {
+  margin: 8px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.order_details strong {
+  color: #222;
+}
+
+.delivery_status_empty {
+  min-height: calc(100vh - 120px);
+  padding: 30px 20px 90px;
+  box-sizing: border-box;
+  text-align: center;
+  background: #f7f7f7;
+}
+
+.delivery_status_empty h1 {
+  margin-bottom: 10px;
+}
+
+.delivery_status_empty p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.delivery_status_empty button {
+  padding: 14px 25px;
+  border: none;
+  border-radius: 10px;
+  background: #222;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* MOBILE */
+
+@media (max-width: 480px) {
+  .delivery_status {
+    padding: 20px 15px 60px;
+  }
+
+  .delivery_status_header h1 {
+    font-size: 24px;
+  }
+
+  .order_status_card {
+    padding: 20px;
+  }
+
+  .order_details {
+    padding: 18px;
+  }
+}
