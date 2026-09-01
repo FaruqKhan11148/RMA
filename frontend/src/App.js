@@ -17,10 +17,14 @@ import Profile from './pages/Profile/Profile';
 import Payment from './pages/payment/Payment';
 
 import OwnerLogin from './pages/Owner/OwnerLogin/OwnerLogin';
-import OwnerRegister from './pages/Owner/OwnerRegister/OwnerRegister';
 import OwnerDashboard from './pages/Owner/OwnerDashboard/OwnerDashboard';
 import OwnerOrders from './pages/Owner/OwnerOrders/OwnerOrders';
 import ShopCreated from './pages/Owner/ShopCreated/ShopCreated';
+
+import OwnerStep1 from './pages/Owner/OwnerRegister/OwnerStep1';
+import OwnerStep2 from './pages/Owner/OwnerRegister/OwnerStep2';
+import OwnerStep3 from './pages/Owner/OwnerRegister/OwnerStep3';
+import OwnerStep4 from './pages/Owner/OwnerRegister/OwnerStep4';
 
 function App() {
   return (
@@ -52,7 +56,13 @@ function App() {
 
           {/* OWNER ROUTES */}
 
-          <Route path="/owner/register" element={<OwnerRegister />} />
+          <Route path="/owner/register" element={<OwnerStep1 />} />
+
+          <Route path="/owner/register/step-2" element={<OwnerStep2 />} />
+
+          <Route path="/owner/register/step-3" element={<OwnerStep3 />} />
+
+          <Route path="/owner/register/step-4" element={<OwnerStep4 />} />
 
           <Route path="/owner/shop-created" element={<ShopCreated />} />
 

@@ -1,0 +1,363 @@
+.owner_step {
+  min-height: calc(100vh - 60px);
+
+  margin-top: 60px;
+
+  padding: 40px 20px 80px;
+
+  box-sizing: border-box;
+
+  background: #f7f7f7;
+}
+
+.owner_step_card {
+  width: 100%;
+  max-width: 650px;
+
+  margin: 0 auto;
+
+  padding: 35px;
+
+  box-sizing: border-box;
+
+  background: white;
+
+  border: 1px solid #ddd;
+
+  border-radius: 12px;
+}
+
+/* HEADER */
+
+.owner_step_header {
+  text-align: center;
+
+  margin-bottom: 30px;
+}
+
+.owner_logo {
+  width: 55px;
+  height: 55px;
+
+  margin: 0 auto 15px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #222;
+
+  color: white;
+
+  border-radius: 10px;
+
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.step_number {
+  margin: 0 0 8px;
+
+  color: #777;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  letter-spacing: 1px;
+}
+
+.owner_step_header h1 {
+  margin: 0 0 8px;
+
+  font-size: 27px;
+}
+
+.owner_step_header > p:last-child {
+  margin: 0;
+
+  color: #666;
+
+  font-size: 14px;
+}
+
+/* PROGRESS */
+
+.registration_progress {
+  display: flex;
+
+  align-items: flex-start;
+
+  margin-bottom: 30px;
+}
+
+.progress_item {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 6px;
+
+  min-width: 45px;
+}
+
+.progress_item span {
+  width: 30px;
+  height: 30px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #ccc;
+
+  border-radius: 50%;
+
+  background: white;
+
+  color: #777;
+
+  font-size: 12px;
+
+  font-weight: 600;
+}
+
+.progress_item p {
+  margin: 0;
+
+  color: #888;
+
+  font-size: 11px;
+}
+
+.progress_item.active span {
+  border-color: #222;
+
+  background: #222;
+
+  color: white;
+}
+
+.progress_item.active p {
+  color: #222;
+
+  font-weight: 600;
+}
+
+.progress_line {
+  flex: 1;
+
+  height: 1px;
+
+  margin-top: 15px;
+
+  background: #ddd;
+}
+
+/* FORM */
+
+.owner_step_form {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 20px;
+}
+
+/* SECTION */
+
+.register_section {
+  padding: 22px;
+
+  border: 1px solid #e1e1e1;
+
+  border-radius: 10px;
+
+  background: #fafafa;
+}
+
+.register_section h2 {
+  margin: 0 0 20px;
+
+  font-size: 18px;
+}
+
+/* LABEL */
+
+.register_section label {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 7px;
+
+  margin-bottom: 16px;
+
+  font-size: 13px;
+
+  font-weight: 600;
+}
+
+.register_section label:last-child {
+  margin-bottom: 0;
+}
+
+/* INPUT */
+
+.register_section input {
+  width: 100%;
+
+  padding: 11px 12px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #ccc;
+
+  border-radius: 7px;
+
+  background: white;
+
+  font-family: inherit;
+
+  font-size: 14px;
+
+  outline: none;
+
+  transition: border 0.2s ease;
+}
+
+.register_section input:focus {
+  border-color: #222;
+}
+
+/* ERROR */
+
+.owner_step_error {
+  margin: 0;
+
+  padding: 11px 13px;
+
+  border: 1px solid #f0bcbc;
+
+  border-radius: 7px;
+
+  background: #fff3f3;
+
+  color: #c00;
+
+  font-size: 13px;
+}
+
+/* BUTTON */
+
+.owner_step_button {
+  width: 100%;
+
+  height: 46px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  background: #222;
+
+  color: white;
+
+  font-size: 15px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: background 0.2s ease;
+}
+
+.owner_step_button:hover {
+  background: #444;
+}
+
+/* FOOTER */
+
+.owner_step_footer {
+  margin-top: 25px;
+
+  text-align: center;
+
+  font-size: 13px;
+}
+
+.owner_step_footer p {
+  margin: 0 0 8px;
+
+  color: #666;
+}
+
+.owner_step_footer button {
+  padding: 0;
+
+  border: none;
+
+  background: none;
+
+  color: #222;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.owner_step_footer button:hover {
+  text-decoration: underline;
+}
+
+/* MOBILE */
+
+@media (max-width: 480px) {
+  .owner_step {
+    padding: 20px 10px 50px;
+  }
+
+  .owner_step_card {
+    padding: 25px 15px;
+
+    border-radius: 9px;
+  }
+
+  .owner_step_header h1 {
+    font-size: 23px;
+  }
+
+  .owner_step_header > p:last-child {
+    font-size: 13px;
+  }
+
+  .register_section {
+    padding: 17px;
+  }
+
+  .register_section h2 {
+    font-size: 16px;
+  }
+
+  .progress_item {
+    min-width: 38px;
+  }
+
+  .progress_item span {
+    width: 27px;
+    height: 27px;
+  }
+
+  .progress_line {
+    margin-top: 13px;
+  }
+
+  .progress_item p {
+    font-size: 10px;
+  }
+}

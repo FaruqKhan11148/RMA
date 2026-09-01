@@ -1,0 +1,496 @@
+.owner_step3 {
+  min-height: 100vh;
+
+  padding: 40px 20px 80px;
+
+  box-sizing: border-box;
+
+  background: #f7f7f7;
+}
+
+.owner_step3_card {
+  width: 100%;
+  max-width: 700px;
+
+  margin: 0 auto;
+
+  padding: 35px;
+
+  box-sizing: border-box;
+
+  background: white;
+
+  border: 1px solid #ddd;
+  border-radius: 12px;
+}
+
+/* HEADER */
+
+.owner_step3_header {
+  text-align: center;
+
+  margin-bottom: 30px;
+}
+
+.owner_logo {
+  width: 55px;
+  height: 55px;
+
+  margin: 0 auto 15px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #222;
+  color: white;
+
+  border-radius: 10px;
+
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.step_number {
+  margin: 0 0 8px;
+
+  color: #666;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  letter-spacing: 1px;
+}
+
+.owner_step3_header h1 {
+  margin: 0 0 8px;
+
+  font-size: 27px;
+}
+
+.owner_step3_header > p:last-child {
+  margin: 0;
+
+  color: #666;
+
+  font-size: 14px;
+
+  line-height: 1.5;
+}
+
+/* PROGRESS */
+
+.step_progress {
+  display: flex;
+
+  align-items: flex-start;
+
+  margin-bottom: 35px;
+}
+
+.progress_item {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  min-width: 55px;
+}
+
+.progress_item span {
+  width: 30px;
+  height: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #ccc;
+
+  border-radius: 50%;
+
+  background: white;
+
+  color: #777;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.progress_item p {
+  margin: 7px 0 0;
+
+  color: #777;
+
+  font-size: 10px;
+}
+
+.progress_item.completed span,
+.progress_item.active span {
+  border-color: #222;
+
+  background: #222;
+
+  color: white;
+}
+
+.progress_item.completed p,
+.progress_item.active p {
+  color: #222;
+
+  font-weight: 600;
+}
+
+.progress_line {
+  flex: 1;
+
+  height: 1px;
+
+  margin-top: 15px;
+
+  background: #ddd;
+}
+
+.progress_line.completed,
+.progress_line.active {
+  background: #222;
+}
+
+/* FORM */
+
+.owner_step3_form {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 20px;
+}
+
+/* SECTION */
+
+.step_section {
+  padding: 22px;
+
+  border: 1px solid #e1e1e1;
+
+  border-radius: 10px;
+
+  background: #fafafa;
+}
+
+.step_section h2 {
+  margin: 0 0 7px;
+
+  font-size: 18px;
+}
+
+.section_description {
+  margin: 0 0 18px;
+
+  color: #666;
+
+  font-size: 13px;
+
+  line-height: 1.5;
+}
+
+/* PRODUCT FORM */
+
+.product_form {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 14px;
+}
+
+.product_form label {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 7px;
+
+  font-size: 13px;
+
+  font-weight: 600;
+}
+
+.product_form input {
+  width: 100%;
+
+  padding: 11px 12px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #ccc;
+
+  border-radius: 7px;
+
+  background: white;
+
+  font-family: inherit;
+
+  font-size: 14px;
+
+  outline: none;
+
+  transition: border 0.2s ease;
+}
+
+.product_form input:focus {
+  border-color: #222;
+}
+
+/* ADD PRODUCT */
+
+.add_product_button {
+  grid-column: span 2;
+
+  height: 44px;
+
+  border: none;
+
+  border-radius: 7px;
+
+  background: #222;
+
+  color: white;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: background 0.2s ease;
+}
+
+.add_product_button:hover {
+  background: #444;
+}
+
+/* PRODUCT LIST */
+
+.product_list_header {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+}
+
+.product_list_header .section_description {
+  margin-bottom: 0;
+}
+
+.registered_products {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+}
+
+.registered_product {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 15px;
+
+  padding: 14px;
+
+  border: 1px solid #ddd;
+
+  border-radius: 8px;
+
+  background: white;
+}
+
+.product_details {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+.product_details strong {
+  font-size: 14px;
+}
+
+.product_details span {
+  color: #666;
+
+  font-size: 12px;
+}
+
+.remove_product_button {
+  flex-shrink: 0;
+
+  padding: 7px 10px;
+
+  border: 1px solid #ddd;
+
+  border-radius: 6px;
+
+  background: white;
+
+  color: #c00;
+
+  font-size: 12px;
+
+  cursor: pointer;
+}
+
+.remove_product_button:hover {
+  background: #f5f5f5;
+}
+
+/* ERROR */
+
+.owner_step3_error {
+  margin: 0;
+
+  padding: 11px 13px;
+
+  border: 1px solid #f0bcbc;
+
+  border-radius: 7px;
+
+  background: #fff3f3;
+
+  color: #c00;
+
+  font-size: 13px;
+}
+
+/* ACTIONS */
+
+.owner_step3_actions {
+  display: flex;
+
+  gap: 10px;
+
+  margin-top: 5px;
+}
+
+.step_back_button,
+.step_continue_button {
+  height: 46px;
+
+  border-radius: 8px;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.step_back_button {
+  width: 30%;
+
+  border: 1px solid #ddd;
+
+  background: white;
+
+  color: #222;
+}
+
+.step_back_button:hover {
+  background: #f5f5f5;
+}
+
+.step_continue_button {
+  width: 70%;
+
+  border: none;
+
+  background: #222;
+
+  color: white;
+}
+
+.step_continue_button:hover {
+  background: #444;
+}
+
+.step_back_button:active,
+.step_continue_button:active {
+  transform: scale(0.98);
+}
+
+/* MOBILE */
+
+@media (max-width: 480px) {
+  .owner_step3 {
+    padding: 20px 10px 50px;
+  }
+
+  .owner_step3_card {
+    padding: 25px 15px;
+
+    border-radius: 9px;
+  }
+
+  .owner_step3_header h1 {
+    font-size: 23px;
+  }
+
+  .owner_step3_header > p:last-child {
+    font-size: 13px;
+  }
+
+  .step_progress {
+    margin-bottom: 25px;
+  }
+
+  .progress_item {
+    min-width: 45px;
+  }
+
+  .progress_item span {
+    width: 27px;
+    height: 27px;
+  }
+
+  .progress_line {
+    margin-top: 13px;
+  }
+
+  .product_form {
+    grid-template-columns: 1fr;
+  }
+
+  .add_product_button {
+    grid-column: span 1;
+  }
+
+  .step_section {
+    padding: 17px;
+  }
+
+  .step_section h2 {
+    font-size: 16px;
+  }
+
+  .registered_product {
+    align-items: flex-start;
+  }
+
+  .owner_step3_actions {
+    flex-direction: column;
+  }
+
+  .step_back_button,
+  .step_continue_button {
+    width: 100%;
+  }
+}

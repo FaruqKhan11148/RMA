@@ -7,6 +7,7 @@ const connectDB = require('./config/db.js');
 const ownerRoutes = require('./routes/ownerRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const shopRoutes = require('./routes/shopRoutes');
+const paymentRoutes = require('./routes/payments');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use('/api/owners', ownerRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/shops', shopRoutes);
+app.use('/api/payments', paymentRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: 'RMA Backend is running' });

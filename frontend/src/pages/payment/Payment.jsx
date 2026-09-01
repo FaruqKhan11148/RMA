@@ -12,6 +12,7 @@ function Payment() {
   const { orders } = useOrder();
 
   const [paymentMethod, setPaymentMethod] = useState('UPI');
+  const [loading, setLoading] = useState(false);
 
   const order = orders.find((item) => item.orderId === orderId);
   const { clearCart } = useCart();
@@ -26,11 +27,113 @@ function Payment() {
     );
   }
 
-  const handlePayment = () => {
-    // Temporary payment success simulation
-    clearCart();
+  const handlePayment = async () => {
+    try {
+      setLoading(true);
 
-    navigate(`/delivery-status/${order.orderId}`);
+      // 1. Create Razorpay order from backend
+      const response = await fetch(
+        'http://localhost:5000/api/payments/create-order',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            orderId: order.orderId,
+          }),
+        },
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.message || 'Unable to create payment');
+        return;
+      }
+
+      const razorpayOrder = data.order;
+
+      const razorpayKey = process.env.REACT_APP_RAZORPAY_KEY_ID;
+
+      console.log('Razorpay Key:', razorpayKey);
+
+      const options = {
+        key: razorpayKey,
+
+        amount: razorpayOrder.amount,
+
+        currency: razorpayOrder.currency,
+
+        name: 'RMA',
+
+        description: `Order ${order.orderId}`,
+
+        order_id: razorpayOrder.id,
+
+        prefill: {
+          name: order.customer.name,
+          contact: order.customer.phone,
+        },
+
+        theme: {
+          color: '#ff4d4f',
+        },
+
+        handler: async function (response) {
+          try {
+            // 3. Verify payment
+            const verifyResponse = await fetch(
+              'http://localhost:5000/api/payments/verify',
+              {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  orderId: order.orderId,
+
+                  razorpay_order_id: response.razorpay_order_id,
+
+                  razorpay_payment_id: response.razorpay_payment_id,
+
+                  razorpay_signature: response.razorpay_signature,
+
+                  onlinePaymentMethod: paymentMethod,
+                }),
+              },
+            );
+
+            const verifyData = await verifyResponse.json();
+
+            if (!verifyResponse.ok) {
+              alert(verifyData.message || 'Payment verification failed');
+
+              return;
+            }
+
+            // 4. Payment success
+            clearCart();
+
+            navigate(`/delivery-status/${order.orderId}`);
+          } catch (error) {
+            console.error(error);
+
+            alert('Payment verification failed');
+          }
+        },
+      };
+
+      const razorpay = new window.Razorpay(options);
+
+      razorpay.open();
+    } catch (error) {
+      console.error(error);
+
+      alert('Unable to start payment');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -117,8 +220,8 @@ function Payment() {
         </p>
       </section>
 
-      <button className="pay_button" onClick={handlePayment}>
-        Pay ₹{order.totalPrice}
+      <button className="pay_button" onClick={handlePayment} disabled={loading}>
+        {loading ? 'Loading Payment...' : `Pay ₹${order.totalPrice}`}
       </button>
 
       <button
