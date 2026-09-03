@@ -29,8 +29,10 @@ function Footer() {
         <span>{t.bottomNav.orders}</span>
       </button>
 
-      <button className="nav_item" onClick={() => navigate('/profile')}>
-        <span>{t.bottomNav.profile}</span>
+      {/* DELIVERY */}
+
+      <button className="nav_item" onClick={() => navigate('/delivery/orders')}>
+        <span>Delivery</span>
       </button>
     </nav>
   );

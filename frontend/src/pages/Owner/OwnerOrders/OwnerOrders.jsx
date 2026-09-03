@@ -23,6 +23,7 @@ function OwnerOrders() {
     'Accepted',
     'Preparing',
     'Ready',
+    'OutForDelivery',
     'Completed',
     'Rejected',
   ];
@@ -214,7 +215,11 @@ function OwnerOrders() {
               <div className="owner_order_top">
                 <strong>#{order.orderId}</strong>
 
-                <span className={`order_status ${order.status.toLowerCase()}`}>
+                <span
+                  className={`order_status ${order.status
+                    .toLowerCase()
+                    .replace(/([a-z])([A-Z])/g, '$1-$2')}`}
+                >
                   {order.status}
                 </span>
               </div>
@@ -262,6 +267,8 @@ function OwnerOrders() {
               {/* ACTIONS */}
 
               <div className="owner_order_actions">
+                {/* PENDING */}
+
                 {order.status === 'Pending' && (
                   <>
                     <button
@@ -284,6 +291,8 @@ function OwnerOrders() {
                   </>
                 )}
 
+                {/* ACCEPTED */}
+
                 {order.status === 'Accepted' && (
                   <button
                     className="accept_order_button"
@@ -295,6 +304,8 @@ function OwnerOrders() {
                   </button>
                 )}
 
+                {/* PREPARING */}
+
                 {order.status === 'Preparing' && (
                   <button
                     className="accept_order_button"
@@ -304,20 +315,53 @@ function OwnerOrders() {
                   </button>
                 )}
 
+                {/* READY */}
+
                 {order.status === 'Ready' && (
-                  <button
-                    className="accept_order_button"
-                    onClick={() =>
-                      handleStatusChange(order.orderId, 'Completed')
-                    }
-                  >
-                    Complete Order
-                  </button>
+                  <>
+                    {order.orderType === 'delivery' ? (
+                      <button
+                        className="accept_order_button"
+                        onClick={() =>
+                          handleStatusChange(order.orderId, 'OutForDelivery')
+                        }
+                      >
+                        Send for Delivery
+                      </button>
+                    ) : (
+                      <button
+                        className="accept_order_button"
+                        onClick={() =>
+                          handleStatusChange(order.orderId, 'Completed')
+                        }
+                      >
+                        Complete Order
+                      </button>
+                    )}
+                  </>
                 )}
+
+                {/* OUT FOR DELIVERY */}
+
+                {order.status === 'OutForDelivery' && (
+                  <div className="order_delivery_message">
+                    <strong>Out for delivery</strong>
+
+                    <p>Delivery partner has received this order.</p>
+
+                    <p>
+                      Order will be completed after delivery OTP verification.
+                    </p>
+                  </div>
+                )}
+
+                {/* COMPLETED */}
 
                 {order.status === 'Completed' && (
                   <p className="order_completed_message">✓ Order completed</p>
                 )}
+
+                {/* REJECTED */}
 
                 {order.status === 'Rejected' && (
                   <p className="order_rejected_message">Order rejected</p>

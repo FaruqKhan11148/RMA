@@ -111,10 +111,30 @@ const orderSchema = new mongoose.Schema(
         'Accepted',
         'Preparing',
         'Ready',
+        'OutForDelivery',
         'Completed',
         'Rejected',
       ],
       default: 'Pending',
+    },
+
+    // =========================
+    // DELIVERY OTP
+    // =========================
+
+    deliveryOtp: {
+      type: String,
+      default: null,
+    },
+
+    deliveryOtpGeneratedAt: {
+      type: Date,
+      default: null,
+    },
+
+    otpVerified: {
+      type: Boolean,
+      default: false,
     },
 
     paymentStatus: {

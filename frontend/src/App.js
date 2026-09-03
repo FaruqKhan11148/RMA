@@ -26,6 +26,9 @@ import OwnerStep2 from './pages/Owner/OwnerRegister/OwnerStep2';
 import OwnerStep3 from './pages/Owner/OwnerRegister/OwnerStep3';
 import OwnerStep4 from './pages/Owner/OwnerRegister/OwnerStep4';
 
+import DeliveryOrders from './pages/delivery/DeliveryOrders/DeliveryOrders';
+import ScanQR from './pages/ScanQR/ScanQR';
+
 function App() {
   return (
     <BrowserRouter>
@@ -56,7 +59,7 @@ function App() {
 
           {/* OWNER ROUTES */}
 
-          <Route path="/owner/register" element={<OwnerStep1 />} />
+          <Route path="/owner/register/step-1" element={<OwnerStep1 />} />
 
           <Route path="/owner/register/step-2" element={<OwnerStep2 />} />
 
@@ -72,7 +75,15 @@ function App() {
 
           <Route path="/owner/orders" element={<OwnerOrders />} />
 
+          {/* DELIVERY ROUTES */}
+
+          <Route path="/delivery/orders" element={<DeliveryOrders />} />
+
+          {/* PAYMENT */}
+
           <Route path="/payment/:orderId" element={<Payment />} />
+
+          <Route path="/scan-qr" element={<ScanQR />} />
         </Routes>
       </div>
 

@@ -16,7 +16,7 @@ function Navbar() {
       <div className="navbar_right">
         <button
           className="navbar_owner_register_button"
-          onClick={() => navigate('/owner/register')}
+          onClick={() => navigate('/owner/register/step-1')}
         >
           Owner Register
         </button>

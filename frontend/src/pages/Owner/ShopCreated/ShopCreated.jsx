@@ -20,7 +20,7 @@ function ShopCreated() {
 
           <button
             className="shop_created_button"
-            onClick={() => navigate('/owner/register')}
+            onClick={() => navigate('/owner/register/step-1')}
           >
             Register Shop
           </button>

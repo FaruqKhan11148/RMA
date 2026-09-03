@@ -1,0 +1,361 @@
+/* =========================================
+   SCAN QR
+========================================= */
+
+.scan_qr {
+  min-height: 100vh;
+
+  padding: 40px 20px 80px;
+
+  box-sizing: border-box;
+
+  background: #f7f7f7;
+}
+
+.scan_qr_card {
+  width: 100%;
+  max-width: 500px;
+
+  margin: 0 auto;
+
+  padding: 35px;
+
+  box-sizing: border-box;
+
+  background: #ffffff;
+
+  border: 1px solid #dddddd;
+
+  border-radius: 12px;
+}
+
+/* =========================================
+   HEADER
+========================================= */
+
+.scan_qr_header {
+  text-align: center;
+
+  margin-bottom: 30px;
+}
+
+.scan_qr_logo {
+  width: 55px;
+  height: 55px;
+
+  margin: 0 auto 15px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #222222;
+
+  color: #ffffff;
+
+  border-radius: 10px;
+
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.scan_qr_label {
+  margin: 0 0 8px;
+
+  color: #666666;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  letter-spacing: 1px;
+}
+
+.scan_qr_header h1 {
+  margin: 0 0 8px;
+
+  color: #222222;
+
+  font-size: 27px;
+}
+
+.scan_qr_header > p:last-child {
+  max-width: 400px;
+
+  margin: 0 auto;
+
+  color: #666666;
+
+  font-size: 14px;
+
+  line-height: 1.5;
+}
+
+/* =========================================
+   SCANNER
+========================================= */
+
+.qr_scanner_box {
+  position: relative;
+
+  width: 100%;
+  max-width: 320px;
+
+  aspect-ratio: 1 / 1;
+
+  margin: 0 auto 25px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  border-radius: 12px;
+
+  background: #111111;
+}
+
+.scanner_placeholder {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 8px;
+
+  color: #ffffff;
+}
+
+.scanner_placeholder span {
+  width: 75px;
+  height: 75px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 2px solid #ffffff;
+
+  border-radius: 10px;
+
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.scanner_placeholder p {
+  margin: 0;
+
+  font-size: 13px;
+
+  opacity: 0.75;
+}
+
+/* =========================================
+   SCANNER CORNERS
+========================================= */
+
+.scanner_corner {
+  position: absolute;
+
+  width: 35px;
+  height: 35px;
+
+  border-color: #ffffff;
+
+  border-style: solid;
+}
+
+.scanner_corner.top_left {
+  top: 25px;
+  left: 25px;
+
+  border-width: 3px 0 0 3px;
+}
+
+.scanner_corner.top_right {
+  top: 25px;
+  right: 25px;
+
+  border-width: 3px 3px 0 0;
+}
+
+.scanner_corner.bottom_left {
+  bottom: 25px;
+  left: 25px;
+
+  border-width: 0 0 3px 3px;
+}
+
+.scanner_corner.bottom_right {
+  right: 25px;
+  bottom: 25px;
+
+  border-width: 0 3px 3px 0;
+}
+
+/* =========================================
+   SCAN LINE
+========================================= */
+
+.scanner_line {
+  position: absolute;
+
+  left: 35px;
+  right: 35px;
+
+  top: 50%;
+
+  height: 2px;
+
+  background: #ffffff;
+
+  opacity: 0.8;
+}
+
+/* =========================================
+   INFO
+========================================= */
+
+.scan_qr_info {
+  text-align: center;
+
+  margin-bottom: 20px;
+}
+
+.scan_qr_info h2 {
+  margin: 0 0 7px;
+
+  color: #222222;
+
+  font-size: 16px;
+}
+
+.scan_qr_info p {
+  margin: 0;
+
+  color: #666666;
+
+  font-size: 13px;
+
+  line-height: 1.5;
+}
+
+/* =========================================
+   ERROR
+========================================= */
+
+.scan_qr_error {
+  margin: 0 0 15px;
+
+  padding: 10px 12px;
+
+  border: 1px solid #f0bcbc;
+
+  border-radius: 7px;
+
+  background: #fff3f3;
+
+  color: #c00000;
+
+  font-size: 13px;
+}
+
+/* =========================================
+   ACTIONS
+========================================= */
+
+.scan_qr_actions {
+  display: flex;
+
+  gap: 10px;
+}
+
+.scan_qr_back,
+.scan_qr_manual {
+  height: 46px;
+
+  border-radius: 8px;
+
+  font-family: inherit;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.scan_qr_back {
+  width: 30%;
+
+  border: 1px solid #dddddd;
+
+  background: #ffffff;
+
+  color: #222222;
+}
+
+.scan_qr_back:hover {
+  background: #f5f5f5;
+}
+
+.scan_qr_manual {
+  width: 70%;
+
+  border: none;
+
+  background: #222222;
+
+  color: #ffffff;
+}
+
+.scan_qr_manual:hover {
+  background: #444444;
+}
+
+.scan_qr_back:active,
+.scan_qr_manual:active {
+  transform: scale(0.98);
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 480px) {
+  .scan_qr {
+    padding: 20px 10px 50px;
+  }
+
+  .scan_qr_card {
+    padding: 25px 15px;
+
+    border-radius: 9px;
+  }
+
+  .scan_qr_header h1 {
+    font-size: 23px;
+  }
+
+  .scan_qr_header > p:last-child {
+    font-size: 13px;
+  }
+
+  .qr_scanner_box {
+    max-width: 280px;
+  }
+
+  .scan_qr_actions {
+    flex-direction: column;
+  }
+
+  .scan_qr_back,
+  .scan_qr_manual {
+    width: 100%;
+  }
+}

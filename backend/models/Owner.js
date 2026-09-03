@@ -7,6 +7,11 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
 
+    catalogueProductId: {
+      type: String,
+      default: null,
+    },
+
     name: {
       type: String,
       required: true,
@@ -29,6 +34,17 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
+    },
+
+    imageUrl: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+
+    isCustom: {
+      type: Boolean,
+      default: false,
     },
 
     available: {

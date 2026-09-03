@@ -170,6 +170,7 @@ router.post('/', async (req, res) => {
 });
 
 // UPDATE ORDER STATUS
+// UPDATE ORDER STATUS
 router.patch('/:orderId/status', async (req, res) => {
   try {
     const { orderId } = req.params;
@@ -180,6 +181,7 @@ router.patch('/:orderId/status', async (req, res) => {
       'Accepted',
       'Preparing',
       'Ready',
+      'OutForDelivery',
       'Completed',
       'Rejected',
     ];
@@ -190,13 +192,7 @@ router.patch('/:orderId/status', async (req, res) => {
       });
     }
 
-    const order = await Order.findOneAndUpdate(
-      { orderId },
-      { status },
-      {
-        returnDocument: 'after',
-      },
-    ).populate('ownerId', 'ownerName shopName phone');
+    const order = await Order.findOne({ orderId });
 
     if (!order) {
       return res.status(404).json({
@@ -204,12 +200,89 @@ router.patch('/:orderId/status', async (req, res) => {
       });
     }
 
+    // Generate OTP when order goes OUT FOR DELIVERY
+    if (status === 'OutForDelivery' && order.status !== 'OutForDelivery') {
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+      order.deliveryOtp = otp;
+      order.deliveryOtpGeneratedAt = new Date();
+      order.otpVerified = false;
+    }
+
+    order.status = status;
+
+    await order.save();
+
+    await order.populate('ownerId', 'ownerName shopName phone');
+
     res.status(200).json({
       message: 'Order status updated successfully',
       order,
     });
   } catch (error) {
     console.error('Update order status failed:', error.message);
+
+    res.status(500).json({
+      message: 'Server error',
+    });
+  }
+});
+
+// VERIFY DELIVERY OTP
+router.post('/:orderId/verify-otp', async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { otp } = req.body;
+
+    if (!otp) {
+      return res.status(400).json({
+        message: 'Delivery OTP is required',
+      });
+    }
+
+    const order = await Order.findOne({ orderId });
+
+    if (!order) {
+      return res.status(404).json({
+        message: 'Order not found',
+      });
+    }
+
+    // OTP verification is only allowed for delivery orders
+    if (order.orderType !== 'delivery') {
+      return res.status(400).json({
+        message: 'OTP verification is only required for delivery orders',
+      });
+    }
+
+    // OTP can only be verified when order is out for delivery
+    if (order.status !== 'OutForDelivery') {
+      return res.status(400).json({
+        message: 'Order is not out for delivery',
+      });
+    }
+
+    // Check OTP
+    if (order.deliveryOtp !== otp) {
+      return res.status(400).json({
+        message: 'Invalid delivery OTP',
+      });
+    }
+
+    // OTP is correct
+    order.otpVerified = true;
+    order.status = 'Completed';
+
+    await order.save();
+
+    await order.populate('ownerId', 'ownerName shopName phone');
+
+    res.status(200).json({
+      message: 'Delivery OTP verified successfully',
+      order,
+    });
+  } catch (error) {
+    console.error('Verify delivery OTP failed:', error.message);
 
     res.status(500).json({
       message: 'Server error',

@@ -57,6 +57,7 @@ router.post('/register', async (req, res) => {
       description,
       address,
       phone,
+      email,
       password,
       delivery,
       pickup,
@@ -64,7 +65,7 @@ router.post('/register', async (req, res) => {
     } = req.body;
 
     // Check required fields
-    if (!ownerName || !shopName || !address || !phone || !password) {
+    if (!ownerName || !shopName || !email || !address || !phone || !password) {
       return res.status(400).json({
         message: 'Required fields are missing',
       });
@@ -76,6 +77,18 @@ router.post('/register', async (req, res) => {
     if (existingOwner) {
       return res.status(409).json({
         message: 'Owner with this phone number already exists',
+      });
+    }
+
+    const normalizedEmail = email.trim().toLowerCase();
+
+    const existingEmail = await Owner.findOne({
+      email: normalizedEmail,
+    });
+
+    if (existingEmail) {
+      return res.status(409).json({
+        message: 'Owner with this email already exists',
       });
     }
 
@@ -116,6 +129,7 @@ router.post('/register', async (req, res) => {
       description: description || '',
       address,
       phone,
+      email: normalizedEmail,
       password: hashedPassword,
       delivery,
       pickup,

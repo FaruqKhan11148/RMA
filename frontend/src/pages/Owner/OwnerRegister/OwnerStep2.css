@@ -1,4 +1,8 @@
-.owner_step2 {
+/* =========================================
+   OWNER STEP 2
+========================================= */
+
+.owner_step {
   min-height: 100vh;
 
   padding: 40px 20px 80px;
@@ -8,7 +12,7 @@
   background: #f7f7f7;
 }
 
-.owner_step2_card {
+.owner_step_card {
   width: 100%;
   max-width: 700px;
 
@@ -18,15 +22,17 @@
 
   box-sizing: border-box;
 
-  background: white;
+  background: #ffffff;
 
-  border: 1px solid #ddd;
+  border: 1px solid #dddddd;
   border-radius: 12px;
 }
 
-/* HEADER */
+/* =========================================
+   HEADER
+========================================= */
 
-.owner_step2_header {
+.owner_step_header {
   text-align: center;
 
   margin-bottom: 30px;
@@ -42,8 +48,8 @@
   align-items: center;
   justify-content: center;
 
-  background: #222;
-  color: white;
+  background: #222222;
+  color: #ffffff;
 
   border-radius: 10px;
 
@@ -54,7 +60,7 @@
 .step_number {
   margin: 0 0 8px;
 
-  color: #666;
+  color: #666666;
 
   font-size: 11px;
   font-weight: 700;
@@ -62,28 +68,36 @@
   letter-spacing: 1px;
 }
 
-.owner_step2_header h1 {
+.owner_step_header h1 {
   margin: 0 0 8px;
 
   font-size: 27px;
+
+  color: #222222;
 }
 
-.owner_step2_header > p:last-child {
-  margin: 0;
+.owner_step_header > p:last-child {
+  max-width: 520px;
 
-  color: #666;
+  margin: 0 auto;
+
+  color: #666666;
 
   font-size: 14px;
 
   line-height: 1.5;
 }
 
-/* PROGRESS */
+/* =========================================
+   REGISTRATION PROGRESS
+========================================= */
 
-.step_progress {
+.registration_progress {
   display: flex;
 
   align-items: flex-start;
+
+  width: 100%;
 
   margin-bottom: 35px;
 }
@@ -106,11 +120,13 @@
   align-items: center;
   justify-content: center;
 
-  border: 1px solid #ccc;
+  box-sizing: border-box;
+
+  border: 1px solid #cccccc;
   border-radius: 50%;
 
-  background: white;
-  color: #777;
+  background: #ffffff;
+  color: #777777;
 
   font-size: 12px;
   font-weight: 600;
@@ -119,22 +135,24 @@
 .progress_item p {
   margin: 7px 0 0;
 
-  color: #777;
+  color: #777777;
 
   font-size: 10px;
+
+  white-space: nowrap;
 }
 
 .progress_item.completed span,
 .progress_item.active span {
-  border-color: #222;
+  border-color: #222222;
 
-  background: #222;
-  color: white;
+  background: #222222;
+  color: #ffffff;
 }
 
 .progress_item.completed p,
 .progress_item.active p {
-  color: #222;
+  color: #222222;
 
   font-weight: 600;
 }
@@ -146,16 +164,18 @@
 
   margin-top: 15px;
 
-  background: #ddd;
+  background: #dddddd;
 }
 
 .progress_line.active {
-  background: #222;
+  background: #222222;
 }
 
-/* FORM */
+/* =========================================
+   FORM
+========================================= */
 
-.owner_step2_form {
+.owner_step_form {
   display: flex;
 
   flex-direction: column;
@@ -163,10 +183,14 @@
   gap: 20px;
 }
 
-/* SECTIONS */
+/* =========================================
+   SECTIONS
+========================================= */
 
-.step_section {
+.register_section {
   padding: 22px;
+
+  box-sizing: border-box;
 
   border: 1px solid #e1e1e1;
 
@@ -175,8 +199,10 @@
   background: #fafafa;
 }
 
-.step_section h2 {
+.register_section h2 {
   margin: 0 0 7px;
+
+  color: #222222;
 
   font-size: 18px;
 }
@@ -184,42 +210,59 @@
 .section_description {
   margin: 0 0 18px;
 
-  color: #666;
+  color: #666666;
 
   font-size: 13px;
 
   line-height: 1.5;
 }
 
-/* LABEL */
+/* =========================================
+   FORM LABELS
+========================================= */
 
-.step_section label:not(.checkbox_label) {
+.register_section label:not(.checkbox_label) {
   display: flex;
 
   flex-direction: column;
 
   gap: 7px;
 
+  margin-bottom: 18px;
+
+  color: #222222;
+
   font-size: 13px;
   font-weight: 600;
 }
 
-/* INPUT */
+.register_section label:not(.checkbox_label):last-child {
+  margin-bottom: 0;
+}
 
-.step_section textarea {
+/* =========================================
+   INPUTS
+========================================= */
+
+.register_section input[type='text'],
+.register_section input[type='email'],
+.register_section input[type='tel'],
+.register_section input[type='number'],
+.register_section input[type='password'],
+.register_section textarea {
   width: 100%;
-
-  min-height: 110px;
 
   padding: 11px 12px;
 
   box-sizing: border-box;
 
-  border: 1px solid #ccc;
+  border: 1px solid #cccccc;
 
   border-radius: 7px;
 
-  background: white;
+  background: #ffffff;
+
+  color: #222222;
 
   font-family: inherit;
 
@@ -227,71 +270,93 @@
 
   outline: none;
 
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.register_section input {
+  height: 44px;
+}
+
+.register_section textarea {
+  min-height: 105px;
+
   resize: vertical;
 
-  transition: border 0.2s ease;
+  line-height: 1.5;
 }
 
-.step_section textarea:focus {
-  border-color: #222;
+/* =========================================
+   INPUT FOCUS
+========================================= */
+
+.register_section input:focus,
+.register_section textarea:focus {
+  border-color: #222222;
+
+  box-shadow: 0 0 0 2px rgba(34, 34, 34, 0.06);
 }
 
-/* CHECKBOX */
+/* =========================================
+   PLACEHOLDER
+========================================= */
+
+.register_section input::placeholder,
+.register_section textarea::placeholder {
+  color: #999999;
+}
+
+/* =========================================
+   ORDER OPTIONS / CHECKBOX
+========================================= */
 
 .checkbox_label {
-  display: flex;
+  display: flex !important;
 
   flex-direction: row !important;
 
-  align-items: flex-start;
+  align-items: center;
 
   gap: 12px;
 
-  margin-bottom: 15px;
+  margin-bottom: 14px !important;
 
   cursor: pointer;
+
+  color: #222222;
+
+  font-size: 14px !important;
+  font-weight: 500 !important;
 }
 
 .checkbox_label:last-child {
-  margin-bottom: 0;
+  margin-bottom: 0 !important;
 }
 
-.checkbox_label input {
-  width: auto;
+.checkbox_label input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
 
-  margin-top: 3px;
+  margin: 0;
+
+  accent-color: #222222;
 
   cursor: pointer;
+
+  flex-shrink: 0;
 }
 
-.checkbox_label div {
-  display: flex;
+/* =========================================
+   ERROR
+========================================= */
 
-  flex-direction: column;
-
-  gap: 4px;
-}
-
-.checkbox_label strong {
-  font-size: 14px;
-}
-
-.checkbox_label span {
-  color: #666;
-
-  font-size: 12px;
-
-  font-weight: 400;
-
-  line-height: 1.4;
-}
-
-/* ERROR */
-
-.owner_step2_error {
+.owner_step_error {
   margin: 0;
 
   padding: 11px 13px;
+
+  box-sizing: border-box;
 
   border: 1px solid #f0bcbc;
 
@@ -299,14 +364,18 @@
 
   background: #fff3f3;
 
-  color: #c00;
+  color: #c00000;
 
   font-size: 13px;
+
+  line-height: 1.4;
 }
 
-/* ACTIONS */
+/* =========================================
+   ACTION BUTTONS
+========================================= */
 
-.owner_step2_actions {
+.owner_step_actions {
   display: flex;
 
   gap: 10px;
@@ -314,11 +383,13 @@
   margin-top: 5px;
 }
 
-.step_back_button,
-.step_continue_button {
+.owner_step_back_button,
+.owner_step_button {
   height: 46px;
 
   border-radius: 8px;
+
+  font-family: inherit;
 
   font-size: 14px;
 
@@ -326,64 +397,150 @@
 
   cursor: pointer;
 
-  transition: all 0.2s ease;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
 }
 
-.step_back_button {
+.owner_step_back_button {
   width: 30%;
 
-  border: 1px solid #ddd;
+  border: 1px solid #dddddd;
 
-  background: white;
+  background: #ffffff;
 
-  color: #222;
+  color: #222222;
 }
 
-.step_back_button:hover {
+.owner_step_back_button:hover {
   background: #f5f5f5;
+
+  border-color: #cccccc;
 }
 
-.step_continue_button {
+.owner_step_button {
   width: 70%;
 
   border: none;
 
-  background: #222;
+  background: #222222;
 
-  color: white;
+  color: #ffffff;
 }
 
-.step_continue_button:hover {
-  background: #444;
+.owner_step_button:hover {
+  background: #444444;
 }
 
-.step_back_button:active,
-.step_continue_button:active {
+.owner_step_back_button:active,
+.owner_step_button:active {
   transform: scale(0.98);
 }
 
-/* MOBILE */
+/* =========================================
+   FOOTER
+========================================= */
+
+.owner_step_footer {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 5px;
+
+  margin-top: 25px;
+
+  color: #777777;
+
+  font-size: 12px;
+}
+
+.owner_step_footer p {
+  margin: 0;
+}
+
+.owner_step_footer button {
+  padding: 0;
+
+  border: none;
+
+  background: none;
+
+  color: #222222;
+
+  font-family: inherit;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.owner_step_footer button:hover {
+  text-decoration: underline;
+}
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 700px) {
+  .owner_step {
+    padding: 30px 15px 60px;
+  }
+
+  .owner_step_card {
+    padding: 30px 25px;
+  }
+
+  .owner_step_header h1 {
+    font-size: 25px;
+  }
+
+  .register_section {
+    padding: 20px;
+  }
+}
+
+/* =========================================
+   MOBILE
+========================================= */
 
 @media (max-width: 480px) {
-  .owner_step2 {
+  .owner_step {
     padding: 20px 10px 50px;
   }
 
-  .owner_step2_card {
+  .owner_step_card {
     padding: 25px 15px;
 
     border-radius: 9px;
   }
 
-  .owner_step2_header h1 {
+  .owner_step_header {
+    margin-bottom: 25px;
+  }
+
+  .owner_logo {
+    width: 50px;
+    height: 50px;
+
+    margin-bottom: 12px;
+  }
+
+  .owner_step_header h1 {
     font-size: 23px;
   }
 
-  .owner_step2_header > p:last-child {
+  .owner_step_header > p:last-child {
     font-size: 13px;
   }
 
-  .step_progress {
+  /* PROGRESS */
+
+  .registration_progress {
     margin-bottom: 25px;
   }
 
@@ -396,24 +553,63 @@
     height: 27px;
   }
 
+  .progress_item p {
+    margin-top: 6px;
+
+    font-size: 9px;
+  }
+
   .progress_line {
     margin-top: 13px;
   }
 
-  .step_section {
+  /* SECTIONS */
+
+  .register_section {
     padding: 17px;
   }
 
-  .step_section h2 {
+  .register_section h2 {
     font-size: 16px;
   }
 
-  .owner_step2_actions {
+  .section_description {
+    font-size: 12px;
+  }
+
+  /* INPUTS */
+
+  .register_section input {
+    height: 42px;
+  }
+
+  .register_section input,
+  .register_section textarea {
+    font-size: 13px;
+  }
+
+  /* CHECKBOX */
+
+  .checkbox_label {
+    font-size: 13px !important;
+  }
+
+  /* BUTTONS */
+
+  .owner_step_actions {
     flex-direction: column;
   }
 
-  .step_back_button,
-  .step_continue_button {
+  .owner_step_back_button,
+  .owner_step_button {
     width: 100%;
+  }
+
+  /* FOOTER */
+
+  .owner_step_footer {
+    flex-direction: column;
+
+    gap: 4px;
   }
 }

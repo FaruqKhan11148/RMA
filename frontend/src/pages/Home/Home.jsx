@@ -1,16 +1,59 @@
 import './Home.css';
+
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
-import { useState } from 'react';
 
 function Home() {
   const { t } = useLanguage();
   const navigate = useNavigate();
 
-  const [deliveryLocation, setDeliveryLocation] = useState(null);
+  const [shop, setShop] = useState(null);
+  const [loadingShop, setLoadingShop] = useState(true);
+  const [shopError, setShopError] = useState('');
+
+  // Temporary test shop.
+  // Later this will come from the customer's scanned QR/history.
+  const testShopId = 'RMA-000005';
+
+  useEffect(() => {
+    const fetchShop = async () => {
+      try {
+        setLoadingShop(true);
+        setShopError('');
+
+        const response = await fetch(
+          `http://localhost:5000/api/owners/shop/${testShopId}`,
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || 'Failed to load shop');
+        }
+
+        setShop(data);
+      } catch (error) {
+        console.error('Fetch shop error:', error);
+        setShopError('Unable to load shop.');
+      } finally {
+        setLoadingShop(false);
+      }
+    };
+
+    fetchShop();
+  }, []);
+
+  const handleOrder = () => {
+    if (!shop) return;
+
+    navigate(`/shop/${testShopId}`);
+  };
 
   return (
     <main className="home">
+      {/* HEADER */}
+
       <section className="home_header">
         <p className="home_greeting">{t.home.greeting}</p>
 
@@ -18,6 +61,8 @@ function Home() {
 
         <p>{t.home.description}</p>
       </section>
+
+      {/* ACTIONS */}
 
       <section className="home_actions">
         <button className="qr_action" onClick={() => navigate('/scan-qr')}>
@@ -37,6 +82,8 @@ function Home() {
         </button>
       </section>
 
+      {/* MY SHOPS */}
+
       <section className="my_shops">
         <div className="section_title">
           <h2>{t.home.myShops}</h2>
@@ -44,17 +91,25 @@ function Home() {
           <button>{t.home.viewAll}</button>
         </div>
 
-        <div className="shop_card">
-          <div className="shop_card_info">
-            <h3>Rahman Chicken Center</h3>
+        {loadingShop && <div className="shop_loading">Loading shop...</div>}
 
-            <p>Chicken • Fish • Seafood</p>
+        {shopError && <div className="shop_error">{shopError}</div>}
 
-            <span>{t.home.lastOrdered} 2 days ago</span>
+        {!loadingShop && shop && (
+          <div className="shop_card">
+            <div className="shop_card_info">
+              <h3>{shop.shopName}</h3>
+
+              <p>{shop.description || 'Fresh meat and seafood'}</p>
+
+              <span>{shop.address}</span>
+            </div>
+
+            <button className="shop_order_button" onClick={handleOrder}>
+              {t.home.order}
+            </button>
           </div>
-
-          <button className="shop_order_button">{t.home.order}</button>
-        </div>
+        )}
       </section>
     </main>
   );

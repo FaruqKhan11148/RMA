@@ -1,0 +1,294 @@
+.delivery_orders {
+  min-height: 100vh;
+  padding: 30px 20px;
+  background: #f5f7fa;
+}
+
+/* HEADER */
+
+.delivery_orders_header {
+  max-width: 900px;
+  margin: 0 auto 25px;
+}
+
+.delivery_orders_header h1 {
+  margin: 0 0 8px;
+  font-size: 28px;
+  color: #222;
+}
+
+.delivery_orders_header p {
+  margin: 0;
+  color: #666;
+  font-size: 15px;
+}
+
+/* ORDERS LIST */
+
+.delivery_orders_list {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ORDER CARD */
+
+.delivery_order_card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* TOP */
+
+.delivery_order_top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.delivery_order_top strong {
+  font-size: 16px;
+  color: #222;
+}
+
+.delivery_order_status {
+  padding: 6px 10px;
+  border-radius: 20px;
+  background: #fff3cd;
+  color: #856404;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* CUSTOMER INFO */
+
+.delivery_order_info {
+  padding: 18px 0;
+}
+
+.delivery_order_info h2 {
+  margin: 0 0 8px;
+  font-size: 20px;
+  color: #222;
+}
+
+.delivery_order_info p {
+  margin: 7px 0;
+  color: #555;
+  font-size: 15px;
+}
+
+/* ITEMS */
+
+.delivery_order_items {
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 8px;
+  background: #f7f7f7;
+}
+
+.delivery_order_items p {
+  margin: 5px 0;
+  color: #333;
+}
+
+/* TOTAL */
+
+.delivery_order_total {
+  display: block;
+  margin-top: 15px;
+  font-size: 20px;
+  color: #222;
+}
+
+/* OTP SECTION */
+
+.delivery_otp_section {
+  margin-top: 5px;
+  padding-top: 18px;
+  border-top: 1px solid #eee;
+}
+
+.delivery_otp_section h3 {
+  margin: 0 0 6px;
+  font-size: 18px;
+  color: #222;
+}
+
+.delivery_otp_section p {
+  margin: 0 0 14px;
+  color: #666;
+  font-size: 14px;
+}
+
+/* OTP INPUT */
+
+.delivery_otp_section input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 18px;
+  letter-spacing: 5px;
+  text-align: center;
+  outline: none;
+}
+
+.delivery_otp_section input:focus {
+  border-color: #222;
+}
+
+/* DELIVERED BUTTON */
+
+.delivery_complete_button {
+  width: 100%;
+  margin-top: 12px;
+  padding: 13px;
+  border: none;
+  border-radius: 8px;
+  background: #222;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.delivery_complete_button:hover {
+  opacity: 0.9;
+}
+
+/* EMPTY / LOADING / ERROR */
+
+.delivery_no_orders {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 40px 20px;
+  text-align: center;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e5e5e5;
+}
+
+.delivery_no_orders h2 {
+  margin: 0 0 8px;
+  color: #222;
+}
+
+.delivery_no_orders p {
+  margin: 0;
+  color: #666;
+}
+
+/* SHOP ID ACCESS SCREEN */
+
+.delivery_no_orders h1 {
+  margin: 0 0 10px;
+  font-size: 28px;
+  color: #222;
+}
+
+.delivery_no_orders input {
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+  margin-top: 20px;
+  padding: 13px 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+}
+
+.delivery_no_orders input:focus {
+  border-color: #222;
+}
+
+.delivery_no_orders .delivery_complete_button {
+  max-width: 400px;
+  margin: 12px auto 0;
+}
+
+.delivery_complete_button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ERROR MESSAGE */
+
+.delivery_error_message {
+  margin-top: 15px !important;
+  color: #d32f2f !important;
+  font-size: 14px !important;
+  font-weight: 500;
+}
+
+/* DELIVERY MAP */
+
+.delivery_map_container {
+  margin-top: 15px;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid #e5e5e5;
+}
+
+/* MOBILE */
+
+@media (max-width: 480px) {
+  .delivery_orders {
+    padding: 20px 12px;
+  }
+
+  .delivery_orders_header h1 {
+    font-size: 24px;
+  }
+
+  .delivery_order_card {
+    padding: 16px;
+  }
+
+  .delivery_order_top {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .delivery_order_status {
+    font-size: 12px;
+  }
+
+  .delivery_order_info h2 {
+    font-size: 18px;
+  }
+
+  .delivery_order_total {
+    font-size: 18px;
+  }
+
+  /* SHOP ID SCREEN */
+
+  .delivery_no_orders {
+    margin: 30px auto;
+    padding: 30px 18px;
+  }
+
+  .delivery_no_orders h1 {
+    font-size: 24px;
+  }
+
+  .delivery_no_orders input {
+    max-width: 100%;
+  }
+
+  .delivery_no_orders .delivery_complete_button {
+    max-width: 100%;
+  }
+}

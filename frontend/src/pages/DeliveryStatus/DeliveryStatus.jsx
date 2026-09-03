@@ -100,6 +100,11 @@ function DeliveryStatus() {
           : 'Your order is ready for pickup.',
     },
     {
+      status: 'OutForDelivery',
+      title: 'Out for Delivery',
+      description: 'Your order is on the way to you.',
+    },
+    {
       status: 'Completed',
       title: 'Completed',
       description: 'Your order has been completed.',
@@ -111,6 +116,7 @@ function DeliveryStatus() {
     'Accepted',
     'Preparing',
     'Ready',
+    'OutForDelivery',
     'Completed',
   ];
 
@@ -131,6 +137,9 @@ function DeliveryStatus() {
         return order.orderType === 'delivery'
           ? 'Your order is ready and will be delivered soon.'
           : 'Your order is ready for pickup.';
+
+      case 'OutForDelivery':
+        return 'Your order is on the way. Please provide the delivery OTP when your order arrives.';
 
       case 'Completed':
         return 'Your order has been completed successfully.';
@@ -230,6 +239,19 @@ function DeliveryStatus() {
           })}
         </div>
       </section>
+
+      {/* DELIVERY OTP */}
+      {order.orderType === 'delivery' &&
+        order.status === 'OutForDelivery' &&
+        order.deliveryOtp && (
+          <section className="delivery_otp_card">
+            <h2>Delivery OTP</h2>
+
+            <p>Give this OTP to the delivery person when your order arrives.</p>
+
+            <div className="delivery_otp">{order.deliveryOtp}</div>
+          </section>
+        )}
 
       <section className="order_details">
         <h2>Order Details</h2>
