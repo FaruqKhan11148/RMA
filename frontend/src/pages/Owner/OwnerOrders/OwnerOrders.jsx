@@ -1,6 +1,6 @@
 import './OwnerOrders.css';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import OrderLocationMap from '../../../components/map/OrderLocationMap';
@@ -15,7 +15,9 @@ function OwnerOrders() {
 
   const ownerData = localStorage.getItem('rma_owner');
 
-  const shopOwner = ownerData ? JSON.parse(ownerData) : null;
+  const shopOwner = useMemo(() => {
+    return ownerData ? JSON.parse(ownerData) : null;
+  }, [ownerData]);
 
   const filters = [
     'All',
@@ -33,7 +35,7 @@ function OwnerOrders() {
     if (!shopOwner) {
       navigate('/owner/login');
     }
-  }, [shopOwner?.id, navigate]);
+  }, [shopOwner, navigate]);
 
   // GET OWNER ORDERS
   useEffect(() => {
@@ -47,7 +49,7 @@ function OwnerOrders() {
         setError('');
 
         const response = await fetch(
-          `http://localhost:5000/api/orders/owner/${shopOwner.id}`,
+          `https://rma-backend-bo4a.onrender.com/api/orders/owner/${shopOwner.id}`,
         );
 
         const data = await response.json();
@@ -68,13 +70,13 @@ function OwnerOrders() {
     };
 
     fetchOrders();
-  }, [shopOwner?.id]);
+  }, [shopOwner]);
 
   // UPDATE ORDER STATUS
   const handleStatusChange = async (orderId, status) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/orders/${orderId}/status`,
+        `https://rma-backend-bo4a.onrender.com/api/orders/${orderId}/status`,
         {
           method: 'PATCH',
 

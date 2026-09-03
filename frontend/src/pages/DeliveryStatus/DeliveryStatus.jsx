@@ -1,6 +1,6 @@
 import './DeliveryStatus.css';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 function DeliveryStatus() {
@@ -13,10 +13,10 @@ function DeliveryStatus() {
   const [error, setError] = useState('');
 
   // GET ORDER FROM BACKEND
-  const fetchOrder = async () => {
+  const fetchOrder = useCallback(async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/orders/${orderId}`,
+        `https://rma-backend-bo4a.onrender.com/api/orders/${orderId}`,
       );
 
       const data = await response.json();
@@ -34,12 +34,12 @@ function DeliveryStatus() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [orderId]);
 
   // FETCH ORDER WHEN PAGE LOADS
   useEffect(() => {
     fetchOrder();
-  }, [orderId]);
+  }, [fetchOrder]);
 
   // REFRESH ORDER STATUS EVERY 5 SECONDS
   useEffect(() => {
@@ -48,7 +48,7 @@ function DeliveryStatus() {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [orderId]);
+  }, [fetchOrder]);
 
   if (loading) {
     return (

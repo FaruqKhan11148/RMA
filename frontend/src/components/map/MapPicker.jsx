@@ -82,15 +82,15 @@ function MapPicker({ onLocationSelect }) {
   // SEND LOCATION TO PARENT
   // ------------------------------------
 
-  const selectPosition = (newPosition, accuracy = null) => {
-    setPosition(newPosition);
+  // const selectPosition = (newPosition, accuracy = null) => {
+  //   setPosition(newPosition);
 
-    onLocationSelect({
-      latitude: newPosition[0],
-      longitude: newPosition[1],
-      accuracy,
-    });
-  };
+  //   onLocationSelect({
+  //     latitude: newPosition[0],
+  //     longitude: newPosition[1],
+  //     accuracy,
+  //   });
+  // };
 
   const getAddressFromCoordinates = async (latitude, longitude) => {
     try {
@@ -181,9 +181,9 @@ function MapPicker({ onLocationSelect }) {
   // INITIAL LOCATION
   // ------------------------------------
 
-  useEffect(() => {
-    handleCurrentLocation();
-  }, []);
+  // useEffect(() => {
+  //   handleCurrentLocation();
+  // }, []);
 
   // ------------------------------------
   // MAP CLICK

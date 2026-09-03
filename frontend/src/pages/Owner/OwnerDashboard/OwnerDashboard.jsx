@@ -1,6 +1,6 @@
 import './OwnerDashboard.css';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function OwnerDashboard() {
@@ -12,7 +12,9 @@ function OwnerDashboard() {
 
   const ownerData = localStorage.getItem('rma_owner');
 
-  const shopOwner = ownerData ? JSON.parse(ownerData) : null;
+  const shopOwner = useMemo(() => {
+    return ownerData ? JSON.parse(ownerData) : null;
+  }, [ownerData]);
 
   useEffect(() => {
     if (!shopOwner) {
@@ -46,7 +48,7 @@ function OwnerDashboard() {
     };
 
     fetchOrders();
-  }, [shopOwner?.id, navigate]);
+  }, [shopOwner, navigate]);
 
   if (!shopOwner) {
     return null;
