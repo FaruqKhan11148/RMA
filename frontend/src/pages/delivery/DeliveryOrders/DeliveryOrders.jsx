@@ -18,6 +18,7 @@ function DeliveryOrders() {
   const [ordersLoading, setOrdersLoading] = useState(false);
 
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   // REQUEST DELIVERY LOGIN OTP
   const handleRequestOtp = async () => {
@@ -34,6 +35,7 @@ function DeliveryOrders() {
     try {
       setLoading(true);
       setError('');
+      setSuccessMessage('');
 
       const response = await fetch(
         'https://rma-backend-bo4a.onrender.com/api/delivery/request-otp',
@@ -59,7 +61,7 @@ function DeliveryOrders() {
       }
 
       console.log('Delivery login OTP:', data.otp);
-
+      setSuccessMessage(`Your OTP is: ${data.otp}`);
       setLoginStep('otp');
     } catch (error) {
       console.error('Request delivery OTP failed:', error);
@@ -221,7 +223,7 @@ function DeliveryOrders() {
     return (
       <main className="delivery_orders">
         <section className="delivery_no_orders">
-          <h1>RMA Delivery</h1>
+          <h1>RMA Deliver</h1>
 
           <p>Login to access your delivery orders.</p>
 
@@ -299,6 +301,10 @@ function DeliveryOrders() {
           >
             Back
           </button>
+
+          {successMessage && (
+            <p className="delivery_success_message">{successMessage}</p>
+          )}
 
           {error && <p className="delivery_error_message">{error}</p>}
         </section>
