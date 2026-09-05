@@ -20,43 +20,95 @@ const customerRoutes = require('./routes/customerRoutes');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+/* =========================
+   CORS
+========================= */
+
 const allowedOrigins = ['http://localhost:3000', 'https://rma-rho.vercel.app'];
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-    credentials: true,
-  }),
-);
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin
+    // Example: Postman, server-to-server requests
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    console.log('Blocked CORS origin:', origin);
+
+    return callback(new Error(`Not allowed by CORS: ${origin}`));
+  },
+
+  credentials: true,
+
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+app.use(cors(corsOptions));
+
+// Explicitly handle browser preflight requests
+app.options('*', cors(corsOptions));
+
+/* =========================
+   MIDDLEWARE
+========================= */
 
 app.use(cookieParser());
 
 app.use(express.json());
 
+/* =========================
+   ROUTES
+========================= */
+
 app.use('/api/owners', ownerRoutes);
+
 app.use('/api/orders', orderRoutes);
+
 app.use('/api/shops', shopRoutes);
+
 app.use('/api/payments', paymentRoutes);
+
 app.use('/api/delivery', deliveryRoutes);
+
 app.use('/api/admin', adminRoutes);
+
 app.use('/api/admin/owners', adminOwnerRoutes);
+
 app.use('/api/admin/customers', adminCustomerRoutes);
+
 app.use('/api/admin/orders', adminOrderRoutes);
+
 app.use('/api/admin/delivery', adminDeliveryRoutes);
+
 app.use('/api/customers', customerRoutes);
 
+/* =========================
+   HEALTH CHECK
+========================= */
+
 app.get('/', (req, res) => {
-  res.json({ message: 'RMA Backend is running' });
+  res.json({
+    message: 'RMA Backend is running',
+  });
 });
+
+/* =========================
+   DATABASE
+========================= */
 
 connectDB();
 
+/* =========================
+   SERVER
+========================= */
+
 app.listen(PORT, () => {
-  console.log(`server running on ${PORT}`);
+  console.log(`RMA server running on port ${PORT}`);
 });
