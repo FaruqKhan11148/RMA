@@ -9,7 +9,7 @@ function AdminDashboard() {
   const [admin, setAdmin] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const [stats, setStats] = useState({
+  const [stats] = useState({
     totalOwners: 0,
     totalCustomers: 0,
     totalOrders: 0,

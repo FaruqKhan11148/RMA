@@ -219,33 +219,33 @@ function AdminOrders() {
   // TIMELINE STEP
   // --------------------------------------------------
 
-  const getTimelineStep = (order) => {
-    if (order.status === 'Rejected') {
-      return 'Rejected';
-    }
+  // const getTimelineStep = (order) => {
+  //   if (order.status === 'Rejected') {
+  //     return 'Rejected';
+  //   }
 
-    if (order.completedAt) {
-      return 'Completed';
-    }
+  //   if (order.completedAt) {
+  //     return 'Completed';
+  //   }
 
-    if (order.outForDeliveryAt) {
-      return 'Out for Delivery';
-    }
+  //   if (order.outForDeliveryAt) {
+  //     return 'Out for Delivery';
+  //   }
 
-    if (order.readyAt) {
-      return 'Ready';
-    }
+  //   if (order.readyAt) {
+  //     return 'Ready';
+  //   }
 
-    if (order.preparingAt) {
-      return 'Preparing';
-    }
+  //   if (order.preparingAt) {
+  //     return 'Preparing';
+  //   }
 
-    if (order.acceptedAt) {
-      return 'Accepted';
-    }
+  //   if (order.acceptedAt) {
+  //     return 'Accepted';
+  //   }
 
-    return 'Pending';
-  };
+  //   return 'Pending';
+  // };
 
   // --------------------------------------------------
   // LOADING
