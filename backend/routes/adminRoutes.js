@@ -59,8 +59,8 @@ router.post('/login', async (req, res) => {
 
     res.cookie('admin_token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      secure: true,
+      sameSite: 'none',
       maxAge: 8 * 60 * 60 * 1000,
     });
 
@@ -100,7 +100,11 @@ router.get('/me', adminAuth, async (req, res) => {
   ADMIN LOGOUT
 */
 router.post('/logout', adminAuth, async (req, res) => {
-  res.clearCookie('admin_token');
+  res.clearCookie('admin_token', {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+  });
 
   return res.json({
     message: 'Admin logged out successfully',
