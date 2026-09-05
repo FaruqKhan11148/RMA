@@ -1,3 +1,12 @@
+/* =========================================================
+   RMA — OWNER REGISTRATION STEP 4
+   Payment & Settlement
+   ========================================================= */
+
+/* =========================================================
+   PAGE
+   ========================================================= */
+
 .owner_step4 {
   min-height: 100vh;
 
@@ -5,274 +14,394 @@
 
   box-sizing: border-box;
 
-  background: #f7f7f7;
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(22, 128, 58, 0.1),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at top right,
+      rgba(22, 128, 58, 0.06),
+      transparent 28%
+    ),
+    #f8faf8;
+
+  color: #172018;
 }
+
+/* =========================================================
+   MAIN CARD
+   ========================================================= */
 
 .owner_step4_card {
   width: 100%;
-  max-width: 700px;
+  max-width: 760px;
 
   margin: 0 auto;
-
-  padding: 35px;
+  padding: 38px;
 
   box-sizing: border-box;
 
-  background: white;
+  background: #ffffff;
 
-  border: 1px solid #ddd;
+  border: 1px solid #e3e9e4;
+  border-radius: 20px;
 
-  border-radius: 12px;
+  box-shadow:
+    0 18px 50px rgba(15, 92, 42, 0.08),
+    0 4px 14px rgba(23, 32, 24, 0.04);
 }
 
-/* HEADER */
+/* =========================================================
+   HEADER
+   ========================================================= */
 
 .owner_step4_header {
   text-align: center;
 
-  margin-bottom: 30px;
+  margin-bottom: 34px;
 }
 
 .owner_logo {
-  width: 55px;
-  height: 55px;
+  width: 58px;
+  height: 58px;
 
-  margin: 0 auto 15px;
+  margin: 0 auto 16px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  background: #222;
+  border-radius: 16px;
 
-  color: white;
+  background: linear-gradient(145deg, #16803a, #0f5c2a);
 
-  border-radius: 10px;
+  color: #ffffff;
 
   font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
 
-  font-weight: 700;
+  box-shadow: 0 8px 18px rgba(22, 128, 58, 0.2);
 }
 
 .step_number {
   margin: 0 0 8px;
 
-  color: #666;
+  color: #16803a;
 
   font-size: 11px;
+  font-weight: 800;
 
-  font-weight: 700;
-
-  letter-spacing: 1px;
+  letter-spacing: 1.4px;
 }
 
 .owner_step4_header h1 {
-  margin: 0 0 8px;
+  margin: 0 0 9px;
 
-  font-size: 27px;
+  color: #172018;
+
+  font-size: 29px;
+  line-height: 1.2;
+
+  font-weight: 800;
+  letter-spacing: -0.6px;
 }
 
 .owner_step4_header > p:last-child {
-  margin: 0;
+  max-width: 540px;
 
-  color: #666;
+  margin: 0 auto;
+
+  color: #68736b;
 
   font-size: 14px;
-
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
-/* PROGRESS */
+/* =========================================================
+   PROGRESS
+   ========================================================= */
 
 .step_progress {
   display: flex;
-
   align-items: flex-start;
 
-  margin-bottom: 35px;
+  width: 100%;
+
+  margin-bottom: 34px;
 }
 
 .progress_item {
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
 
-  min-width: 55px;
+  min-width: 62px;
 }
 
 .progress_item span {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
 
   display: flex;
-
   align-items: center;
   justify-content: center;
 
-  border: 1px solid #ccc;
+  box-sizing: border-box;
 
+  border: 1px solid #d6ded8;
   border-radius: 50%;
 
-  background: white;
-
-  color: #777;
+  background: #ffffff;
+  color: #7b857e;
 
   font-size: 12px;
+  font-weight: 700;
 
-  font-weight: 600;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .progress_item p {
-  margin: 7px 0 0;
+  margin: 8px 0 0;
 
-  color: #777;
+  color: #7b857e;
 
   font-size: 10px;
+  font-weight: 500;
+
+  white-space: nowrap;
 }
 
 .progress_item.completed span,
 .progress_item.active span {
-  border-color: #222;
+  border-color: #16803a;
 
-  background: #222;
+  background: #16803a;
+  color: #ffffff;
 
-  color: white;
+  box-shadow: 0 5px 12px rgba(22, 128, 58, 0.18);
 }
 
 .progress_item.completed p,
 .progress_item.active p {
-  color: #222;
+  color: #16803a;
 
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .progress_line {
   flex: 1;
 
-  height: 1px;
+  height: 2px;
 
   margin-top: 15px;
 
-  background: #ddd;
+  background: #e3e9e4;
+
+  border-radius: 999px;
 }
 
 .progress_line.completed,
 .progress_line.active {
-  background: #222;
+  background: #16803a;
 }
 
-/* PAYMENT SETUP */
+/* =========================================================
+   PAYMENT SETUP CARD
+   ========================================================= */
 
 .payment_setup {
-  padding: 30px 22px;
+  position: relative;
+
+  padding: 30px 24px;
 
   text-align: center;
 
-  border: 1px solid #ddd;
+  border: 1px solid #cfe5d5;
+  border-radius: 16px;
 
-  border-radius: 10px;
+  background: linear-gradient(135deg, #f4fbf6, #eaf7ee);
 
-  background: #fafafa;
+  overflow: hidden;
+}
+
+.payment_setup::before {
+  content: '';
+
+  position: absolute;
+
+  width: 180px;
+  height: 180px;
+
+  top: -100px;
+  right: -70px;
+
+  border-radius: 50%;
+
+  background: rgba(22, 128, 58, 0.06);
+}
+
+.payment_setup::after {
+  content: '';
+
+  position: absolute;
+
+  width: 120px;
+  height: 120px;
+
+  bottom: -75px;
+  left: -45px;
+
+  border-radius: 50%;
+
+  background: rgba(22, 128, 58, 0.05);
 }
 
 .payment_icon {
-  width: 55px;
-  height: 55px;
+  position: relative;
+  z-index: 1;
+
+  width: 58px;
+  height: 58px;
 
   margin: 0 auto 15px;
 
   display: flex;
-
   align-items: center;
   justify-content: center;
 
-  border-radius: 50%;
+  border-radius: 17px;
 
-  background: #222;
+  background: linear-gradient(145deg, #16803a, #0f5c2a);
 
-  color: white;
+  color: #ffffff;
 
-  font-size: 22px;
+  font-size: 23px;
+  font-weight: 800;
 
-  font-weight: 700;
+  box-shadow: 0 8px 18px rgba(22, 128, 58, 0.2);
 }
 
 .payment_setup h2 {
+  position: relative;
+  z-index: 1;
+
   margin: 0 0 8px;
 
+  color: #172018;
+
   font-size: 21px;
+  font-weight: 800;
 }
 
 .payment_setup p {
-  max-width: 480px;
+  position: relative;
+  z-index: 1;
+
+  max-width: 500px;
 
   margin: 0 auto;
 
-  color: #666;
+  color: #68736b;
 
   font-size: 13px;
-
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
-/* SETTLEMENT */
+/* =========================================================
+   SETTLEMENT SECTION
+   ========================================================= */
 
 .settlement_section {
   margin-top: 20px;
 
-  padding: 22px;
+  padding: 23px;
 
-  border: 1px solid #e1e1e1;
+  border: 1px solid #e3e9e4;
+  border-radius: 16px;
 
-  border-radius: 10px;
-
-  background: white;
+  background: #ffffff;
 }
 
 .settlement_section h2 {
   margin: 0 0 20px;
 
+  color: #172018;
+
   font-size: 18px;
+  font-weight: 750;
 }
+
+/* =========================================================
+   SETTLEMENT STEPS
+   ========================================================= */
 
 .settlement_steps {
   display: flex;
 
   flex-direction: column;
 
-  gap: 18px;
+  gap: 0;
 }
 
 .settlement_step {
-  display: flex;
+  position: relative;
 
+  display: flex;
   align-items: flex-start;
 
-  gap: 13px;
+  gap: 14px;
+
+  min-height: 70px;
+}
+
+.settlement_step:not(:last-child)::after {
+  content: '';
+
+  position: absolute;
+
+  left: 15px;
+  top: 34px;
+
+  width: 2px;
+  height: calc(100% - 15px);
+
+  background: #dce8df;
+
+  border-radius: 999px;
 }
 
 .settlement_number {
-  width: 30px;
-  height: 30px;
+  position: relative;
+  z-index: 1;
+
+  width: 31px;
+  height: 31px;
 
   flex-shrink: 0;
 
   display: flex;
-
   align-items: center;
   justify-content: center;
 
+  border: 1px solid #bcd9c5;
   border-radius: 50%;
 
-  background: #222;
-
-  color: white;
+  background: #eaf7ee;
+  color: #0f5c2a;
 
   font-size: 12px;
+  font-weight: 800;
+}
 
-  font-weight: 600;
+.settlement_step > div {
+  padding-top: 2px;
 }
 
 .settlement_step strong {
@@ -280,31 +409,64 @@
 
   margin-bottom: 4px;
 
+  color: #172018;
+
   font-size: 14px;
+  line-height: 1.35;
+
+  font-weight: 750;
 }
 
 .settlement_step p {
   margin: 0;
 
-  color: #666;
+  color: #68736b;
 
   font-size: 12px;
-
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
-/* SECURITY */
+/* =========================================================
+   SECURITY SECTION
+   ========================================================= */
 
 .security_section {
+  position: relative;
+
   margin-top: 20px;
 
-  padding: 16px;
+  padding: 16px 17px 16px 48px;
 
-  border: 1px solid #ddd;
+  box-sizing: border-box;
 
-  border-radius: 8px;
+  border: 1px solid #d7e7db;
+  border-radius: 12px;
 
-  background: #fafafa;
+  background: #f5fbf6;
+}
+
+.security_section::before {
+  content: '✓';
+
+  position: absolute;
+
+  left: 16px;
+  top: 17px;
+
+  width: 22px;
+  height: 22px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #16803a;
+  color: #ffffff;
+
+  font-size: 11px;
+  font-weight: 800;
 }
 
 .security_section strong {
@@ -312,147 +474,428 @@
 
   margin-bottom: 5px;
 
+  color: #0f5c2a;
+
   font-size: 13px;
+  font-weight: 750;
 }
 
 .security_section p {
   margin: 0;
 
-  color: #666;
+  color: #68736b;
 
   font-size: 12px;
-
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
-/* ERROR */
+/* =========================================================
+   ERROR
+   ========================================================= */
 
 .owner_step4_error {
   margin: 20px 0 0;
 
-  padding: 11px 13px;
+  padding: 12px 14px;
 
-  border: 1px solid #f0bcbc;
+  box-sizing: border-box;
 
-  border-radius: 7px;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
 
-  background: #fff3f3;
-
-  color: #c00;
+  background: #fff7f7;
+  color: #dc2626;
 
   font-size: 13px;
+  line-height: 1.45;
 }
 
-/* ACTIONS */
+/* =========================================================
+   ACTIONS
+   ========================================================= */
 
 .owner_step4_actions {
   display: flex;
 
-  gap: 10px;
+  gap: 11px;
 
   margin-top: 25px;
 }
 
 .step_back_button,
 .step_continue_button {
-  height: 46px;
+  height: 48px;
 
-  border-radius: 8px;
+  border-radius: 10px;
+
+  font-family: inherit;
 
   font-size: 14px;
-
-  font-weight: 600;
+  font-weight: 700;
 
   cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
 }
+
+/* =========================================================
+   BACK
+   ========================================================= */
 
 .step_back_button {
   width: 30%;
 
-  border: 1px solid #ddd;
+  border: 1px solid #d8e1da;
 
-  background: white;
-
-  color: #222;
+  background: #ffffff;
+  color: #344238;
 }
+
+.step_back_button:hover:not(:disabled) {
+  border-color: #bdc9c1;
+
+  background: #f5f8f6;
+}
+
+.step_back_button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+/* =========================================================
+   CONTINUE
+   ========================================================= */
 
 .step_continue_button {
   width: 70%;
 
   border: none;
 
-  background: #222;
+  background: linear-gradient(135deg, #16803a, #0f6c30);
 
-  color: white;
+  color: #ffffff;
+
+  box-shadow: 0 7px 16px rgba(22, 128, 58, 0.18);
 }
 
-.step_back_button:hover {
-  background: #f5f5f5;
+.step_continue_button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0f6c30, #0f5c2a);
+
+  box-shadow: 0 9px 20px rgba(15, 92, 42, 0.22);
 }
 
-.step_continue_button:hover {
-  background: #444;
+.step_continue_button:active:not(:disabled) {
+  transform: scale(0.98);
 }
+
+/* =========================================================
+   DISABLED / LOADING
+   ========================================================= */
 
 .step_back_button:disabled,
 .step_continue_button:disabled {
-  opacity: 0.6;
+  opacity: 0.58;
 
   cursor: not-allowed;
+
+  box-shadow: none;
 }
 
-/* MOBILE */
+/* =========================================================
+   FOCUS
+   ========================================================= */
+
+.step_back_button:focus-visible,
+.step_continue_button:focus-visible {
+  outline: 3px solid rgba(22, 128, 58, 0.2);
+
+  outline-offset: 2px;
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 700px) {
+  .owner_step4_card {
+    max-width: 650px;
+
+    padding: 30px 23px;
+  }
+
+  .settlement_section {
+    padding: 21px;
+  }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
 
 @media (max-width: 480px) {
   .owner_step4 {
-    padding: 20px 10px 50px;
+    padding: 16px 9px 50px;
   }
 
   .owner_step4_card {
-    padding: 25px 15px;
+    padding: 24px 13px;
 
-    border-radius: 9px;
+    border-radius: 16px;
+
+    box-shadow: 0 10px 28px rgba(15, 92, 42, 0.07);
+  }
+
+  /* HEADER */
+
+  .owner_step4_header {
+    margin-bottom: 26px;
+  }
+
+  .owner_logo {
+    width: 50px;
+    height: 50px;
+
+    margin-bottom: 12px;
+
+    border-radius: 14px;
+
+    font-size: 16px;
+  }
+
+  .step_number {
+    font-size: 10px;
+
+    letter-spacing: 1.2px;
   }
 
   .owner_step4_header h1 {
     font-size: 23px;
+
+    letter-spacing: -0.4px;
   }
 
   .owner_step4_header > p:last-child {
-    font-size: 13px;
+    font-size: 12px;
+
+    line-height: 1.5;
   }
 
+  /* PROGRESS */
+
   .step_progress {
-    margin-bottom: 25px;
+    margin-bottom: 27px;
   }
 
   .progress_item {
-    min-width: 45px;
+    min-width: 42px;
   }
 
   .progress_item span {
     width: 27px;
     height: 27px;
+
+    font-size: 10px;
+  }
+
+  .progress_item p {
+    margin-top: 6px;
+
+    font-size: 8.5px;
   }
 
   .progress_line {
-    margin-top: 13px;
+    margin-top: 12px;
   }
 
-  .settlement_section {
-    padding: 17px;
-  }
+  /* PAYMENT */
 
   .payment_setup {
-    padding: 25px 17px;
+    padding: 24px 15px;
+
+    border-radius: 13px;
   }
+
+  .payment_icon {
+    width: 51px;
+    height: 51px;
+
+    margin-bottom: 13px;
+
+    border-radius: 14px;
+
+    font-size: 21px;
+  }
+
+  .payment_setup h2 {
+    font-size: 19px;
+  }
+
+  .payment_setup p {
+    font-size: 11.5px;
+
+    line-height: 1.55;
+  }
+
+  /* SETTLEMENT */
+
+  .settlement_section {
+    margin-top: 15px;
+
+    padding: 16px;
+
+    border-radius: 13px;
+  }
+
+  .settlement_section h2 {
+    margin-bottom: 17px;
+
+    font-size: 16px;
+  }
+
+  .settlement_step {
+    gap: 11px;
+
+    min-height: 68px;
+  }
+
+  .settlement_step:not(:last-child)::after {
+    left: 14px;
+
+    top: 32px;
+  }
+
+  .settlement_number {
+    width: 29px;
+    height: 29px;
+
+    font-size: 11px;
+  }
+
+  .settlement_step strong {
+    margin-bottom: 3px;
+
+    font-size: 12px;
+  }
+
+  .settlement_step p {
+    font-size: 10.5px;
+
+    line-height: 1.45;
+  }
+
+  /* SECURITY */
+
+  .security_section {
+    margin-top: 15px;
+
+    padding: 13px 13px 13px 42px;
+
+    border-radius: 10px;
+  }
+
+  .security_section::before {
+    left: 12px;
+    top: 14px;
+
+    width: 20px;
+    height: 20px;
+
+    font-size: 10px;
+  }
+
+  .security_section strong {
+    font-size: 11px;
+  }
+
+  .security_section p {
+    font-size: 10.5px;
+
+    line-height: 1.45;
+  }
+
+  /* ERROR */
+
+  .owner_step4_error {
+    margin-top: 15px;
+
+    padding: 10px 11px;
+
+    border-radius: 8px;
+
+    font-size: 11px;
+  }
+
+  /* ACTIONS */
 
   .owner_step4_actions {
     flex-direction: column;
+
+    gap: 8px;
+
+    margin-top: 20px;
   }
 
   .step_back_button,
   .step_continue_button {
     width: 100%;
+
+    height: 45px;
+
+    border-radius: 9px;
+
+    font-size: 13px;
+  }
+}
+
+/* =========================================================
+   VERY SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 360px) {
+  .owner_step4 {
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+
+  .owner_step4_card {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .progress_item {
+    min-width: 37px;
+  }
+
+  .progress_item p {
+    font-size: 8px;
+  }
+
+  .payment_setup {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .settlement_section {
+    padding: 14px;
+  }
+
+  .settlement_step p {
+    font-size: 10px;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .step_back_button,
+  .step_continue_button,
+  .progress_item span {
+    transition: none;
   }
 }

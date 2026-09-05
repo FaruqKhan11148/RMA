@@ -224,12 +224,12 @@ function Payment() {
         {loading ? 'Loading Payment...' : `Pay ₹${order.totalPrice}`}
       </button>
 
-      <button
+      {/* <button
         className="back_button"
         onClick={() => navigate(`/delivery-status/${order.orderId}`)}
       >
         Pay Later
-      </button>
+      </button> */}
     </main>
   );
 }

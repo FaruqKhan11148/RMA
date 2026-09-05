@@ -13,7 +13,7 @@ router.post('/register', async (req, res) => {
   try {
     const { shopId, name, phone } = req.body;
 
-    // VALIDATION
+    // VALIDATION 
 
     if (!shopId || !name || !phone) {
       return res.status(400).json({

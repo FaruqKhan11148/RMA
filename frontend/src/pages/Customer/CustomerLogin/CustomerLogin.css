@@ -1,0 +1,260 @@
+.customer_login {
+  min-height: calc(100vh - 60px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--rma-space-6) var(--rma-mobile-padding);
+  background:
+    radial-gradient(
+      circle at top right,
+      var(--rma-primary-light),
+      transparent 40%
+    ),
+    var(--rma-bg);
+}
+
+.customer_login_card {
+  width: 100%;
+  max-width: 440px;
+  padding: var(--rma-space-8);
+  background: var(--rma-card);
+  border: 1px solid var(--rma-border);
+  border-radius: var(--rma-radius-2xl);
+  box-shadow: var(--rma-shadow-lg);
+}
+
+.customer_login_brand {
+  text-align: center;
+  margin-bottom: var(--rma-space-8);
+}
+
+.customer_login_logo {
+  width: 58px;
+  height: 58px;
+  margin: 0 auto var(--rma-space-5);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+
+  border-radius: var(--rma-radius-lg);
+
+  font-size: var(--rma-font-lg);
+  font-weight: var(--rma-weight-extrabold);
+  letter-spacing: -0.5px;
+
+  box-shadow: var(--rma-shadow-md);
+}
+
+.customer_login_brand h1 {
+  margin: 0 0 var(--rma-space-2);
+
+  color: var(--rma-text);
+  font-size: var(--rma-font-3xl);
+  font-weight: var(--rma-weight-bold);
+  letter-spacing: -0.5px;
+}
+
+.customer_login_brand p {
+  margin: 0;
+
+  color: var(--rma-text-secondary);
+  font-size: var(--rma-font-sm);
+  line-height: 1.6;
+}
+
+.customer_login_form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rma-space-5);
+}
+
+.customer_login_form label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rma-space-2);
+
+  color: var(--rma-text-primary);
+  font-size: var(--rma-font-sm);
+  font-weight: var(--rma-weight-semibold);
+}
+
+.customer_login_form input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 var(--rma-space-4);
+
+  border: 1px solid var(--rma-border-dark);
+  border-radius: var(--rma-radius-md);
+
+  background: var(--rma-card);
+  color: var(--rma-text);
+
+  font-family: inherit;
+  font-size: var(--rma-font-md);
+
+  outline: none;
+  transition:
+    border-color var(--rma-transition-fast),
+    box-shadow var(--rma-transition-fast);
+}
+
+.customer_login_form input::placeholder {
+  color: var(--rma-text-muted);
+}
+
+.customer_login_form input:focus {
+  border-color: var(--rma-primary);
+
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.12);
+}
+
+.customer_login_error {
+  margin: 0;
+  padding: var(--rma-space-3) var(--rma-space-4);
+
+  border: 1px solid var(--rma-danger);
+  border-radius: var(--rma-radius-sm);
+
+  background: var(--rma-danger-light);
+  color: var(--rma-danger);
+
+  font-size: var(--rma-font-sm);
+  line-height: 1.5;
+}
+
+.customer_login_button {
+  width: 100%;
+  min-height: 50px;
+
+  border: none;
+  border-radius: var(--rma-radius-md);
+
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+
+  font-family: inherit;
+  font-size: var(--rma-font-md);
+  font-weight: var(--rma-weight-semibold);
+
+  cursor: pointer;
+
+  transition:
+    background var(--rma-transition-fast),
+    transform var(--rma-transition-fast),
+    box-shadow var(--rma-transition-fast);
+}
+
+.customer_login_button:hover:not(:disabled) {
+  background: var(--rma-primary-dark);
+  box-shadow: var(--rma-shadow-sm);
+}
+
+.customer_login_button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.customer_login_button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.customer_login_signup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--rma-space-2);
+
+  margin-top: var(--rma-space-6);
+
+  font-size: var(--rma-font-sm);
+  color: var(--rma-text-secondary);
+}
+
+.customer_login_signup button {
+  padding: 0;
+
+  border: none;
+  background: transparent;
+
+  color: var(--rma-primary);
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: var(--rma-weight-semibold);
+
+  cursor: pointer;
+}
+
+.customer_login_signup button:hover {
+  color: var(--rma-primary-dark);
+  text-decoration: underline;
+}
+
+.customer_login_guest {
+  width: 100%;
+  margin-top: var(--rma-space-5);
+  padding: var(--rma-space-3);
+
+  border: 1px solid var(--rma-border);
+  border-radius: var(--rma-radius-md);
+
+  background: var(--rma-bg);
+  color: var(--rma-text-primary);
+
+  font-family: inherit;
+  font-size: var(--rma-font-sm);
+  font-weight: var(--rma-weight-medium);
+
+  cursor: pointer;
+
+  transition:
+    background var(--rma-transition-fast),
+    border-color var(--rma-transition-fast);
+}
+
+.customer_login_guest:hover {
+  background: var(--rma-primary-soft);
+  border-color: var(--rma-primary);
+}
+
+@media (min-width: 768px) {
+  .customer_login {
+    min-height: calc(100vh - 64px);
+    padding: var(--rma-space-10) var(--rma-tablet-padding);
+  }
+
+  .customer_login_card {
+    padding: var(--rma-space-10);
+  }
+}
+
+@media (max-width: 380px) {
+  .customer_login {
+    padding: var(--rma-space-4) var(--rma-mobile-padding);
+  }
+
+  .customer_login_card {
+    padding: var(--rma-space-6) var(--rma-space-5);
+    border-radius: var(--rma-radius-xl);
+  }
+
+  .customer_login_brand h1 {
+    font-size: var(--rma-font-2xl);
+  }
+
+  .customer_login_signup {
+    flex-direction: column;
+    gap: var(--rma-space-1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .customer_login_button,
+  .customer_login_form input,
+  .customer_login_guest {
+    transition: none;
+  }
+}

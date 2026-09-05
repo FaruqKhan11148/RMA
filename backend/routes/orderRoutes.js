@@ -1,8 +1,10 @@
 const express = require('express');
 
+const jwt = require('jsonwebtoken');
 const Order = require('../models/Order');
 const Owner = require('../models/Owner');
-
+const customerAuth = require('../middleware/customerAuth');
+const Customer = require('../models/Customer');
 const router = express.Router();
 
 // GET ALL ORDERS
@@ -130,8 +132,33 @@ router.post('/', async (req, res) => {
       });
     }
 
+    // ==========================================
+    // IDENTIFY LOGGED-IN CUSTOMER
+    // ==========================================
+
+    let customerId = null;
+
+    try {
+      const token = req.cookies?.customer_token;
+
+      if (token) {
+        const decoded = jwt.verify(token, process.env.CUSTOMER_JWT_SECRET);
+
+        const loggedInCustomer = await Customer.findById(decoded.customerId);
+
+        if (loggedInCustomer && loggedInCustomer.isActive) {
+          customerId = loggedInCustomer._id;
+        }
+      }
+    } catch (error) {
+      // Invalid/expired customer session should NOT
+      // prevent guest checkout.
+      console.log('No valid customer session. Creating guest order.');
+    }
+
     console.log('ORDER DATA BEFORE MONGODB:', {
       ownerId,
+      customerId,
       customer,
       orderType,
       deliveryLocation,
@@ -143,6 +170,11 @@ router.post('/', async (req, res) => {
 
     const order = await Order.create({
       orderId: `RMA${Date.now()}`,
+
+      // Registered customer gets their Customer._id.
+      // Guest customer gets null.
+      customerId,
+
       ownerId,
       customer,
       orderType,
@@ -169,8 +201,10 @@ router.post('/', async (req, res) => {
   }
 });
 
+// ==========================================
 // UPDATE ORDER STATUS
-// UPDATE ORDER STATUS
+// ==========================================
+
 router.patch('/:orderId/status', async (req, res) => {
   try {
     const { orderId } = req.params;
@@ -200,13 +234,39 @@ router.patch('/:orderId/status', async (req, res) => {
       });
     }
 
-    // Generate OTP when order goes OUT FOR DELIVERY
+    // ==========================================
+    // RECORD STATUS TIMESTAMP
+    // ==========================================
+
+    if (status === 'Accepted' && order.status !== 'Accepted') {
+      order.acceptedAt = new Date();
+    }
+
+    if (status === 'Preparing' && order.status !== 'Preparing') {
+      order.preparingAt = new Date();
+    }
+
+    if (status === 'Ready' && order.status !== 'Ready') {
+      order.readyAt = new Date();
+    }
+
     if (status === 'OutForDelivery' && order.status !== 'OutForDelivery') {
+      order.outForDeliveryAt = new Date();
+
+      // Generate delivery OTP
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
       order.deliveryOtp = otp;
       order.deliveryOtpGeneratedAt = new Date();
       order.otpVerified = false;
+    }
+
+    if (status === 'Completed' && order.status !== 'Completed') {
+      order.completedAt = new Date();
+    }
+
+    if (status === 'Rejected' && order.status !== 'Rejected') {
+      order.rejectedAt = new Date();
     }
 
     order.status = status;
@@ -215,14 +275,14 @@ router.patch('/:orderId/status', async (req, res) => {
 
     await order.populate('ownerId', 'ownerName shopName phone');
 
-    res.status(200).json({
+    return res.status(200).json({
       message: 'Order status updated successfully',
       order,
     });
   } catch (error) {
     console.error('Update order status failed:', error.message);
 
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Server error',
     });
   }
@@ -270,8 +330,10 @@ router.post('/:orderId/verify-otp', async (req, res) => {
     }
 
     // OTP is correct
+    // OTP is correct
     order.otpVerified = true;
     order.status = 'Completed';
+    order.completedAt = new Date();
 
     await order.save();
 

@@ -33,6 +33,12 @@ const orderSchema = new mongoose.Schema(
       unique: true,
     },
 
+    customerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Customer',
+      default: null,
+    },
+
     ownerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Owner',
@@ -116,6 +122,40 @@ const orderSchema = new mongoose.Schema(
         'Rejected',
       ],
       default: 'Pending',
+    },
+
+    // =========================
+    // ORDER TIMELINE
+    // =========================
+
+    acceptedAt: {
+      type: Date,
+      default: null,
+    },
+
+    preparingAt: {
+      type: Date,
+      default: null,
+    },
+
+    readyAt: {
+      type: Date,
+      default: null,
+    },
+
+    outForDeliveryAt: {
+      type: Date,
+      default: null,
+    },
+
+    completedAt: {
+      type: Date,
+      default: null,
+    },
+
+    rejectedAt: {
+      type: Date,
+      default: null,
     },
 
     // =========================

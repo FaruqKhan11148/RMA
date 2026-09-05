@@ -1,0 +1,388 @@
+/* ========================================
+   RMA GLOBAL DESIGN SYSTEM
+======================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+
+  background: var(--rma-bg);
+  color: var(--rma-text);
+
+  font-family: var(--rma-font-family);
+  font-size: var(--rma-font-md);
+  line-height: 1.5;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ========================================
+   ROOT
+======================================== */
+
+#root {
+  min-height: 100vh;
+}
+
+/* ========================================
+   TEXT SELECTION
+======================================== */
+
+::selection {
+  background: var(--rma-primary-light);
+  color: var(--rma-primary-dark);
+}
+
+/* ========================================
+   SCROLLBAR
+======================================== */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5ce;
+  border-radius: var(--rma-radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #aeb9b1;
+}
+
+/* ========================================
+   COMMON CONTAINER
+======================================== */
+
+.rma-container {
+  width: 100%;
+  max-width: var(--rma-max-width);
+  margin: 0 auto;
+  padding-left: var(--rma-desktop-padding);
+  padding-right: var(--rma-desktop-padding);
+}
+
+/* ========================================
+   COMMON BUTTONS
+======================================== */
+
+.rma-btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+
+  min-height: 44px;
+  padding: 0 18px;
+
+  border: none;
+  border-radius: var(--rma-radius-md);
+
+  font-size: var(--rma-font-sm);
+  font-weight: var(--rma-weight-semibold);
+
+  transition:
+    transform var(--rma-transition-fast),
+    background var(--rma-transition-normal),
+    box-shadow var(--rma-transition-normal),
+    opacity var(--rma-transition-normal);
+}
+
+.rma-btn:hover {
+  transform: translateY(-1px);
+}
+
+.rma-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.rma-btn-primary {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+  box-shadow: var(--rma-shadow-xs);
+}
+
+.rma-btn-primary:hover {
+  background: var(--rma-primary-dark);
+  box-shadow: var(--rma-shadow-sm);
+}
+
+.rma-btn-secondary {
+  background: var(--rma-primary-light);
+  color: var(--rma-primary-dark);
+}
+
+.rma-btn-secondary:hover {
+  background: #dff1e5;
+}
+
+.rma-btn-accent {
+  background: var(--rma-accent);
+  color: #ffffff;
+}
+
+.rma-btn-accent:hover {
+  background: var(--rma-accent-dark);
+}
+
+.rma-btn-outline {
+  background: transparent;
+  border: 1px solid var(--rma-border-dark);
+  color: var(--rma-text-primary);
+}
+
+.rma-btn-outline:hover {
+  border-color: var(--rma-primary);
+  color: var(--rma-primary);
+}
+
+.rma-btn-danger {
+  background: var(--rma-danger);
+  color: #ffffff;
+}
+
+.rma-btn:disabled {
+  opacity: 0.55;
+  transform: none;
+}
+
+/* ========================================
+   COMMON INPUTS
+======================================== */
+
+.rma-input,
+.rma-select,
+.rma-textarea {
+  width: 100%;
+
+  border: 1px solid var(--rma-border);
+  border-radius: var(--rma-radius-md);
+
+  background: var(--rma-card);
+  color: var(--rma-text-primary);
+
+  outline: none;
+
+  transition:
+    border-color var(--rma-transition-normal),
+    box-shadow var(--rma-transition-normal);
+}
+
+.rma-input,
+.rma-select {
+  height: 46px;
+  padding: 0 14px;
+}
+
+.rma-textarea {
+  min-height: 110px;
+  padding: 12px 14px;
+  resize: vertical;
+}
+
+.rma-input::placeholder,
+.rma-textarea::placeholder {
+  color: var(--rma-text-muted);
+}
+
+.rma-input:focus,
+.rma-select:focus,
+.rma-textarea:focus {
+  border-color: var(--rma-primary);
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.1);
+}
+
+/* ========================================
+   COMMON CARD
+======================================== */
+
+.rma-card {
+  background: var(--rma-card);
+  border: 1px solid var(--rma-border);
+  border-radius: var(--rma-radius-lg);
+  box-shadow: var(--rma-shadow-xs);
+}
+
+.rma-card-interactive {
+  transition:
+    transform var(--rma-transition-normal),
+    box-shadow var(--rma-transition-normal),
+    border-color var(--rma-transition-normal);
+}
+
+.rma-card-interactive:hover {
+  transform: translateY(-2px);
+  border-color: #d5dfd8;
+  box-shadow: var(--rma-shadow-md);
+}
+
+/* ========================================
+   COMMON BADGES
+======================================== */
+
+.rma-badge {
+  display: inline-flex;
+  align-items: center;
+
+  min-height: 26px;
+  padding: 0 9px;
+
+  border-radius: var(--rma-radius-full);
+
+  font-size: var(--rma-font-xs);
+  font-weight: var(--rma-weight-semibold);
+}
+
+.rma-badge-success {
+  background: var(--rma-success-light);
+  color: #15803d;
+}
+
+.rma-badge-warning {
+  background: var(--rma-warning-light);
+  color: #b45309;
+}
+
+.rma-badge-danger {
+  background: var(--rma-danger-light);
+  color: #b91c1c;
+}
+
+.rma-badge-info {
+  background: var(--rma-info-light);
+  color: #1d4ed8;
+}
+
+/* ========================================
+   COMMON SECTION
+======================================== */
+
+.rma-section {
+  padding-top: 32px;
+  padding-bottom: 32px;
+}
+
+.rma-section-title {
+  margin: 0 0 6px;
+
+  color: var(--rma-text);
+  font-size: var(--rma-font-2xl);
+  font-weight: var(--rma-weight-bold);
+  line-height: 1.25;
+}
+
+.rma-section-subtitle {
+  margin: 0;
+
+  color: var(--rma-text-secondary);
+  font-size: var(--rma-font-sm);
+}
+
+/* ========================================
+   ACCESSIBILITY
+======================================== */
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 3px solid rgba(22, 128, 58, 0.25);
+  outline-offset: 2px;
+}
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media (max-width: 768px) {
+  .rma-container {
+    padding-left: var(--rma-tablet-padding);
+    padding-right: var(--rma-tablet-padding);
+  }
+
+  .rma-section {
+    padding-top: 24px;
+    padding-bottom: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .rma-container {
+    padding-left: var(--rma-mobile-padding);
+    padding-right: var(--rma-mobile-padding);
+  }
+
+  .rma-section-title {
+    font-size: var(--rma-font-xl);
+  }
+
+  .rma-btn {
+    min-height: 46px;
+  }
+}
+
+/* ========================================
+   REDUCE MOTION
+======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -4,11 +4,13 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import productCatalogue from '../../../data/productCatalogue';
+import MapPicker from '../../../components/map/MapPicker';
 
 function OwnerStep3() {
   const navigate = useNavigate();
 
   const [products, setProducts] = useState([]);
+  const [shopLocation, setShopLocation] = useState(null);
 
   const [selectedCategory, setSelectedCategory] = useState(null);
 
@@ -139,6 +141,11 @@ function OwnerStep3() {
       return;
     }
 
+    if (!shopLocation) {
+      setError('Please select your shop location.');
+      return;
+    }
+
     const savedData = sessionStorage.getItem('rma_owner_registration');
 
     if (!savedData) {
@@ -151,6 +158,10 @@ function OwnerStep3() {
     const updatedOwnerData = {
       ...ownerData,
       products,
+      location: {
+        latitude: shopLocation.latitude,
+        longitude: shopLocation.longitude,
+      },
     };
 
     sessionStorage.setItem(
@@ -214,6 +225,42 @@ function OwnerStep3() {
         {/* FORM */}
 
         <form className="owner_step_form" onSubmit={handleContinue}>
+          {/* SHOP LOCATION */}
+
+          <section className="register_section shop_location_section">
+            <h2>Shop Location</h2>
+
+            <p className="section_description">
+              Select the exact location of your shop on the map. This location
+              will be used for delivery routing.
+            </p>
+
+            <MapPicker
+              onLocationSelect={(location) => {
+                setShopLocation(location);
+              }}
+            />
+
+            {!shopLocation && (
+              <p className="location_required">
+                Please select your shop location before continuing.
+              </p>
+            )}
+
+            {shopLocation && (
+              <div className="shop_location_confirmation">
+                <strong>Shop location selected</strong>
+
+                <span>{shopLocation.address || 'Location selected'}</span>
+
+                <small>
+                  {shopLocation.latitude.toFixed(6)},{' '}
+                  {shopLocation.longitude.toFixed(6)}
+                </small>
+              </div>
+            )}
+          </section>
+
           {/* RMA CATALOGUE */}
 
           <section className="register_section">

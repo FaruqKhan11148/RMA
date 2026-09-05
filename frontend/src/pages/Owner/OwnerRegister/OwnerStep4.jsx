@@ -34,37 +34,39 @@ function OwnerStep4() {
       setLoading(true);
       setError('');
 
-      /*
-       * IMPORTANT:
-       *
-       * For now this is only the frontend flow.
-       *
-       * Later we will call our backend:
-       *
-       * POST /api/payments/onboard-owner
-       *
-       * The backend will create/manage the Razorpay
-       * linked account/onboarding process.
-       */
-
-      console.log('Owner onboarding data:', ownerData);
-
-      // TEMPORARY
-      setTimeout(() => {
-        setLoading(false);
-
-        navigate('/owner/shop-created', {
-          state: {
-            owner: ownerData,
-            paymentStatus: 'PENDING',
+      const response = await fetch(
+        'https://rma-backend-bo4a.onrender.com/api/owners/register',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
           },
-        });
-      }, 1000);
+          body: JSON.stringify(ownerData),
+        },
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Owner registration failed');
+      }
+
+      console.log('Owner registered successfully:', data);
+
+      // Registration is complete, so remove temporary registration data.
+      sessionStorage.removeItem('rma_owner_registration');
+
+      navigate('/owner/shop-created', {
+        state: {
+          owner: data.owner,
+          paymentStatus: 'PENDING',
+        },
+      });
     } catch (error) {
-      console.error('Payment onboarding failed:', error);
+      console.error('Owner registration failed:', error);
 
-      setError('Unable to start payment account setup.');
-
+      setError(error.message || 'Unable to complete registration.');
+    } finally {
       setLoading(false);
     }
   };

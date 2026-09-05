@@ -1,74 +1,128 @@
+/* =========================================================
+   RMA HOME
+   Mobile-first marketplace design
+   ========================================================= */
+
 .home {
   width: 100%;
-  min-height: calc(100vh - 120px);
+  min-height: calc(100vh - 60px);
 
-  padding: 25px 16px 90px 15px;
+  padding: 84px 16px 100px;
 
   box-sizing: border-box;
+
+  background: var(--rma-bg);
 }
 
-/* =========================
+/* =========================================================
    HEADER
-========================= */
+   ========================================================= */
 
 .home_header {
-  margin-bottom: 30px;
+  margin-bottom: 28px;
 }
 
 .home_greeting {
-  font-size: 14px;
+  margin: 0 0 7px;
 
-  margin-bottom: 6px;
+  color: var(--rma-primary);
+
+  font-size: 13px;
+  font-weight: var(--rma-weight-semibold);
+
+  letter-spacing: 0.2px;
 }
 
 .home_header h1 {
-  font-size: 28px;
-  line-height: 1.2;
+  margin: 0 0 9px;
 
-  margin-bottom: 10px;
+  color: var(--rma-text);
+
+  font-size: 28px;
+  line-height: 1.18;
+  font-weight: var(--rma-weight-extrabold);
+
+  letter-spacing: -0.7px;
 }
 
 .home_header > p:last-child {
-  font-size: 15px;
-  line-height: 1.5;
+  max-width: 360px;
+
+  margin: 0;
+
+  color: var(--rma-text-secondary);
+
+  font-size: 14px;
+  line-height: 1.55;
 }
 
-/* =========================
+/* =========================================================
    ACTIONS
-========================= */
+   ========================================================= */
 
 .home_actions {
   display: flex;
   flex-direction: column;
+  gap: 11px;
 
-  gap: 12px;
-
-  margin-bottom: 35px;
+  margin-bottom: 34px;
 }
 
-/* QR CARD */
+/* =========================================================
+   QR ACTION
+   ========================================================= */
 
 .qr_action {
   width: 100%;
 
   display: flex;
   align-items: center;
+  gap: 15px;
 
-  gap: 16px;
+  padding: 18px;
 
-  padding: 20px;
+  border: 1px solid #c9e6d1;
+  border-radius: var(--rma-radius-lg);
+
+  background: linear-gradient(
+    135deg,
+    var(--rma-primary-light),
+    var(--rma-primary-soft)
+  );
+
+  color: var(--rma-text);
 
   text-align: left;
 
-  border: none;
-  border-radius: 14px;
+  box-sizing: border-box;
 
   cursor: pointer;
+
+  box-shadow: var(--rma-shadow-sm);
+
+  transition:
+    transform var(--rma-transition-fast),
+    box-shadow var(--rma-transition-normal),
+    border-color var(--rma-transition-normal);
 }
 
+.qr_action:hover {
+  border-color: #a9d5b5;
+
+  box-shadow: var(--rma-shadow-md);
+
+  transform: translateY(-1px);
+}
+
+.qr_action:active {
+  transform: scale(0.985);
+}
+
+/* QR ICON */
+
 .action_icon {
-  width: 58px;
-  height: 58px;
+  width: 56px;
+  height: 56px;
 
   display: flex;
   align-items: center;
@@ -76,25 +130,48 @@
 
   flex-shrink: 0;
 
-  border: 1px solid black;
-  border-radius: 10px;
+  border: 1px solid #b8d9c1;
+  border-radius: 14px;
+
+  background: var(--rma-card);
+
+  color: var(--rma-primary-dark);
 
   font-size: 12px;
-  font-weight: bold;
+  font-weight: var(--rma-weight-extrabold);
+
+  box-shadow: var(--rma-shadow-xs);
+}
+
+/* QR CONTENT */
+
+.action_content {
+  min-width: 0;
 }
 
 .action_content h2 {
-  font-size: 18px;
+  margin: 0 0 4px;
 
-  margin-bottom: 5px;
+  color: var(--rma-text);
+
+  font-size: 17px;
+  line-height: 1.25;
+
+  font-weight: var(--rma-weight-bold);
 }
 
 .action_content p {
-  font-size: 13px;
-  line-height: 1.4;
+  margin: 0;
+
+  color: var(--rma-text-secondary);
+
+  font-size: 12px;
+  line-height: 1.45;
 }
 
-/* FIND SHOP */
+/* =========================================================
+   FIND SHOP
+   ========================================================= */
 
 .find_action {
   width: 100%;
@@ -102,30 +179,63 @@
 
   display: flex;
   align-items: center;
-
   gap: 12px;
 
-  padding: 0 18px;
+  padding: 0 17px;
 
-  border: 1px solid #ddd;
-  border-radius: 10px;
+  border: 1px solid var(--rma-border);
+  border-radius: var(--rma-radius-md);
 
-  background: white;
+  background: var(--rma-card);
+  color: var(--rma-text-primary);
 
-  font-size: 16px;
+  font-size: 14px;
+  font-weight: var(--rma-weight-semibold);
+
+  text-align: left;
+
+  box-sizing: border-box;
 
   cursor: pointer;
 
-  text-align: left;
+  box-shadow: var(--rma-shadow-xs);
+
+  transition:
+    background var(--rma-transition-normal),
+    border-color var(--rma-transition-normal),
+    box-shadow var(--rma-transition-normal),
+    transform var(--rma-transition-fast);
+}
+
+.find_action:hover {
+  background: var(--rma-primary-soft);
+  border-color: #b9dfc4;
+
+  box-shadow: var(--rma-shadow-sm);
+}
+
+.find_action:active {
+  transform: scale(0.985);
 }
 
 .find_icon {
-  font-size: 18px;
+  width: 30px;
+  height: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 9px;
+
+  background: var(--rma-primary-light);
+
+  font-size: 15px;
 }
 
-/* =========================
+/* =========================================================
    MY SHOPS
-========================= */
+   ========================================================= */
 
 .my_shops {
   width: 100%;
@@ -136,24 +246,84 @@
   align-items: center;
   justify-content: space-between;
 
-  margin-bottom: 15px;
+  margin-bottom: 13px;
 }
 
 .section_title h2 {
-  font-size: 20px;
+  margin: 0;
+
+  color: var(--rma-text);
+
+  font-size: 19px;
+  font-weight: var(--rma-weight-bold);
+
+  letter-spacing: -0.3px;
 }
 
 .section_title button {
-  border: none;
+  padding: 4px 0;
 
+  border: none;
   background: transparent;
 
-  font-size: 13px;
+  color: var(--rma-primary);
+
+  font-size: 12px;
+  font-weight: var(--rma-weight-semibold);
 
   cursor: pointer;
 }
 
-/* SHOP CARD */
+.section_title button:hover {
+  color: var(--rma-primary-dark);
+}
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.shop_loading {
+  width: 100%;
+
+  padding: 22px 16px;
+
+  border: 1px solid var(--rma-border-light);
+  border-radius: var(--rma-radius-md);
+
+  background: var(--rma-card);
+
+  color: var(--rma-text-secondary);
+
+  font-size: 13px;
+
+  text-align: center;
+
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+.shop_error {
+  width: 100%;
+
+  padding: 14px 15px;
+
+  border: 1px solid #fecaca;
+  border-radius: var(--rma-radius-md);
+
+  background: var(--rma-danger-light);
+  color: var(--rma-danger);
+
+  font-size: 13px;
+
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   SHOP CARD
+   ========================================================= */
 
 .shop_card {
   width: 100%;
@@ -162,43 +332,209 @@
   align-items: center;
   justify-content: space-between;
 
-  gap: 15px;
+  gap: 13px;
 
-  padding: 18px;
+  padding: 17px;
+
+  border: 1px solid var(--rma-border);
+  border-radius: var(--rma-radius-lg);
+
+  background: var(--rma-card);
 
   box-sizing: border-box;
 
-  border: 1px solid #ddd;
-  border-radius: 12px;
+  box-shadow: var(--rma-shadow-sm);
+
+  transition:
+    transform var(--rma-transition-fast),
+    box-shadow var(--rma-transition-normal),
+    border-color var(--rma-transition-normal);
 }
+
+.shop_card:hover {
+  border-color: var(--rma-border-dark);
+
+  box-shadow: var(--rma-shadow-md);
+
+  transform: translateY(-1px);
+}
+
+/* SHOP INFO */
 
 .shop_card_info {
   min-width: 0;
+  flex: 1;
 }
 
 .shop_card_info h3 {
-  font-size: 16px;
+  overflow: hidden;
 
-  margin-bottom: 5px;
+  margin: 0 0 5px;
+
+  color: var(--rma-text);
+
+  font-size: 16px;
+  font-weight: var(--rma-weight-bold);
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .shop_card_info p {
-  font-size: 13px;
+  overflow: hidden;
 
-  margin-bottom: 5px;
+  margin: 0 0 5px;
+
+  color: var(--rma-text-secondary);
+
+  font-size: 12px;
+  line-height: 1.4;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .shop_card_info span {
-  font-size: 12px;
+  display: block;
+
+  overflow: hidden;
+
+  color: var(--rma-text-muted);
+
+  font-size: 11px;
+  line-height: 1.4;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
+/* =========================================================
+   ORDER BUTTON
+   ========================================================= */
+
 .shop_order_button {
-  padding: 9px 14px;
+  min-width: 68px;
+
+  padding: 9px 13px;
 
   border: none;
-  border-radius: 7px;
+  border-radius: var(--rma-radius-sm);
+
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+
+  font-size: 12px;
+  font-weight: var(--rma-weight-semibold);
 
   cursor: pointer;
 
+  box-shadow: 0 4px 10px rgba(22, 128, 58, 0.16);
+
   flex-shrink: 0;
+
+  transition:
+    background var(--rma-transition-normal),
+    transform var(--rma-transition-fast),
+    box-shadow var(--rma-transition-normal);
+}
+
+.shop_order_button:hover {
+  background: var(--rma-primary-dark);
+
+  box-shadow: 0 5px 14px rgba(22, 128, 58, 0.22);
+}
+
+.shop_order_button:active {
+  transform: scale(0.95);
+}
+
+/* =========================================================
+   TABLET / DESKTOP
+   ========================================================= */
+
+@media (min-width: 768px) {
+  .home {
+    max-width: var(--rma-max-width);
+
+    margin: 0 auto;
+
+    padding: 100px var(--rma-desktop-padding) 110px;
+  }
+
+  .home_header {
+    margin-bottom: 34px;
+  }
+
+  .home_header h1 {
+    font-size: 34px;
+  }
+
+  .home_actions {
+    max-width: 650px;
+
+    flex-direction: row;
+  }
+
+  .qr_action {
+    flex: 1;
+  }
+
+  .find_action {
+    width: 220px;
+  }
+
+  .my_shops {
+    max-width: 650px;
+  }
+}
+
+/* =========================================================
+   SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 360px) {
+  .home {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .home_header h1 {
+    font-size: 25px;
+  }
+
+  .qr_action {
+    padding: 15px;
+    gap: 12px;
+  }
+
+  .action_icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .action_content h2 {
+    font-size: 16px;
+  }
+
+  .shop_card {
+    padding: 14px;
+  }
+
+  .shop_order_button {
+    min-width: 62px;
+    padding: 8px 10px;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .qr_action,
+  .find_action,
+  .shop_card,
+  .shop_order_button {
+    transition: none;
+  }
 }

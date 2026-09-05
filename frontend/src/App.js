@@ -4,6 +4,7 @@ import './index.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import Navbar from './components/Navbar/Navbar';
+import SiteFooter from './components/SiteFooter/SiteFooter';
 import Footer from './components/Footer/Footer';
 
 import Home from './pages/Home/Home';
@@ -28,6 +29,20 @@ import OwnerStep4 from './pages/Owner/OwnerRegister/OwnerStep4';
 
 import DeliveryOrders from './pages/delivery/DeliveryOrders/DeliveryOrders';
 import ScanQR from './pages/ScanQR/ScanQR';
+
+// ADMIN
+import AdminLogin from './pages/Admin/AdminLogin/AdminLogin';
+import AdminDashboard from './pages/Admin/AdminDashboard/AdminDashboard';
+import AdminOwners from './pages/Admin/AdminOwners/AdminOwners';
+import AdminCustomers from './pages/Admin/AdminCustomers/AdminCustomers';
+import AdminOrders from './pages/Admin/AdminOrders/AdminOrders';
+import AdminDelivery from './pages/Admin/AdminDelivery/AdminDelivery';
+import AdminPayments from './pages/Admin/AdminPayments/AdminPayments';
+import AdminFinance from './pages/Admin/AdminFinance/AdminFinance';
+
+// Customer
+import CustomerLogin from './pages/Customer/CustomerLogin/CustomerLogin';
+import CustomerSignup from './pages/Customer/CustomerSignup/CustomerSignup';
 
 function App() {
   return (
@@ -84,8 +99,25 @@ function App() {
           <Route path="/payment/:orderId" element={<Payment />} />
 
           <Route path="/scan-qr" element={<ScanQR />} />
+
+          {/* ADMIN */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/owners" element={<AdminOwners />} />
+          <Route path="/admin/customers" element={<AdminCustomers />} />
+          <Route path="/admin/delivery" element={<AdminDelivery />} />
+          <Route path="/admin/orders" element={<AdminOrders />} />
+          <Route path="/admin/delivery" element={<AdminDelivery />} />
+          <Route path="/admin/payments" element={<AdminPayments />} />
+          <Route path="/admin/finance" element={<AdminFinance />} />
+
+          {/* Customer */}
+          <Route path="/customer/login" element={<CustomerLogin />} />
+          <Route path="/customer/signup" element={<CustomerSignup />} />
         </Routes>
       </div>
+
+      <SiteFooter />
 
       <Footer />
     </BrowserRouter>

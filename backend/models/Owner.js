@@ -116,6 +116,17 @@ const ownerSchema = new mongoose.Schema(
       trim: true,
     },
 
+    location: {
+      latitude: {
+        type: Number,
+        default: null,
+      },
+      longitude: {
+        type: Number,
+        default: null,
+      },
+    },
+
     payment: {
       provider: {
         type: String,

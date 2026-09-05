@@ -1,148 +1,366 @@
+/* =========================================================
+   RMA — OWNER LOGIN
+   Production UI
+   ========================================================= */
+
 .owner_login {
-  min-height: calc(100vh - 120px);
+  min-height: calc(100vh - 60px);
+
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 30px 20px 90px;
+
+  padding: 32px 20px 100px;
   box-sizing: border-box;
+
+  background: #f8faf8;
 }
+
+/* =========================================================
+   LOGIN CARD
+   ========================================================= */
 
 .owner_login_card {
   width: 100%;
   max-width: 420px;
-  padding: 30px 20px;
+
+  padding: 32px 28px;
   box-sizing: border-box;
-  border: 1px solid #ddd;
+
+  background: #ffffff;
+
+  border: 1px solid #e3e9e4;
   border-radius: 16px;
-  background: white;
+
+  box-shadow: 0 8px 30px rgba(23, 32, 24, 0.07);
 }
 
-.owner_login_header {
-  text-align: center;
+/* =========================================================
+   HEADER
+   ========================================================= */
 
-  margin-bottom: 30px;
+.owner_login_header {
+  margin-bottom: 28px;
+  text-align: center;
 }
 
 .owner_logo {
-  width: 65px;
-  height: 65px;
-  margin: 0 auto 15px;
+  width: 64px;
+  height: 64px;
+
+  margin: 0 auto 16px;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  background: #222;
-  color: white;
-  font-size: 20px;
-  font-weight: bold;
+
+  border-radius: 18px;
+
+  background: #16803a;
+  color: #ffffff;
+
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+
+  box-shadow: 0 6px 16px rgba(22, 128, 58, 0.18);
 }
 
 .owner_login_header h1 {
-  margin: 0 0 10px;
-  font-size: 24px;
+  margin: 0 0 7px;
+
+  color: #172018;
+
+  font-size: 25px;
+  line-height: 1.25;
+  font-weight: 750;
+  letter-spacing: -0.4px;
 }
 
 .owner_login_header p {
-  margin: 0;
-  color: #777;
-  line-height: 1.5;
+  max-width: 300px;
+  margin: 0 auto;
+
+  color: #68736b;
+
+  font-size: 13px;
+  line-height: 1.55;
 }
+
+/* =========================================================
+   FORM
+   ========================================================= */
 
 .owner_login_form {
   display: flex;
-
   flex-direction: column;
-
   gap: 18px;
 }
 
 .owner_login_form label {
   display: flex;
-
   flex-direction: column;
+  gap: 7px;
 
-  gap: 8px;
+  color: #344039;
 
-  font-size: 14px;
-
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 650;
 }
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
 
 .owner_login_form input {
   width: 100%;
+  min-height: 46px;
 
-  padding: 14px;
-
+  padding: 11px 13px;
   box-sizing: border-box;
 
-  border: 1px solid #ccc;
+  border: 1px solid #d7dfd9;
+  border-radius: 9px;
 
-  border-radius: 10px;
+  background: #ffffff;
+  color: #172018;
 
-  font-size: 15px;
+  font-family: inherit;
+  font-size: 14px;
 
   outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.owner_login_form input::placeholder {
+  color: #9aa39d;
+}
+
+.owner_login_form input:hover {
+  border-color: #bfcac2;
 }
 
 .owner_login_form input:focus {
-  border-color: #222;
+  border-color: #16803a;
+
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.11);
+
+  background: #ffffff;
 }
+
+/* =========================================================
+   ERROR
+   ========================================================= */
 
 .owner_login_error {
   margin: -5px 0 0;
+  padding: 10px 12px;
 
-  color: #d00000;
+  border: 1px solid #f1cccc;
+  border-radius: 8px;
 
-  font-size: 14px;
+  background: #fff5f5;
+  color: #b42318;
+
+  font-size: 12px;
+  line-height: 1.45;
 }
+
+/* =========================================================
+   LOGIN BUTTON
+   ========================================================= */
 
 .owner_login_button {
   width: 100%;
-  padding: 14px;
-  margin-top: 5px;
-  border: none;
-  border-radius: 10px;
-  background: #222;
-  color: white;
-  font-size: 16px;
+  min-height: 46px;
+
+  padding: 11px 16px;
+  margin-top: 2px;
+
+  border: 1px solid #16803a;
+  border-radius: 9px;
+
+  background: #16803a;
+  color: #ffffff;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+
   cursor: pointer;
+
+  box-shadow: 0 3px 8px rgba(22, 128, 58, 0.15);
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
 }
 
 .owner_login_button:hover {
-  opacity: 0.9;
+  background: #0f5c2a;
+  border-color: #0f5c2a;
+
+  box-shadow: 0 5px 12px rgba(22, 128, 58, 0.2);
+}
+
+.owner_login_button:active {
+  transform: scale(0.98);
 }
 
 .owner_login_button:disabled {
   opacity: 0.6;
-
   cursor: not-allowed;
+  box-shadow: none;
 }
+
+.owner_login_button:disabled:hover {
+  background: #16803a;
+  border-color: #16803a;
+  transform: none;
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
 
 .owner_login_footer {
   margin-top: 25px;
   padding-top: 20px;
-  border-top: 1px solid #eee;
+
+  border-top: 1px solid #edf1ee;
+
   text-align: center;
 }
 
 .owner_login_footer p {
-  margin: 0 0 8px;
+  margin: 0 0 7px;
 
-  color: #777;
+  color: #68736b;
 
-  font-size: 14px;
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .owner_login_footer button {
+  padding: 3px 5px;
+
   border: none;
 
   background: transparent;
+  color: #16803a;
 
-  color: #222;
-
-  font-size: 14px;
-
-  font-weight: 600;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
 
   cursor: pointer;
+
+  transition: color 0.2s ease;
+}
+
+.owner_login_footer button:hover {
+  color: #0f5c2a;
+  text-decoration: underline;
+}
+
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
+
+.owner_login button:focus-visible,
+.owner_login input:focus-visible {
+  outline: 3px solid rgba(22, 128, 58, 0.2);
+  outline-offset: 2px;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+  .owner_login {
+    min-height: calc(100vh - 60px);
+
+    align-items: flex-start;
+
+    padding: 28px 15px 70px;
+  }
+
+  .owner_login_card {
+    max-width: 100%;
+
+    padding: 28px 20px;
+
+    border-radius: 14px;
+
+    box-shadow: 0 5px 20px rgba(23, 32, 24, 0.06);
+  }
+
+  .owner_login_header {
+    margin-bottom: 25px;
+  }
+
+  .owner_logo {
+    width: 58px;
+    height: 58px;
+
+    margin-bottom: 14px;
+
+    border-radius: 16px;
+
+    font-size: 17px;
+  }
+
+  .owner_login_header h1 {
+    font-size: 23px;
+  }
+
+  .owner_login_header p {
+    font-size: 12px;
+  }
+
+  .owner_login_form {
+    gap: 16px;
+  }
+
+  .owner_login_form label {
+    font-size: 12px;
+  }
+
+  .owner_login_form input {
+    min-height: 45px;
+
+    padding: 11px 12px;
+
+    font-size: 14px;
+  }
+
+  .owner_login_button {
+    min-height: 45px;
+
+    font-size: 13px;
+  }
+
+  .owner_login_footer {
+    margin-top: 22px;
+    padding-top: 18px;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .owner_login_form input,
+  .owner_login_button,
+  .owner_login_footer button {
+    transition: none;
+  }
 }

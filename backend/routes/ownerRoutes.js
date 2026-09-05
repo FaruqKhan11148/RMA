@@ -62,6 +62,7 @@ router.post('/register', async (req, res) => {
       delivery,
       pickup,
       products,
+      location,
     } = req.body;
 
     // Check required fields
@@ -121,6 +122,17 @@ router.post('/register', async (req, res) => {
 
     const shopId = `RMA-${String(counter.sequenceValue).padStart(6, '0')}`;
 
+    // Check shop location
+    if (
+      !location ||
+      typeof location.latitude !== 'number' ||
+      typeof location.longitude !== 'number'
+    ) {
+      return res.status(400).json({
+        message: 'Shop location is required',
+      });
+    }
+
     // Create owner
     const owner = await Owner.create({
       shopId,
@@ -134,6 +146,11 @@ router.post('/register', async (req, res) => {
       delivery,
       pickup,
       products,
+
+      location: {
+        latitude: location.latitude,
+        longitude: location.longitude,
+      },
     });
 
     // Send safe owner data to frontend
@@ -153,6 +170,7 @@ router.post('/register', async (req, res) => {
         pickup: owner.pickup,
         categories: owner.categories,
         products: owner.products,
+        location: owner.location,
       },
     });
   } catch (error) {

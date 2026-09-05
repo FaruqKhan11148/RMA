@@ -1,0 +1,286 @@
+.customer_signup {
+  min-height: calc(100vh - 60px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: var(--rma-space-6) var(--rma-mobile-padding);
+
+  background:
+    radial-gradient(
+      circle at top left,
+      var(--rma-primary-light),
+      transparent 40%
+    ),
+    var(--rma-bg);
+}
+
+.customer_signup_card {
+  width: 100%;
+  max-width: 440px;
+
+  padding: var(--rma-space-8);
+
+  background: var(--rma-card);
+
+  border: 1px solid var(--rma-border);
+  border-radius: var(--rma-radius-2xl);
+
+  box-shadow: var(--rma-shadow-lg);
+}
+
+.customer_signup_brand {
+  text-align: center;
+  margin-bottom: var(--rma-space-8);
+}
+
+.customer_signup_logo {
+  width: 58px;
+  height: 58px;
+
+  margin: 0 auto var(--rma-space-5);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+
+  border-radius: var(--rma-radius-lg);
+
+  font-size: var(--rma-font-lg);
+  font-weight: var(--rma-weight-extrabold);
+
+  box-shadow: var(--rma-shadow-md);
+}
+
+.customer_signup_brand h1 {
+  margin: 0 0 var(--rma-space-2);
+
+  color: var(--rma-text);
+
+  font-size: var(--rma-font-3xl);
+  font-weight: var(--rma-weight-bold);
+
+  letter-spacing: -0.5px;
+}
+
+.customer_signup_brand p {
+  margin: 0;
+
+  color: var(--rma-text-secondary);
+
+  font-size: var(--rma-font-sm);
+  line-height: 1.6;
+}
+
+.customer_signup_form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rma-space-5);
+}
+
+.customer_signup_form label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rma-space-2);
+
+  color: var(--rma-text-primary);
+
+  font-size: var(--rma-font-sm);
+  font-weight: var(--rma-weight-semibold);
+}
+
+.customer_signup_form input {
+  width: 100%;
+  min-height: 48px;
+
+  padding: 0 var(--rma-space-4);
+
+  border: 1px solid var(--rma-border-dark);
+  border-radius: var(--rma-radius-md);
+
+  background: var(--rma-card);
+  color: var(--rma-text);
+
+  font-family: inherit;
+  font-size: var(--rma-font-md);
+
+  outline: none;
+
+  transition:
+    border-color var(--rma-transition-fast),
+    box-shadow var(--rma-transition-fast);
+}
+
+.customer_signup_form input::placeholder {
+  color: var(--rma-text-muted);
+}
+
+.customer_signup_form input:focus {
+  border-color: var(--rma-primary);
+
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.12);
+}
+
+.customer_signup_error,
+.customer_signup_success {
+  margin: 0;
+
+  padding: var(--rma-space-3) var(--rma-space-4);
+
+  border-radius: var(--rma-radius-sm);
+
+  font-size: var(--rma-font-sm);
+  line-height: 1.5;
+}
+
+.customer_signup_error {
+  border: 1px solid var(--rma-danger);
+
+  background: var(--rma-danger-light);
+  color: var(--rma-danger);
+}
+
+.customer_signup_success {
+  border: 1px solid var(--rma-success);
+
+  background: var(--rma-success-light);
+  color: var(--rma-success);
+}
+
+.customer_signup_button {
+  width: 100%;
+  min-height: 50px;
+
+  border: none;
+  border-radius: var(--rma-radius-md);
+
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+
+  font-family: inherit;
+  font-size: var(--rma-font-md);
+  font-weight: var(--rma-weight-semibold);
+
+  cursor: pointer;
+
+  transition:
+    background var(--rma-transition-fast),
+    transform var(--rma-transition-fast),
+    box-shadow var(--rma-transition-fast);
+}
+
+.customer_signup_button:hover:not(:disabled) {
+  background: var(--rma-primary-dark);
+  box-shadow: var(--rma-shadow-sm);
+}
+
+.customer_signup_button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.customer_signup_button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.customer_signup_login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--rma-space-2);
+
+  margin-top: var(--rma-space-6);
+
+  color: var(--rma-text-secondary);
+  font-size: var(--rma-font-sm);
+}
+
+.customer_signup_login button {
+  padding: 0;
+
+  border: none;
+  background: transparent;
+
+  color: var(--rma-primary);
+
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: var(--rma-weight-semibold);
+
+  cursor: pointer;
+}
+
+.customer_signup_login button:hover {
+  color: var(--rma-primary-dark);
+  text-decoration: underline;
+}
+
+.customer_signup_guest {
+  width: 100%;
+
+  margin-top: var(--rma-space-5);
+  padding: var(--rma-space-3);
+
+  border: 1px solid var(--rma-border);
+  border-radius: var(--rma-radius-md);
+
+  background: var(--rma-bg);
+  color: var(--rma-text-primary);
+
+  font-family: inherit;
+  font-size: var(--rma-font-sm);
+  font-weight: var(--rma-weight-medium);
+
+  cursor: pointer;
+
+  transition:
+    background var(--rma-transition-fast),
+    border-color var(--rma-transition-fast);
+}
+
+.customer_signup_guest:hover {
+  background: var(--rma-primary-soft);
+  border-color: var(--rma-primary);
+}
+
+@media (min-width: 768px) {
+  .customer_signup {
+    min-height: calc(100vh - 64px);
+    padding: var(--rma-space-10) var(--rma-tablet-padding);
+  }
+
+  .customer_signup_card {
+    padding: var(--rma-space-10);
+  }
+}
+
+@media (max-width: 380px) {
+  .customer_signup {
+    padding: var(--rma-space-4) var(--rma-mobile-padding);
+  }
+
+  .customer_signup_card {
+    padding: var(--rma-space-6) var(--rma-space-5);
+    border-radius: var(--rma-radius-xl);
+  }
+
+  .customer_signup_brand h1 {
+    font-size: var(--rma-font-2xl);
+  }
+
+  .customer_signup_login {
+    flex-direction: column;
+    gap: var(--rma-space-1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .customer_signup_button,
+  .customer_signup_form input,
+  .customer_signup_guest {
+    transition: none;
+  }
+}

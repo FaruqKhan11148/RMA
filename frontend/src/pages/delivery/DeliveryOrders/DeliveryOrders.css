@@ -1,294 +1,756 @@
+/* =========================================================
+   DELIVERY ORDERS
+   ========================================================= */
+
 .delivery_orders {
   min-height: 100vh;
-  padding: 30px 20px;
-  background: #f5f7fa;
+  box-sizing: border-box;
+
+  padding: 40px 20px 70px;
+
+  background: #f8faf8;
 }
 
-/* HEADER */
+/* =========================================================
+   DELIVERY HEADER
+   ========================================================= */
 
 .delivery_orders_header {
-  max-width: 900px;
-  margin: 0 auto 25px;
+  max-width: 960px;
+
+  margin: 0 auto 28px;
 }
 
 .delivery_orders_header h1 {
   margin: 0 0 8px;
+
+  color: #172018;
+
   font-size: 28px;
-  color: #222;
+  line-height: 1.3;
+  font-weight: 750;
+
+  letter-spacing: -0.4px;
 }
 
 .delivery_orders_header p {
   margin: 0;
-  color: #666;
-  font-size: 15px;
+
+  color: #68736b;
+
+  font-size: 14px;
+  line-height: 1.5;
 }
 
-/* ORDERS LIST */
+.delivery_orders_header p strong {
+  color: #16803a;
+  font-weight: 700;
+}
+
+/* =========================================================
+   ORDERS LIST
+   ========================================================= */
 
 .delivery_orders_list {
-  max-width: 900px;
+  max-width: 960px;
+
   margin: 0 auto;
+
   display: flex;
   flex-direction: column;
-  gap: 20px;
+
+  gap: 18px;
 }
 
-/* ORDER CARD */
+/* =========================================================
+   ORDER CARD
+   ========================================================= */
 
 .delivery_order_card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 20px;
-  border: 1px solid #e5e5e5;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+  position: relative;
+  z-index: 1;
+
+  box-sizing: border-box;
+
+  padding: 22px;
+
+  background: #ffffff;
+
+  border: 1px solid #e3e9e4;
+  border-radius: 16px;
+
+  box-shadow:
+    0 6px 20px rgba(23, 32, 24, 0.05),
+    0 2px 6px rgba(23, 32, 24, 0.03);
+
+  overflow: hidden;
 }
 
-/* TOP */
+/* =========================================================
+   ORDER TOP
+   ========================================================= */
 
 .delivery_order_top {
   display: flex;
-  justify-content: space-between;
+
   align-items: center;
-  gap: 15px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid #eee;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  padding-bottom: 16px;
+
+  border-bottom: 1px solid #e3e9e4;
 }
 
 .delivery_order_top strong {
-  font-size: 16px;
-  color: #222;
+  color: #172018;
+
+  font-size: 15px;
+  font-weight: 750;
+
+  overflow-wrap: anywhere;
 }
 
 .delivery_order_status {
-  padding: 6px 10px;
-  border-radius: 20px;
-  background: #fff3cd;
-  color: #856404;
-  font-size: 13px;
-  font-weight: 600;
+  flex-shrink: 0;
+
+  padding: 6px 11px;
+
+  border-radius: 999px;
+
+  background: #fff7df;
+  color: #946b00;
+
+  border: 1px solid #f3df9e;
+
+  font-size: 12px;
+  line-height: 1.3;
+  font-weight: 700;
+
+  white-space: nowrap;
 }
 
-/* CUSTOMER INFO */
+/* =========================================================
+   CUSTOMER INFORMATION
+   ========================================================= */
 
 .delivery_order_info {
-  padding: 18px 0;
+  padding: 20px 0;
 }
 
 .delivery_order_info h2 {
   margin: 0 0 8px;
+
+  color: #172018;
+
   font-size: 20px;
-  color: #222;
+  line-height: 1.35;
+  font-weight: 700;
 }
 
 .delivery_order_info p {
   margin: 7px 0;
-  color: #555;
-  font-size: 15px;
+
+  color: #68736b;
+
+  font-size: 14px;
+  line-height: 1.55;
 }
 
-/* ITEMS */
+.delivery_order_info p strong {
+  color: #3f4942;
+  font-weight: 650;
+}
+
+/* =========================================================
+   DELIVERY MAP
+   ========================================================= */
+
+.delivery_map_container {
+  position: relative;
+  z-index: 0;
+
+  margin-top: 16px;
+
+  overflow: hidden;
+
+  border: 1px solid #e3e9e4;
+  border-radius: 13px;
+
+  background: #f8faf8;
+}
+
+.delivery_map_container .leaflet-container {
+  position: relative;
+  z-index: 0 !important;
+}
+
+/* =========================================================
+   ORDER ITEMS
+   ========================================================= */
 
 .delivery_order_items {
-  margin-top: 15px;
-  padding: 12px;
-  border-radius: 8px;
-  background: #f7f7f7;
+  margin-top: 17px;
+
+  padding: 13px 15px;
+
+  border: 1px solid #e3e9e4;
+  border-radius: 11px;
+
+  background: #f8faf8;
 }
 
 .delivery_order_items p {
   margin: 5px 0;
-  color: #333;
+
+  color: #3f4942;
+
+  font-size: 13px;
+  line-height: 1.5;
 }
 
-/* TOTAL */
+.delivery_order_items p:first-child {
+  margin-top: 0;
+}
+
+.delivery_order_items p:last-child {
+  margin-bottom: 0;
+}
+
+/* =========================================================
+   ORDER TOTAL
+   ========================================================= */
 
 .delivery_order_total {
   display: block;
-  margin-top: 15px;
-  font-size: 20px;
-  color: #222;
+
+  margin-top: 17px;
+
+  color: #16803a;
+
+  font-size: 21px;
+  line-height: 1.3;
+  font-weight: 800;
 }
 
-/* OTP SECTION */
+/* =========================================================
+   CUSTOMER OTP SECTION
+   ========================================================= */
 
 .delivery_otp_section {
-  margin-top: 5px;
-  padding-top: 18px;
-  border-top: 1px solid #eee;
+  margin-top: 2px;
+
+  padding-top: 20px;
+
+  border-top: 1px solid #e3e9e4;
 }
 
 .delivery_otp_section h3 {
   margin: 0 0 6px;
-  font-size: 18px;
-  color: #222;
+
+  color: #172018;
+
+  font-size: 17px;
+  line-height: 1.4;
+  font-weight: 700;
 }
 
 .delivery_otp_section p {
   margin: 0 0 14px;
-  color: #666;
-  font-size: 14px;
+
+  color: #68736b;
+
+  font-size: 13px;
+  line-height: 1.5;
 }
 
-/* OTP INPUT */
+/* =========================================================
+   OTP INPUT
+   ========================================================= */
 
 .delivery_otp_section input {
   width: 100%;
+
+  min-height: 50px;
+
   box-sizing: border-box;
-  padding: 13px 14px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 18px;
-  letter-spacing: 5px;
+
+  padding: 12px 14px;
+
+  border: 1px solid #d2dbd4;
+  border-radius: 10px;
+
+  background: #ffffff;
+  color: #172018;
+
+  font-family: inherit;
+  font-size: 19px;
+  font-weight: 650;
+
+  letter-spacing: 6px;
+
   text-align: center;
+
   outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.delivery_otp_section input::placeholder {
+  color: #a0aaa3;
+
+  letter-spacing: 1px;
+
+  font-size: 14px;
+  font-weight: 400;
 }
 
 .delivery_otp_section input:focus {
-  border-color: #222;
+  border-color: #16803a;
+
+  background: #ffffff;
+
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.12);
 }
 
-/* DELIVERED BUTTON */
+/* =========================================================
+   BUTTON
+   ========================================================= */
 
 .delivery_complete_button {
   width: 100%;
+
+  min-height: 48px;
+
   margin-top: 12px;
-  padding: 13px;
-  border: none;
-  border-radius: 8px;
-  background: #222;
-  color: #fff;
-  font-size: 16px;
-  font-weight: 600;
+
+  padding: 0 16px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #16803a;
+  border-radius: 10px;
+
+  background: #16803a;
+  color: #ffffff;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+
   cursor: pointer;
-  transition: 0.2s;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
 }
 
 .delivery_complete_button:hover {
-  opacity: 0.9;
+  background: #0f5c2a;
+  border-color: #0f5c2a;
+
+  box-shadow: 0 5px 14px rgba(15, 92, 42, 0.18);
 }
 
-/* EMPTY / LOADING / ERROR */
+.delivery_complete_button:active {
+  transform: translateY(1px);
+}
+
+.delivery_complete_button:focus-visible {
+  outline: 3px solid rgba(22, 128, 58, 0.18);
+  outline-offset: 2px;
+}
+
+.delivery_complete_button:disabled {
+  opacity: 0.55;
+
+  cursor: not-allowed;
+
+  box-shadow: none;
+}
+
+/* =========================================================
+   EMPTY / LOADING CARD
+   ========================================================= */
 
 .delivery_no_orders {
-  max-width: 900px;
-  margin: 40px auto;
-  padding: 40px 20px;
+  width: 100%;
+  max-width: 960px;
+
+  box-sizing: border-box;
+
+  margin: 45px auto;
+
+  padding: 44px 24px;
+
   text-align: center;
-  background: #fff;
-  border-radius: 12px;
-  border: 1px solid #e5e5e5;
+
+  background: #ffffff;
+
+  border: 1px solid #e3e9e4;
+  border-radius: 16px;
+
+  box-shadow: 0 6px 20px rgba(23, 32, 24, 0.04);
 }
 
 .delivery_no_orders h2 {
   margin: 0 0 8px;
-  color: #222;
+
+  color: #172018;
+
+  font-size: 21px;
+  line-height: 1.4;
+  font-weight: 700;
 }
 
 .delivery_no_orders p {
   margin: 0;
-  color: #666;
+
+  color: #68736b;
+
+  font-size: 14px;
+  line-height: 1.6;
 }
 
-/* SHOP ID ACCESS SCREEN */
+/* =========================================================
+   DELIVERY LOGIN / OTP SCREEN
+   ========================================================= */
+
+.delivery_orders > .delivery_no_orders {
+  max-width: 430px;
+
+  margin-top: 60px;
+  margin-bottom: 60px;
+
+  padding: 38px 32px;
+}
 
 .delivery_no_orders h1 {
-  margin: 0 0 10px;
+  margin: 0 0 9px;
+
+  color: #172018;
+
   font-size: 28px;
-  color: #222;
+  line-height: 1.3;
+  font-weight: 750;
+
+  letter-spacing: -0.4px;
 }
 
 .delivery_no_orders input {
   width: 100%;
-  max-width: 400px;
+
+  min-height: 48px;
+
   box-sizing: border-box;
-  margin-top: 20px;
-  padding: 13px 14px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 16px;
+
+  margin-top: 16px;
+
+  padding: 0 14px;
+
+  border: 1px solid #d2dbd4;
+  border-radius: 10px;
+
+  background: #ffffff;
+  color: #172018;
+
+  font-family: inherit;
+  font-size: 14px;
+
   outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.delivery_no_orders input::placeholder {
+  color: #9aa49d;
 }
 
 .delivery_no_orders input:focus {
-  border-color: #222;
+  border-color: #16803a;
+
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.12);
 }
 
 .delivery_no_orders .delivery_complete_button {
-  max-width: 400px;
-  margin: 12px auto 0;
+  max-width: 100%;
+
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.delivery_complete_button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* ERROR MESSAGE */
+/* =========================================================
+   ERROR MESSAGE
+   ========================================================= */
 
 .delivery_error_message {
-  margin-top: 15px !important;
-  color: #d32f2f !important;
-  font-size: 14px !important;
-  font-weight: 500;
+  max-width: 960px;
+
+  margin: 14px auto 0 !important;
+
+  padding: 11px 14px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #fecaca;
+  border-radius: 9px;
+
+  background: #fef2f2;
+
+  color: #dc2626 !important;
+
+  font-size: 13px !important;
+  line-height: 1.5;
+
+  font-weight: 600;
 }
 
-/* DELIVERY MAP */
+/* Login/OTP error inside card */
+.delivery_no_orders .delivery_error_message {
+  margin-top: 14px !important;
+}
 
-.delivery_map_container {
+/* =========================================================
+   SUCCESS MESSAGE
+   ========================================================= */
+
+.delivery_success_message {
   margin-top: 15px;
-  overflow: hidden;
-  border-radius: 12px;
-  border: 1px solid #e5e5e5;
+
+  padding: 11px 14px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #bfe3ca;
+  border-radius: 9px;
+
+  background: #eaf7ee;
+
+  color: #0f5c2a;
+
+  font-size: 13px;
+
+  line-height: 1.5;
+
+  font-weight: 650;
 }
 
-/* MOBILE */
+/* =========================================================
+   OTP SCREEN SECONDARY BUTTON
+   ========================================================= */
 
-@media (max-width: 480px) {
+/*
+   The JSX currently uses the same class for both
+   Verify OTP and Back.
+
+   Make the second button slightly quieter when
+   it follows the primary button.
+*/
+
+.delivery_no_orders .delivery_complete_button + .delivery_complete_button {
+  margin-top: 9px;
+
+  border-color: #d5ddd7;
+
+  background: #ffffff;
+
+  color: #3f4942;
+
+  box-shadow: none;
+}
+
+.delivery_no_orders
+  .delivery_complete_button
+  + .delivery_complete_button:hover {
+  border-color: #bfcac1;
+
+  background: #f8faf8;
+
+  color: #172018;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
   .delivery_orders {
-    padding: 20px 12px;
+    padding: 30px 16px 55px;
   }
 
   .delivery_orders_header h1 {
-    font-size: 24px;
+    font-size: 25px;
+  }
+
+  .delivery_order_card {
+    padding: 19px;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+  .delivery_orders {
+    min-height: 100dvh;
+
+    padding: 20px 12px 40px;
+  }
+
+  .delivery_orders_header {
+    margin-bottom: 20px;
+  }
+
+  .delivery_orders_header h1 {
+    font-size: 23px;
+  }
+
+  .delivery_orders_header p {
+    font-size: 13px;
+  }
+
+  .delivery_orders_list {
+    gap: 14px;
   }
 
   .delivery_order_card {
     padding: 16px;
+
+    border-radius: 14px;
   }
 
   .delivery_order_top {
     align-items: flex-start;
+
     flex-direction: column;
+
+    gap: 10px;
+  }
+
+  .delivery_order_top strong {
+    font-size: 14px;
   }
 
   .delivery_order_status {
-    font-size: 12px;
+    font-size: 11px;
+  }
+
+  .delivery_order_info {
+    padding: 17px 0;
   }
 
   .delivery_order_info h2 {
     font-size: 18px;
   }
 
-  .delivery_order_total {
-    font-size: 18px;
+  .delivery_order_info p {
+    font-size: 13px;
   }
 
-  /* SHOP ID SCREEN */
+  .delivery_order_items {
+    padding: 12px;
+  }
 
-  .delivery_no_orders {
-    margin: 30px auto;
+  .delivery_order_total {
+    font-size: 19px;
+  }
+
+  .delivery_otp_section h3 {
+    font-size: 16px;
+  }
+
+  .delivery_otp_section input {
+    min-height: 50px;
+
+    font-size: 18px;
+
+    letter-spacing: 5px;
+  }
+
+  .delivery_complete_button {
+    min-height: 48px;
+
+    font-size: 14px;
+  }
+
+  /* LOGIN / OTP */
+
+  .delivery_orders > .delivery_no_orders {
+    margin-top: 25px;
+    margin-bottom: 25px;
+
     padding: 30px 18px;
+
+    border-radius: 15px;
   }
 
   .delivery_no_orders h1 {
     font-size: 24px;
   }
 
-  .delivery_no_orders input {
-    max-width: 100%;
+  .delivery_no_orders h2 {
+    font-size: 19px;
   }
 
-  .delivery_no_orders .delivery_complete_button {
-    max-width: 100%;
+  .delivery_no_orders input {
+    min-height: 48px;
+
+    margin-top: 14px;
+  }
+}
+
+/* =========================================================
+   VERY SMALL DEVICES
+   ========================================================= */
+
+@media (max-width: 360px) {
+  .delivery_orders {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .delivery_order_card {
+    padding: 14px;
+  }
+
+  .delivery_orders_header h1 {
+    font-size: 21px;
+  }
+
+  .delivery_order_info h2 {
+    font-size: 17px;
+  }
+
+  .delivery_order_status {
+    white-space: normal;
+  }
+
+  .delivery_no_orders {
+    padding: 30px 16px;
+  }
+
+  .delivery_orders > .delivery_no_orders {
+    padding: 26px 15px;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .delivery_complete_button,
+  .delivery_otp_section input,
+  .delivery_no_orders input {
+    transition: none;
   }
 }

@@ -1,61 +1,211 @@
 .map_picker {
   width: 100%;
-  margin-top: 20px;
+  margin-top: 24px;
+  padding: 20px;
+  background: var(--rma-card);
+  border: 1px solid var(--rma-border);
+  border-radius: var(--rma-radius-lg);
+  box-shadow: var(--rma-shadow-sm);
 }
 
 .map_header {
-  margin-bottom: 15px;
+  margin-bottom: 16px;
 }
 
 .map_header h2 {
-  margin-bottom: 5px;
+  margin: 0 0 6px;
+  color: var(--rma-text);
+  font-size: var(--rma-font-xl);
+  font-weight: var(--rma-weight-bold);
 }
 
 .map_header p {
   margin: 0;
-  color: #666;
+  color: var(--rma-text-secondary);
+  font-size: var(--rma-font-sm);
+  line-height: 1.5;
 }
+
+/* Map */
 
 .map {
   width: 100%;
-  height: 400px;
-  border-radius: 12px;
+  height: 360px;
+  margin-top: 4px;
   overflow: hidden;
-  border: 1px solid #ddd;
+  border: 1px solid var(--rma-border);
+  border-radius: var(--rma-radius-md);
+  box-shadow: var(--rma-shadow-xs);
 }
+
+/* Leaflet fixes */
+
+.map .leaflet-container {
+  width: 100%;
+  height: 100%;
+}
+
+.map .leaflet-control-zoom {
+  margin: 12px;
+  border: none;
+  box-shadow: var(--rma-shadow-md);
+}
+
+.map .leaflet-control-zoom a {
+  width: 34px;
+  height: 34px;
+  line-height: 34px;
+  color: var(--rma-text);
+  background: var(--rma-card);
+  border: none;
+}
+
+.map .leaflet-control-zoom a:hover {
+  background: var(--rma-primary-light);
+  color: var(--rma-primary-dark);
+}
+
+/* Current location */
 
 .current_location_button {
   width: 100%;
+  min-height: 48px;
   margin-top: 12px;
-  padding: 12px;
-  border: none;
-  border-radius: 8px;
+  padding: 12px 16px;
+
+  border: 1px solid var(--rma-primary);
+  border-radius: var(--rma-radius-md);
+
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+
+  font-family: inherit;
+  font-size: var(--rma-font-md);
+  font-weight: var(--rma-weight-semibold);
+
   cursor: pointer;
-  font-size: 16px;
-  font-weight: 600;
+
+  transition:
+    background var(--rma-transition-normal),
+    transform var(--rma-transition-fast),
+    box-shadow var(--rma-transition-normal);
+}
+
+.current_location_button:hover {
+  background: var(--rma-primary-dark);
+  box-shadow: var(--rma-shadow-sm);
+}
+
+.current_location_button:active {
+  transform: scale(0.98);
 }
 
 .current_location_button:disabled {
   cursor: not-allowed;
-  opacity: 0.6;
+  opacity: 0.65;
+  transform: none;
 }
 
+/* Selected location */
+
 .selected_location {
-  margin-top: 15px;
-  padding: 15px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
+  margin-top: 16px;
+  padding: 16px;
+
+  background: var(--rma-primary-soft);
+  border: 1px solid #cfe8d6;
+  border-radius: var(--rma-radius-md);
 }
 
 .selected_location h3 {
-  margin-top: 0;
+  margin: 0 0 8px;
+
+  color: var(--rma-primary-dark);
+  font-size: var(--rma-font-md);
+  font-weight: var(--rma-weight-bold);
 }
 
 .selected_location p {
-  margin: 5px 0;
+  margin: 0 0 8px;
+
+  color: var(--rma-text);
+  font-size: var(--rma-font-sm);
+  line-height: 1.5;
 }
 
+.selected_location small {
+  display: block;
+
+  color: var(--rma-text-secondary);
+  font-size: var(--rma-font-xs);
+  font-family: monospace;
+}
+
+/* Error */
+
 .map_error {
-  margin-top: 10px;
-  color: red;
+  margin: 12px 0 0;
+  padding: 12px 14px;
+
+  color: var(--rma-danger);
+  background: var(--rma-danger-light);
+
+  border: 1px solid #fecaca;
+  border-radius: var(--rma-radius-sm);
+
+  font-size: var(--rma-font-sm);
+  line-height: 1.45;
+}
+
+/* Mobile */
+
+@media (max-width: 480px) {
+  .map_picker {
+    margin-top: 16px;
+    padding: 14px;
+    border-radius: var(--rma-radius-md);
+  }
+
+  .map_header {
+    margin-bottom: 12px;
+  }
+
+  .map_header h2 {
+    font-size: var(--rma-font-lg);
+  }
+
+  .map_header p {
+    font-size: var(--rma-font-xs);
+  }
+
+  .map {
+    height: 300px;
+    border-radius: var(--rma-radius-sm);
+  }
+
+  .current_location_button {
+    min-height: 46px;
+    font-size: var(--rma-font-sm);
+  }
+
+  .selected_location {
+    padding: 14px;
+  }
+}
+
+/* Tablet / Desktop */
+
+@media (min-width: 768px) {
+  .map_picker {
+    padding: 24px;
+  }
+
+  .map {
+    height: 420px;
+  }
+
+  .current_location_button {
+    width: auto;
+    min-width: 240px;
+  }
 }

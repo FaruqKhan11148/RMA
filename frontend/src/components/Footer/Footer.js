@@ -1,39 +1,53 @@
 import './Footer.css';
 
+import { NavLink } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
-import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 
 function Footer() {
   const { t } = useLanguage();
-
-  const navigate = useNavigate();
-
   const { totalItems } = useCart();
 
   return (
     <nav className="bottom_nav">
-      <button className="nav_item active" onClick={() => navigate('/')}>
+      <NavLink
+        to="/"
+        end
+        className={({ isActive }) => `nav_item ${isActive ? 'active' : ''}`}
+      >
         <span>{t.bottomNav.home}</span>
-      </button>
+      </NavLink>
 
-      <button className="nav_item" onClick={() => navigate('/find-shop')}>
+      <NavLink
+        to="/find-shop"
+        end
+        className={({ isActive }) => `nav_item ${isActive ? 'active' : ''}`}
+      >
         <span>{t.bottomNav.shops}</span>
-      </button>
+      </NavLink>
 
-      <button className="nav_item" onClick={() => navigate('/cart')}>
+      <NavLink
+        to="/cart"
+        end
+        className={({ isActive }) => `nav_item ${isActive ? 'active' : ''}`}
+      >
         <span>Cart {totalItems > 0 && `(${totalItems})`}</span>
-      </button>
+      </NavLink>
 
-      <button className="nav_item" onClick={() => navigate('/orders')}>
+      <NavLink
+        to="/orders"
+        end
+        className={({ isActive }) => `nav_item ${isActive ? 'active' : ''}`}
+      >
         <span>{t.bottomNav.orders}</span>
-      </button>
+      </NavLink>
 
-      {/* DELIVERY */}
-
-      <button className="nav_item" onClick={() => navigate('/delivery/orders')}>
+      <NavLink
+        to="/delivery/orders"
+        className={({ isActive }) => `nav_item ${isActive ? 'active' : ''}`}
+      >
         <span>Delivery</span>
-      </button>
+      </NavLink>
     </nav>
   );
 }
