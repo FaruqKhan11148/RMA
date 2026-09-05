@@ -28,8 +28,6 @@ const allowedOrigins = ['http://localhost:3000', 'https://rma-rho.vercel.app'];
 
 const corsOptions = {
   origin: function (origin, callback) {
-    // Allow requests with no origin
-    // Example: Postman, server-to-server requests
     if (!origin) {
       return callback(null, true);
     }
@@ -52,9 +50,6 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// Explicitly handle browser preflight requests
-app.options('*', cors(corsOptions));
-
 /* =========================
    MIDDLEWARE
 ========================= */
@@ -68,23 +63,15 @@ app.use(express.json());
 ========================= */
 
 app.use('/api/owners', ownerRoutes);
-
 app.use('/api/orders', orderRoutes);
-
 app.use('/api/shops', shopRoutes);
-
 app.use('/api/payments', paymentRoutes);
-
 app.use('/api/delivery', deliveryRoutes);
 
 app.use('/api/admin', adminRoutes);
-
 app.use('/api/admin/owners', adminOwnerRoutes);
-
 app.use('/api/admin/customers', adminCustomerRoutes);
-
 app.use('/api/admin/orders', adminOrderRoutes);
-
 app.use('/api/admin/delivery', adminDeliveryRoutes);
 
 app.use('/api/customers', customerRoutes);
