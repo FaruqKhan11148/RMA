@@ -145,7 +145,7 @@ function OwnerDashboard() {
         <div className="owner_header_actions">
           <button
             className="owner_settings_button"
-            onClick={() => navigate('/owner/settings')}
+            onClick={() => navigate('/owner/settings/account')}
           >
             Settings
           </button>
