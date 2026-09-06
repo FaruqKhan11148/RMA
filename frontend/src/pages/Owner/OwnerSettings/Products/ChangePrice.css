@@ -1,0 +1,518 @@
+/* =========================================================
+   CHANGE PRICE PAGE
+   ========================================================= */
+
+.change-price-page {
+  min-height: 100vh;
+  background: #f7f8fa;
+  padding: 32px 20px 60px;
+}
+
+.change-price-container {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* =========================================================
+   BACK BUTTON
+   ========================================================= */
+
+.change-price-back {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin-bottom: 24px;
+
+  color: #555;
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.change-price-back:hover {
+  color: #111;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.change-price-header {
+  margin-bottom: 24px;
+}
+
+.change-price-header h1 {
+  margin: 0 0 8px;
+
+  color: #171717;
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.change-price-header p {
+  margin: 0;
+
+  color: #777;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   MESSAGES
+   ========================================================= */
+
+.change-price-message {
+  margin-bottom: 20px;
+  padding: 14px 16px;
+
+  border-radius: 12px;
+
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.change-price-message.error {
+  background: #fff0f0;
+  border: 1px solid #ffd1d1;
+  color: #c62828;
+}
+
+.change-price-message.success {
+  background: #eefaf1;
+  border: 1px solid #ccebd3;
+  color: #218838;
+}
+
+/* =========================================================
+   CARD
+   ========================================================= */
+
+.change-price-card {
+  background: #ffffff;
+
+  border: 1px solid #e8e8e8;
+  border-radius: 20px;
+
+  padding: 28px;
+
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+}
+
+/* =========================================================
+   PRODUCT INFORMATION
+   ========================================================= */
+
+.change-price-product {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.change-price-image {
+  width: 96px;
+  height: 96px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  background: #f5f5f5;
+  border-radius: 16px;
+}
+
+.change-price-image img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+.change-price-image span {
+  font-size: 42px;
+}
+
+.change-price-product-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.change-price-product-info h2 {
+  margin: 0 0 6px;
+
+  color: #171717;
+  font-size: 22px;
+  font-weight: 750;
+
+  line-height: 1.3;
+}
+
+.change-price-product-info > p {
+  margin: 0 0 14px;
+
+  color: #777;
+  font-size: 14px;
+}
+
+/* =========================================================
+   CURRENT PRICE
+   ========================================================= */
+
+.change-price-current {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.change-price-current span {
+  color: #888;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.change-price-current strong {
+  color: #222;
+  font-size: 16px;
+  font-weight: 750;
+}
+
+/* =========================================================
+   DIVIDER
+   ========================================================= */
+
+.change-price-divider {
+  height: 1px;
+
+  margin: 28px 0;
+
+  background: #eeeeee;
+}
+
+/* =========================================================
+   PRICE FIELD
+   ========================================================= */
+
+.change-price-field {
+  margin-bottom: 28px;
+}
+
+.change-price-field label {
+  display: block;
+
+  margin-bottom: 10px;
+
+  color: #222;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* =========================================================
+   PRICE INPUT
+   ========================================================= */
+
+.change-price-input-wrapper {
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+  min-height: 54px;
+
+  padding: 0 15px;
+
+  background: #fafafa;
+
+  border: 1.5px solid #dddddd;
+  border-radius: 12px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.change-price-input-wrapper:focus-within {
+  background: #ffffff;
+
+  border-color: #222;
+
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.06);
+}
+
+.change-price-input-wrapper > span:first-child {
+  color: #555;
+  font-size: 18px;
+  font-weight: 700;
+
+  margin-right: 8px;
+}
+
+.change-price-input-wrapper > span:last-child {
+  color: #888;
+  font-size: 14px;
+  font-weight: 500;
+
+  margin-left: 8px;
+
+  white-space: nowrap;
+}
+
+.change-price-input-wrapper input {
+  flex: 1;
+
+  width: 100%;
+
+  padding: 0;
+
+  background: transparent;
+
+  border: none;
+  outline: none;
+
+  color: #171717;
+
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.change-price-input-wrapper input::placeholder {
+  color: #aaa;
+  font-weight: 500;
+}
+
+/* Remove number input arrows */
+
+.change-price-input-wrapper input::-webkit-outer-spin-button,
+.change-price-input-wrapper input::-webkit-inner-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+
+.change-price-input-wrapper input[type='number'] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.change-price-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.change-price-cancel,
+.change-price-submit {
+  min-height: 48px;
+
+  padding: 0 22px;
+
+  border-radius: 11px;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    background 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.change-price-cancel {
+  background: #ffffff;
+
+  border: 1px solid #d9d9d9;
+
+  color: #444;
+}
+
+.change-price-cancel:hover:not(:disabled) {
+  background: #f5f5f5;
+  border-color: #c9c9c9;
+}
+
+.change-price-submit {
+  background: #111111;
+
+  border: 1px solid #111111;
+
+  color: #ffffff;
+}
+
+.change-price-submit:hover:not(:disabled) {
+  background: #2b2b2b;
+  border-color: #2b2b2b;
+
+  transform: translateY(-1px);
+}
+
+.change-price-cancel:active:not(:disabled),
+.change-price-submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.change-price-cancel:disabled,
+.change-price-submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.change-price-loading {
+  min-height: 60vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #666;
+
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 768px) {
+  .change-price-page {
+    padding: 24px 16px 50px;
+  }
+
+  .change-price-header h1 {
+    font-size: 28px;
+  }
+
+  .change-price-card {
+    padding: 22px;
+    border-radius: 17px;
+  }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+  .change-price-page {
+    padding: 20px 14px 40px;
+  }
+
+  .change-price-back {
+    margin-bottom: 20px;
+  }
+
+  .change-price-header {
+    margin-bottom: 20px;
+  }
+
+  .change-price-header h1 {
+    font-size: 25px;
+  }
+
+  .change-price-header p {
+    font-size: 14px;
+  }
+
+  .change-price-card {
+    padding: 18px;
+    border-radius: 16px;
+  }
+
+  .change-price-product {
+    gap: 13px;
+  }
+
+  .change-price-image {
+    width: 72px;
+    height: 72px;
+    border-radius: 12px;
+  }
+
+  .change-price-image span {
+    font-size: 32px;
+  }
+
+  .change-price-product-info h2 {
+    font-size: 18px;
+  }
+
+  .change-price-product-info > p {
+    margin-bottom: 10px;
+    font-size: 13px;
+  }
+
+  .change-price-current {
+    gap: 5px;
+  }
+
+  .change-price-current span {
+    font-size: 12px;
+  }
+
+  .change-price-current strong {
+    font-size: 14px;
+  }
+
+  .change-price-divider {
+    margin: 22px 0;
+  }
+
+  .change-price-field {
+    margin-bottom: 22px;
+  }
+
+  .change-price-input-wrapper {
+    min-height: 52px;
+  }
+
+  .change-price-actions {
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+
+  .change-price-cancel,
+  .change-price-submit {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   VERY SMALL SCREENS
+   ========================================================= */
+
+@media (max-width: 360px) {
+  .change-price-card {
+    padding: 15px;
+  }
+
+  .change-price-image {
+    width: 62px;
+    height: 62px;
+  }
+
+  .change-price-product-info h2 {
+    font-size: 16px;
+  }
+
+  .change-price-product-info > p {
+    font-size: 12px;
+  }
+}

@@ -138,15 +138,22 @@ function OwnerDashboard() {
       <section className="owner_dashboard_header">
         <div>
           <p>Welcome back,</p>
-
           <h1>{shopOwner.ownerName}</h1>
-
           <span>{shopOwner.shopName}</span>
         </div>
 
-        <button className="owner_logout_button" onClick={handleLogout}>
-          Logout
-        </button>
+        <div className="owner_header_actions">
+          <button
+            className="owner_settings_button"
+            onClick={() => navigate('/owner/settings')}
+          >
+            Settings
+          </button>
+
+          <button className="owner_logout_button" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
       </section>
 
       {/* TODAY'S SUMMARY */}

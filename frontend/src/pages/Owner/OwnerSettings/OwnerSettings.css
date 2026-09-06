@@ -1,0 +1,152 @@
+.owner-settings-page {
+  min-height: 100vh;
+  background: #f7f8fa;
+  padding: 24px;
+}
+
+.owner-settings-header {
+  max-width: 1100px;
+  margin: 0 auto 28px;
+}
+
+.back-button {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin-bottom: 18px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #555;
+  cursor: pointer;
+}
+
+.back-button:hover {
+  color: #111;
+}
+
+.owner-settings-header h1 {
+  margin: 0;
+  font-size: 32px;
+  color: #171717;
+}
+
+.owner-settings-header p {
+  margin: 8px 0 0;
+  color: #707070;
+  font-size: 15px;
+}
+
+.settings-sections {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.settings-section {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.section-heading {
+  padding: 20px 22px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #181818;
+}
+
+.section-heading p {
+  margin: 6px 0 0;
+  color: #777;
+  font-size: 14px;
+}
+
+.settings-options {
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 22px;
+  border: none;
+  border-bottom: 1px solid #eeeeee;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.settings-option:last-child {
+  border-bottom: none;
+}
+
+.settings-option:hover {
+  background: #fafafa;
+}
+
+.option-content {
+  min-width: 0;
+}
+
+.option-content h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #222;
+}
+
+.option-content p {
+  margin: 5px 0 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #777;
+}
+
+.option-arrow {
+  flex-shrink: 0;
+  font-size: 28px;
+  line-height: 1;
+  color: #999;
+}
+
+@media (max-width: 600px) {
+  .owner-settings-page {
+    padding: 16px;
+  }
+
+  .owner-settings-header h1 {
+    font-size: 27px;
+  }
+
+  .settings-section {
+    border-radius: 14px;
+  }
+
+  .section-heading {
+    padding: 17px;
+  }
+
+  .settings-option {
+    padding: 17px;
+  }
+
+  .option-content h3 {
+    font-size: 15px;
+  }
+
+  .option-content p {
+    font-size: 12px;
+  }
+}

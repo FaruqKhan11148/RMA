@@ -43,6 +43,7 @@ function OwnerLogin() {
       console.log('Owner Login:', data);
 
       localStorage.setItem('rma_owner', JSON.stringify(data.owner));
+      localStorage.setItem('rma_owner_token', data.token);
 
       navigate('/owner/dashboard');
     } catch (error) {

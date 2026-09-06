@@ -17,15 +17,40 @@ import Orders from './pages/Orders/Orders';
 import Profile from './pages/Profile/Profile';
 import Payment from './pages/payment/Payment';
 
+import OwnerSettings from './pages/Owner/OwnerSettings/OwnerSettings';
+
 import OwnerLogin from './pages/Owner/OwnerLogin/OwnerLogin';
 import OwnerDashboard from './pages/Owner/OwnerDashboard/OwnerDashboard';
 import OwnerOrders from './pages/Owner/OwnerOrders/OwnerOrders';
 import ShopCreated from './pages/Owner/ShopCreated/ShopCreated';
+import Location from './pages/Owner/OwnerSettings/Shop/Location';
+import OpenClosed from './pages/Owner/OwnerSettings/Shop/OpenClosed';
+
+import DeliveryAvailable from './pages/Owner/OwnerSettings/Delivery/DeliveryAvailable';
+import PickupAvailable from './pages/Owner/OwnerSettings/Delivery/PickupAvailable';
+import DeliverySettings from './pages/Owner/OwnerSettings/Delivery/DeliverySettings';
+
+import PaymentDetails from './pages/Owner/OwnerSettings/Payment/PaymentDetails';
+
+import ViewProducts from './pages/Owner/OwnerSettings/Products/ViewProducts';
+import AddProduct from './pages/Owner/OwnerSettings/Products/AddProduct';
+import ChangePrice from './pages/Owner/OwnerSettings/Products/ChangePrice';
+import EditProduct from './pages/Owner/OwnerSettings/Products/EditProduct';
 
 import OwnerStep1 from './pages/Owner/OwnerRegister/OwnerStep1';
 import OwnerStep2 from './pages/Owner/OwnerRegister/OwnerStep2';
 import OwnerStep3 from './pages/Owner/OwnerRegister/OwnerStep3';
 import OwnerStep4 from './pages/Owner/OwnerRegister/OwnerStep4';
+
+/* Owner Settings */
+import OwnerName from './pages/Owner/OwnerSettings/Account/OwnerName';
+import PhoneNumber from './pages/Owner/OwnerSettings/Account/PhoneNumber';
+import Email from './pages/Owner/OwnerSettings/Account/Email';
+import Password from './pages/Owner/OwnerSettings/Account/Password';
+
+import ShopName from './pages/Owner/OwnerSettings/Shop/ShopName';
+import Description from './pages/Owner/OwnerSettings/Shop/Description';
+import Address from './pages/Owner/OwnerSettings/Shop/Address';
 
 import DeliveryOrders from './pages/delivery/DeliveryOrders/DeliveryOrders';
 import ScanQR from './pages/ScanQR/ScanQR';
@@ -90,8 +115,55 @@ function App() {
 
           <Route path="/owner/orders" element={<OwnerOrders />} />
 
-          {/* DELIVERY ROUTES */}
+          {/* Owner Settings */}
+          <Route path="/owner/settings/account" element={<OwnerSettings />} />
 
+          <Route path="/owner/settings/account/name" element={<OwnerName />} />
+          <Route
+            path="/owner/settings/account/phone"
+            element={<PhoneNumber />}
+          />
+          <Route path="/owner/settings/account/email" element={<Email />} />
+          <Route
+            path="/owner/settings/account/password"
+            element={<Password />}
+          />
+          <Route path="/owner/settings/shop/name" element={<ShopName />} />
+          <Route
+            path="/owner/settings/shop/description"
+            element={<Description />}
+          />
+          <Route path="/owner/settings/shop/address" element={<Address />} />
+          <Route path="/owner/settings/shop/location" element={<Location />} />
+          <Route
+            path="/owner/settings/shop/open-closed"
+            element={<OpenClosed />}
+          />
+          <Route
+            path="/owner/settings/delivery/available"
+            element={<DeliveryAvailable />}
+          />
+          <Route
+            path="/owner/settings/delivery/pickup"
+            element={<PickupAvailable />}
+          />
+          <Route
+            path="/owner/settings/delivery/settings"
+            element={<DeliverySettings />}
+          />
+          <Route path="/owner/settings/payment" element={<PaymentDetails />} />
+          <Route path="/owner/settings/products" element={<ViewProducts />} />
+          <Route path="/owner/settings/products/add" element={<AddProduct />} />
+          <Route
+            path="/owner/settings/products/change-price/:productId"
+            element={<ChangePrice />}
+          />
+          <Route
+            path="/owner/settings/products/edit/:productId"
+            element={<EditProduct />}
+          />
+
+          {/* DELIVERY ROUTES */}
           <Route path="/delivery/orders" element={<DeliveryOrders />} />
 
           {/* PAYMENT */}

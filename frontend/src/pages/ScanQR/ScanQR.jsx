@@ -22,6 +22,20 @@ function ScanQR() {
     setError('');
 
     try {
+      // Ask browser for camera permission first.
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: {
+            ideal: 'environment',
+          },
+        },
+      });
+
+      // Permission was granted.
+      // Stop the temporary stream because Html5Qrcode
+      // will open the camera itself.
+      stream.getTracks().forEach((track) => track.stop());
+
       const scanner = new Html5Qrcode('qr-reader');
 
       scannerRef.current = scanner;
@@ -29,20 +43,23 @@ function ScanQR() {
       setScanning(true);
 
       await scanner.start(
-        { facingMode: 'environment' },
+        {
+          facingMode: 'environment',
+        },
         {
           fps: 10,
           qrbox: {
             width: 220,
             height: 220,
           },
+          aspectRatio: 1,
         },
         async (decodedText) => {
           console.log('QR Scanned:', decodedText);
 
-          await stopScanner();
-
           const shopId = extractShopId(decodedText);
+
+          await stopScanner();
 
           if (!shopId) {
             setError('Invalid RMA shop QR code.');
@@ -52,18 +69,32 @@ function ScanQR() {
           navigate(`/shop/${shopId}`);
         },
         () => {
-          // Ignore normal scanning failures.
-          // This callback fires when a frame does not contain a QR code.
-        }
+          // Normal scanning failure.
+          // Ignore frames where no QR code is detected.
+        },
       );
     } catch (err) {
-      console.error('QR scanner error:', err);
+      console.error('QR camera error:', err);
 
       setScanning(false);
 
-      setError(
-        'Unable to access your camera. Please allow camera permission and try again.'
-      );
+      if (err?.name === 'NotAllowedError') {
+        setError(
+          'Camera permission was denied. Please allow camera access in your browser settings and try again.',
+        );
+      } else if (err?.name === 'NotFoundError') {
+        setError('No camera was found on this device.');
+      } else if (err?.name === 'NotReadableError') {
+        setError('Your camera is currently being used by another application.');
+      } else if (err?.name === 'SecurityError') {
+        setError(
+          'Camera access is blocked because this page is not using a secure connection.',
+        );
+      } else {
+        setError(
+          'Unable to access your camera. Please check your browser camera permission and try again.',
+        );
+      }
     }
   };
 
@@ -127,7 +158,7 @@ function ScanQR() {
       const parts = url.pathname.split('/').filter(Boolean);
 
       const shopIndex = parts.findIndex(
-        (part) => part.toLowerCase() === 'shop'
+        (part) => part.toLowerCase() === 'shop',
       );
 
       if (shopIndex !== -1 && parts[shopIndex + 1]) {
@@ -183,56 +214,52 @@ function ScanQR() {
 
   useEffect(() => {
     return () => {
-      if (scannerRef.current) {
-        scannerRef.current
+      const scanner = scannerRef.current;
+
+      if (!scanner) {
+        return;
+      }
+
+      if (scanner.isScanning) {
+        scanner
           .stop()
           .catch(() => {})
           .finally(() => {
-            scannerRef.current
-              ?.clear()
-              .catch(() => {});
+            scanner.clear().catch(() => {});
           });
+      } else {
+        scanner.clear().catch(() => {});
       }
+
+      scannerRef.current = null;
     };
   }, []);
 
   return (
     <main className="scan_qr">
-
       <section className="scan_qr_card">
-
         {/* =========================================
             HEADER
         ========================================= */}
 
         <div className="scan_qr_header">
+          <div className="scan_qr_logo">RMA</div>
 
-          <div className="scan_qr_logo">
-            RMA
-          </div>
+          <p className="scan_qr_label">SHOP ACCESS</p>
 
-          <p className="scan_qr_label">
-            SHOP ACCESS
-          </p>
-
-          <h1>
-            Scan Shop QR
-          </h1>
+          <h1>Scan Shop QR</h1>
 
           <p>
-            Scan the QR code provided by your meat or fish shop
-            to start ordering directly from that shop.
+            Scan the QR code provided by your meat or fish shop to start
+            ordering directly from that shop.
           </p>
-
         </div>
-
 
         {/* =========================================
             REAL QR SCANNER
         ========================================= */}
 
         <div className="qr_scanner_box">
-
           {!scanning && (
             <>
               <div className="scanner_corner top_left"></div>
@@ -241,23 +268,14 @@ function ScanQR() {
               <div className="scanner_corner bottom_right"></div>
 
               <div className="scanner_placeholder">
+                <span>QR</span>
 
-                <span>
-                  QR
-                </span>
-
-                <p>
-                  Camera scanner
-                </p>
-
+                <p>Camera scanner</p>
               </div>
             </>
           )}
 
-          <div
-            id="qr-reader"
-            className="qr_reader"
-          />
+          <div id="qr-reader" className="qr_reader" />
 
           {scanning && (
             <>
@@ -269,41 +287,27 @@ function ScanQR() {
               <div className="scanner_line"></div>
             </>
           )}
-
         </div>
-
 
         {/* =========================================
             INFO
         ========================================= */}
 
         <div className="scan_qr_info">
-
-          <h2>
-            {scanning
-              ? 'Scanning for shop QR...'
-              : 'Ready to scan'}
-          </h2>
+          <h2>{scanning ? 'Scanning for shop QR...' : 'Ready to scan'}</h2>
 
           <p>
             {scanning
               ? 'Point your camera at the QR code provided by the shop.'
               : 'Tap the button below to activate your camera.'}
           </p>
-
         </div>
-
 
         {/* =========================================
             ERROR
         ========================================= */}
 
-        {error && (
-          <div className="scan_qr_error">
-            {error}
-          </div>
-        )}
-
+        {error && <div className="scan_qr_error">{error}</div>}
 
         {/* =========================================
             MANUAL SHOP ID
@@ -311,13 +315,9 @@ function ScanQR() {
 
         {showManual && (
           <div className="manual_shop_section">
-
-            <label htmlFor="manual-shop-id">
-              Shop ID
-            </label>
+            <label htmlFor="manual-shop-id">Shop ID</label>
 
             <div className="manual_shop_row">
-
               <input
                 id="manual-shop-id"
                 type="text"
@@ -327,25 +327,18 @@ function ScanQR() {
                 autoComplete="off"
               />
 
-              <button
-                type="button"
-                onClick={handleManualShopId}
-              >
+              <button type="button" onClick={handleManualShopId}>
                 Open
               </button>
-
             </div>
-
           </div>
         )}
-
 
         {/* =========================================
             ACTIONS
         ========================================= */}
 
         <div className="scan_qr_actions">
-
           <button
             type="button"
             className="scan_qr_back"
@@ -356,7 +349,6 @@ function ScanQR() {
           >
             Back
           </button>
-
 
           {!scanning ? (
             <button
@@ -378,9 +370,7 @@ function ScanQR() {
               Stop Camera
             </button>
           )}
-
         </div>
-
 
         {!scanning && (
           <button
@@ -394,9 +384,7 @@ function ScanQR() {
             {showManual ? 'Hide Shop ID' : 'Enter Shop ID Instead'}
           </button>
         )}
-
       </section>
-
     </main>
   );
 }

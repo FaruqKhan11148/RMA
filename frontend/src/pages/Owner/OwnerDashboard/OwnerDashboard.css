@@ -1081,3 +1081,46 @@
     transition: none;
   }
 }
+
+.owner_header_actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.owner_settings_button,
+.owner_logout_button {
+  min-height: 42px;
+  padding: 0 18px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.owner_settings_button {
+  background: #ffffff;
+  color: #16803a;
+  border: 1px solid #b8d8c1;
+}
+
+.owner_settings_button:hover {
+  background: #eef8f1;
+  border-color: #16803a;
+}
+
+.owner_settings_button:active,
+.owner_logout_button:active {
+  transform: translateY(1px);
+}
+
+.owner_settings_button:focus-visible,
+.owner_logout_button:focus-visible {
+  outline: 3px solid rgba(22, 128, 58, 0.2);
+  outline-offset: 2px;
+}

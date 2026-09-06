@@ -177,7 +177,9 @@
    ========================================================= */
 
 .scanner_placeholder {
-  position: relative;
+  position: absolute;
+
+  inset: 0;
 
   z-index: 1;
 
@@ -190,7 +192,16 @@
 
   gap: 10px;
 
+  width: 100%;
+  height: 100%;
+
+  box-sizing: border-box;
+
   color: #ffffff;
+
+  text-align: center;
+
+  pointer-events: none;
 }
 
 .scanner_placeholder span {
@@ -200,6 +211,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
+  box-sizing: border-box;
 
   border: 2px solid rgba(255, 255, 255, 0.9);
 
@@ -215,6 +228,8 @@
   color: rgba(255, 255, 255, 0.7);
 
   font-size: 12px;
+
+  text-align: center;
 }
 
 /* =========================================================

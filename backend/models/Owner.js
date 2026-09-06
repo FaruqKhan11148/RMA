@@ -184,6 +184,38 @@ const ownerSchema = new mongoose.Schema(
       default: true,
     },
 
+    deliverySettings: {
+      deliveryRadius: {
+        type: Number,
+        default: 5,
+        min: 0,
+      },
+
+      minimumOrderAmount: {
+        type: Number,
+        default: 0,
+        min: 0,
+      },
+
+      deliveryCharge: {
+        type: Number,
+        default: 20,
+        min: 0,
+      },
+
+      freeDeliveryAbove: {
+        type: Number,
+        default: 0,
+        min: 0,
+      },
+
+      estimatedDeliveryTime: {
+        type: Number,
+        default: 45,
+        min: 1,
+      },
+    },
+
     categories: {
       type: [String],
       default: [],
