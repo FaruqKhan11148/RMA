@@ -287,7 +287,7 @@ function AddProduct() {
         <div className="add-product-header">
           <button
             className="add-product-back"
-            onClick={() => navigate('/owner/settings/products')}
+            onClick={() => navigate('/owner/settings/account')}
           >
             ← Products
           </button>
