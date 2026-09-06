@@ -558,6 +558,14 @@ function DeliveryOrderCard({ order, onVerifyOtp, currentLocation }) {
           </div>
         )}
 
+        {routeLoading && (
+          <p className="delivery_route_loading">
+            Calculating delivery route...
+          </p>
+        )}
+
+        {routeError && <p className="delivery_error_message">{routeError}</p>}
+
         {/* ITEMS */}
 
         <div className="delivery_order_items">
