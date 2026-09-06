@@ -68,17 +68,17 @@
 }
 
 .delivery_person_card input:focus {
-  border-color: #888;
-  box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.05);
+  border-color: #2e9b5f;
+  box-shadow: 0 0 0 3px rgba(46, 155, 95, 0.08);
 }
 
-/* BUTTONS */
+/* PRIMARY BUTTON */
 
 .delivery_person_card button {
   border: none;
   border-radius: 9px;
   padding: 12px 20px;
-  background: #111;
+  background: #218838;
   color: white;
   font-size: 14px;
   font-weight: 600;
@@ -90,7 +90,7 @@
 }
 
 .delivery_person_card button:hover {
-  background: #222;
+  background: #1b7330;
 }
 
 .delivery_person_card button:active {
@@ -107,9 +107,9 @@
 .delivery_person_result {
   margin-top: 24px;
   padding: 20px;
-  background: #f8f8f8;
+  background: #f8fcf9;
+  border: 1px solid #dcefe2;
   border-radius: 12px;
-  border: 1px solid #e5e5e5;
 }
 
 .delivery_person_result h2 {
@@ -145,22 +145,26 @@
   margin-top: 10px;
 }
 
+/* EDIT DETAILS */
+
 .delivery_person_result > button:first-of-type {
-  background: #111;
+  background: #218838;
 }
 
 .delivery_person_result > button:first-of-type:hover {
-  background: #222;
+  background: #1b7330;
 }
 
+/* ACTIVATE / DEACTIVATE */
+
 .delivery_person_result > button:last-of-type {
-  background: #f1f1f1;
-  color: #333;
-  border: 1px solid #ddd;
+  background: #eaf8ef;
+  color: #16733b;
+  border: 1px solid #bfe8cd;
 }
 
 .delivery_person_result > button:last-of-type:hover {
-  background: #e8e8e8;
+  background: #dff3e6;
 }
 
 /* EDIT FORM */
@@ -173,14 +177,18 @@
   margin-bottom: 18px;
 }
 
+/* SAVE CHANGES */
+
 .delivery_person_result form button:first-of-type {
-  background: #111;
+  background: #218838;
   color: white;
 }
 
 .delivery_person_result form button:first-of-type:hover {
-  background: #222;
+  background: #1b7330;
 }
+
+/* CANCEL */
 
 .delivery_person_result form button:last-of-type {
   margin-top: 10px;
@@ -221,7 +229,7 @@
   line-height: 1.5;
 }
 
-/* LOADING / CHECKING */
+/* LOADING */
 
 .delivery_person_loading {
   min-height: 50vh;
