@@ -182,7 +182,7 @@ function ViewProducts() {
           <div>
             <button
               className="products-back-button"
-              onClick={() => navigate('/owner/dashboard')}
+              onClick={() => navigate('/owner/settings/account')}
             >
               ← Dashboard
             </button>

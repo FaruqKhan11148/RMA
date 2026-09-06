@@ -164,7 +164,7 @@ function OwnerOrders() {
       <section className="owner_orders_header">
         <button
           className="owner_orders_back"
-          onClick={() => navigate('/owner/dashboard')}
+          onClick={() => navigate('/owner/settings/account')}
         >
           ← Back
         </button>

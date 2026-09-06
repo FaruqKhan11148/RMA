@@ -134,7 +134,7 @@ function Description() {
         <button
           type="button"
           className="owner_setting_back"
-          onClick={() => navigate('/owner/settings/shop')}
+          onClick={() => navigate('/owner/settings/account')}
         >
           ← Shop
         </button>

@@ -124,7 +124,7 @@ function OwnerSettings() {
       <div className="owner-settings-header">
         <button
           className="back-button"
-          onClick={() => navigate('/owner/dashboard')}
+          onClick={() => navigate('/owner/settings/account')}
         >
           ← Dashboard
         </button>
