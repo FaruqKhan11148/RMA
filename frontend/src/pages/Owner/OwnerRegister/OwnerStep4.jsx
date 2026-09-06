@@ -35,7 +35,7 @@ function OwnerStep4() {
       setError('');
 
       const response = await fetch(
-        'http://localhost:5000/api/owners/register',
+        'https://rma-backend-bo4a.onrender.com/api/owners/register',
         {
           method: 'POST',
           headers: {

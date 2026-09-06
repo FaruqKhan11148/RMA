@@ -19,10 +19,13 @@ function AdminDashboard() {
   useEffect(() => {
     const checkAdminSession = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/admin/me', {
-          method: 'GET',
-          credentials: 'include',
-        });
+        const response = await fetch(
+          'https://rma-backend-bo4a.onrender.com/api/admin/me',
+          {
+            method: 'GET',
+            credentials: 'include',
+          },
+        );
 
         if (!response.ok) {
           navigate('/admin/login', { replace: true });
@@ -128,10 +131,13 @@ function AdminDashboard() {
             className="admin-logout-button"
             onClick={async () => {
               try {
-                await fetch('http://localhost:5000/api/admin/logout', {
-                  method: 'POST',
-                  credentials: 'include',
-                });
+                await fetch(
+                  'https://rma-backend-bo4a.onrender.com/api/admin/logout',
+                  {
+                    method: 'POST',
+                    credentials: 'include',
+                  },
+                );
               } catch (error) {
                 console.error('Logout error:', error);
               }
