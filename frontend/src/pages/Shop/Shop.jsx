@@ -23,7 +23,7 @@ function Shop() {
         setError('');
 
         const response = await fetch(
-          `https://rma-backend-bo4a.onrender.com/api/owners/shop/${shopId}`,
+          `http://localhost:5000api/owners/shop/${shopId}`,
         );
 
         const data = await response.json();

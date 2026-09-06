@@ -30,7 +30,7 @@ function ChangePrice() {
         }
 
         const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/owners/products',
+          'http://localhost:5000api/owners/products',
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -84,7 +84,7 @@ function ChangePrice() {
       setSaving(true);
 
       const response = await fetch(
-        `https://rma-backend-bo4a.onrender.com/api/owners/products/${productId}/price`,
+        `http://localhost:5000api/owners/products/${productId}/price`,
         {
           method: 'PATCH',
           headers: {

@@ -33,9 +33,19 @@ function OwnerStep4() {
     try {
       setLoading(true);
       setError('');
+      console.log('FINAL OWNER DATA:', ownerData);
+
+      console.log({
+        ownerName: ownerData.ownerName,
+        shopName: ownerData.shopName,
+        email: ownerData.email,
+        address: ownerData.address,
+        phone: ownerData.phone,
+        password: ownerData.password,
+      });
 
       const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/owners/register',
+        'http://localhost:5000/api/owners/register',
         {
           method: 'POST',
           headers: {

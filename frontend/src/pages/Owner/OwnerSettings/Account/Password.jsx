@@ -47,7 +47,7 @@ function Password() {
       }
 
       const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/owners/settings/password',
+        'http://localhost:5000api/owners/settings/password',
         {
           method: 'PATCH',
           headers: {

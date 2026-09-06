@@ -75,28 +75,25 @@ function OwnerRegister() {
     setLoading(true);
 
     try {
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/owners/register',
-        {
-          method: 'POST',
+      const response = await fetch('http://localhost:5000api/owners/register', {
+        method: 'POST',
 
-          headers: {
-            'Content-Type': 'application/json',
-          },
-
-          body: JSON.stringify({
-            ownerName,
-            shopName,
-            phone,
-            password,
-            address,
-            description,
-            delivery,
-            pickup,
-            products,
-          }),
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+
+        body: JSON.stringify({
+          ownerName,
+          shopName,
+          phone,
+          password,
+          address,
+          description,
+          delivery,
+          pickup,
+          products,
+        }),
+      });
 
       const data = await response.json();
 

@@ -28,7 +28,7 @@ function DeliveryPerson() {
         }
 
         const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/delivery/person',
+          'http://localhost:5000api/delivery/person',
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -78,7 +78,7 @@ function DeliveryPerson() {
       }
 
       const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/delivery/person/status',
+        'http://localhost:5000api/delivery/person/status',
         {
           method: 'PATCH',
           headers: {
@@ -140,22 +140,19 @@ function DeliveryPerson() {
         return;
       }
 
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/delivery/person',
-        {
-          method: 'PATCH',
+      const response = await fetch('http://localhost:5000api/delivery/person', {
+        method: 'PATCH',
 
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-
-          body: JSON.stringify({
-            name: editName.trim(),
-            phone: editPhone.trim(),
-          }),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
-      );
+
+        body: JSON.stringify({
+          name: editName.trim(),
+          phone: editPhone.trim(),
+        }),
+      });
 
       const data = await response.json();
 
@@ -214,7 +211,7 @@ function DeliveryPerson() {
       }
 
       const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/delivery/register',
+        'http://localhost:5000api/delivery/register',
         {
           method: 'POST',
 

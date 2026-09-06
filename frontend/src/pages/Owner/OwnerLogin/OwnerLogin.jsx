@@ -19,19 +19,16 @@ function OwnerLogin() {
     setLoading(true);
 
     try {
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/owners/login',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            phone,
-            password,
-          }),
+      const response = await fetch('http://localhost:5000api/owners/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify({
+          phone,
+          password,
+        }),
+      });
 
       const data = await response.json();
 

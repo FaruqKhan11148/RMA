@@ -8,6 +8,7 @@ function OwnerStep1() {
 
   const [ownerName, setOwnerName] = useState('');
   const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
@@ -33,6 +34,7 @@ function OwnerStep1() {
     const ownerData = {
       ownerName,
       phone,
+      email,
       password,
     };
 
@@ -110,6 +112,17 @@ function OwnerStep1() {
                 placeholder="Enter mobile number"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
+                required
+              />
+            </label>
+
+            <label>
+              Email Address
+              <input
+                type="email"
+                placeholder="Enter your email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </label>

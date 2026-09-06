@@ -33,7 +33,7 @@ function Payment() {
 
       // 1. Create Razorpay order from backend
       const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/payments/create-order',
+        'http://localhost:5000api/payments/create-order',
         {
           method: 'POST',
           headers: {
@@ -84,7 +84,7 @@ function Payment() {
           try {
             // 3. Verify payment
             const verifyResponse = await fetch(
-              'https://rma-backend-bo4a.onrender.com/api/payments/verify',
+              'http://localhost:5000api/payments/verify',
               {
                 method: 'POST',
                 headers: {

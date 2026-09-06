@@ -24,7 +24,7 @@ function AdminDelivery() {
         setError('');
 
         const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/admin/delivery',
+          'http://localhost:5000api/admin/delivery',
           {
             method: 'GET',
             credentials: 'include',
@@ -110,7 +110,7 @@ function AdminDelivery() {
       setError('');
 
       const response = await fetch(
-        `https://rma-backend-bo4a.onrender.com/api/admin/delivery/${person.shopId}`,
+        `http://localhost:5000api/admin/delivery/${person.shopId}`,
         {
           method: 'GET',
           credentials: 'include',

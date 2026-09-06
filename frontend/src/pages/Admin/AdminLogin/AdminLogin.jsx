@@ -25,20 +25,17 @@ function AdminLogin() {
     try {
       setLoading(true);
 
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/admin/login',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-          body: JSON.stringify({
-            username: username.trim(),
-            password,
-          }),
+      const response = await fetch('http://localhost:5000api/admin/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        credentials: 'include',
+        body: JSON.stringify({
+          username: username.trim(),
+          password,
+        }),
+      });
 
       const data = await response.json();
 

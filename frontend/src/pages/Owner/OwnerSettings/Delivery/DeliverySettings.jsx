@@ -30,14 +30,11 @@ function DeliverySettings() {
 
     const fetchOwner = async () => {
       try {
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/owners/me',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const response = await fetch('http://localhost:5000api/owners/me', {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
 
         const data = await response.json();
 
@@ -123,7 +120,7 @@ function DeliverySettings() {
       setSaving(true);
 
       const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/owners/settings/delivery-settings',
+        'http://localhost:5000api/owners/settings/delivery-settings',
         {
           method: 'PATCH',
           headers: {

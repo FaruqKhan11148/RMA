@@ -23,14 +23,11 @@ function ViewProducts() {
       setLoading(true);
       setError('');
 
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/owners/products',
-        {
-          headers: {
-            Authorization: `Bearer ${ownerToken}`,
-          },
+      const response = await fetch('http://localhost:5000api/owners/products', {
+        headers: {
+          Authorization: `Bearer ${ownerToken}`,
         },
-      );
+      });
 
       const data = await response.json();
 
@@ -84,7 +81,7 @@ function ViewProducts() {
       setSuccessMessage('');
 
       const response = await fetch(
-        `https://rma-backend-bo4a.onrender.com/api/owners/products/${product.productId}/availability`,
+        `http://localhost:5000api/owners/products/${product.productId}/availability`,
         {
           method: 'PATCH',
           headers: {
@@ -133,7 +130,7 @@ function ViewProducts() {
       setSuccessMessage('');
 
       const response = await fetch(
-        `https://rma-backend-bo4a.onrender.com/api/owners/products/${product.productId}`,
+        `http://localhost:5000api/owners/products/${product.productId}`,
         {
           method: 'DELETE',
           headers: {
