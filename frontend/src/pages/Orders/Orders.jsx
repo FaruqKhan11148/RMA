@@ -21,7 +21,7 @@ function Orders() {
 
         // Check whether customer is logged in
         const meResponse = await fetch(
-          'http://localhost:5000api/customers/me',
+          'https://rma-backend-bo4a.onrender.com/api/customers/me',
           {
             credentials: 'include',
           },
@@ -35,7 +35,7 @@ function Orders() {
           setLoggedIn(true);
 
           const ordersResponse = await fetch(
-            'http://localhost:5000api/customers/orders',
+            'https://rma-backend-bo4a.onrender.com/api/customers/orders',
             {
               credentials: 'include',
             },

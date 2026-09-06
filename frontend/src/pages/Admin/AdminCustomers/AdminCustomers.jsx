@@ -20,7 +20,7 @@ function AdminCustomers() {
         setError('');
 
         const response = await fetch(
-          'http://localhost:5000api/admin/customers',
+          'https://rma-backend-bo4a.onrender.com/api/admin/customers',
           {
             credentials: 'include',
           },

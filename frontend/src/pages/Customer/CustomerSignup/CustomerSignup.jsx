@@ -44,7 +44,7 @@ function CustomerSignup() {
       }
 
       const response = await fetch(
-        'http://localhost:5000api/customers/register',
+        'https://rma-backend-bo4a.onrender.com/api/customers/register',
         {
           method: 'POST',
           headers: {

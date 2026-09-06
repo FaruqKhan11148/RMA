@@ -30,14 +30,17 @@ function CustomerLogin() {
       setLoading(true);
       setError('');
 
-      const response = await fetch('http://localhost:5000api/customers/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        'https://rma-backend-bo4a.onrender.com/api/customers/login',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify(formData),
         },
-        credentials: 'include',
-        body: JSON.stringify(formData),
-      });
+      );
 
       const data = await response.json();
 

@@ -36,7 +36,7 @@ function EditProduct() {
         }
 
         const response = await fetch(
-          'http://localhost:5000api/owners/products',
+          'https://rma-backend-bo4a.onrender.com/api/owners/products',
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -126,7 +126,7 @@ function EditProduct() {
        */
       if (!product.isCustom) {
         const response = await fetch(
-          `http://localhost:5000api/owners/products/${productId}/price`,
+          `https://rma-backend-bo4a.onrender.com/api/owners/products/${productId}/price`,
           {
             method: 'PATCH',
             headers: {
@@ -168,7 +168,7 @@ function EditProduct() {
        * image
        */
       const response = await fetch(
-        `http://localhost:5000api/owners/products/${productId}`,
+        `https://rma-backend-bo4a.onrender.com/api/owners/products/${productId}`,
         {
           method: 'PATCH',
           headers: {
@@ -223,7 +223,7 @@ function EditProduct() {
 
     try {
       const response = await fetch(
-        `http://localhost:5000api/owners/products/${productId}/availability`,
+        `https://rma-backend-bo4a.onrender.com/api/owners/products/${productId}/availability`,
         {
           method: 'PATCH',
           headers: {

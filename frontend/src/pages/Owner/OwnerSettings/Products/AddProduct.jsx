@@ -43,11 +43,14 @@ function AddProduct() {
       setLoadingProducts(true);
       setError('');
 
-      const response = await fetch('http://localhost:5000api/owners/products', {
-        headers: {
-          Authorization: `Bearer ${ownerToken}`,
+      const response = await fetch(
+        'https://rma-backend-bo4a.onrender.com/api/owners/products',
+        {
+          headers: {
+            Authorization: `Bearer ${ownerToken}`,
+          },
         },
-      });
+      );
 
       const data = await response.json();
 
@@ -145,28 +148,31 @@ function AddProduct() {
       setError('');
       setSuccessMessage('');
 
-      const response = await fetch('http://localhost:5000api/owners/products', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${ownerToken}`,
+      const response = await fetch(
+        'https://rma-backend-bo4a.onrender.com/api/owners/products',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${ownerToken}`,
+          },
+          body: JSON.stringify({
+            catalogueProductId: selectedCatalogueProduct.productId,
+
+            name: selectedCatalogueProduct.name,
+
+            category: selectedCategory.categoryName,
+
+            price: productPrice,
+
+            unit: selectedCatalogueProduct.unit,
+
+            imageUrl: selectedCatalogueProduct.imageUrl,
+
+            isCustom: false,
+          }),
         },
-        body: JSON.stringify({
-          catalogueProductId: selectedCatalogueProduct.productId,
-
-          name: selectedCatalogueProduct.name,
-
-          category: selectedCategory.categoryName,
-
-          price: productPrice,
-
-          unit: selectedCatalogueProduct.unit,
-
-          imageUrl: selectedCatalogueProduct.imageUrl,
-
-          isCustom: false,
-        }),
-      });
+      );
 
       const data = await response.json();
 
@@ -217,22 +223,25 @@ function AddProduct() {
       setError('');
       setSuccessMessage('');
 
-      const response = await fetch('http://localhost:5000api/owners/products', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${ownerToken}`,
+      const response = await fetch(
+        'https://rma-backend-bo4a.onrender.com/api/owners/products',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${ownerToken}`,
+          },
+          body: JSON.stringify({
+            catalogueProductId: null,
+            name,
+            category,
+            price: productPrice,
+            unit,
+            imageUrl: customProductImage.trim(),
+            isCustom: true,
+          }),
         },
-        body: JSON.stringify({
-          catalogueProductId: null,
-          name,
-          category,
-          price: productPrice,
-          unit,
-          imageUrl: customProductImage.trim(),
-          isCustom: true,
-        }),
-      });
+      );
 
       const data = await response.json();
 
