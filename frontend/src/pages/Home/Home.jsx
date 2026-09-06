@@ -41,7 +41,7 @@ function Home() {
           throw new Error(data.message || 'Failed to load shop');
         }
 
-        setShop(data);
+        setShop(data.shop);
       } catch (error) {
         console.error('Fetch shop error:', error);
         setShopError('Unable to load trusted shop.');
