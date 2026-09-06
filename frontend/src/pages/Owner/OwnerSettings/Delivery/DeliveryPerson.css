@@ -1,0 +1,273 @@
+.delivery_person_settings {
+  min-height: 100vh;
+  background: #f6f7f9;
+  padding: 30px 20px 60px;
+}
+
+.delivery_person_card {
+  max-width: 760px;
+  margin: 0 auto;
+  background: white;
+  border: 1px solid #e5e5e5;
+  border-radius: 16px;
+  padding: 25px;
+}
+
+/* HEADER */
+
+.delivery_person_card h1 {
+  margin: 0 0 7px;
+  font-size: 32px;
+  color: #171717;
+  line-height: 1.2;
+}
+
+.delivery_person_card > p {
+  margin: 0 0 23px;
+  color: #777;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* FORM */
+
+.delivery_person_card form {
+  display: flex;
+  flex-direction: column;
+}
+
+.delivery_person_card form > div {
+  margin-bottom: 18px;
+}
+
+.delivery_person_card label {
+  display: block;
+  margin-bottom: 7px;
+  color: #333;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.delivery_person_card input {
+  box-sizing: border-box;
+  width: 100%;
+  border: 1px solid #dcdcdc;
+  border-radius: 9px;
+  padding: 13px;
+  background: white;
+  color: #222;
+  font-size: 14px;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.delivery_person_card input::placeholder {
+  color: #999;
+}
+
+.delivery_person_card input:focus {
+  border-color: #888;
+  box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.05);
+}
+
+/* BUTTONS */
+
+.delivery_person_card button {
+  border: none;
+  border-radius: 9px;
+  padding: 12px 20px;
+  background: #111;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    opacity 0.2s ease,
+    transform 0.15s ease;
+}
+
+.delivery_person_card button:hover {
+  background: #222;
+}
+
+.delivery_person_card button:active {
+  transform: scale(0.99);
+}
+
+.delivery_person_card button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* EXISTING DELIVERY PERSON */
+
+.delivery_person_result {
+  margin-top: 24px;
+  padding: 20px;
+  background: #f8f8f8;
+  border-radius: 12px;
+  border: 1px solid #e5e5e5;
+}
+
+.delivery_person_result h2 {
+  margin: 0 0 16px;
+  font-size: 18px;
+  color: #181818;
+}
+
+/* DETAILS */
+
+.delivery_person_result > p {
+  margin: 0;
+  padding: 11px 0;
+  border-bottom: 1px solid #e5e5e5;
+  color: #777;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.delivery_person_result > p strong {
+  color: #333;
+  font-weight: 600;
+}
+
+.delivery_person_result > p:last-of-type {
+  margin-bottom: 20px;
+}
+
+/* EXISTING PERSON BUTTONS */
+
+.delivery_person_result > button {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.delivery_person_result > button:first-of-type {
+  background: #111;
+}
+
+.delivery_person_result > button:first-of-type:hover {
+  background: #222;
+}
+
+.delivery_person_result > button:last-of-type {
+  background: #f1f1f1;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.delivery_person_result > button:last-of-type:hover {
+  background: #e8e8e8;
+}
+
+/* EDIT FORM */
+
+.delivery_person_result form {
+  margin-top: 5px;
+}
+
+.delivery_person_result form > div {
+  margin-bottom: 18px;
+}
+
+.delivery_person_result form button:first-of-type {
+  background: #111;
+  color: white;
+}
+
+.delivery_person_result form button:first-of-type:hover {
+  background: #222;
+}
+
+.delivery_person_result form button:last-of-type {
+  margin-top: 10px;
+  background: white;
+  color: #444;
+  border: 1px solid #ddd;
+}
+
+.delivery_person_result form button:last-of-type:hover {
+  background: #f5f5f5;
+}
+
+/* SUCCESS */
+
+.delivery_person_success {
+  padding: 13px 16px;
+  border-radius: 10px;
+  margin-top: 18px;
+  margin-bottom: 0;
+  background: #eaf8ef;
+  color: #16733b;
+  border: 1px solid #bfe8cd;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ERROR */
+
+.delivery_person_error {
+  padding: 13px 16px;
+  border-radius: 10px;
+  margin-top: 18px;
+  margin-bottom: 0;
+  background: #fff0f0;
+  color: #b42318;
+  border: 1px solid #f2c3c0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* LOADING / CHECKING */
+
+.delivery_person_loading {
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #777;
+  font-size: 14px;
+}
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+  .delivery_person_settings {
+    padding: 20px 14px 40px;
+  }
+
+  .delivery_person_card {
+    padding: 18px;
+    border-radius: 16px;
+  }
+
+  .delivery_person_card h1 {
+    font-size: 27px;
+  }
+
+  .delivery_person_card > p {
+    font-size: 13px;
+    margin-bottom: 22px;
+  }
+
+  .delivery_person_card input {
+    padding: 13px;
+    font-size: 14px;
+  }
+
+  .delivery_person_card button {
+    width: 100%;
+    padding: 12px 16px;
+  }
+
+  .delivery_person_result {
+    padding: 18px;
+  }
+
+  .delivery_person_result h2 {
+    font-size: 17px;
+  }
+}

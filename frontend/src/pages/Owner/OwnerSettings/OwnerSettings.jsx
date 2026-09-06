@@ -103,6 +103,11 @@ function OwnerSettings() {
             'Configure radius, charges, minimum order and delivery time',
           path: '/owner/settings/delivery/settings',
         },
+        {
+          title: 'Delivery Person',
+          description: 'Register and manage your delivery person',
+          path: '/owner/settings/delivery/person',
+        },
       ],
     },
 
@@ -124,7 +129,7 @@ function OwnerSettings() {
       <div className="owner-settings-header">
         <button
           className="back-button"
-          onClick={() => navigate('/owner/settings/account')}
+          onClick={() => navigate('/owner/dashboard')}
         >
           ← Dashboard
         </button>

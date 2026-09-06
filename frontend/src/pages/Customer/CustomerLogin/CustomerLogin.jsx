@@ -31,7 +31,7 @@ function CustomerLogin() {
       setError('');
 
       const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/customers/login',
+        'http://localhost:5000/api/customers/login',
         {
           method: 'POST',
           headers: {

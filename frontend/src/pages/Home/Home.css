@@ -3,57 +3,243 @@
    Mobile-first marketplace design
    ========================================================= */
 
+/* =========================================================
+   HOME
+   ========================================================= */
+
 .home {
+  position: relative;
+
   width: 100%;
+
   min-height: calc(100vh - 60px);
 
-  padding: 84px 16px 100px;
+  padding: 0 16px 100px;
 
   box-sizing: border-box;
 
   background: var(--rma-bg);
+
+  overflow: hidden;
 }
 
 /* =========================================================
-   HEADER
+   HERO
+   Sliding meat images
    ========================================================= */
 
-.home_header {
-  margin-bottom: 28px;
+.home_hero {
+  position: relative;
+
+  width: calc(100% + 32px);
+
+  height: 330px;
+
+  margin-left: -16px;
+
+  overflow: hidden;
+
+  background: #182019;
 }
 
-.home_greeting {
-  margin: 0 0 7px;
+/* =========================================================
+   HERO IMAGE TRACK
+   ========================================================= */
 
-  color: var(--rma-primary);
+.hero_image_track {
+  display: flex;
 
-  font-size: 13px;
+  width: 600%;
+
+  height: 100%;
+
+  animation: meatSlide 30s infinite;
+
+  will-change: transform;
+}
+
+/* =========================================================
+   INDIVIDUAL HERO IMAGE
+   ========================================================= */
+
+.hero_image {
+  width: 16.666667%;
+
+  height: 100%;
+
+  flex-shrink: 0;
+
+  overflow: hidden;
+}
+
+.hero_image img {
+  width: 100%;
+
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  object-position: center;
+}
+
+/* =========================================================
+   HERO OVERLAY
+   Makes text readable
+   ========================================================= */
+
+.hero_overlay {
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 2;
+
+  pointer-events: none;
+
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.18) 0%,
+    rgba(0, 0, 0, 0.28) 35%,
+    rgba(0, 0, 0, 0.58) 100%
+  );
+}
+
+/* =========================================================
+   HERO TEXT
+   ========================================================= */
+
+.home_hero .home_header {
+  position: absolute;
+
+  left: 16px;
+
+  right: 16px;
+
+  bottom: 34px;
+
+  z-index: 3;
+
+  margin: 0;
+
+  color: #ffffff;
+}
+
+/* Greeting */
+
+.home_hero .home_greeting {
+  margin: 0 0 8px;
+
+  color: #c5f2d2;
+
+  font-size: 14px;
+
   font-weight: var(--rma-weight-semibold);
 
   letter-spacing: 0.2px;
+
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
 }
 
-.home_header h1 {
+/* Main heading */
+
+.home_hero .home_header h1 {
   margin: 0 0 9px;
 
-  color: var(--rma-text);
+  color: #ffffff;
 
-  font-size: 28px;
-  line-height: 1.18;
+  font-size: 30px;
+
+  line-height: 1.16;
+
   font-weight: var(--rma-weight-extrabold);
 
   letter-spacing: -0.7px;
+
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
 }
 
-.home_header > p:last-child {
+/* Description */
+
+.home_hero .home_header > p:last-child {
   max-width: 360px;
 
   margin: 0;
 
-  color: var(--rma-text-secondary);
+  color: rgba(255, 255, 255, 0.92);
 
   font-size: 14px;
-  line-height: 1.55;
+
+  line-height: 1.5;
+
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.45);
+}
+
+/* =========================================================
+   IMAGE SLIDE ANIMATION
+   ========================================================= */
+
+@keyframes meatSlide {
+  0% {
+    transform: translateX(0);
+  }
+
+  13% {
+    transform: translateX(0);
+  }
+
+  16% {
+    transform: translateX(-16.666667%);
+  }
+
+  29% {
+    transform: translateX(-16.666667%);
+  }
+
+  32% {
+    transform: translateX(-33.333333%);
+  }
+
+  45% {
+    transform: translateX(-33.333333%);
+  }
+
+  48% {
+    transform: translateX(-50%);
+  }
+
+  61% {
+    transform: translateX(-50%);
+  }
+
+  64% {
+    transform: translateX(-66.666667%);
+  }
+
+  77% {
+    transform: translateX(-66.666667%);
+  }
+
+  80% {
+    transform: translateX(-83.333333%);
+  }
+
+  93% {
+    transform: translateX(-83.333333%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* =========================================================
+   CONTENT BELOW HERO
+   ========================================================= */
+
+.home_content {
+  width: 100%;
 }
 
 /* =========================================================
@@ -62,8 +248,17 @@
 
 .home_actions {
   display: flex;
+
   flex-direction: column;
+
   gap: 11px;
+
+  /*
+    This creates the space between the
+    image hero and Scan QR button.
+  */
+
+  margin-top: 22px;
 
   margin-bottom: 34px;
 }
@@ -76,12 +271,15 @@
   width: 100%;
 
   display: flex;
+
   align-items: center;
+
   gap: 15px;
 
   padding: 18px;
 
   border: 1px solid #c9e6d1;
+
   border-radius: var(--rma-radius-lg);
 
   background: linear-gradient(
@@ -118,19 +316,25 @@
   transform: scale(0.985);
 }
 
-/* QR ICON */
+/* =========================================================
+   QR ICON
+   ========================================================= */
 
 .action_icon {
   width: 56px;
+
   height: 56px;
 
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 
   flex-shrink: 0;
 
   border: 1px solid #b8d9c1;
+
   border-radius: 14px;
 
   background: var(--rma-card);
@@ -138,12 +342,15 @@
   color: var(--rma-primary-dark);
 
   font-size: 12px;
+
   font-weight: var(--rma-weight-extrabold);
 
   box-shadow: var(--rma-shadow-xs);
 }
 
-/* QR CONTENT */
+/* =========================================================
+   QR CONTENT
+   ========================================================= */
 
 .action_content {
   min-width: 0;
@@ -155,6 +362,7 @@
   color: var(--rma-text);
 
   font-size: 17px;
+
   line-height: 1.25;
 
   font-weight: var(--rma-weight-bold);
@@ -166,6 +374,7 @@
   color: var(--rma-text-secondary);
 
   font-size: 12px;
+
   line-height: 1.45;
 }
 
@@ -175,21 +384,27 @@
 
 .find_action {
   width: 100%;
+
   height: 54px;
 
   display: flex;
+
   align-items: center;
+
   gap: 12px;
 
   padding: 0 17px;
 
   border: 1px solid var(--rma-border);
+
   border-radius: var(--rma-radius-md);
 
   background: var(--rma-card);
+
   color: var(--rma-text-primary);
 
   font-size: 14px;
+
   font-weight: var(--rma-weight-semibold);
 
   text-align: left;
@@ -209,6 +424,7 @@
 
 .find_action:hover {
   background: var(--rma-primary-soft);
+
   border-color: #b9dfc4;
 
   box-shadow: var(--rma-shadow-sm);
@@ -218,12 +434,19 @@
   transform: scale(0.985);
 }
 
+/* =========================================================
+   FIND ICON
+   ========================================================= */
+
 .find_icon {
   width: 30px;
+
   height: 30px;
 
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 
   border-radius: 9px;
@@ -241,9 +464,15 @@
   width: 100%;
 }
 
+/* =========================================================
+   SECTION TITLE
+   ========================================================= */
+
 .section_title {
   display: flex;
+
   align-items: center;
+
   justify-content: space-between;
 
   margin-bottom: 13px;
@@ -255,6 +484,7 @@
   color: var(--rma-text);
 
   font-size: 19px;
+
   font-weight: var(--rma-weight-bold);
 
   letter-spacing: -0.3px;
@@ -264,11 +494,13 @@
   padding: 4px 0;
 
   border: none;
+
   background: transparent;
 
   color: var(--rma-primary);
 
   font-size: 12px;
+
   font-weight: var(--rma-weight-semibold);
 
   cursor: pointer;
@@ -288,6 +520,7 @@
   padding: 22px 16px;
 
   border: 1px solid var(--rma-border-light);
+
   border-radius: var(--rma-radius-md);
 
   background: var(--rma-card);
@@ -311,9 +544,11 @@
   padding: 14px 15px;
 
   border: 1px solid #fecaca;
+
   border-radius: var(--rma-radius-md);
 
   background: var(--rma-danger-light);
+
   color: var(--rma-danger);
 
   font-size: 13px;
@@ -329,7 +564,9 @@
   width: 100%;
 
   display: flex;
+
   align-items: center;
+
   justify-content: space-between;
 
   gap: 13px;
@@ -337,6 +574,7 @@
   padding: 17px;
 
   border: 1px solid var(--rma-border);
+
   border-radius: var(--rma-radius-lg);
 
   background: var(--rma-card);
@@ -359,10 +597,13 @@
   transform: translateY(-1px);
 }
 
-/* SHOP INFO */
+/* =========================================================
+   SHOP INFO
+   ========================================================= */
 
 .shop_card_info {
   min-width: 0;
+
   flex: 1;
 }
 
@@ -374,9 +615,11 @@
   color: var(--rma-text);
 
   font-size: 16px;
+
   font-weight: var(--rma-weight-bold);
 
   white-space: nowrap;
+
   text-overflow: ellipsis;
 }
 
@@ -388,9 +631,11 @@
   color: var(--rma-text-secondary);
 
   font-size: 12px;
+
   line-height: 1.4;
 
   white-space: nowrap;
+
   text-overflow: ellipsis;
 }
 
@@ -402,9 +647,11 @@
   color: var(--rma-text-muted);
 
   font-size: 11px;
+
   line-height: 1.4;
 
   white-space: nowrap;
+
   text-overflow: ellipsis;
 }
 
@@ -418,12 +665,15 @@
   padding: 9px 13px;
 
   border: none;
+
   border-radius: var(--rma-radius-sm);
 
   background: var(--rma-primary);
+
   color: var(--rma-text-white);
 
   font-size: 12px;
+
   font-weight: var(--rma-weight-semibold);
 
   cursor: pointer;
@@ -458,16 +708,34 @@
 
     margin: 0 auto;
 
-    padding: 100px var(--rma-desktop-padding) 110px;
+    padding: 0 var(--rma-desktop-padding) 110px;
   }
 
-  .home_header {
-    margin-bottom: 34px;
+  /* HERO */
+
+  .home_hero {
+    width: 100%;
+
+    height: 390px;
+
+    margin-left: 0;
+
+    border-radius: 0 0 24px 24px;
   }
 
-  .home_header h1 {
-    font-size: 34px;
+  .home_hero .home_header {
+    left: 30px;
+
+    right: 30px;
+
+    bottom: 42px;
   }
+
+  .home_hero .home_header h1 {
+    font-size: 38px;
+  }
+
+  /* ACTIONS */
 
   .home_actions {
     max-width: 650px;
@@ -483,6 +751,8 @@
     width: 220px;
   }
 
+  /* MY SHOPS */
+
   .my_shops {
     max-width: 650px;
   }
@@ -495,20 +765,51 @@
 @media (max-width: 360px) {
   .home {
     padding-left: 12px;
+
     padding-right: 12px;
   }
 
-  .home_header h1 {
-    font-size: 25px;
+  /* HERO */
+
+  .home_hero {
+    width: calc(100% + 24px);
+
+    margin-left: -12px;
+
+    height: 310px;
   }
+
+  .home_hero .home_header {
+    left: 12px;
+
+    right: 12px;
+
+    bottom: 28px;
+  }
+
+  .home_hero .home_header h1 {
+    font-size: 26px;
+  }
+
+  .home_hero .home_greeting {
+    font-size: 13px;
+  }
+
+  .home_hero .home_header > p:last-child {
+    font-size: 13px;
+  }
+
+  /* QR */
 
   .qr_action {
     padding: 15px;
+
     gap: 12px;
   }
 
   .action_icon {
     width: 50px;
+
     height: 50px;
   }
 
@@ -516,12 +817,15 @@
     font-size: 16px;
   }
 
+  /* SHOP */
+
   .shop_card {
     padding: 14px;
   }
 
   .shop_order_button {
     min-width: 62px;
+
     padding: 8px 10px;
   }
 }
@@ -531,6 +835,10 @@
    ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
+  .hero_image_track {
+    animation: none;
+  }
+
   .qr_action,
   .find_action,
   .shop_card,

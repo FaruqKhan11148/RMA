@@ -24,7 +24,7 @@ function ViewProducts() {
       setError('');
 
       const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/owners/products',
+        'http://localhost:5000/api/owners/products',
         {
           headers: {
             Authorization: `Bearer ${ownerToken}`,
@@ -84,7 +84,7 @@ function ViewProducts() {
       setSuccessMessage('');
 
       const response = await fetch(
-        `https://rma-backend-bo4a.onrender.com/api/owners/products/${product.productId}/availability`,
+        `http://localhost:5000/api/owners/products/${product.productId}/availability`,
         {
           method: 'PATCH',
           headers: {
@@ -133,7 +133,7 @@ function ViewProducts() {
       setSuccessMessage('');
 
       const response = await fetch(
-        `https://rma-backend-bo4a.onrender.com/api/owners/products/${product.productId}`,
+        `http://localhost:5000/api/owners/products/${product.productId}`,
         {
           method: 'DELETE',
           headers: {
@@ -184,7 +184,7 @@ function ViewProducts() {
               className="products-back-button"
               onClick={() => navigate('/owner/settings/account')}
             >
-              ← Dashboard
+              ← Products Settings 
             </button>
 
             <h1>Products</h1>

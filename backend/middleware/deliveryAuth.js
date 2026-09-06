@@ -22,6 +22,7 @@ const deliveryAuth = async (req, res, next) => {
 
     const deliveryPerson = await DeliveryPerson.findOne({
       loginToken: token,
+      loginTokenExpiresAt: { $gt: new Date() },
       isActive: true,
     });
 

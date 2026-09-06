@@ -1,20 +1,22 @@
 import './MapPicker.css';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import {
   MapContainer,
-  TileLayer,
   Marker,
+  TileLayer,
   useMap,
   useMapEvents,
 } from 'react-leaflet';
 
 import L from 'leaflet';
-
 import 'leaflet/dist/leaflet.css';
 
-// Fix default Leaflet marker icon
+// =========================
+// Leaflet marker fix
+// =========================
+
 delete L.Icon.Default.prototype._getIconUrl;
 
 L.Icon.Default.mergeOptions({
@@ -28,16 +30,42 @@ L.Icon.Default.mergeOptions({
     'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
 });
 
-// ------------------------------------
-// MAP CLICK HANDLER
-// ------------------------------------
+// =========================
+// Constants
+// =========================
 
-function LocationMarker({ position, onMapClick }) {
+const fallbackPosition = [14.6224, 75.6295];
+
+const MAPTILER_KEY = process.env.REACT_APP_MAPTILER_KEY;
+
+// =========================
+// Map controller
+// =========================
+
+function MapController({ position }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!position) return;
+
+    map.setView(position, 17, {
+      animate: true,
+    });
+  }, [map, position]);
+
+  return null;
+}
+
+// =========================
+// Location marker
+// =========================
+
+function LocationMarker({ position, onSelect }) {
   useMapEvents({
     click(event) {
       const newPosition = [event.latlng.lat, event.latlng.lng];
 
-      onMapClick(newPosition);
+      onSelect(newPosition);
     },
   });
 
@@ -48,151 +76,144 @@ function LocationMarker({ position, onMapClick }) {
   return <Marker position={position} />;
 }
 
-// ------------------------------------
-// MOVE MAP TO SELECTED LOCATION
-// ------------------------------------
-
-function MapController({ position }) {
-  const map = useMap();
-
-  useEffect(() => {
-    if (!position) {
-      return;
-    }
-
-    map.setView(position, 16, {
-      animate: true,
-    });
-  }, [position, map]);
-
-  return null;
-}
-
-// ------------------------------------
-// MAP PICKER
-// ------------------------------------
+// =========================
+// Main component
+// =========================
 
 function MapPicker({ onLocationSelect }) {
   const [position, setPosition] = useState(null);
+
   const [address, setAddress] = useState('');
+
   const [accuracy, setAccuracy] = useState(null);
 
   const [loadingLocation, setLoadingLocation] = useState(false);
+
   const [loadingAddress, setLoadingAddress] = useState(false);
 
   const [error, setError] = useState('');
 
-  // Ranebennur fallback
-  const fallbackPosition = [14.6224, 75.6295];
+  // =========================
+  // Reverse geocoding
+  // =========================
 
-  // ------------------------------------
-  // REVERSE GEOCODING
-  // ------------------------------------
+  const getAddress = useCallback(
+    async (latitude, longitude, locationAccuracy = null) => {
+      try {
+        setLoadingAddress(true);
+        setError('');
 
-  const getAddressFromCoordinates = async (latitude, longitude) => {
-    try {
-      setLoadingAddress(true);
-
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`,
-        {
-          headers: {
-            Accept: 'application/json',
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`,
+          {
+            headers: {
+              Accept: 'application/json',
+            },
           },
-        },
-      );
+        );
 
-      if (!response.ok) {
-        throw new Error('Failed to get address');
+        if (!response.ok) {
+          throw new Error('Failed to get address');
+        }
+
+        const data = await response.json();
+
+        const displayName = data.display_name || 'Selected location';
+
+        setAddress(displayName);
+
+        setAccuracy(locationAccuracy);
+
+        if (onLocationSelect) {
+          onLocationSelect({
+            latitude,
+            longitude,
+            address: displayName,
+            accuracy: locationAccuracy,
+          });
+        }
+      } catch (err) {
+        console.error('Reverse geocoding error:', err);
+
+        setAddress('Unable to get address for this location.');
+
+        if (onLocationSelect) {
+          onLocationSelect({
+            latitude,
+            longitude,
+            address: '',
+            accuracy: locationAccuracy,
+          });
+        }
+      } finally {
+        setLoadingAddress(false);
       }
+    },
+    [onLocationSelect],
+  );
 
-      const data = await response.json();
+  // =========================
+  // Select location
+  // =========================
 
-      return data.display_name || 'Address not found';
-    } catch (error) {
-      console.error('Reverse geocoding failed:', error);
-
-      return 'Unable to determine address';
-    } finally {
-      setLoadingAddress(false);
-    }
-  };
-
-  // ------------------------------------
-  // SELECT LOCATION
-  // ------------------------------------
-
-  const selectLocation = async (newPosition, locationAccuracy = null) => {
-    try {
-      setError('');
-
+  const selectLocation = useCallback(
+    (newPosition, locationAccuracy = null) => {
       setPosition(newPosition);
       setAccuracy(locationAccuracy);
+      setError('');
 
-      const selectedAddress = await getAddressFromCoordinates(
-        newPosition[0],
-        newPosition[1],
-      );
+      getAddress(newPosition[0], newPosition[1], locationAccuracy);
+    },
+    [getAddress],
+  );
 
-      setAddress(selectedAddress);
+  // =========================
+  // Current location
+  // =========================
 
-      onLocationSelect({
-        latitude: newPosition[0],
-        longitude: newPosition[1],
-        address: selectedAddress,
-        accuracy: locationAccuracy,
-      });
-    } catch (error) {
-      console.error('Location selection failed:', error);
-
-      setError('Unable to determine this location. Please try again.');
-    }
-  };
-
-  // ------------------------------------
-  // CURRENT LOCATION
-  // ------------------------------------
-
-  const handleCurrentLocation = () => {
-    setError('');
-    setLoadingLocation(true);
-
+  const getCurrentLocation = () => {
     if (!navigator.geolocation) {
-      setError('Geolocation is not supported by your browser.');
+      setError('Location is not supported by your browser.');
 
-      setLoadingLocation(false);
       return;
     }
 
-    navigator.geolocation.getCurrentPosition(
-      async (location) => {
-        const newPosition = [
-          location.coords.latitude,
-          location.coords.longitude,
-        ];
+    setLoadingLocation(true);
+    setError('');
 
-        await selectLocation(newPosition, location.coords.accuracy);
+    navigator.geolocation.getCurrentPosition(
+      (location) => {
+        const latitude = location.coords.latitude;
+
+        const longitude = location.coords.longitude;
+
+        const locationAccuracy = location.coords.accuracy;
+
+        selectLocation([latitude, longitude], locationAccuracy);
 
         setLoadingLocation(false);
       },
 
       (locationError) => {
-        console.error('Location error:', locationError);
+        console.error('Geolocation error:', locationError);
 
-        if (locationError.code === 1) {
-          setError(
-            'Location permission was denied. Please allow location access or select your location manually.',
-          );
-        } else if (locationError.code === 2) {
-          setError(
-            'Your location could not be determined. Please select your location manually.',
-          );
-        } else if (locationError.code === 3) {
-          setError(
-            'Location request timed out. Please try again or select your location manually.',
-          );
-        } else {
-          setError('Unable to get your current location. Please try again.');
+        switch (locationError.code) {
+          case locationError.PERMISSION_DENIED:
+            setError(
+              'Location permission was denied. Please allow location access in your browser.',
+            );
+            break;
+
+          case locationError.POSITION_UNAVAILABLE:
+            setError('Your current location is unavailable.');
+            break;
+
+          case locationError.TIMEOUT:
+            setError('Getting your location took too long. Please try again.');
+            break;
+
+          default:
+            setError('Unable to get your current location.');
         }
 
         setLoadingLocation(false);
@@ -206,68 +227,105 @@ function MapPicker({ onLocationSelect }) {
     );
   };
 
-  // ------------------------------------
-  // MAP CLICK
-  // ------------------------------------
-
-  const handleMapClick = (newPosition) => {
-    selectLocation(newPosition);
-  };
+  // =========================
+  // Render
+  // =========================
 
   return (
     <section className="map_picker">
-      <div className="map_header">
-        <h2>Delivery Location</h2>
+      {/* Header */}
 
-        <p>Pin your exact delivery location on the map.</p>
+      <div className="map_header">
+        <h2>Choose Delivery Location</h2>
+
+        <p>Search by moving the map or tap on your delivery location.</p>
       </div>
 
-      <MapContainer
-        center={position || fallbackPosition}
-        zoom={position ? 16 : 12}
-        className="map"
-        scrollWheelZoom={true}
-      >
-        <TileLayer
-          attribution="&copy; OpenStreetMap contributors"
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
+      {/* Map */}
 
-        <LocationMarker position={position} onMapClick={handleMapClick} />
+      <div className="map_wrapper">
+        <MapContainer
+          center={position || fallbackPosition}
+          zoom={position ? 17 : 14}
+          minZoom={5}
+          maxZoom={20}
+          className="map"
+          scrollWheelZoom={true}
+          zoomControl={true}
+          attributionControl={true}
+        >
+          <TileLayer
+            url={`https://api.maptiler.com/maps/streets-v4/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`}
+            tileSize={512}
+            zoomOffset={-1}
+            minZoom={1}
+            maxZoom={20}
+            attribution={'&copy; MapTiler &copy; OpenStreetMap contributors'}
+            crossOrigin={true}
+          />
 
-        <MapController position={position} />
-      </MapContainer>
+          <MapController position={position} />
+
+          <LocationMarker position={position} onSelect={selectLocation} />
+        </MapContainer>
+
+        {/* Small map instruction */}
+
+        <div className="map_instruction">Tap map to select location</div>
+      </div>
+
+      {/* Current location */}
 
       <button
         type="button"
         className="current_location_button"
-        onClick={handleCurrentLocation}
+        onClick={getCurrentLocation}
         disabled={loadingLocation}
       >
-        {loadingLocation
-          ? 'Getting Your Location...'
-          : 'Use My Current Location'}
+        <span className="current_location_icon">◎</span>
+
+        <span>
+          {loadingLocation
+            ? 'Getting your location...'
+            : 'Use My Current Location'}
+        </span>
       </button>
+
+      {/* Error */}
+
+      {error && <div className="map_error">{error}</div>}
+
+      {/* Selected location */}
 
       {position && (
         <div className="selected_location">
-          <h3>Delivery Location Selected</h3>
+          <div className="selected_location_title">
+            <span className="selected_location_icon">📍</span>
 
-          {loadingAddress ? <p>Finding your address...</p> : <p>{address}</p>}
+            <div>
+              <h3>Selected Location</h3>
 
-          <small>
-            {position[0].toFixed(6)}, {position[1].toFixed(6)}
-          </small>
+              {loadingAddress ? (
+                <p className="address_loading">Getting address...</p>
+              ) : (
+                <p className="selected_address">{address}</p>
+              )}
+            </div>
+          </div>
 
-          {accuracy !== null && (
-            <small>
-              GPS accuracy: approximately {Math.round(accuracy)} metres
-            </small>
+          <div className="location_coordinates">
+            {position[0].toFixed(6)}
+            {' , '}
+            {position[1].toFixed(6)}
+          </div>
+
+          {accuracy && (
+            <div className="location_accuracy">
+              GPS accuracy: approximately {Math.round(accuracy)} m
+            </div>
           )}
         </div>
       )}
-
-      {error && <p className="map_error">{error}</p>}
     </section>
   );
 }

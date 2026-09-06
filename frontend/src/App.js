@@ -29,6 +29,7 @@ import OpenClosed from './pages/Owner/OwnerSettings/Shop/OpenClosed';
 import DeliveryAvailable from './pages/Owner/OwnerSettings/Delivery/DeliveryAvailable';
 import PickupAvailable from './pages/Owner/OwnerSettings/Delivery/PickupAvailable';
 import DeliverySettings from './pages/Owner/OwnerSettings/Delivery/DeliverySettings';
+import DeliveryPerson from './pages/Owner/OwnerSettings/Delivery/DeliveryPerson';
 
 import PaymentDetails from './pages/Owner/OwnerSettings/Payment/PaymentDetails';
 
@@ -161,6 +162,10 @@ function App() {
           <Route
             path="/owner/settings/products/edit/:productId"
             element={<EditProduct />}
+          />
+          <Route
+            path="/owner/settings/delivery/person"
+            element={<DeliveryPerson />}
           />
 
           {/* DELIVERY ROUTES */}

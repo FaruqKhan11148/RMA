@@ -47,7 +47,7 @@ function Password() {
       }
 
       const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/owners/settings/password',
+        'http://localhost:5000/api/owners/settings/password',
         {
           method: 'PATCH',
           headers: {
@@ -90,7 +90,7 @@ function Password() {
           className="owner_setting_back"
           onClick={() => navigate('/owner/settings/account')}
         >
-          ← Account
+          ← Account Settings
         </button>
 
         <div className="owner_setting_header">

@@ -44,7 +44,7 @@ function AddProduct() {
       setError('');
 
       const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/owners/products',
+        'http://localhost:5000/api/owners/products',
         {
           headers: {
             Authorization: `Bearer ${ownerToken}`,
@@ -149,7 +149,7 @@ function AddProduct() {
       setSuccessMessage('');
 
       const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/owners/products',
+        'http://localhost:5000/api/owners/products',
         {
           method: 'POST',
           headers: {
@@ -224,7 +224,7 @@ function AddProduct() {
       setSuccessMessage('');
 
       const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/owners/products',
+        'http://localhost:5000/api/owners/products',
         {
           method: 'POST',
           headers: {
@@ -289,7 +289,7 @@ function AddProduct() {
             className="add-product-back"
             onClick={() => navigate('/owner/settings/account')}
           >
-            ← Products
+            ← Products Settings
           </button>
 
           <h1>Add Product</h1>

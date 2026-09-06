@@ -1,6 +1,12 @@
 import './OrderLocationMap.css';
 
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  Polyline,
+} from 'react-leaflet';
 
 import L from 'leaflet';
 
@@ -20,14 +26,25 @@ L.Icon.Default.mergeOptions({
     'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
 });
 
-function OrderLocationMap({ latitude, longitude }) {
-  const position = [latitude, longitude];
+function OrderLocationMap({ latitude, longitude, route, currentLocation }) {
+  const customerPosition = [latitude, longitude];
+
+  const deliveryBoyPosition = currentLocation
+    ? [currentLocation.latitude, currentLocation.longitude]
+    : null;
+
+  // OpenRouteService geometry coordinates are [longitude, latitude]
+  const routePositions =
+    route?.geometry?.coordinates?.map(([routeLongitude, routeLatitude]) => [
+      routeLatitude,
+      routeLongitude,
+    ]) || [];
 
   return (
     <div className="order_location_map">
       <MapContainer
-        center={position}
-        zoom={16}
+        center={customerPosition}
+        zoom={10}
         scrollWheelZoom={true}
         style={{
           height: '300px',
@@ -39,9 +56,27 @@ function OrderLocationMap({ latitude, longitude }) {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        <Marker position={position}>
+        {/* Actual road route */}
+        {routePositions.length > 0 && (
+          <Polyline
+            positions={routePositions}
+            pathOptions={{
+              weight: 5,
+            }}
+          />
+        )}
+
+        {/* Customer location */}
+        <Marker position={customerPosition}>
           <Popup>Customer Delivery Location</Popup>
         </Marker>
+
+        {/* Delivery boy current location */}
+        {deliveryBoyPosition && (
+          <Marker position={deliveryBoyPosition}>
+            <Popup>Delivery Boy — Current Location</Popup>
+          </Marker>
+        )}
       </MapContainer>
     </div>
   );

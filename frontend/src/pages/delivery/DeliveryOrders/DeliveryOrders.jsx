@@ -13,12 +13,98 @@ function DeliveryOrders() {
 
   const [deliveryPerson, setDeliveryPerson] = useState(null);
   const [orders, setOrders] = useState([]);
+  const [currentLocation, setCurrentLocation] = useState(null);
 
   const [loading, setLoading] = useState(false);
   const [ordersLoading, setOrdersLoading] = useState(false);
 
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+
+  useEffect(() => {
+    if (loginStep !== 'dashboard') {
+      return;
+    }
+
+    if (!navigator.geolocation) {
+      setError('Location tracking is not supported on this device.');
+      return;
+    }
+
+    const token = sessionStorage.getItem('delivery_token');
+
+    if (!token) {
+      setError('Delivery login session not found.');
+      return;
+    }
+
+    const watchId = navigator.geolocation.watchPosition(
+      async (position) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+
+        setCurrentLocation({
+          latitude,
+          longitude,
+        });
+
+        console.log('Delivery boy GPS:', {
+          latitude,
+          longitude,
+        });
+
+        try {
+          const response = await fetch(
+            'http://localhost:5000/api/delivery/location',
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                latitude,
+                longitude,
+              }),
+            },
+          );
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.message || 'Failed to update location');
+          }
+
+          console.log(
+            'Delivery location sent successfully:',
+            data.currentLocation,
+          );
+        } catch (error) {
+          console.error('Delivery location update failed:', error);
+        }
+      },
+      (error) => {
+        console.error('GPS error:', error);
+
+        if (error.code === 1) {
+          setError('Location permission is required for delivery tracking.');
+        } else if (error.code === 2) {
+          setError('Unable to determine your current location.');
+        } else if (error.code === 3) {
+          setError('Location request timed out.');
+        }
+      },
+      {
+        enableHighAccuracy: true,
+        maximumAge: 5000,
+        timeout: 10000,
+      },
+    );
+
+    return () => {
+      navigator.geolocation.clearWatch(watchId);
+    };
+  }, [loginStep]);
 
   // REQUEST DELIVERY LOGIN OTP
   const handleRequestOtp = async () => {
@@ -38,7 +124,7 @@ function DeliveryOrders() {
       setSuccessMessage('');
 
       const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/delivery/request-otp',
+        'http://localhost:5000/api/delivery/request-otp',
         {
           method: 'POST',
 
@@ -84,7 +170,7 @@ function DeliveryOrders() {
       setError('');
 
       const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/delivery/verify-otp',
+        'http://localhost:5000/api/delivery/verify-otp',
         {
           method: 'POST',
 
@@ -150,7 +236,7 @@ function DeliveryOrders() {
         }
 
         const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/delivery/orders',
+          'http://localhost:5000/api/delivery/orders',
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -184,7 +270,7 @@ function DeliveryOrders() {
       const token = sessionStorage.getItem('delivery_token');
 
       const response = await fetch(
-        `https://rma-backend-bo4a.onrender.com/api/orders/${orderId}/verify-otp`,
+        `http://localhost:5000/api/orders/${orderId}/verify-otp`,
         {
           method: 'POST',
 
@@ -216,6 +302,23 @@ function DeliveryOrders() {
 
       alert('Unable to connect to server');
     }
+  };
+
+  // DELIVERY LOGOUT
+  const handleLogout = () => {
+    sessionStorage.removeItem('delivery_token');
+    sessionStorage.removeItem('delivery_person');
+
+    setCurrentLocation(null);
+    setOrders([]);
+    setDeliveryPerson(null);
+    setError('');
+    setSuccessMessage('');
+    setShopId('');
+    setPhone('');
+    setOtp('');
+
+    setLoginStep('login');
   };
 
   // DELIVERY LOGIN SCREEN
@@ -334,6 +437,10 @@ function DeliveryOrders() {
         <p>
           Shop ID: <strong>{deliveryPerson?.shopId || shopId}</strong>
         </p>
+
+        <button className="delivery_complete_button" onClick={handleLogout}>
+          Logout
+        </button>
       </section>
 
       {error && <p className="delivery_error_message">{error}</p>}
@@ -353,6 +460,7 @@ function DeliveryOrders() {
               key={order.orderId}
               order={order}
               onVerifyOtp={handleVerifyOtp}
+              currentLocation={currentLocation}
             />
           ))
         )}
@@ -361,8 +469,53 @@ function DeliveryOrders() {
   );
 }
 
-function DeliveryOrderCard({ order, onVerifyOtp }) {
+function DeliveryOrderCard({ order, onVerifyOtp, currentLocation }) {
   const [otp, setOtp] = useState('');
+  const [route, setRoute] = useState(null);
+  const [routeLoading, setRouteLoading] = useState(false);
+  const [routeError, setRouteError] = useState('');
+
+  useEffect(() => {
+    const fetchRoute = async () => {
+      try {
+        setRouteLoading(true);
+        setRouteError('');
+
+        const token = sessionStorage.getItem('delivery_token');
+
+        if (!token) {
+          setRouteError('Delivery login session not found');
+          return;
+        }
+
+        const response = await fetch(
+          `http://localhost:5000/api/delivery/route/${order.orderId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || 'Unable to calculate route');
+        }
+
+        setRoute(data.route);
+        console.log('Delivery route:', data.route);
+      } catch (error) {
+        console.error('Fetch delivery route failed:', error);
+
+        setRouteError('Unable to calculate delivery route');
+      } finally {
+        setRouteLoading(false);
+      }
+    };
+
+    fetchRoute();
+  }, [order.orderId]);
 
   const handleSubmit = () => {
     if (otp.length !== 6) {
@@ -399,6 +552,8 @@ function DeliveryOrderCard({ order, onVerifyOtp }) {
             <OrderLocationMap
               latitude={order.deliveryLocation.latitude}
               longitude={order.deliveryLocation.longitude}
+              route={route}
+              currentLocation={currentLocation}
             />
           </div>
         )}

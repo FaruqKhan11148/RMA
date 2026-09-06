@@ -23,14 +23,11 @@ function ShopName() {
           return;
         }
 
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/owners/me',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const response = await fetch('http://localhost:5000/api/owners/me', {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
 
         const data = await response.json();
 
@@ -80,7 +77,7 @@ function ShopName() {
       }
 
       const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/owners/settings/shop-name',
+        'http://localhost:5000/api/owners/settings/shop-name',
         {
           method: 'PATCH',
           headers: {
@@ -141,7 +138,7 @@ function ShopName() {
           className="owner_setting_back"
           onClick={() => navigate('/owner/settings/account')}
         >
-          ← Shop
+          ← Shop Settings
         </button>
 
         <div className="owner_setting_header">

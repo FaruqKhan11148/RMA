@@ -36,7 +36,7 @@ function EditProduct() {
         }
 
         const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/owners/products',
+          'http://localhost:5000/api/owners/products',
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -126,7 +126,7 @@ function EditProduct() {
        */
       if (!product.isCustom) {
         const response = await fetch(
-          `https://rma-backend-bo4a.onrender.com/api/owners/products/${productId}/price`,
+          `http://localhost:5000/api/owners/products/${productId}/price`,
           {
             method: 'PATCH',
             headers: {
@@ -168,7 +168,7 @@ function EditProduct() {
        * image
        */
       const response = await fetch(
-        `https://rma-backend-bo4a.onrender.com/api/owners/products/${productId}`,
+        `http://localhost:5000/api/owners/products/${productId}`,
         {
           method: 'PATCH',
           headers: {
@@ -223,7 +223,7 @@ function EditProduct() {
 
     try {
       const response = await fetch(
-        `https://rma-backend-bo4a.onrender.com/api/owners/products/${productId}/availability`,
+        `http://localhost:5000/api/owners/products/${productId}/availability`,
         {
           method: 'PATCH',
           headers: {
@@ -272,7 +272,7 @@ function EditProduct() {
             className="edit-product-back"
             onClick={() => navigate('/owner/settings/products')}
           >
-            ← Products
+            ← Products Settings
           </button>
 
           <div className="edit-product-error-card">

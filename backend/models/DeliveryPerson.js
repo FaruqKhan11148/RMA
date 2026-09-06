@@ -40,6 +40,23 @@ const deliveryPersonSchema = new mongoose.Schema(
       default: true,
     },
 
+    currentLocation: {
+      latitude: {
+        type: Number,
+        default: null,
+      },
+
+      longitude: {
+        type: Number,
+        default: null,
+      },
+
+      updatedAt: {
+        type: Date,
+        default: null,
+      },
+    },
+
     otp: {
       type: String,
       default: null,
@@ -52,6 +69,11 @@ const deliveryPersonSchema = new mongoose.Schema(
 
     loginToken: {
       type: String,
+      default: null,
+    },
+
+    loginTokenExpiresAt: {
+      type: Date,
       default: null,
     },
   },
