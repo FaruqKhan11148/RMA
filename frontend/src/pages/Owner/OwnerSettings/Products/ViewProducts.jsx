@@ -1,6 +1,6 @@
 import './ViewProducts.css';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function ViewProducts() {
@@ -18,16 +18,7 @@ function ViewProducts() {
 
   const ownerToken = localStorage.getItem('rma_owner_token');
 
-  useEffect(() => {
-    if (!ownerToken) {
-      navigate('/owner/login');
-      return;
-    }
-
-    fetchProducts();
-  }, [ownerToken, navigate]);
-
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
       setError('');
@@ -54,7 +45,16 @@ function ViewProducts() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [ownerToken]);
+
+  useEffect(() => {
+    if (!ownerToken) {
+      navigate('/owner/login');
+      return;
+    }
+
+    fetchProducts();
+  }, [ownerToken, navigate, fetchProducts]);
 
   const categories = useMemo(() => {
     return ['ALL', ...new Set(products.map((product) => product.category))];

@@ -1,6 +1,6 @@
 import './AddProduct.css';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import productCatalogue from '../../../../data/productCatalogue';
@@ -38,16 +38,7 @@ function AddProduct() {
 
   const [successMessage, setSuccessMessage] = useState('');
 
-  useEffect(() => {
-    if (!ownerToken) {
-      navigate('/owner/login');
-      return;
-    }
-
-    loadExistingProducts();
-  }, [ownerToken, navigate]);
-
-  const loadExistingProducts = async () => {
+  const loadExistingProducts = useCallback(async () => {
     try {
       setLoadingProducts(true);
       setError('');
@@ -73,7 +64,16 @@ function AddProduct() {
     } finally {
       setLoadingProducts(false);
     }
-  };
+  }, [ownerToken]);
+
+  useEffect(() => {
+    if (!ownerToken) {
+      navigate('/owner/login');
+      return;
+    }
+
+    loadExistingProducts();
+  }, [ownerToken, navigate, loadExistingProducts]);
 
   const selectedCategory = useMemo(() => {
     return productCatalogue.find(
