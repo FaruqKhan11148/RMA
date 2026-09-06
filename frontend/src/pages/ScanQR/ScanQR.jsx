@@ -66,6 +66,9 @@ function ScanQR() {
             return;
           }
 
+          // Save the scanned shop as the customer's trusted shop.
+          localStorage.setItem('rma_trusted_shop_id', shopId);
+
           navigate(`/shop/${shopId}`);
         },
         () => {
@@ -204,6 +207,9 @@ function ScanQR() {
       setError('Please enter a valid RMA shop ID, for example RMA-000005.');
       return;
     }
+
+    // Save the manually selected shop as the customer's trusted shop.
+    localStorage.setItem('rma_trusted_shop_id', shopId);
 
     navigate(`/shop/${shopId}`);
   };

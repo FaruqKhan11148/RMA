@@ -14,16 +14,25 @@ function Home() {
 
   // Temporary test shop.
   // Later this will come from the customer's scanned QR/history.
-  const testShopId = 'RMA-000005';
+  // const testShopId = 'RMA-000005';
 
   useEffect(() => {
     const fetchShop = async () => {
+      const trustedShopId = localStorage.getItem('rma_trusted_shop_id');
+
+      // No trusted shop yet.
+      if (!trustedShopId) {
+        setShop(null);
+        setLoadingShop(false);
+        return;
+      }
+
       try {
         setLoadingShop(true);
         setShopError('');
 
         const response = await fetch(
-          `https://rma-backend-bo4a.onrender.com/api/owners/shop/${testShopId}`,
+          `https://rma-backend-bo4a.onrender.com/api/owners/shop/${trustedShopId}`,
         );
 
         const data = await response.json();
@@ -35,7 +44,8 @@ function Home() {
         setShop(data);
       } catch (error) {
         console.error('Fetch shop error:', error);
-        setShopError('Unable to load shop.');
+        setShopError('Unable to load trusted shop.');
+        setShop(null);
       } finally {
         setLoadingShop(false);
       }
@@ -47,7 +57,11 @@ function Home() {
   const handleOrder = () => {
     if (!shop) return;
 
-    navigate(`/shop/${testShopId}`);
+    const trustedShopId = localStorage.getItem('rma_trusted_shop_id');
+
+    if (!trustedShopId) return;
+
+    navigate(`/shop/${trustedShopId}`);
   };
 
   return (
