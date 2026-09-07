@@ -94,6 +94,12 @@ function AdminCustomers() {
     <div className="admin-customers-page">
       <div className="admin-customers-header">
         <div>
+          <button
+            className="back-button"
+            onClick={() => navigate('/admin/dashboard')}
+          >
+            ← Dashboard
+          </button>
           <h1>Customers</h1>
           <p>View customers and their complete RMA order history.</p>
         </div>

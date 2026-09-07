@@ -9,17 +9,33 @@ function AdminDashboard() {
   const [admin, setAdmin] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const [stats] = useState({
+  const [stats, setStats] = useState({
     totalOwners: 0,
     totalCustomers: 0,
     totalOrders: 0,
     totalRmaFees: 0,
   });
 
+  const [orderStatus, setOrderStatus] = useState({
+    Pending: 0,
+    Accepted: 0,
+    Preparing: 0,
+    Ready: 0,
+    OutForDelivery: 0,
+    Completed: 0,
+    Rejected: 0,
+  });
+
+  const [dashboardLoading, setDashboardLoading] = useState(true);
+
   useEffect(() => {
-    const checkAdminSession = async () => {
+    const loadAdminDashboard = async () => {
       try {
-        const response = await fetch(
+        setLoading(true);
+        setDashboardLoading(true);
+
+        // Check admin session
+        const sessionResponse = await fetch(
           'https://rma-backend-bo4a.onrender.com/api/admin/me',
           {
             method: 'GET',
@@ -27,24 +43,41 @@ function AdminDashboard() {
           },
         );
 
-        if (!response.ok) {
+        if (!sessionResponse.ok) {
           navigate('/admin/login', { replace: true });
           return;
         }
 
-        const data = await response.json();
+        const sessionData = await sessionResponse.json();
 
-        setAdmin(data.admin);
+        setAdmin(sessionData.admin);
+
+        // Fetch real dashboard data
+        const dashboardResponse = await fetch(
+          'https://rma-backend-bo4a.onrender.com/api/admin/dashboard',
+          {
+            method: 'GET',
+            credentials: 'include',
+          },
+        );
+
+        const dashboardData = await dashboardResponse.json();
+
+        if (!dashboardResponse.ok) {
+          throw new Error(dashboardData.message || 'Failed to load dashboard');
+        }
+
+        setStats(dashboardData.stats);
+        setOrderStatus(dashboardData.orderStatus);
       } catch (error) {
-        console.error('Admin session check failed:', error);
-
-        navigate('/admin/login', { replace: true });
+        console.error('Admin dashboard fetch failed:', error);
       } finally {
         setLoading(false);
+        setDashboardLoading(false);
       }
     };
 
-    checkAdminSession();
+    loadAdminDashboard();
   }, [navigate]);
 
   if (loading) {
@@ -170,25 +203,27 @@ function AdminDashboard() {
         <section className="admin-stats-grid">
           <div className="admin-stat-card">
             <span>Total Shops</span>
-            <strong>{stats.totalOwners}</strong>
+            <strong>{dashboardLoading ? '...' : stats.totalOwners}</strong>
             <small>Registered owners</small>
           </div>
 
           <div className="admin-stat-card">
             <span>Total Customers</span>
-            <strong>{stats.totalCustomers}</strong>
+            <strong>{dashboardLoading ? '...' : stats.totalCustomers}</strong>
             <small>Registered customers</small>
           </div>
 
           <div className="admin-stat-card">
             <span>Total Orders</span>
-            <strong>{stats.totalOrders}</strong>
+            <strong>{dashboardLoading ? '...' : stats.totalOrders}</strong>
             <small>All-time orders</small>
           </div>
 
           <div className="admin-stat-card">
             <span>RMA Fees</span>
-            <strong>₹{stats.totalRmaFees}</strong>
+            <strong>
+              {dashboardLoading ? '...' : `₹${stats.totalRmaFees}`}
+            </strong>
             <small>Platform revenue</small>
           </div>
         </section>
@@ -207,32 +242,34 @@ function AdminDashboard() {
             <div className="order-status-list">
               <div className="order-status-row">
                 <span>Pending</span>
-                <strong>0</strong>
+                <strong>
+                  {dashboardLoading ? '...' : orderStatus.Pending}
+                </strong>
               </div>
 
               <div className="order-status-row">
                 <span>Accepted</span>
-                <strong>0</strong>
+                <strong>{orderStatus.Accepted}</strong>
               </div>
 
               <div className="order-status-row">
                 <span>Preparing</span>
-                <strong>0</strong>
+                <strong>{orderStatus.Preparing}</strong>
               </div>
 
               <div className="order-status-row">
                 <span>Ready</span>
-                <strong>0</strong>
+                <strong>{orderStatus.Ready}</strong>
               </div>
 
               <div className="order-status-row">
                 <span>Out for Delivery</span>
-                <strong>0</strong>
+                <strong>{orderStatus.OutForDelivery}</strong>
               </div>
 
               <div className="order-status-row">
                 <span>Completed</span>
-                <strong>0</strong>
+                <strong>{orderStatus.Completed}</strong>
               </div>
             </div>
           </div>

@@ -287,17 +287,16 @@ function AdminOrders() {
 
       <div className="admin-orders-header">
         <div>
+          <button
+            className="admin-back-button"
+            onClick={() => navigate('/admin/dashboard')}
+          >
+            ← Dashboard
+          </button>
           <h1>Orders</h1>
 
           <p>Monitor every RMA order, payment, delivery and timeline event.</p>
         </div>
-
-        <button
-          className="admin-back-button"
-          onClick={() => navigate('/admin/dashboard')}
-        >
-          ← Dashboard
-        </button>
       </div>
 
       {/* STATS */}

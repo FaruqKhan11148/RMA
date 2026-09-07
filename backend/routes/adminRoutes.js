@@ -3,8 +3,11 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const Admin = require('../models/Admin');
-const adminAuth = require('../middleware/adminAuth');
+const Owner = require('../models/Owner');
+const Customer = require('../models/Customer');
+const Order = require('../models/Order');
 
+const adminAuth = require('../middleware/adminAuth');
 const router = express.Router();
 
 /*
@@ -94,6 +97,87 @@ router.get('/me', adminAuth, async (req, res) => {
       lastLoginAt: req.admin.lastLoginAt,
     },
   });
+});
+
+/*
+  ADMIN DASHBOARD
+  Real platform statistics
+*/
+router.get('/dashboard', adminAuth, async (req, res) => {
+  try {
+    const [
+      totalOwners,
+      totalCustomers,
+      totalOrders,
+
+      pendingOrders,
+      acceptedOrders,
+      preparingOrders,
+      readyOrders,
+      outForDeliveryOrders,
+      completedOrders,
+      rejectedOrders,
+
+      completedPaidOrders,
+    ] = await Promise.all([
+      Owner.countDocuments(),
+      Customer.countDocuments(),
+      Order.countDocuments(),
+
+      Order.countDocuments({ status: 'Pending' }),
+      Order.countDocuments({ status: 'Accepted' }),
+      Order.countDocuments({ status: 'Preparing' }),
+      Order.countDocuments({ status: 'Ready' }),
+      Order.countDocuments({ status: 'OutForDelivery' }),
+      Order.countDocuments({ status: 'Completed' }),
+      Order.countDocuments({ status: 'Rejected' }),
+
+      Order.find({
+        status: 'Completed',
+        paymentStatus: 'Paid',
+      }).select('totalPrice'),
+    ]);
+
+    /*
+      RMA platform fee = 1% of order amount
+
+      We calculate this from completed + paid orders
+      because these are actual successful transactions.
+    */
+    const totalRmaFees = completedPaidOrders.reduce((total, order) => {
+      const orderAmount = Number(order.totalPrice || 0);
+
+      const rmaFee = orderAmount * 0.01;
+
+      return total + rmaFee;
+    }, 0);
+
+    return res.status(200).json({
+      stats: {
+        totalOwners,
+        totalCustomers,
+        totalOrders,
+
+        totalRmaFees: Number(totalRmaFees.toFixed(2)),
+      },
+
+      orderStatus: {
+        Pending: pendingOrders,
+        Accepted: acceptedOrders,
+        Preparing: preparingOrders,
+        Ready: readyOrders,
+        OutForDelivery: outForDeliveryOrders,
+        Completed: completedOrders,
+        Rejected: rejectedOrders,
+      },
+    });
+  } catch (error) {
+    console.error('Admin dashboard fetch error:', error);
+
+    return res.status(500).json({
+      message: 'Failed to fetch admin dashboard',
+    });
+  }
 });
 
 /*

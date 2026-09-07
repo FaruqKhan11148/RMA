@@ -77,6 +77,12 @@ function AdminOwners() {
     <div className="admin-owners-page">
       <div className="admin-page-header">
         <div>
+          <button
+            className="back-button"
+            onClick={() => navigate('/admin/dashboard')}
+          >
+            ← Dashboard
+          </button>
           <h1>Shop Owners</h1>
 
           <p>Manage and monitor all registered RMA shops.</p>
