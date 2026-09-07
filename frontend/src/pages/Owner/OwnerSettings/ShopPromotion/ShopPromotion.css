@@ -1,0 +1,578 @@
+.shop-promotion-page {
+  min-height: 100vh;
+  background: #f7f7f7;
+  padding-bottom: 50px;
+}
+
+/* ===============================
+   HEADER
+================================ */
+
+.shop-promotion-header {
+  min-height: 70px;
+  background: #ffffff;
+  border-bottom: 1px solid #eaeaea;
+
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  padding: 14px 24px;
+
+  box-sizing: border-box;
+}
+
+.shop-promotion-back {
+  border: none;
+  background: #f1f1f1;
+  color: #111111;
+
+  padding: 10px 14px;
+  border-radius: 9px;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.shop-promotion-back:hover {
+  background: #e8e8e8;
+}
+
+.shop-promotion-header h1 {
+  margin: 0 0 3px;
+
+  font-size: 22px;
+  font-weight: 800;
+
+  color: #111111;
+}
+
+.shop-promotion-header p {
+  margin: 0;
+
+  font-size: 12px;
+  color: #777777;
+}
+
+/* ===============================
+   MAIN CONTAINER
+================================ */
+
+.shop-promotion-container {
+  width: 100%;
+  max-width: 760px;
+
+  margin: 0 auto;
+
+  padding: 26px 18px 0;
+
+  box-sizing: border-box;
+}
+
+/* ===============================
+   INTRO
+================================ */
+
+.shop-promotion-intro {
+  background: #111111;
+  color: #ffffff;
+
+  border-radius: 18px;
+
+  padding: 25px 23px;
+
+  margin-bottom: 18px;
+
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
+}
+
+.shop-promotion-badge {
+  display: inline-block;
+
+  padding: 5px 9px;
+
+  margin-bottom: 11px;
+
+  border-radius: 6px;
+
+  background: #ffffff;
+  color: #111111;
+
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.7px;
+}
+
+.shop-promotion-intro h2 {
+  margin: 0 0 8px;
+
+  font-size: 25px;
+  line-height: 1.2;
+
+  font-weight: 800;
+}
+
+.shop-promotion-intro p {
+  margin: 0;
+
+  max-width: 600px;
+
+  color: #d2d2d2;
+
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* ===============================
+   QR CARD
+================================ */
+
+.shop-qr-card {
+  background: #ffffff;
+
+  border: 1px solid #e9e9e9;
+  border-radius: 18px;
+
+  padding: 24px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+}
+
+.shop-qr-info {
+  width: 100%;
+  text-align: center;
+
+  margin-bottom: 18px;
+}
+
+.shop-qr-label {
+  display: block;
+
+  margin-bottom: 7px;
+
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+
+  color: #777777;
+}
+
+.shop-qr-info h2 {
+  margin: 0 0 7px;
+
+  font-size: 21px;
+  font-weight: 800;
+
+  color: #111111;
+}
+
+.shop-qr-info p {
+  margin: 0 auto;
+
+  max-width: 460px;
+
+  font-size: 12px;
+  line-height: 1.5;
+
+  color: #777777;
+}
+
+/* ===============================
+   QR
+================================ */
+
+.shop-qr-box {
+  width: 250px;
+  height: 250px;
+
+  background: #ffffff;
+
+  border: 1px solid #dddddd;
+  border-radius: 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-sizing: border-box;
+
+  padding: 14px;
+
+  margin-bottom: 18px;
+}
+
+.shop-qr-box svg {
+  display: block;
+
+  width: 220px;
+  height: 220px;
+
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.shop-qr-missing {
+  text-align: center;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  color: #888888;
+}
+
+/* ===============================
+   SHOP ID
+================================ */
+
+.shop-id-box {
+  min-width: 220px;
+
+  padding: 12px 20px;
+
+  background: #f2f8f1;
+
+  border: 1px solid #d9ead7;
+  border-radius: 11px;
+
+  text-align: center;
+}
+
+.shop-id-box span {
+  display: block;
+
+  margin-bottom: 4px;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  color: #777777;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.shop-id-box strong {
+  display: block;
+
+  font-size: 18px;
+  letter-spacing: 0.8px;
+
+  color: #111111;
+}
+
+/* ===============================
+   ACTION BUTTONS
+================================ */
+
+.shop-promotion-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  gap: 12px;
+
+  margin-top: 16px;
+}
+
+.shop-action-button {
+  min-height: 50px;
+
+  border-radius: 11px;
+
+  padding: 0 18px;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 750;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    opacity 0.2s ease,
+    background 0.2s ease;
+}
+
+.shop-action-button:active {
+  transform: scale(0.98);
+}
+
+.shop-action-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.shop-action-button.primary {
+  border: 1px solid #111111;
+
+  background: #111111;
+  color: #ffffff;
+}
+
+.shop-action-button.primary:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.shop-action-button.secondary {
+  border: 1px solid #111111;
+
+  background: #ffffff;
+  color: #111111;
+}
+
+.shop-action-button.secondary:hover:not(:disabled) {
+  background: #f4f4f4;
+}
+
+/* ===============================
+   HOW IT WORKS
+================================ */
+
+.shop-promotion-note {
+  margin-top: 16px;
+
+  padding: 22px;
+
+  background: #ffffff;
+
+  border: 1px solid #e9e9e9;
+  border-radius: 18px;
+}
+
+.shop-promotion-note h3 {
+  margin: 0 0 18px;
+
+  font-size: 16px;
+  font-weight: 800;
+
+  color: #111111;
+}
+
+.shop-promotion-steps {
+  display: flex;
+  flex-direction: column;
+
+  gap: 16px;
+}
+
+.promotion-step {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 12px;
+}
+
+.promotion-step > span {
+  flex-shrink: 0;
+
+  width: 30px;
+  height: 30px;
+
+  border-radius: 50%;
+
+  background: #111111;
+  color: #ffffff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.promotion-step strong {
+  display: block;
+
+  margin-bottom: 3px;
+
+  font-size: 13px;
+
+  color: #222222;
+}
+
+.promotion-step p {
+  margin: 0;
+
+  font-size: 12px;
+  line-height: 1.5;
+
+  color: #777777;
+}
+
+/* ===============================
+   LOADING
+================================ */
+
+.shop-promotion-loading {
+  min-height: 60vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #666666;
+}
+
+/* ===============================
+   ERROR
+================================ */
+
+.shop-promotion-error {
+  width: calc(100% - 36px);
+  max-width: 500px;
+
+  margin: 60px auto;
+
+  padding: 25px;
+
+  background: #ffffff;
+
+  border: 1px solid #eeeeee;
+  border-radius: 16px;
+
+  text-align: center;
+}
+
+.shop-promotion-error h2 {
+  margin: 0 0 8px;
+
+  font-size: 19px;
+  color: #111111;
+}
+
+.shop-promotion-error p {
+  margin: 0 0 18px;
+
+  font-size: 13px;
+  line-height: 1.5;
+
+  color: #777777;
+}
+
+.shop-promotion-error button {
+  min-height: 42px;
+
+  padding: 0 18px;
+
+  border: none;
+  border-radius: 9px;
+
+  background: #111111;
+  color: #ffffff;
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+/* ===============================
+   TABLET / DESKTOP
+================================ */
+
+@media (min-width: 768px) {
+  .shop-promotion-container {
+    padding-top: 32px;
+  }
+
+  .shop-promotion-intro {
+    padding: 30px 28px;
+  }
+
+  .shop-promotion-intro h2 {
+    font-size: 28px;
+  }
+
+  .shop-qr-card {
+    padding: 30px;
+  }
+
+  .shop-promotion-note {
+    padding: 25px;
+  }
+}
+
+/* ===============================
+   MOBILE
+================================ */
+
+@media (max-width: 600px) {
+  .shop-promotion-header {
+    padding: 12px 14px;
+    gap: 10px;
+  }
+
+  .shop-promotion-back {
+    padding: 9px 11px;
+    font-size: 12px;
+  }
+
+  .shop-promotion-header h1 {
+    font-size: 19px;
+  }
+
+  .shop-promotion-header p {
+    font-size: 11px;
+  }
+
+  .shop-promotion-container {
+    padding: 18px 14px 0;
+  }
+
+  .shop-promotion-intro {
+    padding: 21px 18px;
+    border-radius: 15px;
+  }
+
+  .shop-promotion-intro h2 {
+    font-size: 22px;
+  }
+
+  .shop-promotion-intro p {
+    font-size: 12px;
+  }
+
+  .shop-qr-card {
+    padding: 20px 16px;
+    border-radius: 15px;
+  }
+
+  .shop-qr-info h2 {
+    font-size: 19px;
+  }
+
+  .shop-qr-box {
+    width: 235px;
+    height: 235px;
+  }
+
+  .shop-qr-box svg {
+    width: 205px;
+    height: 205px;
+  }
+
+  .shop-id-box {
+    min-width: 200px;
+  }
+
+  .shop-promotion-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .shop-promotion-note {
+    padding: 18px;
+    border-radius: 15px;
+  }
+}

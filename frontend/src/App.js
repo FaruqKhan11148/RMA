@@ -80,6 +80,7 @@ import ReportIssue from './pages/Profile/HelpSupport/ReportIssue';
 import Contact from './pages/Contact/Contact';
 import Privacy from './pages/Privacy/Privacy';
 import Terms from './pages/Terms/Terms';
+import ShopPromotion from './pages/Owner/OwnerSettings/ShopPromotion/ShopPromotion';
 
 function App() {
   return (
@@ -275,6 +276,10 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
+          <Route
+            path="/owner/settings/shop-promotion"
+            element={<ShopPromotion />}
+          />
         </Routes>
       </div>
 

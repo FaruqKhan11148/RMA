@@ -122,6 +122,18 @@ function OwnerSettings() {
         },
       ],
     },
+    {
+      title: 'Shop Promotion',
+      description: 'Help customers discover and order from your shop',
+      items: [
+        {
+          title: 'Shop QR & Poster',
+          description:
+            'Download your personalized QR code and A4 ordering poster',
+          path: '/owner/settings/shop-promotion',
+        },
+      ],
+    },
   ];
 
   return (

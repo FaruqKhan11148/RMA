@@ -12,9 +12,7 @@ export function OrderProvider({ children }) {
     try {
       setLoading(true);
 
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/orders',
-      );
+      const response = await fetch('https://rma-backend-bo4a.onrender.com/api/orders');
 
       const data = await response.json();
 
@@ -38,17 +36,14 @@ export function OrderProvider({ children }) {
   // CREATE ORDER IN BACKEND
   const createOrder = async (orderData) => {
     try {
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/orders',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-          body: JSON.stringify(orderData),
+      const response = await fetch('https://rma-backend-bo4a.onrender.com/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        credentials: 'include',
+        body: JSON.stringify(orderData),
+      });
 
       const data = await response.json();
 

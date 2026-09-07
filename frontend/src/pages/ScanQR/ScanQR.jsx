@@ -148,7 +148,7 @@ function ScanQR() {
       Case 2:
       QR contains:
 
-      http://localhost:3000/shop/RMA-000005
+      https://rma-backend-bo4a.onrender.com/shop/RMA-000005
 
       or
 
