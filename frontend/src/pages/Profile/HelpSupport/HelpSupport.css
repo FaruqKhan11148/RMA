@@ -1,0 +1,380 @@
+/* ==========================================
+   HELP & SUPPORT PAGE
+========================================== */
+
+.help_support_page {
+  min-height: 100vh;
+  background: #f7f8fa;
+  padding: 0 16px 40px;
+}
+
+/* ==========================================
+   HEADER
+========================================== */
+
+.help_support_header {
+  max-width: 700px;
+  height: 64px;
+  margin: 0 auto;
+
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.help_support_header h1 {
+  margin: 0;
+
+  font-size: 22px;
+  font-weight: 700;
+  color: #171717;
+}
+
+.help_support_back {
+  width: 40px;
+  height: 40px;
+
+  border: none;
+  border-radius: 50%;
+
+  background: #ffffff;
+  color: #171717;
+
+  font-size: 28px;
+  line-height: 1;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  transition: 0.2s ease;
+}
+
+.help_support_back:hover {
+  transform: translateX(-2px);
+}
+
+/* ==========================================
+   SECTIONS
+========================================== */
+
+.help_support_section {
+  max-width: 700px;
+  margin: 20px auto 0;
+}
+
+.help_support_section_heading {
+  margin-bottom: 12px;
+}
+
+.help_support_section_heading h2 {
+  margin: 0 0 5px;
+
+  font-size: 17px;
+  font-weight: 700;
+
+  color: #171717;
+}
+
+.help_support_section_heading p {
+  margin: 0;
+
+  font-size: 13px;
+  line-height: 1.5;
+
+  color: #777777;
+}
+
+/* ==========================================
+   FAQ
+========================================== */
+
+.faq_list {
+  background: #ffffff;
+
+  border-radius: 16px;
+
+  overflow: hidden;
+
+  border: 1px solid #eeeeee;
+
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.05);
+}
+
+.faq_item {
+  border-bottom: 1px solid #eeeeee;
+}
+
+.faq_item:last-child {
+  border-bottom: none;
+}
+
+.faq_item.open {
+  background: #fafafa;
+}
+
+/* ==========================================
+   FAQ QUESTION
+========================================== */
+
+.faq_question {
+  width: 100%;
+
+  padding: 17px 18px;
+
+  border: none;
+
+  background: transparent;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.faq_question span:first-child {
+  font-size: 14px;
+  font-weight: 600;
+
+  line-height: 1.4;
+
+  color: #222222;
+}
+
+.faq_arrow {
+  width: 24px;
+  height: 24px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #f1f1f1;
+
+  color: #333333;
+
+  font-size: 17px;
+  font-weight: 500;
+
+  transition: 0.2s ease;
+}
+
+.faq_item.open .faq_arrow {
+  background: #111111;
+  color: #ffffff;
+}
+
+/* ==========================================
+   FAQ ANSWER
+========================================== */
+
+.faq_answer {
+  padding: 0 18px 17px;
+}
+
+.faq_answer p {
+  margin: 0;
+
+  font-size: 13px;
+  line-height: 1.6;
+
+  color: #666666;
+}
+
+/* ==========================================
+   CONTACT SUPPORT
+========================================== */
+
+.support_contact_list {
+  background: #ffffff;
+
+  border-radius: 16px;
+
+  overflow: hidden;
+
+  border: 1px solid #eeeeee;
+
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.05);
+}
+
+.support_contact_item {
+  display: flex;
+  align-items: center;
+
+  gap: 13px;
+
+  padding: 15px 16px;
+
+  text-decoration: none;
+
+  border-bottom: 1px solid #eeeeee;
+
+  transition: background 0.2s ease;
+}
+
+.support_contact_item:last-child {
+  border-bottom: none;
+}
+
+.support_contact_item:hover {
+  background: #fafafa;
+}
+
+/* ==========================================
+   CONTACT ICON
+========================================== */
+
+.support_contact_icon {
+  width: 40px;
+  height: 40px;
+
+  flex-shrink: 0;
+
+  border-radius: 11px;
+
+  background: #f1f1f1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #222222;
+
+  font-size: 17px;
+  font-weight: 700;
+}
+
+/* ==========================================
+   CONTACT TEXT
+========================================== */
+
+.support_contact_text {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.support_contact_text strong {
+  font-size: 14px;
+  font-weight: 700;
+
+  color: #222222;
+}
+
+.support_contact_text span {
+  font-size: 12px;
+
+  color: #777777;
+}
+
+.support_contact_arrow {
+  font-size: 23px;
+  color: #999999;
+}
+
+/* ==========================================
+   REPORT ISSUE
+========================================== */
+
+.report_issue_button {
+  width: 100%;
+
+  padding: 16px 17px;
+
+  border: 1px solid #eeeeee;
+  border-radius: 16px;
+
+  background: #ffffff;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  font-family: inherit;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  color: #222222;
+
+  cursor: pointer;
+
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.05);
+
+  transition: all 0.2s ease;
+}
+
+.report_issue_button:hover {
+  background: #fafafa;
+  transform: translateY(-1px);
+}
+
+.report_issue_button span:last-child {
+  font-size: 23px;
+  color: #999999;
+}
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media (max-width: 480px) {
+  .help_support_page {
+    padding: 0 12px 30px;
+  }
+
+  .help_support_header {
+    height: 60px;
+  }
+
+  .help_support_header h1 {
+    font-size: 20px;
+  }
+
+  .help_support_back {
+    width: 38px;
+    height: 38px;
+
+    font-size: 26px;
+  }
+
+  .help_support_section {
+    margin-top: 16px;
+  }
+
+  .help_support_section_heading h2 {
+    font-size: 16px;
+  }
+
+  .faq_question {
+    padding: 15px;
+  }
+
+  .faq_answer {
+    padding: 0 15px 15px;
+  }
+
+  .support_contact_item {
+    padding: 14px;
+  }
+
+  .report_issue_button {
+    padding: 15px;
+  }
+}

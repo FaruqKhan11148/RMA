@@ -1,0 +1,237 @@
+/* ==========================================
+   LANGUAGE PAGE
+========================================== */
+
+.language_page {
+  min-height: 100vh;
+  background: #f7f8fa;
+  padding: 0 16px 40px;
+}
+
+/* ==========================================
+   HEADER
+========================================== */
+
+.language_header {
+  max-width: 700px;
+  height: 64px;
+  margin: 0 auto;
+
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.language_header h1 {
+  margin: 0;
+
+  font-size: 22px;
+  font-weight: 700;
+  color: #171717;
+}
+
+.language_back {
+  width: 40px;
+  height: 40px;
+
+  border: none;
+  border-radius: 50%;
+
+  background: #ffffff;
+  color: #171717;
+
+  font-size: 28px;
+  line-height: 1;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  transition: 0.2s ease;
+}
+
+.language_back:hover {
+  transform: translateX(-2px);
+}
+
+/* ==========================================
+   LANGUAGE CARD
+========================================== */
+
+.language_card {
+  max-width: 700px;
+  margin: 20px auto 0;
+
+  background: #ffffff;
+
+  padding: 24px;
+
+  border-radius: 18px;
+
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+}
+
+/* ==========================================
+   CARD HEADER
+========================================== */
+
+.language_card_header {
+  margin-bottom: 20px;
+}
+
+.language_card_header h2 {
+  margin: 0 0 7px;
+
+  font-size: 18px;
+  font-weight: 700;
+
+  color: #171717;
+}
+
+.language_card_header p {
+  margin: 0;
+
+  font-size: 13px;
+  line-height: 1.5;
+
+  color: #777777;
+}
+
+/* ==========================================
+   LANGUAGE LIST
+========================================== */
+
+.language_list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ==========================================
+   LANGUAGE ITEM
+========================================== */
+
+.language_item {
+  width: 100%;
+
+  padding: 15px 16px;
+
+  border: 1px solid #e5e5e5;
+  border-radius: 13px;
+
+  background: #ffffff;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.language_item:hover {
+  border-color: #bbbbbb;
+  background: #fafafa;
+}
+
+.language_item.selected {
+  border-color: #111111;
+  background: #f8f8f8;
+}
+
+/* ==========================================
+   LANGUAGE TEXT
+========================================== */
+
+.language_item_text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.language_item_text strong {
+  font-size: 14px;
+  font-weight: 700;
+
+  color: #222222;
+}
+
+.language_item_text span {
+  font-size: 12px;
+
+  color: #777777;
+}
+
+/* ==========================================
+   RADIO
+========================================== */
+
+.language_radio {
+  width: 22px;
+  height: 22px;
+
+  border: 2px solid #cccccc;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  color: #ffffff;
+
+  transition: all 0.2s ease;
+}
+
+.language_radio.checked {
+  border-color: #111111;
+  background: #111111;
+}
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media (max-width: 480px) {
+  .language_page {
+    padding: 0 12px 30px;
+  }
+
+  .language_header {
+    height: 60px;
+  }
+
+  .language_header h1 {
+    font-size: 20px;
+  }
+
+  .language_back {
+    width: 38px;
+    height: 38px;
+
+    font-size: 26px;
+  }
+
+  .language_card {
+    margin-top: 14px;
+
+    padding: 18px;
+
+    border-radius: 15px;
+  }
+
+  .language_item {
+    padding: 14px;
+  }
+}

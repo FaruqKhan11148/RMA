@@ -2,6 +2,7 @@ import './App.css';
 import './index.css';
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import OwnerProtectedRoute from './pages/Owner/OwnerProtectedRoute/OwnerProtectedRoute';
 
 import Navbar from './components/Navbar/Navbar';
 import SiteFooter from './components/SiteFooter/SiteFooter';
@@ -69,6 +70,16 @@ import AdminFinance from './pages/Admin/AdminFinance/AdminFinance';
 // Customer
 import CustomerLogin from './pages/Customer/CustomerLogin/CustomerLogin';
 import CustomerSignup from './pages/Customer/CustomerSignup/CustomerSignup';
+import PersonalDetails from './pages/Profile/PersonalDetails/PersonalDetails';
+import SavedAddresses from './pages/Profile/SavedAddresses/SavedAddresses';
+import AddAddress from './pages/Profile/SavedAddresses/AddAddress';
+import EditAddress from './pages/Profile/SavedAddresses/EditAddress';
+import Language from './pages/Profile/Language/Language';
+import HelpSupport from './pages/Profile/HelpSupport/HelpSupport';
+import ReportIssue from './pages/Profile/HelpSupport/ReportIssue';
+import Contact from './pages/Contact/Contact';
+import Privacy from './pages/Privacy/Privacy';
+import Terms from './pages/Terms/Terms';
 
 function App() {
   return (
@@ -77,7 +88,7 @@ function App() {
 
       <div className="app_content">
         <Routes>
-          {/* CUSTOMER ROUTES */}
+          {/* ==================== CUSTOMER ROUTES ==================== */}
 
           <Route path="/" element={<Home />} />
 
@@ -98,7 +109,7 @@ function App() {
 
           <Route path="/profile" element={<Profile />} />
 
-          {/* OWNER ROUTES */}
+          {/* ==================== OWNER PUBLIC ROUTES ==================== */}
 
           <Route path="/owner/register/step-1" element={<OwnerStep1 />} />
 
@@ -112,85 +123,158 @@ function App() {
 
           <Route path="/owner/login" element={<OwnerLogin />} />
 
-          <Route path="/owner/dashboard" element={<OwnerDashboard />} />
+          {/* ==================== OWNER PROTECTED ROUTES ==================== */}
 
-          <Route path="/owner/orders" element={<OwnerOrders />} />
+          <Route element={<OwnerProtectedRoute />}>
+            <Route path="/owner/dashboard" element={<OwnerDashboard />} />
 
-          {/* Owner Settings */}
-          <Route path="/owner/settings/account" element={<OwnerSettings />} />
+            <Route path="/owner/orders" element={<OwnerOrders />} />
 
-          <Route path="/owner/settings/account/name" element={<OwnerName />} />
-          <Route
-            path="/owner/settings/account/phone"
-            element={<PhoneNumber />}
-          />
-          <Route path="/owner/settings/account/email" element={<Email />} />
-          <Route
-            path="/owner/settings/account/password"
-            element={<Password />}
-          />
-          <Route path="/owner/settings/shop/name" element={<ShopName />} />
-          <Route
-            path="/owner/settings/shop/description"
-            element={<Description />}
-          />
-          <Route path="/owner/settings/shop/address" element={<Address />} />
-          <Route path="/owner/settings/shop/location" element={<Location />} />
-          <Route
-            path="/owner/settings/shop/open-closed"
-            element={<OpenClosed />}
-          />
-          <Route
-            path="/owner/settings/delivery/available"
-            element={<DeliveryAvailable />}
-          />
-          <Route
-            path="/owner/settings/delivery/pickup"
-            element={<PickupAvailable />}
-          />
-          <Route
-            path="/owner/settings/delivery/settings"
-            element={<DeliverySettings />}
-          />
-          <Route path="/owner/settings/payment" element={<PaymentDetails />} />
-          <Route path="/owner/settings/products" element={<ViewProducts />} />
-          <Route path="/owner/settings/products/add" element={<AddProduct />} />
-          <Route
-            path="/owner/settings/products/change-price/:productId"
-            element={<ChangePrice />}
-          />
-          <Route
-            path="/owner/settings/products/edit/:productId"
-            element={<EditProduct />}
-          />
-          <Route
-            path="/owner/settings/delivery/person"
-            element={<DeliveryPerson />}
-          />
+            {/* ---------- ACCOUNT SETTINGS ---------- */}
 
-          {/* DELIVERY ROUTES */}
+            <Route path="/owner/settings/account" element={<OwnerSettings />} />
+
+            <Route
+              path="/owner/settings/account/name"
+              element={<OwnerName />}
+            />
+
+            <Route
+              path="/owner/settings/account/phone"
+              element={<PhoneNumber />}
+            />
+
+            <Route path="/owner/settings/account/email" element={<Email />} />
+
+            <Route
+              path="/owner/settings/account/password"
+              element={<Password />}
+            />
+
+            {/* ---------- SHOP SETTINGS ---------- */}
+
+            <Route path="/owner/settings/shop/name" element={<ShopName />} />
+
+            <Route
+              path="/owner/settings/shop/description"
+              element={<Description />}
+            />
+
+            <Route path="/owner/settings/shop/address" element={<Address />} />
+
+            <Route
+              path="/owner/settings/shop/location"
+              element={<Location />}
+            />
+
+            <Route
+              path="/owner/settings/shop/open-closed"
+              element={<OpenClosed />}
+            />
+
+            {/* ---------- DELIVERY SETTINGS ---------- */}
+
+            <Route
+              path="/owner/settings/delivery/available"
+              element={<DeliveryAvailable />}
+            />
+
+            <Route
+              path="/owner/settings/delivery/pickup"
+              element={<PickupAvailable />}
+            />
+
+            <Route
+              path="/owner/settings/delivery/settings"
+              element={<DeliverySettings />}
+            />
+
+            <Route
+              path="/owner/settings/delivery/person"
+              element={<DeliveryPerson />}
+            />
+
+            {/* ---------- PRODUCT SETTINGS ---------- */}
+
+            <Route path="/owner/settings/products" element={<ViewProducts />} />
+
+            <Route
+              path="/owner/settings/products/add"
+              element={<AddProduct />}
+            />
+
+            <Route
+              path="/owner/settings/products/change-price/:productId"
+              element={<ChangePrice />}
+            />
+
+            <Route
+              path="/owner/settings/products/edit/:productId"
+              element={<EditProduct />}
+            />
+
+            {/* ---------- PAYMENT SETTINGS ---------- */}
+
+            <Route
+              path="/owner/settings/payment"
+              element={<PaymentDetails />}
+            />
+          </Route>
+
+          {/* ==================== DELIVERY ROUTES ==================== */}
+
           <Route path="/delivery/orders" element={<DeliveryOrders />} />
 
-          {/* PAYMENT */}
+          {/* ==================== PAYMENT ==================== */}
 
           <Route path="/payment/:orderId" element={<Payment />} />
 
+          {/* ==================== QR ==================== */}
+
           <Route path="/scan-qr" element={<ScanQR />} />
 
-          {/* ADMIN */}
+          {/* ==================== ADMIN ==================== */}
+
           <Route path="/admin/login" element={<AdminLogin />} />
+
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
+
           <Route path="/admin/owners" element={<AdminOwners />} />
+
           <Route path="/admin/customers" element={<AdminCustomers />} />
+
           <Route path="/admin/delivery" element={<AdminDelivery />} />
+
           <Route path="/admin/orders" element={<AdminOrders />} />
-          <Route path="/admin/delivery" element={<AdminDelivery />} />
+
           <Route path="/admin/payments" element={<AdminPayments />} />
+
           <Route path="/admin/finance" element={<AdminFinance />} />
 
-          {/* Customer */}
+          {/* ==================== CUSTOMER AUTH ==================== */}
+
           <Route path="/customer/login" element={<CustomerLogin />} />
+
           <Route path="/customer/signup" element={<CustomerSignup />} />
+          <Route
+            path="/profile/personal-details"
+            element={<PersonalDetails />}
+          />
+          <Route path="/profile/saved-addresses" element={<SavedAddresses />} />
+          <Route path="/profile/saved-addresses/add" element={<AddAddress />} />
+          <Route
+            path="/profile/saved-addresses/edit/:addressId"
+            element={<EditAddress />}
+          />
+          <Route path="/profile/language" element={<Language />} />
+          <Route path="/profile/help-support" element={<HelpSupport />} />
+          <Route
+            path="/profile/help-support/report"
+            element={<ReportIssue />}
+          />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
         </Routes>
       </div>
 

@@ -39,6 +39,38 @@ const customerSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+
+    addresses: [
+      {
+        label: {
+          type: String,
+          enum: ['Home', 'Work', 'Other'],
+          default: 'Home',
+        },
+
+        address: {
+          type: String,
+          required: true,
+          trim: true,
+          maxlength: 300,
+        },
+
+        latitude: {
+          type: Number,
+          default: null,
+        },
+
+        longitude: {
+          type: Number,
+          default: null,
+        },
+
+        isDefault: {
+          type: Boolean,
+          default: false,
+        },
+      },
+    ],
   },
   {
     timestamps: true,

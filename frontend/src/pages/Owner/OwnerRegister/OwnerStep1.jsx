@@ -166,7 +166,17 @@ function OwnerStep1() {
         <div className="owner_step_footer">
           <p>Already have a shop?</p>
 
-          <button onClick={() => navigate('/owner/login')}>
+          <button
+            onClick={() => {
+              const token = localStorage.getItem('rma_owner_token');
+
+              if (token) {
+                navigate('/owner/dashboard');
+              } else {
+                navigate('/owner/login');
+              }
+            }}
+          >
             Back to Login
           </button>
         </div>

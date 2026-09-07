@@ -115,12 +115,18 @@ function Profile() {
         <section className="profile_section">
           <h2>My Account</h2>
 
-          <button className="profile_item">
+          <button
+            className="profile_item"
+            onClick={() => navigate('/profile/personal-details')}
+          >
             <span>Personal Details</span>
             <span>›</span>
           </button>
 
-          <button className="profile_item">
+          <button
+            className="profile_item"
+            onClick={() => navigate('/profile/saved-addresses')}
+          >
             <span>Saved Addresses</span>
             <span>›</span>
           </button>
@@ -129,7 +135,10 @@ function Profile() {
         <section className="profile_section">
           <h2>Preferences</h2>
 
-          <button className="profile_item">
+          <button
+            className="profile_item"
+            onClick={() => navigate('/profile/language')}
+          >
             <span>Language</span>
             <span>›</span>
           </button>
@@ -138,7 +147,10 @@ function Profile() {
         <section className="profile_section">
           <h2>Support</h2>
 
-          <button className="profile_item">
+          <button
+            className="profile_item"
+            onClick={() => navigate('/profile/help-support')}
+          >
             <span>Help & Support</span>
             <span>›</span>
           </button>
@@ -225,7 +237,10 @@ function Profile() {
       <section className="profile_section">
         <h2>Support</h2>
 
-        <button className="profile_item">
+        <button
+          className="profile_item"
+          onClick={() => navigate('/profile/help-support')}
+        >
           <span>Help & Support</span>
           <span>›</span>
         </button>

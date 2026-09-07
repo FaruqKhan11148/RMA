@@ -1,0 +1,192 @@
+.personal_details {
+  min-height: 100vh;
+  background: #f6f7f9;
+  padding: 24px 16px 40px;
+}
+
+.personal_details_header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: 600px;
+  margin: 0 auto 24px;
+}
+
+.personal_details_back {
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 12px;
+  background: #ffffff;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.personal_details_header h1 {
+  margin: 0;
+  font-size: 24px;
+  color: #111111;
+}
+
+.personal_details_header p {
+  margin: 4px 0 0;
+  color: #777777;
+  font-size: 14px;
+}
+
+.personal_details_card {
+  max-width: 600px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+}
+
+.personal_details_avatar {
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  background: #111111;
+  color: #ffffff;
+
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.personal_details_field {
+  margin-bottom: 20px;
+}
+
+.personal_details_field label {
+  display: block;
+  margin-bottom: 8px;
+
+  font-size: 14px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.personal_details_field input {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 13px 14px;
+
+  border: 1px solid #dddddd;
+  border-radius: 10px;
+
+  font-size: 15px;
+  outline: none;
+}
+
+.personal_details_field input:focus {
+  border-color: #111111;
+}
+
+.personal_details_field input[readonly] {
+  background: #f5f5f5;
+  color: #777777;
+  cursor: not-allowed;
+}
+
+.personal_details_field small {
+  display: block;
+  margin-top: 6px;
+
+  color: #888888;
+  font-size: 12px;
+}
+
+.personal_details_message {
+  padding: 12px 14px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+
+  font-size: 14px;
+}
+
+.personal_details_message.error {
+  background: #fff0f0;
+  color: #c62828;
+}
+
+.personal_details_message.success {
+  background: #eefaf1;
+  color: #218838;
+}
+
+.personal_details_save {
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+
+  padding: 14px;
+
+  background: #111111;
+  color: #ffffff;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.personal_details_save:hover {
+  opacity: 0.9;
+}
+
+.personal_details_save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.personal_details_loading {
+  min-height: 60vh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  color: #666666;
+}
+
+.personal_details_spinner {
+  width: 30px;
+  height: 30px;
+
+  border: 3px solid #dddddd;
+  border-top-color: #111111;
+
+  border-radius: 50%;
+
+  animation: personalDetailsSpin 0.8s linear infinite;
+}
+
+@keyframes personalDetailsSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 480px) {
+  .personal_details {
+    padding: 18px 14px 32px;
+  }
+
+  .personal_details_card {
+    padding: 20px 16px;
+    border-radius: 16px;
+  }
+
+  .personal_details_header h1 {
+    font-size: 21px;
+  }
+}

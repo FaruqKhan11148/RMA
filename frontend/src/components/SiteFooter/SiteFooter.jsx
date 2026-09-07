@@ -56,7 +56,9 @@ function SiteFooter() {
         <div className="footer_column">
           <h3>Support & Legal</h3>
 
-          <button onClick={() => navigate('/support')}>Help & Support</button>
+          <button onClick={() => navigate('/profile/help-support')}>
+            Help & Support
+          </button>
 
           <button onClick={() => navigate('/contact')}>Contact Us</button>
 

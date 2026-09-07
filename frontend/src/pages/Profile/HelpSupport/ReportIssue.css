@@ -1,0 +1,297 @@
+.report_issue_page {
+  min-height: 100vh;
+  background: #f7f7f7;
+  padding-bottom: 40px;
+}
+
+/* Header */
+
+.report_issue_header {
+  height: 64px;
+  background: #ffffff;
+  border-bottom: 1px solid #eeeeee;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 18px;
+  gap: 14px;
+
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.report_issue_header h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #111111;
+}
+
+.report_issue_back {
+  width: 38px;
+  height: 38px;
+
+  border: none;
+  background: #f3f3f3;
+  border-radius: 50%;
+
+  font-size: 28px;
+  line-height: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  color: #111111;
+}
+
+.report_issue_back:active {
+  transform: scale(0.95);
+}
+
+/* Form */
+
+.report_issue_form {
+  width: 100%;
+  max-width: 650px;
+
+  margin: 24px auto;
+  padding: 0 18px;
+}
+
+/* Intro */
+
+.report_issue_intro {
+  background: #ffffff;
+
+  border-radius: 16px;
+  padding: 20px;
+
+  margin-bottom: 18px;
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.report_issue_intro h2 {
+  margin: 0 0 6px;
+
+  font-size: 18px;
+  font-weight: 700;
+
+  color: #111111;
+}
+
+.report_issue_intro p {
+  margin: 0;
+
+  font-size: 13px;
+  line-height: 1.5;
+
+  color: #777777;
+}
+
+/* Fields */
+
+.report_issue_field {
+  background: #ffffff;
+
+  border-radius: 16px;
+  padding: 18px;
+
+  margin-bottom: 14px;
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.report_issue_field label {
+  display: block;
+
+  margin-bottom: 9px;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  color: #222222;
+}
+
+.report_issue_field label span {
+  margin-left: 5px;
+
+  font-size: 11px;
+  font-weight: 500;
+
+  color: #999999;
+}
+
+/* Select + Input */
+
+.report_issue_field input,
+.report_issue_field select,
+.report_issue_field textarea {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  border: 1px solid #dddddd;
+  border-radius: 10px;
+
+  background: #ffffff;
+
+  padding: 12px 13px;
+
+  font-family: inherit;
+  font-size: 14px;
+
+  color: #222222;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.report_issue_field input,
+.report_issue_field select {
+  height: 46px;
+}
+
+.report_issue_field textarea {
+  min-height: 150px;
+  resize: vertical;
+
+  line-height: 1.5;
+}
+
+.report_issue_field input:focus,
+.report_issue_field select:focus,
+.report_issue_field textarea:focus {
+  border-color: #111111;
+
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.06);
+}
+
+.report_issue_field input::placeholder,
+.report_issue_field textarea::placeholder {
+  color: #aaaaaa;
+}
+
+/* Character Count */
+
+.report_issue_character_count {
+  display: block;
+
+  margin-top: 7px;
+
+  text-align: right;
+
+  font-size: 11px;
+  color: #999999;
+}
+
+/* Error */
+
+.report_issue_error {
+  background: #fff1f1;
+
+  border: 1px solid #ffd5d5;
+  border-radius: 10px;
+
+  padding: 12px 14px;
+
+  margin-bottom: 14px;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  color: #c62828;
+}
+
+/* Submit */
+
+.report_issue_submit {
+  width: 100%;
+  height: 50px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: #111111;
+  color: #ffffff;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s,
+    opacity 0.2s;
+}
+
+.report_issue_submit:hover {
+  opacity: 0.92;
+}
+
+.report_issue_submit:active {
+  transform: scale(0.98);
+}
+
+/* Desktop */
+
+@media (min-width: 768px) {
+  .report_issue_header {
+    padding: 0 28px;
+  }
+
+  .report_issue_form {
+    margin-top: 32px;
+  }
+
+  .report_issue_intro {
+    padding: 24px;
+  }
+
+  .report_issue_field {
+    padding: 20px;
+  }
+}
+
+/* Small Mobile */
+
+@media (max-width: 480px) {
+  .report_issue_header {
+    height: 58px;
+    padding: 0 14px;
+  }
+
+  .report_issue_header h1 {
+    font-size: 18px;
+  }
+
+  .report_issue_form {
+    margin-top: 18px;
+    padding: 0 14px;
+  }
+
+  .report_issue_intro,
+  .report_issue_field {
+    border-radius: 14px;
+  }
+
+  .report_issue_intro {
+    padding: 17px;
+  }
+
+  .report_issue_field {
+    padding: 16px;
+  }
+
+  .report_issue_submit {
+    height: 48px;
+  }
+}
