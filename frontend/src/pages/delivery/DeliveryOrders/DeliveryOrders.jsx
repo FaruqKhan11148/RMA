@@ -55,7 +55,7 @@ function DeliveryOrders() {
 
         try {
           const response = await fetch(
-            'https://rma-backend-bo4a.onrender.com/api/delivery/location',
+            'http://localhost:5000/api/delivery/location',
             {
               method: 'POST',
               headers: {
@@ -124,7 +124,7 @@ function DeliveryOrders() {
       setSuccessMessage('');
 
       const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/delivery/request-otp',
+        'http://localhost:5000/api/delivery/request-otp',
         {
           method: 'POST',
 
@@ -170,7 +170,7 @@ function DeliveryOrders() {
       setError('');
 
       const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/delivery/verify-otp',
+        'http://localhost:5000/api/delivery/verify-otp',
         {
           method: 'POST',
 
@@ -236,7 +236,7 @@ function DeliveryOrders() {
         }
 
         const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/delivery/orders',
+          'http://localhost:5000/api/delivery/orders',
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -270,7 +270,7 @@ function DeliveryOrders() {
       const token = sessionStorage.getItem('delivery_token');
 
       const response = await fetch(
-        `https://rma-backend-bo4a.onrender.com/api/orders/${orderId}/verify-otp`,
+        `http://localhost:5000/api/orders/${orderId}/verify-otp`,
         {
           method: 'POST',
 
@@ -489,7 +489,7 @@ function DeliveryOrderCard({ order, onVerifyOtp, currentLocation }) {
         }
 
         const response = await fetch(
-          `https://rma-backend-bo4a.onrender.com/api/delivery/route/${order.orderId}`,
+          `http://localhost:5000/api/delivery/route/${order.orderId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

@@ -4,8 +4,11 @@
    ========================================================= */
 
 .admin-dashboard {
-  min-height: 100vh;
+  min-height: calc(100vh - 68px);
+
   display: flex;
+
+  margin-top: 60px;
 
   background: #f8faf8;
   color: #172018;
@@ -27,15 +30,14 @@
 
 .admin-sidebar {
   position: sticky;
-  top: 0;
+  top: 60px;
 
   width: 250px;
-  height: 100vh;
-  min-height: 100vh;
+  height: calc(100vh - 60px);
+  min-height: calc(100vh - 60px);
 
   display: flex;
   flex-direction: column;
-
   flex-shrink: 0;
 
   background: #0f5c2a;
@@ -44,6 +46,7 @@
   border-right: 1px solid rgba(255, 255, 255, 0.08);
 
   overflow-y: auto;
+
   z-index: 100;
 }
 

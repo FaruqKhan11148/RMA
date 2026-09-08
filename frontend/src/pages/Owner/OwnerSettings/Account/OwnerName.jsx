@@ -23,14 +23,11 @@ function OwnerName() {
           return;
         }
 
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/owners/me',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const response = await fetch('http://localhost:5000/api/owners/me', {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
 
         const data = await response.json();
 
@@ -74,7 +71,7 @@ function OwnerName() {
       }
 
       const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/owners/settings/owner-name',
+        'http://localhost:5000/api/owners/settings/owner-name',
         {
           method: 'PATCH',
           headers: {

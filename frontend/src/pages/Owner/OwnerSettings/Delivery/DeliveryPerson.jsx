@@ -28,7 +28,7 @@ function DeliveryPerson() {
         }
 
         const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/delivery/person',
+          'http://localhost:5000/api/delivery/person',
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -78,7 +78,7 @@ function DeliveryPerson() {
       }
 
       const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/delivery/person/status',
+        'http://localhost:5000/api/delivery/person/status',
         {
           method: 'PATCH',
           headers: {
@@ -141,7 +141,7 @@ function DeliveryPerson() {
       }
 
       const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/delivery/person',
+        'http://localhost:5000/api/delivery/person',
         {
           method: 'PATCH',
 
@@ -214,7 +214,7 @@ function DeliveryPerson() {
       }
 
       const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/delivery/register',
+        'http://localhost:5000/api/delivery/register',
         {
           method: 'POST',
 

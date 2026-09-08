@@ -174,19 +174,18 @@ function MapPicker({ onLocationSelect }) {
   const getCurrentLocation = () => {
     if (!navigator.geolocation) {
       setError('Location is not supported by your browser.');
-
       return;
     }
 
     setLoadingLocation(true);
     setError('');
 
+    // First try a normal/faster location request.
+    // This can use a recent location from the phone.
     navigator.geolocation.getCurrentPosition(
       (location) => {
         const latitude = location.coords.latitude;
-
         const longitude = location.coords.longitude;
-
         const locationAccuracy = location.coords.accuracy;
 
         selectLocation([latitude, longitude], locationAccuracy);
@@ -195,34 +194,84 @@ function MapPicker({ onLocationSelect }) {
       },
 
       (locationError) => {
-        console.error('Geolocation error:', locationError);
+        console.error('Initial geolocation error:', locationError);
 
-        switch (locationError.code) {
-          case locationError.PERMISSION_DENIED:
-            setError(
-              'Location permission was denied. Please allow location access in your browser.',
-            );
-            break;
+        // If the normal request times out or the position is unavailable,
+        // try again using high GPS accuracy.
+        if (locationError.code === 2 || locationError.code === 3) {
+          navigator.geolocation.getCurrentPosition(
+            (location) => {
+              const latitude = location.coords.latitude;
+              const longitude = location.coords.longitude;
+              const locationAccuracy = location.coords.accuracy;
 
-          case locationError.POSITION_UNAVAILABLE:
-            setError('Your current location is unavailable.');
-            break;
+              selectLocation([latitude, longitude], locationAccuracy);
 
-          case locationError.TIMEOUT:
-            setError('Getting your location took too long. Please try again.');
-            break;
+              setLoadingLocation(false);
+            },
 
-          default:
-            setError('Unable to get your current location.');
+            (highAccuracyError) => {
+              console.error(
+                'High accuracy geolocation error:',
+                highAccuracyError,
+              );
+
+              switch (highAccuracyError.code) {
+                case 1:
+                  setError(
+                    'Location permission was denied. Please allow location access in your browser settings.',
+                  );
+                  break;
+
+                case 2:
+                  setError(
+                    'Your current location is unavailable. Please try again or select your location on the map.',
+                  );
+                  break;
+
+                case 3:
+                  setError(
+                    'Unable to get your location right now. Please try again or select your location on the map.',
+                  );
+                  break;
+
+                default:
+                  setError(
+                    'Unable to get your current location. Please try again.',
+                  );
+              }
+
+              setLoadingLocation(false);
+            },
+
+            {
+              enableHighAccuracy: true,
+              timeout: 20000,
+              maximumAge: 0,
+            },
+          );
+
+          return;
+        }
+
+        // Permission denied
+        if (locationError.code === 1) {
+          setError(
+            'Location permission was denied. Please allow location access in your browser settings.',
+          );
+        } else {
+          setError(
+            'Unable to get your current location. Please try again or select your location on the map.',
+          );
         }
 
         setLoadingLocation(false);
       },
 
       {
-        enableHighAccuracy: true,
-        timeout: 15000,
-        maximumAge: 0,
+        enableHighAccuracy: false,
+        timeout: 8000,
+        maximumAge: 60000,
       },
     );
   };

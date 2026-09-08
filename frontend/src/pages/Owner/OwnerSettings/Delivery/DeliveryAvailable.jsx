@@ -23,14 +23,11 @@ function DeliveryAvailable() {
 
     const fetchOwner = async () => {
       try {
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/owners/me',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const response = await fetch('http://localhost:5000/api/owners/me', {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
 
         const data = await response.json();
 
@@ -62,7 +59,7 @@ function DeliveryAvailable() {
 
     try {
       const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/owners/settings/delivery-available',
+        'http://localhost:5000/api/owners/settings/delivery-available',
         {
           method: 'PATCH',
           headers: {

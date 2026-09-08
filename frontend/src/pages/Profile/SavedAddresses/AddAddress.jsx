@@ -35,7 +35,7 @@ function AddAddress() {
       setError('');
 
       const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/customers/addresses',
+        'http://localhost:5000/api/customers/addresses',
         {
           method: 'POST',
           credentials: 'include',

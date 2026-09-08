@@ -11,7 +11,7 @@ function SavedAddresses() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    fetch('https://rma-backend-bo4a.onrender.com/api/customers/addresses', {
+    fetch('http://localhost:5000/api/customers/addresses', {
       credentials: 'include',
     })
       .then(async (response) => {
@@ -44,7 +44,7 @@ function SavedAddresses() {
 
     try {
       const response = await fetch(
-        `https://rma-backend-bo4a.onrender.com/api/customers/addresses/${addressId}`,
+        `http://localhost:5000/api/customers/addresses/${addressId}`,
         {
           method: 'DELETE',
           credentials: 'include',
@@ -67,7 +67,7 @@ function SavedAddresses() {
   const handleSetDefault = async (addressId) => {
     try {
       const response = await fetch(
-        `https://rma-backend-bo4a.onrender.com/api/customers/addresses/${addressId}/default`,
+        `http://localhost:5000/api/customers/addresses/${addressId}/default`,
         {
           method: 'PUT',
           credentials: 'include',

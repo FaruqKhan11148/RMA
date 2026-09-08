@@ -28,7 +28,7 @@ function OwnerDashboard() {
         setError('');
 
         const response = await fetch(
-          `https://rma-backend-bo4a.onrender.com/api/orders/owner/${shopOwner.id}`,
+          `http://localhost:5000/api/orders/owner/${shopOwner.id}`,
         );
 
         const data = await response.json();
@@ -92,7 +92,7 @@ function OwnerDashboard() {
   const updateOrderStatus = async (orderId, status) => {
     try {
       const response = await fetch(
-        `https://rma-backend-bo4a.onrender.com/api/orders/${orderId}/status`,
+        `http://localhost:5000/api/orders/${orderId}/status`,
         {
           method: 'PATCH',
           headers: {
