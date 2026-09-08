@@ -36,7 +36,7 @@ function AdminDashboard() {
 
         // Check admin session
         const sessionResponse = await fetch(
-          'http://localhost:5000/api/admin/me',
+          'https://rma-backend-bo4a.onrender.com/api/admin/me',
           {
             method: 'GET',
             credentials: 'include',
@@ -54,7 +54,7 @@ function AdminDashboard() {
 
         // Fetch real dashboard data
         const dashboardResponse = await fetch(
-          'http://localhost:5000/api/admin/dashboard',
+          'https://rma-backend-bo4a.onrender.com/api/admin/dashboard',
           {
             method: 'GET',
             credentials: 'include',
@@ -164,10 +164,13 @@ function AdminDashboard() {
             className="admin-logout-button"
             onClick={async () => {
               try {
-                await fetch('http://localhost:5000/api/admin/logout', {
-                  method: 'POST',
-                  credentials: 'include',
-                });
+                await fetch(
+                  'https://rma-backend-bo4a.onrender.com/api/admin/logout',
+                  {
+                    method: 'POST',
+                    credentials: 'include',
+                  },
+                );
               } catch (error) {
                 console.error('Logout error:', error);
               }

@@ -19,10 +19,13 @@ function AdminOwners() {
         setLoading(true);
         setError('');
 
-        const response = await fetch('http://localhost:5000/api/admin/owners', {
-          method: 'GET',
-          credentials: 'include',
-        });
+        const response = await fetch(
+          'https://rma-backend-bo4a.onrender.com/api/admin/owners',
+          {
+            method: 'GET',
+            credentials: 'include',
+          },
+        );
 
         if (response.status === 401) {
           navigate('/admin/login', { replace: true });

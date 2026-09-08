@@ -22,7 +22,7 @@ function EditAddress() {
     const loadAddress = async () => {
       try {
         const response = await fetch(
-          'http://localhost:5000/api/customers/addresses',
+          'https://rma-backend-bo4a.onrender.com/api/customers/addresses',
           {
             credentials: 'include',
           },
@@ -72,7 +72,7 @@ function EditAddress() {
       setError('');
 
       const response = await fetch(
-        `http://localhost:5000/api/customers/addresses/${addressId}`,
+        `https://rma-backend-bo4a.onrender.com/api/customers/addresses/${addressId}`,
         {
           method: 'PUT',
           credentials: 'include',

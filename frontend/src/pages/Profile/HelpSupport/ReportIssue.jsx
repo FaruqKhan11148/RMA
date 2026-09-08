@@ -29,7 +29,7 @@ function ReportIssue() {
 
     try {
       const response = await fetch(
-        'http://localhost:5000/api/customers/support-issues',
+        'https://rma-backend-bo4a.onrender.com/api/customers/support-issues',
         {
           method: 'POST',
           credentials: 'include',

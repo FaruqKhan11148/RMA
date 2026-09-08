@@ -16,7 +16,7 @@ function DeliveryStatus() {
   const fetchOrder = useCallback(async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/orders/${orderId}`,
+        `https://rma-backend-bo4a.onrender.com/api/orders/${orderId}`,
       );
 
       const data = await response.json();

@@ -21,9 +21,12 @@ function PersonalDetails() {
   useEffect(() => {
     const fetchCustomer = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/customers/me', {
-          credentials: 'include',
-        });
+        const response = await fetch(
+          'https://rma-backend-bo4a.onrender.com/api/customers/me',
+          {
+            credentials: 'include',
+          },
+        );
 
         if (!response.ok) {
           navigate('/customer/login');
@@ -64,16 +67,19 @@ function PersonalDetails() {
     setSaving(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/customers/me', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        'https://rma-backend-bo4a.onrender.com/api/customers/me',
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            name: name.trim(),
+          }),
         },
-        credentials: 'include',
-        body: JSON.stringify({
-          name: name.trim(),
-        }),
-      });
+      );
 
       const data = await response.json();
 

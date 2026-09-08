@@ -16,12 +16,15 @@ function OwnerProtectedRoute() {
       }
 
       try {
-        const response = await fetch('http://localhost:5000/api/owners/me', {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
+        const response = await fetch(
+          'https://rma-backend-bo4a.onrender.com/api/owners/me',
+          {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           },
-        });
+        );
 
         if (!response.ok) {
           throw new Error('Owner authentication failed');
