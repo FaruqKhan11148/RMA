@@ -103,6 +103,13 @@ router.get('/me', adminAuth, async (req, res) => {
   ADMIN DASHBOARD
   Real platform statistics
 */
+
+router.get('/test', (req, res) => {
+  res.json({
+    message: 'Admin routes are working',
+  });
+});
+
 router.get('/dashboard', adminAuth, async (req, res) => {
   try {
     const [
