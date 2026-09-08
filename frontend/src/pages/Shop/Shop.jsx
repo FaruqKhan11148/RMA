@@ -1,13 +1,15 @@
 import './Shop.css';
 
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { useCart } from '../../context/CartContext';
 
 function Shop() {
   const { shopId } = useParams();
-  const { addToCart } = useCart();
+  const navigate = useNavigate();
+
+  const { addToCart, totalItems } = useCart();
 
   const [shop, setShop] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -162,6 +164,17 @@ function Shop() {
             ))
           )}
         </div>
+        {totalItems > 0 && (
+          <div className="continue_cart_container">
+            <button
+              type="button"
+              className="continue_cart_button"
+              onClick={() => navigate('/cart')}
+            >
+              Continue to Cart
+            </button>
+          </div>
+        )}
       </section>
     </main>
   );
