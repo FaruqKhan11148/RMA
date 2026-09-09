@@ -12,6 +12,8 @@ function AdminCustomers() {
 
   const [search, setSearch] = useState('');
   const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [customerDetailsLoading, setCustomerDetailsLoading] = useState(false);
+  const [customerDetailsError, setCustomerDetailsError] = useState('');
 
   useEffect(() => {
     const fetchCustomers = async () => {
@@ -80,6 +82,47 @@ function AdminCustomers() {
     );
 
     return hasActiveOrder ? 'Active Order' : 'Customer';
+  };
+
+  const handleViewCustomer = async (phone) => {
+    try {
+      setCustomerDetailsLoading(true);
+      setCustomerDetailsError('');
+
+      const response = await fetch(
+        `https://rma-backend-bo4a.onrender.com/api/admin/customers/${encodeURIComponent(
+          phone,
+        )}`,
+        {
+          credentials: 'include',
+        },
+      );
+
+      if (response.status === 401) {
+        navigate('/admin/login');
+        return;
+      }
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to fetch customer details');
+      }
+
+      setSelectedCustomer({
+        ...data.customer,
+
+        ...(data.stats || {}),
+
+        orders: data.orders || [],
+      });
+    } catch (err) {
+      console.error('Admin customer details error:', err);
+
+      setCustomerDetailsError(err.message || 'Failed to load customer details');
+    } finally {
+      setCustomerDetailsLoading(false);
+    }
   };
 
   if (loading) {
@@ -172,7 +215,8 @@ function AdminCustomers() {
               <th>Phone</th>
               <th>Location</th>
               <th>Orders</th>
-              <th>Paid Amount</th>
+              <th>Completed</th>
+              <th>Total Spent</th>
               <th>Last Order</th>
               <th>Status</th>
               <th>Action</th>
@@ -182,7 +226,7 @@ function AdminCustomers() {
           <tbody>
             {filteredCustomers.length === 0 ? (
               <tr>
-                <td colSpan="8" className="admin-customers-empty">
+                <td colSpan="9" className="admin-customers-empty">
                   No customers found.
                 </td>
               </tr>
@@ -205,30 +249,37 @@ function AdminCustomers() {
                     </div>
                   </td>
 
-                  <td>{customer.totalOrders}</td>
+                  <td>{customer.totalOrders || 0}</td>
 
-                  <td>₹{(customer.totalSpent || 0).toLocaleString('en-IN')}</td>
+                  <td>{customer.completedOrders || 0}</td>
+
+                  <td>
+                    ₹{Number(customer.totalSpent || 0).toLocaleString('en-IN')}
+                  </td>
 
                   <td>{formatDate(customer.lastOrderAt)}</td>
 
                   <td>
                     <span
-                      className={
-                        getCustomerStatus(customer) === 'Active Order'
-                          ? 'customer-status active'
-                          : 'customer-status'
-                      }
+                      className={`customer-status ${
+                        customer.latestStatus
+                          ? `status-${customer.latestStatus
+                              .toLowerCase()
+                              .replace(/\s+/g, '-')}`
+                          : ''
+                      }`}
                     >
-                      {getCustomerStatus(customer)}
+                      {customer.latestStatus || 'No Orders'}
                     </span>
                   </td>
 
                   <td>
                     <button
                       className="admin-customer-view-btn"
-                      onClick={() => setSelectedCustomer(customer)}
+                      onClick={() => handleViewCustomer(customer.phone)}
+                      disabled={customerDetailsLoading}
                     >
-                      View
+                      {customerDetailsLoading ? 'Loading...' : 'View'}
                     </button>
                   </td>
                 </tr>
@@ -247,6 +298,11 @@ function AdminCustomers() {
             className="admin-customer-modal"
             onClick={(event) => event.stopPropagation()}
           >
+            {customerDetailsError && (
+              <div className="admin-customers-error">
+                {customerDetailsError}
+              </div>
+            )}
             <div className="admin-customer-modal-header">
               <div>
                 <h2>{selectedCustomer.name}</h2>
@@ -269,7 +325,22 @@ function AdminCustomers() {
 
               <div className="customer-detail-card">
                 <span>Total Orders</span>
-                <strong>{selectedCustomer.totalOrders}</strong>
+                <strong>{selectedCustomer.totalOrders || 0}</strong>
+              </div>
+
+              <div className="customer-detail-card">
+                <span>Completed</span>
+                <strong>{selectedCustomer.completedOrders || 0}</strong>
+              </div>
+
+              <div className="customer-detail-card">
+                <span>Pending</span>
+                <strong>{selectedCustomer.pendingOrders || 0}</strong>
+              </div>
+
+              <div className="customer-detail-card">
+                <span>Rejected</span>
+                <strong>{selectedCustomer.rejectedOrders || 0}</strong>
               </div>
 
               <div className="customer-detail-card">
@@ -297,12 +368,23 @@ function AdminCustomers() {
                   'No delivery address'}
               </p>
 
-              {selectedCustomer.deliveryLocation?.latitude &&
-                selectedCustomer.deliveryLocation?.longitude && (
-                  <p>
-                    Coordinates: {selectedCustomer.deliveryLocation.latitude},{' '}
-                    {selectedCustomer.deliveryLocation.longitude}
-                  </p>
+              {selectedCustomer.deliveryLocation?.latitude != null &&
+                selectedCustomer.deliveryLocation?.longitude != null && (
+                  <div className="admin-customer-location-actions">
+                    <p>
+                      Coordinates: {selectedCustomer.deliveryLocation.latitude},{' '}
+                      {selectedCustomer.deliveryLocation.longitude}
+                    </p>
+
+                    <a
+                      className="admin-customer-map-btn"
+                      href={`https://www.google.com/maps?q=${selectedCustomer.deliveryLocation.latitude},${selectedCustomer.deliveryLocation.longitude}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Open Location
+                    </a>
+                  </div>
                 )}
             </div>
 
@@ -316,7 +398,15 @@ function AdminCustomers() {
                     key={order.orderId}
                   >
                     <div>
-                      <strong>{order.orderId}</strong>
+                      <button
+                        type="button"
+                        className="admin-customer-order-id"
+                        onClick={() =>
+                          navigate(`/admin/orders/${order.orderId}`)
+                        }
+                      >
+                        {order.orderId}
+                      </button>
 
                       <span>{formatDate(order.createdAt)}</span>
                     </div>

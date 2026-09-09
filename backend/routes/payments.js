@@ -1,135 +1,131 @@
 const express = require('express');
-const Razorpay = require('razorpay');
 const crypto = require('crypto');
 
 const Order = require('../models/Order');
-const Owner = require('../models/Owner');
 
 const router = express.Router();
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
-});
+// PayU sends success/failure callbacks as
+// application/x-www-form-urlencoded.
+router.use(express.urlencoded({ extended: false }));
 
-// OWNER RAZORPAY ONBOARDING
-router.post('/onboard-owner', async (req, res) => {
-  try {
-    const { shopId } = req.body;
+const PAYU_PAYMENT_URL =
+  process.env.PAYU_ENV === 'live'
+    ? 'https://secure.payu.in/_payment'
+    : 'https://test.payu.in/_payment';
 
-    if (!shopId) {
-      return res.status(400).json({
-        message: 'shopId is required',
-      });
-    }
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
 
-    // Find owner
-    const owner = await Owner.findOne({ shopId });
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5000';
 
-    if (!owner) {
-      return res.status(404).json({
-        message: 'Owner/shop not found',
-      });
-    }
+// ---------------------------------------------------------
+// PAYU HASH HELPER
+// ---------------------------------------------------------
 
-    // Prevent creating multiple Razorpay accounts
-    if (owner.payment?.accountId) {
-      return res.status(200).json({
-        message: 'Razorpay account already exists',
-        accountId: owner.payment.accountId,
-        onboardingStatus: owner.payment.onboardingStatus,
-      });
-    }
+function generatePayUHash({
+  key,
+  txnid,
+  amount,
+  productinfo,
+  firstname,
+  email,
+  udf1 = '',
+  udf2 = '',
+  udf3 = '',
+  udf4 = '',
+  udf5 = '',
+}) {
+  const hashString =
+    `${key}|${txnid}|${amount}|${productinfo}|${firstname}|${email}|` +
+    `${udf1}|${udf2}|${udf3}|${udf4}|${udf5}||||||` +
+    `${process.env.PAYU_SALT}`;
 
-    // Create Razorpay Route Linked Account
-    const linkedAccountResponse = await fetch(
-      'https://api.razorpay.com/v2/accounts',
-      {
-        method: 'POST',
+  return crypto.createHash('sha512').update(hashString).digest('hex');
+}
 
-        headers: {
-          'Content-Type': 'application/json',
+// ---------------------------------------------------------
+// PAYU RESPONSE HASH VERIFICATION
+// ---------------------------------------------------------
 
-          Authorization:
-            'Basic ' +
-            Buffer.from(
-              `${process.env.RAZORPAY_KEY_ID}:${process.env.RAZORPAY_KEY_SECRET}`,
-            ).toString('base64'),
-        },
+function generatePayUResponseHash(data) {
+  const {
+    additionalCharges,
+    additional_charges,
+    status,
+    udf5 = '',
+    udf4 = '',
+    udf3 = '',
+    udf2 = '',
+    udf1 = '',
+    email = '',
+    firstname = '',
+    productinfo = '',
+    amount = '',
+    txnid = '',
+    key = '',
+  } = data;
 
-        body: JSON.stringify({
-          email: `${owner.phone}@rma.local`,
-          phone: owner.phone,
+  const extraCharges = additionalCharges || additional_charges || '';
 
-          type: 'route',
+  let hashString;
 
-          reference_id: owner.shopId,
-
-          legal_business_name: owner.shopName,
-
-          customer_facing_business_name: owner.shopName,
-
-          business_type: 'individual',
-
-          contact_name: owner.ownerName,
-
-          profile: {
-            category: 'food',
-            subcategory: 'food_and_beverages',
-          },
-        }),
-      },
-    );
-
-    const razorpayAccount = await linkedAccountResponse.json();
-
-    console.log('Razorpay Linked Account:', razorpayAccount);
-
-    if (!linkedAccountResponse.ok) {
-      console.error('Razorpay owner onboarding failed:', razorpayAccount);
-
-      return res.status(400).json({
-        message:
-          razorpayAccount.error?.description ||
-          'Unable to create Razorpay owner account',
-      });
-    }
-
-    // Save Razorpay account information
-    owner.payment = {
-      ...owner.payment?.toObject?.(),
-      provider: 'RAZORPAY',
-      accountId: razorpayAccount.id,
-      onboardingStatus: 'PENDING',
-      kycStatus: 'PENDING',
-      bankStatus: 'NOT_STARTED',
-      onboardingUrl: null,
-      onboardedAt: null,
-    };
-
-    await owner.save();
-
-    res.status(201).json({
-      message: 'Razorpay owner account created',
-
-      account: {
-        id: razorpayAccount.id,
-        status: razorpayAccount.status,
-        referenceId: razorpayAccount.reference_id,
-      },
-
-      payment: owner.payment,
-    });
-  } catch (error) {
-    console.error('Owner Razorpay onboarding failed:', error);
-
-    res.status(500).json({
-      message: error.message || 'Unable to start owner payment onboarding',
-    });
+  if (extraCharges) {
+    hashString =
+      `${extraCharges}|${process.env.PAYU_SALT}|${status}||||||` +
+      `${udf5}|${udf4}|${udf3}|${udf2}|${udf1}|${email}|` +
+      `${firstname}|${productinfo}|${amount}|${txnid}|${key}`;
+  } else {
+    hashString =
+      `${process.env.PAYU_SALT}|${status}||||||` +
+      `${udf5}|${udf4}|${udf3}|${udf2}|${udf1}|${email}|` +
+      `${firstname}|${productinfo}|${amount}|${txnid}|${key}`;
   }
+
+  return crypto.createHash('sha512').update(hashString).digest('hex');
+}
+
+// ---------------------------------------------------------
+// CONSTANT-TIME HASH COMPARISON
+// ---------------------------------------------------------
+
+function hashesMatch(hash1, hash2) {
+  if (!hash1 || !hash2) {
+    return false;
+  }
+
+  const first = Buffer.from(hash1, 'utf8');
+  const second = Buffer.from(hash2, 'utf8');
+
+  if (first.length !== second.length) {
+    return false;
+  }
+
+  return crypto.timingSafeEqual(first, second);
+}
+
+// ---------------------------------------------------------
+// OWNER PAYU ONBOARDING
+// ---------------------------------------------------------
+//
+// We are intentionally NOT implementing marketplace/owner
+// onboarding yet.
+//
+// That requires the PayU aggregator/marketplace setup to be
+// activated for RMA first.
+//
+// ---------------------------------------------------------
+
+router.post('/onboard-owner', async (req, res) => {
+  return res.status(501).json({
+    message:
+      'PayU owner marketplace onboarding will be implemented after PayU aggregator/split settlement activation.',
+  });
 });
 
-// CREATE RAZORPAY PAYMENT ORDER
+// ---------------------------------------------------------
+// CREATE PAYU PAYMENT
+// ---------------------------------------------------------
+
 router.post('/create-order', async (req, res) => {
   try {
     const { orderId } = req.body;
@@ -140,7 +136,19 @@ router.post('/create-order', async (req, res) => {
       });
     }
 
-    // Find the actual RMA order
+    if (!process.env.PAYU_MERCHANT_KEY) {
+      return res.status(500).json({
+        message: 'PAYU_MERCHANT_KEY is not configured',
+      });
+    }
+
+    if (!process.env.PAYU_SALT) {
+      return res.status(500).json({
+        message: 'PAYU_SALT is not configured',
+      });
+    }
+
+    // Find our RMA order.
     const order = await Order.findOne({ orderId });
 
     if (!order) {
@@ -149,119 +157,400 @@ router.post('/create-order', async (req, res) => {
       });
     }
 
-    // Only ONLINE orders can use Razorpay
+    // Only ONLINE orders can use PayU.
     if (order.paymentMethod !== 'ONLINE') {
       return res.status(400).json({
         message: 'This order is not an online payment order',
       });
     }
 
-    // Create Razorpay order
-    const options = {
-      amount: Math.round(order.totalPrice * 100),
-      currency: 'INR',
-      receipt: order.orderId,
-    };
+    // Customer information.
+    const customerName = order.customer?.name?.trim();
 
-    const razorpayOrder = await razorpay.orders.create(options);
+    const customerEmail = order.customer?.email?.trim() || '';
 
-    console.log('Razorpay Order Created:', razorpayOrder);
+    const customerPhone = order.customer?.phone?.trim() || '';
 
-    // Save Razorpay order ID in our RMA order
-    order.paymentOrderId = razorpayOrder.id;
+    if (!customerName) {
+      return res.status(400).json({
+        message: 'Customer name is required for PayU payment',
+      });
+    }
+
+    // if (!customerEmail) {
+    //   return res.status(400).json({
+    //     message: 'Customer email is required for PayU payment',
+    //   });
+    // }
+
+    if (!customerPhone) {
+      return res.status(400).json({
+        message: 'Customer phone is required for PayU payment',
+      });
+    }
+
+    // Backend-calculated final customer payable amount.
+    const amount = Number(order.totalPrice).toFixed(2);
+
+    // Generate a unique PayU transaction ID.
+    const txnid = `RMA-PAY-${order.orderId}-${Date.now()}`;
+
+    const productinfo = `RMA Order ${order.orderId}`;
+
+    // Generate PayU request hash.
+    const hash = generatePayUHash({
+      key: process.env.PAYU_MERCHANT_KEY,
+      txnid,
+      amount,
+      productinfo,
+      firstname: customerName,
+      email: customerEmail,
+    });
+
+    // Save PayU transaction ID in our RMA order.
+    order.paymentOrderId = txnid;
 
     await order.save();
 
-    res.status(201).json({
-      message: 'Payment order created successfully',
-      order: razorpayOrder,
+    console.log('PayU Test Payment Created:', {
+      orderId: order.orderId,
+      txnid,
+      amount,
+      paymentUrl: PAYU_PAYMENT_URL,
+    });
+
+    // Return everything required by the frontend to create
+    // an HTML form and POST it to PayU.
+    return res.status(201).json({
+      message: 'PayU payment created successfully',
+
+      paymentUrl: PAYU_PAYMENT_URL,
+
+      payment: {
+        key: process.env.PAYU_MERCHANT_KEY,
+        txnid,
+        amount,
+        productinfo,
+        firstname: customerName,
+        email: customerEmail,
+        phone: customerPhone,
+
+        surl: `${BACKEND_URL}/api/payments/payu/success`,
+
+        furl: `${BACKEND_URL}/api/payments/payu/failure`,
+
+        hash,
+      },
     });
   } catch (error) {
-    console.error('Create Razorpay order failed:', error);
+    console.error('Create PayU payment failed:', error);
 
-    res.status(500).json({
-      message: error.message || 'Unable to create payment order',
+    return res.status(500).json({
+      message: error.message || 'Unable to create PayU payment',
     });
   }
 });
 
-// VERIFY RAZORPAY PAYMENT
-router.post('/verify', async (req, res) => {
-  try {
-    const {
-      orderId,
-      razorpay_order_id,
-      razorpay_payment_id,
-      razorpay_signature,
-      onlinePaymentMethod,
-    } = req.body;
+// ---------------------------------------------------------
+// PAYU SUCCESS CALLBACK
+// ---------------------------------------------------------
 
-    if (
-      !orderId ||
-      !razorpay_order_id ||
-      !razorpay_payment_id ||
-      !razorpay_signature
-    ) {
-      return res.status(400).json({
-        message: 'Payment verification data is missing',
-      });
+router.post('/payu/success', async (req, res) => {
+  try {
+    console.log('PayU SUCCESS CALLBACK:', req.body);
+
+    const data = req.body;
+
+    const { txnid, mihpayid, status, hash, amount, key } = data;
+
+    if (!txnid || !hash || !key) {
+      return res.status(400).send('Invalid PayU success response');
     }
 
-    // Find our RMA order
-    const order = await Order.findOne({ orderId });
+    // Make sure the callback belongs to our PayU merchant.
+    if (key !== process.env.PAYU_MERCHANT_KEY) {
+      return res.status(400).send('Invalid PayU merchant key');
+    }
+
+    // Find our RMA order using the PayU transaction ID.
+    const order = await Order.findOne({
+      paymentOrderId: txnid,
+    });
 
     if (!order) {
-      return res.status(404).json({
-        message: 'RMA order not found',
-      });
+      return res.status(404).send('RMA order not found');
     }
 
-    // Make sure this Razorpay order belongs to this RMA order
-    if (order.paymentOrderId !== razorpay_order_id) {
-      return res.status(400).json({
-        message: 'Payment order does not match RMA order',
+    // Verify PayU's response hash BEFORE trusting the response.
+    const generatedHash = generatePayUResponseHash(data);
+
+    if (!hashesMatch(generatedHash, hash)) {
+      console.error('PayU response hash verification failed:', {
+        orderId: order.orderId,
+        txnid,
       });
-    }
 
-    // Create Razorpay signature
-    const generatedSignature = crypto
-      .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
-      .update(`${razorpay_order_id}|${razorpay_payment_id}`)
-      .digest('hex');
-
-    // Compare signatures
-    if (generatedSignature !== razorpay_signature) {
       order.paymentStatus = 'Failed';
 
       await order.save();
 
-      return res.status(400).json({
-        message: 'Payment verification failed',
-      });
+      return res.status(400).send('PayU payment verification failed');
     }
 
-    // Payment is verified
+    // PayU says success.
+    if (status !== 'success') {
+      order.paymentStatus = 'Failed';
+
+      await order.save();
+
+      return res.redirect(`${FRONTEND_URL}/payment-failed/${order.orderId}`);
+    }
+
+    // Extra protection:
+    // make sure PayU returned the same amount that our
+    // backend originally calculated.
+    const expectedAmount = Number(order.totalPrice).toFixed(2);
+
+    const returnedAmount = Number(amount).toFixed(2);
+
+    if (expectedAmount !== returnedAmount) {
+      console.error('PayU amount mismatch:', {
+        orderId: order.orderId,
+        expectedAmount,
+        returnedAmount,
+      });
+
+      order.paymentStatus = 'Failed';
+
+      await order.save();
+
+      return res.status(400).send('Payment amount mismatch');
+    }
+
     order.paymentStatus = 'Paid';
     order.paymentMethod = 'ONLINE';
-    order.onlinePaymentMethod = onlinePaymentMethod || null;
-    order.paymentId = razorpay_payment_id;
-    order.paymentOrderId = razorpay_order_id;
+
+    let onlinePaymentMethod = null;
+
+    switch (data.mode) {
+      case 'CC':
+      case 'DC':
+        onlinePaymentMethod = 'CARD';
+        break;
+
+      case 'NB':
+        onlinePaymentMethod = 'NETBANKING';
+        break;
+
+      case 'UPI':
+        onlinePaymentMethod = 'UPI';
+        break;
+
+      default:
+        onlinePaymentMethod = data.mode || null;
+    }
+
+    order.onlinePaymentMethod = onlinePaymentMethod;
+
+    order.paymentId = data.mihpayid;
+    order.paymentOrderId = data.txnid;
     order.paidAt = new Date();
+
+    // Payment is successful, but owner has not accepted yet.
+    // Therefore the settlement is still pending.
+    order.settlementStatus = 'Pending';
+
+    // A successful payment does not need a refund yet.
+    order.refundStatus = 'NotRequired';
+    order.refundAmount = 0;
+    order.refundId = null;
+    order.refundInitiatedAt = null;
+    order.refundCompletedAt = null;
 
     await order.save();
 
-    console.log('Payment verified successfully:', order.orderId);
+    console.log('PayU payment verified successfully:', order.orderId);
 
-    res.status(200).json({
-      message: 'Payment verified successfully',
-      order,
-    });
+    return res.redirect(`${FRONTEND_URL}/delivery-status/${order.orderId}`);
   } catch (error) {
-    console.error('Payment verification failed:', error);
+    console.error('PayU success callback failed:', error);
 
-    res.status(500).json({
-      message: error.message || 'Unable to verify payment',
+    return res.status(500).send('Unable to process PayU payment response');
+  }
+});
+
+// ---------------------------------------------------------
+// PAYU FAILURE CALLBACK
+// ---------------------------------------------------------
+
+router.post('/payu/failure', async (req, res) => {
+  try {
+    console.log('PayU FAILURE CALLBACK:', req.body);
+
+    const data = req.body;
+
+    const { txnid, hash, key } = data;
+
+    if (!txnid || !hash || !key) {
+      return res.status(400).send('Invalid PayU failure response');
+    }
+
+    if (key !== process.env.PAYU_MERCHANT_KEY) {
+      return res.status(400).send('Invalid PayU merchant key');
+    }
+
+    const order = await Order.findOne({
+      paymentOrderId: txnid,
     });
+
+    if (!order) {
+      return res.status(404).send('RMA order not found');
+    }
+
+    // Verify the response even for failed transactions.
+    const generatedHash = generatePayUResponseHash(data);
+
+    if (!hashesMatch(generatedHash, hash)) {
+      console.error('PayU failure response hash verification failed:', {
+        orderId: order.orderId,
+        txnid,
+      });
+
+      return res.status(400).send('PayU response verification failed');
+    }
+
+    order.paymentStatus = 'Failed';
+
+    order.settlementStatus = 'NotRequired';
+
+    order.refundStatus = 'NotRequired';
+    order.refundAmount = 0;
+    order.refundId = null;
+    order.refundInitiatedAt = null;
+    order.refundCompletedAt = null;
+
+    await order.save();
+
+    console.log('PayU payment failed:', order.orderId);
+
+    return res.redirect(`${FRONTEND_URL}/payment-failed/${order.orderId}`);
+  } catch (error) {
+    console.error('PayU failure callback failed:', error);
+
+    return res.status(500).send('Unable to process PayU failure response');
+  }
+});
+
+// ---------------------------------------------------------
+// PAYU REFUND STATUS CALLBACK
+// ---------------------------------------------------------
+
+router.post('/payu/refund-callback', async (req, res) => {
+  try {
+    console.log('========== PAYU REFUND CALLBACK ==========');
+    console.log(req.body);
+    console.log('===========================================');
+
+    const data = req.body;
+
+    const {
+      status,
+      key,
+      mihpayid,
+      request_id,
+      merchantTxnId,
+      amt,
+      bank_ref_num,
+      bank_arn,
+    } = data;
+
+    if (!key || key !== process.env.PAYU_MERCHANT_KEY) {
+      return res.status(400).send('Invalid PayU merchant key');
+    }
+
+    if (!request_id && !mihpayid && !merchantTxnId) {
+      return res.status(400).send('Refund transaction information missing');
+    }
+
+    let order = null;
+
+    // First try our RMA orderId from merchantTxnId.
+    if (merchantTxnId) {
+      order = await Order.findOne({
+        orderId: merchantTxnId,
+      });
+    }
+
+    // If not found, try PayU transaction ID.
+    if (!order && mihpayid) {
+      order = await Order.findOne({
+        paymentId: String(mihpayid).trim(),
+      });
+    }
+
+    if (!order) {
+      console.error('Refund callback: RMA order not found', {
+        merchantTxnId,
+        mihpayid,
+        request_id,
+      });
+
+      return res.status(404).send('RMA order not found');
+    }
+
+    if (status === 'success') {
+      order.refundStatus = 'Completed';
+      order.paymentStatus = 'Refunded';
+
+      order.refundCompletedAt = new Date();
+
+      if (request_id) {
+        order.refundId = String(request_id);
+      }
+
+      if (amt) {
+        order.refundAmount = Number(amt);
+      }
+
+      order.settlementStatus = 'NotRequired';
+
+      await order.save();
+
+      console.log('PayU refund completed:', {
+        orderId: order.orderId,
+        refundId: order.refundId,
+        refundAmount: order.refundAmount,
+        bankRefNum: bank_ref_num,
+        bankArn: bank_arn,
+      });
+
+      return res.status(200).send('Refund callback processed');
+    }
+
+    if (status === 'failure') {
+      order.refundStatus = 'Failed';
+
+      if (request_id) {
+        order.refundId = String(request_id);
+      }
+
+      await order.save();
+
+      console.error('PayU refund failed:', {
+        orderId: order.orderId,
+        refundId: order.refundId,
+      });
+
+      return res.status(200).send('Refund failure processed');
+    }
+
+    console.log('PayU refund callback has unknown status:', status);
+
+    return res.status(200).send('Refund callback received');
+  } catch (error) {
+    console.error('PayU refund callback failed:', error);
+
+    return res.status(500).send('Unable to process refund callback');
   }
 });
 

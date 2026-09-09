@@ -104,6 +104,47 @@ const orderSchema = new mongoose.Schema(
       min: 1,
     },
 
+    // =========================
+    // ORDER AMOUNT BREAKDOWN
+    // =========================
+
+    // Product subtotal before delivery charge
+    subtotal: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+
+    deliveryDistance: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+
+    // Delivery charge paid by customer
+    deliveryCharge: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+
+    // RMA platform fee = 1% of product subtotal
+    rmaFee: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+
+    // Amount belonging to the shop owner
+    // = subtotal - rmaFee
+    ownerAmount: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+
+    // Final amount paid/payable by customer
+    // = subtotal + deliveryCharge
     totalPrice: {
       type: Number,
       required: true,
@@ -177,6 +218,10 @@ const orderSchema = new mongoose.Schema(
       default: false,
     },
 
+    // =========================
+    // PAYMENT
+    // =========================
+
     paymentStatus: {
       type: String,
       enum: ['Pending', 'Paid', 'Failed', 'Refunded'],
@@ -185,27 +230,81 @@ const orderSchema = new mongoose.Schema(
 
     paymentMethod: {
       type: String,
-      enum: ['COD', 'ONLINE'],
+      enum: ['ONLINE'],
       required: true,
+      default: 'ONLINE',
     },
 
     onlinePaymentMethod: {
       type: String,
-      enum: ['UPI', 'CARD', 'RUPAY'],
+      enum: ['UPI', 'CARD', 'RUPAY', 'NETBANKING'],
       default: null,
     },
 
+    // PayU payment ID (mihpayid)
     paymentId: {
       type: String,
       default: null,
     },
 
+    // PayU transaction ID (txnid)
     paymentOrderId: {
       type: String,
       default: null,
     },
 
     paidAt: {
+      type: Date,
+      default: null,
+    },
+
+    // =========================
+    // SETTLEMENT
+    // =========================
+
+    // Payment is received first.
+    // Settlement happens only after owner accepts the order.
+    settlementStatus: {
+      type: String,
+      enum: ['NotRequired', 'Pending', 'Processing', 'Settled', 'Failed'],
+      default: 'NotRequired',
+    },
+
+    settledAt: {
+      type: Date,
+      default: null,
+    },
+
+    // =========================
+    // REFUND
+    // =========================
+
+    // Refund is required only when a paid order is rejected.
+    refundStatus: {
+      type: String,
+      enum: ['NotRequired', 'Pending', 'Processing', 'Completed', 'Failed'],
+      default: 'NotRequired',
+    },
+
+    // Total amount returned to customer
+    refundAmount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+
+    // PayU refund transaction/reference ID
+    refundId: {
+      type: String,
+      default: null,
+    },
+
+    refundInitiatedAt: {
+      type: Date,
+      default: null,
+    },
+
+    refundCompletedAt: {
       type: Date,
       default: null,
     },

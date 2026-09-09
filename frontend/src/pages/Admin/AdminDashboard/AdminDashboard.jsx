@@ -114,6 +114,13 @@ function AdminDashboard() {
 
           <button
             className="admin-nav-item"
+            onClick={() => navigate('/admin/shops')}
+          >
+            Shops
+          </button>
+
+          <button
+            className="admin-nav-item"
             onClick={() => navigate('/admin/customers')}
           >
             Customers
@@ -124,6 +131,20 @@ function AdminDashboard() {
             onClick={() => navigate('/admin/orders')}
           >
             Orders
+          </button>
+
+          <button
+            className="admin-nav-item"
+            onClick={() => navigate('/admin/orders/daily')}
+          >
+            Daily Orders
+          </button>
+
+          <button
+            className="admin-nav-item"
+            onClick={() => navigate('/admin/finance/monthly')}
+          >
+            Monthly Finance
           </button>
 
           <button

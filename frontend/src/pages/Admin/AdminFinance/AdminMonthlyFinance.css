@@ -1,0 +1,320 @@
+.admin_monthly_finance_page {
+  min-height: 100vh;
+  padding: 30px;
+  background: #f7f8fa;
+}
+
+/* HEADER */
+
+.admin_monthly_finance_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
+.admin_monthly_finance_header h1 {
+  margin: 10px 0 6px;
+  font-size: 30px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.admin_monthly_finance_header p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.admin_back_button {
+  border: none;
+  background: transparent;
+  padding: 0;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.admin_back_button:hover {
+  color: #111827;
+}
+
+/* MONTH SELECTOR */
+
+.admin_month_selector {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.admin_month_selector label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #6b7280;
+}
+
+.admin_month_selector input {
+  min-width: 180px;
+  padding: 11px 13px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background: #fff;
+  color: #111827;
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+}
+
+.admin_month_selector input:focus {
+  border-color: #111827;
+}
+
+/* SUMMARY */
+
+.admin_finance_summary_grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 26px;
+}
+
+.admin_finance_card {
+  min-height: 125px;
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.admin_finance_card span {
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.admin_finance_card strong {
+  color: #111827;
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.admin_rma_fee_card {
+  border-color: #dbeafe;
+}
+
+/* SECTIONS */
+
+.admin_finance_section {
+  margin-bottom: 26px;
+  padding: 24px;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.admin_finance_section_header {
+  margin-bottom: 20px;
+}
+
+.admin_finance_section_header h2 {
+  margin: 0 0 5px;
+  color: #111827;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.admin_finance_section_header p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+/* STATUS */
+
+.admin_status_grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.admin_status_card {
+  padding: 16px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #f9fafb;
+  text-align: center;
+}
+
+.admin_status_card span {
+  display: block;
+  min-height: 34px;
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.admin_status_card strong {
+  display: block;
+  margin-top: 8px;
+  color: #111827;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+/* SHOP TABLE */
+
+.admin_shop_finance_table_wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.admin_shop_finance_table {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: collapse;
+}
+
+.admin_shop_finance_table th {
+  padding: 13px 14px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+  color: #6b7280;
+  font-size: 11px;
+  font-weight: 800;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.admin_shop_finance_table td {
+  padding: 15px 14px;
+  border-bottom: 1px solid #f0f1f3;
+  color: #374151;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.admin_shop_finance_table tbody tr:hover {
+  background: #fafafa;
+}
+
+.admin_shop_id_button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  border: none;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.admin_shop_id_button strong {
+  color: #111827;
+  font-size: 13px;
+}
+
+.admin_shop_id_button span {
+  color: #6b7280;
+  font-size: 11px;
+}
+
+.admin_shop_id_button:hover strong {
+  text-decoration: underline;
+}
+
+/* MESSAGES */
+
+.admin_finance_message,
+.admin_finance_error,
+.admin_empty_state {
+  padding: 40px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  color: #6b7280;
+  text-align: center;
+  font-size: 14px;
+}
+
+.admin_finance_error {
+  color: #b91c1c;
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+
+/* TABLET */
+
+@media (max-width: 1100px) {
+  .admin_finance_summary_grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .admin_status_grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+  .admin_monthly_finance_page {
+    padding: 18px;
+  }
+
+  .admin_monthly_finance_header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 18px;
+  }
+
+  .admin_monthly_finance_header h1 {
+    font-size: 25px;
+  }
+
+  .admin_month_selector input {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .admin_finance_summary_grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .admin_finance_card {
+    min-height: 105px;
+    padding: 16px;
+  }
+
+  .admin_finance_card strong {
+    font-size: 21px;
+  }
+
+  .admin_finance_section {
+    padding: 18px;
+    border-radius: 14px;
+  }
+
+  .admin_status_grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 420px) {
+  .admin_finance_summary_grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin_status_grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

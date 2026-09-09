@@ -31,14 +31,16 @@ function Payment() {
     try {
       setLoading(true);
 
-      // 1. Create Razorpay order from backend
+      // 1. Ask our backend to create the PayU payment.
       const response = await fetch(
         'https://rma-backend-bo4a.onrender.com/api/payments/create-order',
         {
           method: 'POST',
+
           headers: {
             'Content-Type': 'application/json',
           },
+
           body: JSON.stringify({
             orderId: order.orderId,
           }),
@@ -49,86 +51,77 @@ function Payment() {
 
       if (!response.ok) {
         alert(data.message || 'Unable to create payment');
+
         return;
       }
 
-      const razorpayOrder = data.order;
+      console.log('PayU Payment Data:', data);
 
-      const razorpayKey = process.env.REACT_APP_RAZORPAY_KEY_ID;
+      const { paymentUrl, payment } = data;
 
-      console.log('Razorpay Key:', razorpayKey);
+      if (!paymentUrl || !payment) {
+        alert('Invalid PayU payment response');
 
-      const options = {
-        key: razorpayKey,
+        return;
+      }
 
-        amount: razorpayOrder.amount,
+      // 2. Create a temporary HTML form.
+      const form = document.createElement('form');
 
-        currency: razorpayOrder.currency,
+      form.method = 'POST';
+      form.action = paymentUrl;
 
-        name: 'RMA',
+      // PayU should receive the payment request as a
+      // normal application/x-www-form-urlencoded form.
+      form.style.display = 'none';
 
-        description: `Order ${order.orderId}`,
+      // 3. Add all PayU payment fields.
+      const paymentFields = {
+        key: payment.key,
 
-        order_id: razorpayOrder.id,
+        txnid: payment.txnid,
 
-        prefill: {
-          name: order.customer.name,
-          contact: order.customer.phone,
-        },
+        amount: payment.amount,
 
-        theme: {
-          color: '#ff4d4f',
-        },
+        productinfo: payment.productinfo,
 
-        handler: async function (response) {
-          try {
-            // 3. Verify payment
-            const verifyResponse = await fetch(
-              'https://rma-backend-bo4a.onrender.com/api/payments/verify',
-              {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  orderId: order.orderId,
+        firstname: payment.firstname,
 
-                  razorpay_order_id: response.razorpay_order_id,
+        email: payment.email,
 
-                  razorpay_payment_id: response.razorpay_payment_id,
+        phone: payment.phone,
 
-                  razorpay_signature: response.razorpay_signature,
+        surl: payment.surl,
 
-                  onlinePaymentMethod: paymentMethod,
-                }),
-              },
-            );
+        furl: payment.furl,
 
-            const verifyData = await verifyResponse.json();
-
-            if (!verifyResponse.ok) {
-              alert(verifyData.message || 'Payment verification failed');
-
-              return;
-            }
-
-            // 4. Payment success
-            clearCart();
-
-            navigate(`/delivery-status/${order.orderId}`);
-          } catch (error) {
-            console.error(error);
-
-            alert('Payment verification failed');
-          }
-        },
+        hash: payment.hash,
       };
 
-      const razorpay = new window.Razorpay(options);
+      Object.entries(paymentFields).forEach(([name, value]) => {
+        const input = document.createElement('input');
 
-      razorpay.open();
+        input.type = 'hidden';
+
+        input.name = name;
+
+        input.value = value ?? '';
+
+        form.appendChild(input);
+      });
+
+      // 4. Add the form to the page.
+      document.body.appendChild(form);
+
+      console.log('Redirecting to PayU Test Checkout...');
+
+      // 5. Submit the form to PayU.
+      form.submit();
+
+      // The browser is now leaving our RMA page
+      // and going to PayU.
     } catch (error) {
-      console.error(error);
+      console.error('PayU payment start failed:', error);
 
       alert('Unable to start payment');
     } finally {
@@ -147,11 +140,13 @@ function Payment() {
       <section className="payment_order">
         <div>
           <span>Shop</span>
+
           <strong>{order.ownerId?.shopName || 'Shop'}</strong>
         </div>
 
         <div>
           <span>Order ID</span>
+
           <strong>{order.orderId}</strong>
         </div>
       </section>
@@ -175,6 +170,7 @@ function Payment() {
           >
             <div>
               <strong>UPI</strong>
+
               <p>Google Pay, PhonePe, Paytm and other UPI apps</p>
             </div>
 
@@ -190,6 +186,7 @@ function Payment() {
           >
             <div>
               <strong>Debit / Credit Card</strong>
+
               <p>Pay securely using your bank card</p>
             </div>
 
@@ -205,6 +202,7 @@ function Payment() {
           >
             <div>
               <strong>RuPay</strong>
+
               <p>Pay using a RuPay card</p>
             </div>
 
@@ -224,12 +222,18 @@ function Payment() {
         {loading ? 'Loading Payment...' : `Pay ₹${order.totalPrice}`}
       </button>
 
-      {/* <button
+      {/* 
+      <button
         className="back_button"
-        onClick={() => navigate(`/delivery-status/${order.orderId}`)}
+        onClick={() =>
+          navigate(
+            `/delivery-status/${order.orderId}`,
+          )
+        }
       >
         Pay Later
-      </button> */}
+      </button>
+      */}
     </main>
   );
 }

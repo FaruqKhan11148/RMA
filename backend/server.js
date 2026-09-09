@@ -48,7 +48,17 @@ const corsOptions = {
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
-app.use(cors(corsOptions));
+app.use((req, res, next) => {
+  const isPayUCallback =
+    req.path === '/api/payments/payu/success' ||
+    req.path === '/api/payments/payu/failure';
+
+  if (isPayUCallback) {
+    return next();
+  }
+
+  return cors(corsOptions)(req, res, next);
+});
 
 /* =========================
    MIDDLEWARE

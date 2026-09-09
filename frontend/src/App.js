@@ -67,6 +67,12 @@ import AdminDelivery from './pages/Admin/AdminDelivery/AdminDelivery';
 import AdminPayments from './pages/Admin/AdminPayments/AdminPayments';
 import AdminFinance from './pages/Admin/AdminFinance/AdminFinance';
 
+import AdminShops from './pages/Admin/Shops/AdminShops';
+import AdminShopDetails from './pages/Admin/Shops/AdminShopDetails';
+import AdminOrderDetails from './pages/Admin/AdminOrders/AdminOrderDetails';
+import AdminDailyOrders from './pages/Admin/AdminOrders/AdminDailyOrders';
+import AdminMonthlyFinance from './pages/Admin/AdminFinance/AdminMonthlyFinance';
+
 // Customer
 import CustomerLogin from './pages/Customer/CustomerLogin/CustomerLogin';
 import CustomerSignup from './pages/Customer/CustomerSignup/CustomerSignup';
@@ -251,6 +257,18 @@ function App() {
           <Route path="/admin/payments" element={<AdminPayments />} />
 
           <Route path="/admin/finance" element={<AdminFinance />} />
+
+          <Route path="/admin/shops" element={<AdminShops />} />
+          <Route path="/admin/shops/:shopId" element={<AdminShopDetails />} />
+          <Route
+            path="/admin/orders/:orderId"
+            element={<AdminOrderDetails />}
+          />
+          <Route path="/admin/orders/daily" element={<AdminDailyOrders />} />
+          <Route
+            path="/admin/finance/monthly"
+            element={<AdminMonthlyFinance />}
+          />
 
           {/* ==================== CUSTOMER AUTH ==================== */}
 

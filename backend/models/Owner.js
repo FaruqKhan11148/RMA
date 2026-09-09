@@ -130,7 +130,7 @@ const ownerSchema = new mongoose.Schema(
     payment: {
       provider: {
         type: String,
-        default: 'RAZORPAY',
+        default: 'PAYU',
       },
 
       accountId: {
@@ -226,51 +226,6 @@ const ownerSchema = new mongoose.Schema(
     products: {
       type: [productSchema],
       default: [],
-    },
-
-    // RAZORPAY PAYMENT / ONBOARDING
-
-    razorpay: {
-      accountId: {
-        type: String,
-        default: null,
-      },
-
-      status: {
-        type: String,
-        enum: [
-          'NOT_STARTED',
-          'CREATED',
-          'KYC_PENDING',
-          'UNDER_REVIEW',
-          'ACTIVATED',
-          'SUSPENDED',
-          'REJECTED',
-        ],
-        default: 'NOT_STARTED',
-      },
-
-      kycStatus: {
-        type: String,
-        enum: [
-          'NOT_STARTED',
-          'PENDING',
-          'UNDER_REVIEW',
-          'VERIFIED',
-          'REJECTED',
-        ],
-        default: 'NOT_STARTED',
-      },
-
-      settlementEnabled: {
-        type: Boolean,
-        default: false,
-      },
-
-      onboardedAt: {
-        type: Date,
-        default: null,
-      },
     },
   },
   {

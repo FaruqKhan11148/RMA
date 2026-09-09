@@ -67,11 +67,7 @@ function Checkout() {
         customer,
         orderType,
         items,
-        totalItems,
-        totalPrice,
         paymentMethod,
-
-        // Customer's selected map coordinates
         deliveryLocation: orderType === 'delivery' ? deliveryLocation : null,
       };
 
@@ -79,6 +75,15 @@ function Checkout() {
 
       // Create order in backend
       const order = await createOrder(orderData);
+
+      console.log('BACKEND CALCULATED ORDER:', {
+        subtotal: order.subtotal,
+        deliveryDistance: order.deliveryDistance,
+        deliveryCharge: order.deliveryCharge,
+        rmaFee: order.rmaFee,
+        ownerAmount: order.ownerAmount,
+        totalPrice: order.totalPrice,
+      });
 
       console.log('Order Created:', order);
 

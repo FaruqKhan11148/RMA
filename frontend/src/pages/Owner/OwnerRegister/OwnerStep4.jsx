@@ -29,7 +29,7 @@ function OwnerStep4() {
     );
   }
 
-  const handleConnectPayment = async () => {
+  const handleCreateShop = async () => {
     try {
       setLoading(true);
       setError('');
@@ -138,11 +138,11 @@ function OwnerStep4() {
         <section className="payment_setup">
           <div className="payment_icon">₹</div>
 
-          <h2>Razorpay</h2>
+          <h2>Payment & Settlement</h2>
 
           <p>
-            RMA uses Razorpay to securely process customer payments and manage
-            seller settlements.
+            RMA uses a secure payment provider to process customer payments and
+            manage seller settlements.
           </p>
         </section>
 
@@ -153,48 +153,38 @@ function OwnerStep4() {
 
           <div className="settlement_steps">
             <div className="settlement_step">
-              <span className="settlement_number">1</span>
-
+              <span>1</span>
               <div>
                 <strong>Payment Account</strong>
-
-                <p>Create your Razorpay payment account.</p>
+                <p>
+                  Set up your payment account for receiving customer payments.
+                </p>
               </div>
             </div>
 
             <div className="settlement_step">
-              <span className="settlement_number">2</span>
-
+              <span>2</span>
               <div>
                 <strong>Bank Account</strong>
-
-                <p>
-                  Connect the bank account where your settlements will be
-                  received.
-                </p>
+                <p>Connect your bank account for receiving settlements.</p>
               </div>
             </div>
 
             <div className="settlement_step">
-              <span className="settlement_number">3</span>
-
+              <span>3</span>
               <div>
                 <strong>KYC Verification</strong>
-
-                <p>Complete the required verification with Razorpay.</p>
+                <p>
+                  Complete the required verification with the payment provider.
+                </p>
               </div>
             </div>
 
             <div className="settlement_step">
-              <span className="settlement_number">4</span>
-
+              <span>4</span>
               <div>
                 <strong>Receive Settlements</strong>
-
-                <p>
-                  Receive eligible customer payments into your connected bank
-                  account.
-                </p>
+                <p>Once verified, receive settlements from customer orders.</p>
               </div>
             </div>
           </div>
@@ -231,10 +221,10 @@ function OwnerStep4() {
           <button
             type="button"
             className="step_continue_button"
-            onClick={handleConnectPayment}
+            onClick={handleCreateShop}
             disabled={loading}
           >
-            {loading ? 'Setting Up...' : 'Connect Payment Account'}
+            {loading ? 'Creating Shop...' : 'Create Shop'}
           </button>
         </div>
       </section>

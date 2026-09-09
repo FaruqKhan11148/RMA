@@ -1,0 +1,145 @@
+.admin-shops-page {
+  min-height: 100vh;
+  padding: 32px;
+  background: #f7f7f7;
+}
+
+.admin-shops-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.admin-shops-back {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin-bottom: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #555;
+  cursor: pointer;
+}
+
+.admin-shops-header h1 {
+  margin: 0;
+  font-size: 32px;
+  color: #111;
+}
+
+.admin-shops-header p {
+  margin: 8px 0 0;
+  color: #777;
+  font-size: 14px;
+}
+
+.admin-shops-count {
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  font-size: 13px;
+  font-weight: 700;
+  color: #222;
+}
+
+.admin-shops-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.admin-shop-card {
+  width: 100%;
+  border: 1px solid #e5e5e5;
+  border-radius: 16px;
+  padding: 20px;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.admin-shop-card:hover {
+  transform: translateY(-2px);
+  border-color: #ccc;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.admin-shop-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.admin-shop-id {
+  font-size: 12px;
+  font-weight: 800;
+  color: #777;
+  letter-spacing: 0.4px;
+}
+
+.admin-shop-arrow {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111;
+}
+
+.admin-shop-card h2 {
+  margin: 0 0 12px;
+  font-size: 19px;
+  color: #111;
+}
+
+.admin-shop-card p {
+  margin: 5px 0;
+  font-size: 13px;
+  color: #666;
+}
+
+.admin-shops-state,
+.admin-shops-error {
+  padding: 40px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  text-align: center;
+  color: #666;
+}
+
+.admin-shops-error {
+  color: #b42318;
+  background: #fff5f5;
+  border-color: #f0caca;
+}
+
+@media (max-width: 1000px) {
+  .admin-shops-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 650px) {
+  .admin-shops-page {
+    padding: 20px;
+  }
+
+  .admin-shops-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .admin-shops-header h1 {
+    font-size: 26px;
+  }
+
+  .admin-shops-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -284,7 +284,6 @@ router.get('/me', ownerAuth, async (req, res) => {
         categories: req.owner.categories,
         products: req.owner.products,
         payment: req.owner.payment,
-        razorpay: req.owner.razorpay,
       },
     });
   } catch (error) {

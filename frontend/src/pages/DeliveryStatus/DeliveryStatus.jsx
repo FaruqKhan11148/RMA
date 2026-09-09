@@ -1,12 +1,15 @@
 import './DeliveryStatus.css';
 
 import { useEffect, useState, useCallback } from 'react';
+import { useCart } from '../../context/CartContext';
 import { useNavigate, useParams } from 'react-router-dom';
 
 function DeliveryStatus() {
   const navigate = useNavigate();
 
   const { orderId } = useParams();
+
+  const { clearCart } = useCart();
 
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -27,6 +30,7 @@ function DeliveryStatus() {
       }
 
       setOrder(data.order);
+      clearCart();
     } catch (error) {
       console.error('Fetch order failed:', error);
 
