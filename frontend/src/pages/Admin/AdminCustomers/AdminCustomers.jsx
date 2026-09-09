@@ -76,13 +76,13 @@ function AdminCustomers() {
     return new Date(date).toLocaleString('en-IN');
   };
 
-  const getCustomerStatus = (customer) => {
-    const hasActiveOrder = customer.orders?.some(
-      (order) => order.status !== 'Completed' && order.status !== 'Rejected',
-    );
+  // const getCustomerStatus = (customer) => {
+  //   const hasActiveOrder = customer.orders?.some(
+  //     (order) => order.status !== 'Completed' && order.status !== 'Rejected',
+  //   );
 
-    return hasActiveOrder ? 'Active Order' : 'Customer';
-  };
+  //   return hasActiveOrder ? 'Active Order' : 'Customer';
+  // };
 
   const handleViewCustomer = async (phone) => {
     try {

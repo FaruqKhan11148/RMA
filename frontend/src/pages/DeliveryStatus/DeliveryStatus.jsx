@@ -38,7 +38,7 @@ function DeliveryStatus() {
     } finally {
       setLoading(false);
     }
-  }, [orderId]);
+  }, [orderId, clearCart]);
 
   // FETCH ORDER WHEN PAGE LOADS
   useEffect(() => {

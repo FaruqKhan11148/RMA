@@ -15,7 +15,7 @@ function Payment() {
   const [loading, setLoading] = useState(false);
 
   const order = orders.find((item) => item.orderId === orderId);
-  const { clearCart } = useCart();
+  // const { clearCart } = useCart();
 
   if (!order) {
     return (

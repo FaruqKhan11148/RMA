@@ -10,7 +10,7 @@ import { useOrder } from '../../context/OrderContext';
 function Checkout() {
   const navigate = useNavigate();
 
-  const { cartItems, totalItems, totalPrice, clearCart } = useCart();
+  const { cartItems,   totalPrice, clearCart } = useCart();
   const { createOrder } = useOrder();
 
   const [orderType, setOrderType] = useState('delivery');
