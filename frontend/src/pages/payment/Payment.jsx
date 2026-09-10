@@ -3,7 +3,7 @@ import './Payment.css';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useOrder } from '../../context/OrderContext';
-import { useCart } from '../../context/CartContext';
+// import { useCart } from '../../context/CartContext';
 
 function Payment() {
   const navigate = useNavigate();
