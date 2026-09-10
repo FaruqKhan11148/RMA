@@ -85,7 +85,7 @@ function AdminCustomers() {
   // };
 
   const handleViewCustomer = async (phone) => {
-    try {
+    try { 
       setCustomerDetailsLoading(true);
       setCustomerDetailsError('');
 

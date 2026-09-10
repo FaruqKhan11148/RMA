@@ -159,6 +159,7 @@ function DeliveryStatus() {
   const shopName = order.ownerId?.shopName || 'Shop';
 
   // REJECTED ORDER
+  // REJECTED ORDER
   if (order.status === 'Rejected') {
     return (
       <main className="delivery_status">
@@ -175,6 +176,71 @@ function DeliveryStatus() {
 
           <p>{getStatusMessage()}</p>
         </section>
+
+        {order.refundStatus === 'Processing' && (
+          <section className="order_status_card refund_card">
+            <div className="status_icon">₹</div>
+
+            <h2>Refund Initiated</h2>
+
+            <p>Your payment has been sent for a full refund.</p>
+
+            <p>
+              <strong>Refund Amount:</strong> ₹
+              {Number(order.refundAmount).toFixed(2)}
+            </p>
+
+            {order.refundId && (
+              <p>
+                <strong>Refund ID:</strong> {order.refundId}
+              </p>
+            )}
+
+            <p>
+              The refund is being processed by the payment provider and will be
+              credited to your original payment method.
+            </p>
+          </section>
+        )}
+
+        {order.refundStatus === 'Completed' && (
+          <section className="order_status_card refund_card">
+            <div className="status_icon">✓</div>
+
+            <h2>Refund Completed</h2>
+
+            <p>
+              Your full payment has been refunded to your original payment
+              method.
+            </p>
+
+            <p>
+              <strong>Refund Amount:</strong> ₹
+              {Number(order.refundAmount).toFixed(2)}
+            </p>
+
+            {order.refundId && (
+              <p>
+                <strong>Refund ID:</strong> {order.refundId}
+              </p>
+            )}
+          </section>
+        )}
+
+        {order.refundStatus === 'Failed' && (
+          <section className="order_status_card refund_card">
+            <div className="status_icon">!</div>
+
+            <h2>Refund Processing</h2>
+
+            <p>
+              Your order was rejected, but we could not complete the refund
+              request yet.
+            </p>
+
+            <p>Please contact RMA support for assistance.</p>
+          </section>
+        )}
 
         <section className="order_details">
           <h2>Order Details</h2>
@@ -193,7 +259,7 @@ function DeliveryStatus() {
           </p>
 
           <p>
-            <strong>Total:</strong> ₹{order.totalPrice}
+            <strong>Total:</strong> ₹{Number(order.totalPrice).toFixed(2)}
           </p>
         </section>
 
