@@ -21,32 +21,33 @@ export function OrderProvider({ children }) {
       localStorage.setItem('rma_guest_id', guestId);
     }
 
-    useEffect(() => {
-      const originalFetch = window.fetch;
-
-      window.fetch = (...args) => {
-        const url = args[0];
-
-        console.log('🔥 FETCH CALLED:', url);
-        console.log('🔥 FETCH METHOD:', args[1]?.method || 'GET');
-
-        if (String(url).includes('/api/orders')) {
-          console.trace('🔥🔥 ORDERS API CALL STACK');
-        }
-
-        return originalFetch(...args);
-      };
-
-      return () => {
-        window.fetch = originalFetch;
-      };
-    }, []);
     return guestId;
   }, []);
 
   useEffect(() => {
     getGuestId();
   }, [getGuestId]);
+
+  useEffect(() => {
+    const originalFetch = window.fetch;
+
+    window.fetch = (...args) => {
+      const url = args[0];
+
+      console.log('🔥 FETCH CALLED:', url);
+      console.log('🔥 FETCH METHOD:', args[1]?.method || 'GET');
+
+      if (String(url).includes('/api/orders')) {
+        console.trace('🔥🔥 ORDERS API CALL STACK');
+      }
+
+      return originalFetch(...args);
+    };
+
+    return () => {
+      window.fetch = originalFetch;
+    };
+  }, []);
 
   const getGuestOrders = useCallback(async () => {
     console.log('========== getGuestOrders START ==========');
