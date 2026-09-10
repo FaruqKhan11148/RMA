@@ -171,6 +171,34 @@ router.get('/owner/:ownerId', async (req, res) => {
   }
 });
 
+// GET ORDERS FOR ONE GUEST
+router.get('/guest/:guestId', async (req, res) => {
+  try {
+    const { guestId } = req.params;
+
+    if (!guestId) {
+      return res.status(400).json({
+        message: 'Guest ID is required',
+      });
+    }
+
+    const orders = await Order.find({ guestId })
+      .populate('ownerId', 'ownerName shopName phone shopId')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      count: orders.length,
+      orders,
+    });
+  } catch (error) {
+    console.error('Get guest orders failed:', error.message);
+
+    res.status(500).json({
+      message: 'Server error',
+    });
+  }
+});
+
 // GET ONE ORDER BY ORDER ID
 router.get('/:orderId', async (req, res) => {
   try {
@@ -209,6 +237,7 @@ router.post('/', async (req, res) => {
       items,
       paymentMethod,
       deliveryLocation,
+      guestId,
     } = req.body;
 
     if (
@@ -388,6 +417,8 @@ router.post('/', async (req, res) => {
       console.log('No valid customer session. Creating guest order.');
     }
 
+    const storedGuestId = customerId ? null : guestId;
+
     console.log('ORDER DATA BEFORE MONGODB:', {
       ownerId,
       customerId,
@@ -413,6 +444,7 @@ router.post('/', async (req, res) => {
       orderId: `RMA${Date.now()}`,
 
       customerId,
+      guestId: storedGuestId,
 
       ownerId,
       customer,

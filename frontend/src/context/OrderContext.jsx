@@ -1,4 +1,10 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+} from 'react';
 
 const OrderContext = createContext();
 
@@ -7,37 +13,49 @@ export function OrderProvider({ children }) {
 
   const [loading, setLoading] = useState(true);
 
-  // GET ALL ORDERS FROM BACKEND
-  const fetchOrders = async () => {
+  const getGuestId = useCallback(() => {
+    let guestId = localStorage.getItem('rma_guest_id');
+
+    if (!guestId) {
+      guestId = crypto.randomUUID();
+      localStorage.setItem('rma_guest_id', guestId);
+    }
+
+    return guestId;
+  }, []);
+
+  useEffect(() => {
+    getGuestId();
+  }, [getGuestId]);
+
+  const getGuestOrders = useCallback(async () => {
     try {
-      setLoading(true);
+      const guestId = getGuestId();
 
       const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/orders',
+        `https://rma-backend-bo4a.onrender.com/api/orders/guest/${guestId}`,
       );
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to fetch orders');
+        throw new Error(data.message || 'Failed to load guest orders');
       }
 
-      setOrders(data.orders);
-    } catch (error) {
-      console.error('Fetch orders failed:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+      setOrders(data.orders || []);
 
-  // FETCH ORDERS WHEN APP STARTS
-  useEffect(() => {
-    fetchOrders();
-  }, []);
+      return data.orders || [];
+    } catch (error) {
+      console.error('Get guest orders failed:', error);
+      throw error;
+    }
+  }, [getGuestId]);
 
   // CREATE ORDER IN BACKEND
   const createOrder = async (orderData) => {
     try {
+      const guestId = getGuestId();
+
       const response = await fetch(
         'https://rma-backend-bo4a.onrender.com/api/orders',
         {
@@ -46,7 +64,10 @@ export function OrderProvider({ children }) {
             'Content-Type': 'application/json',
           },
           credentials: 'include',
-          body: JSON.stringify(orderData),
+          body: JSON.stringify({
+            ...orderData,
+            guestId,
+          }),
         },
       );
 
@@ -110,7 +131,8 @@ export function OrderProvider({ children }) {
     createOrder,
     latestOrder,
     updateOrderStatus,
-    fetchOrders,
+    getGuestId,
+    getGuestOrders,
   };
 
   return (

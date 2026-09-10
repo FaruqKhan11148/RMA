@@ -1,25 +1,20 @@
 import './Orders.css';
-
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import { useOrder } from '../../context/OrderContext';
 
 function Orders() {
   const navigate = useNavigate();
-
-  const { orders: guestOrders } = useOrder();
+  const { getGuestOrders } = useOrder();
 
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
     const loadOrders = async () => {
       try {
         setLoading(true);
 
-        // Check whether customer is logged in
         const meResponse = await fetch(
           'https://rma-backend-bo4a.onrender.com/api/customers/me',
           {
@@ -27,13 +22,7 @@ function Orders() {
           },
         );
 
-        // ==========================================
-        // LOGGED-IN CUSTOMER
-        // ==========================================
-
         if (meResponse.ok) {
-          setLoggedIn(true);
-
           const ordersResponse = await fetch(
             'https://rma-backend-bo4a.onrender.com/api/customers/orders',
             {
@@ -44,87 +33,61 @@ function Orders() {
           const data = await ordersResponse.json();
 
           if (!ordersResponse.ok) {
-            throw new Error(data.message || 'Failed to load orders');
+            throw new Error(data.message || 'Failed to load customer orders');
           }
 
           setOrders(data.orders || []);
-        }
+        } else {
+          const guestOrders = await getGuestOrders();
 
-        // ==========================================
-        // GUEST CUSTOMER
-        // ==========================================
-        else {
-          setLoggedIn(false);
-          setOrders(guestOrders || []);
+          setOrders(guestOrders);
         }
       } catch (error) {
-        console.error('Load customer orders failed:', error);
-
-        // If API fails, still show guest orders
-        setLoggedIn(false);
-        setOrders(guestOrders || []);
+        console.error('Load orders failed:', error);
+        setOrders([]);
       } finally {
         setLoading(false);
       }
     };
 
     loadOrders();
-  }, [guestOrders]);
-
-  // ==========================================
-  // LOADING
-  // ==========================================
+  }, [getGuestOrders]);
 
   if (loading) {
     return (
-      <main className="orders_empty">
-        <h1>Loading Orders...</h1>
-        <p>Please wait while we load your orders.</p>
-      </main>
+      <div className="orders_empty">
+        <h1>Orders</h1>
+        <p>Loading your orders...</p>
+      </div>
     );
   }
-
-  // ==========================================
-  // NO ORDERS
-  // ==========================================
 
   if (orders.length === 0) {
     return (
-      <main className="orders_empty">
+      <div className="orders_empty">
         <h1>No Orders Yet</h1>
+        <p>Your orders will appear here once you place an order from a shop.</p>
 
-        <p>
-          {loggedIn
-            ? 'Your orders will appear here.'
-            : 'You can place an order without creating an account.'}
-        </p>
-
-        <button onClick={() => navigate('/')}>Start Shopping</button>
-      </main>
+        <button type="button" onClick={() => navigate('/')}>
+          Start Ordering
+        </button>
+      </div>
     );
   }
 
-  // ==========================================
-  // ORDERS
-  // ==========================================
-
   return (
     <main className="orders">
-      <section className="orders_header">
+      <div className="orders_header">
         <h1>My Orders</h1>
+        <p>Track and manage your recent orders.</p>
+      </div>
 
-        <p>
-          {orders.length} {orders.length === 1 ? 'order' : 'orders'}
-        </p>
-      </section>
-
-      <section className="orders_list">
+      <div className="orders_list">
         {orders.map((order) => (
-          <div className="order_card" key={order.orderId}>
+          <article className="order_card" key={order.orderId}>
             <div className="order_card_header">
               <div>
                 <span>Order ID</span>
-
                 <strong>{order.orderId}</strong>
               </div>
 
@@ -133,9 +96,8 @@ function Orders() {
 
             <div className="order_shop">
               <span>Shop</span>
-
               <strong>
-                {order.ownerId?.shopName || order.shopName || 'Shop'}
+                {order.ownerId?.shopName || order.ownerId?.ownerName || 'Shop'}
               </strong>
             </div>
 
@@ -148,18 +110,19 @@ function Orders() {
                 {order.orderType === 'delivery' ? 'Delivery' : 'Pickup'}
               </span>
 
-              <strong>₹{order.totalPrice}</strong>
+              <strong>₹{Number(order.totalPrice || 0).toFixed(2)}</strong>
             </div>
 
             <button
+              type="button"
               className="track_order_button"
               onClick={() => navigate(`/delivery-status/${order.orderId}`)}
             >
               View Order
             </button>
-          </div>
+          </article>
         ))}
-      </section>
+      </div>
     </main>
   );
 }
