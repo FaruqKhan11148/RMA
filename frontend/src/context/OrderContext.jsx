@@ -11,7 +11,7 @@ const OrderContext = createContext();
 export function OrderProvider({ children }) {
   const [orders, setOrders] = useState([]);
 
-  // const [loading, setLoading] = useState(true);
+  const [loading] = useState(true);
 
   const getGuestId = useCallback(() => {
     let guestId = localStorage.getItem('rma_guest_id');
