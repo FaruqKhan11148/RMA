@@ -235,9 +235,9 @@ router.post('/create-order', async (req, res) => {
         email: customerEmail,
         phone: customerPhone,
 
-        surl: `${BACKEND_URL}/api/payments/payu/success`,
+        surl: `${FRONTEND_URL}/api/payments/payu/success`,
 
-        furl: `${BACKEND_URL}/api/payments/payu/failure`,
+        furl: `${FRONTEND_URL}/api/payments/payu/failure`,
 
         hash,
       },
