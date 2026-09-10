@@ -51,7 +51,8 @@ const corsOptions = {
 app.use((req, res, next) => {
   const isPayUCallback =
     req.path === '/api/payments/payu/success' ||
-    req.path === '/api/payments/payu/failure';
+    req.path === '/api/payments/payu/failure' ||
+    req.path === '/api/payments/payu/refund-callback';
 
   if (isPayUCallback) {
     return next();
