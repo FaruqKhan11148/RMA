@@ -12,8 +12,12 @@ function Orders() {
 
   useEffect(() => {
     const loadOrders = async () => {
+      console.log('========== ORDERS PAGE START ==========');
+
       try {
         setLoading(true);
+
+        console.log('[Orders] Checking customer login...');
 
         const meResponse = await fetch(
           'https://rma-backend-bo4a.onrender.com/api/customers/me',
@@ -22,7 +26,13 @@ function Orders() {
           },
         );
 
+        console.log('[Orders] /customers/me status:', meResponse.status);
+        console.log('[Orders] /customers/me ok:', meResponse.ok);
+
         if (meResponse.ok) {
+          console.log('[Orders] Customer is logged in');
+          console.log('[Orders] Calling /api/customers/orders');
+
           const ordersResponse = await fetch(
             'https://rma-backend-bo4a.onrender.com/api/customers/orders',
             {
@@ -30,22 +40,39 @@ function Orders() {
             },
           );
 
+          console.log(
+            '[Orders] /api/customers/orders status:',
+            ordersResponse.status,
+          );
+
           const data = await ordersResponse.json();
+
+          console.log('[Orders] Customer orders response:', data);
 
           if (!ordersResponse.ok) {
             throw new Error(data.message || 'Failed to load customer orders');
           }
 
+          console.log('[Orders] Setting customer orders:', data.orders?.length);
+
           setOrders(data.orders || []);
         } else {
+          console.log('[Orders] Customer is NOT logged in');
+          console.log('[Orders] Calling getGuestOrders()');
+
           const guestOrders = await getGuestOrders();
+
+          console.log('[Orders] Guest orders received:', guestOrders);
+
+          console.log('[Orders] Guest order count:', guestOrders?.length);
 
           setOrders(guestOrders);
         }
       } catch (error) {
-        console.error('Load orders failed:', error);
+        console.error('[Orders] LOAD FAILED:', error);
         setOrders([]);
       } finally {
+        console.log('========== ORDERS PAGE END ==========');
         setLoading(false);
       }
     };
