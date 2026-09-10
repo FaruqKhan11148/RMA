@@ -3,7 +3,6 @@ import './Payment.css';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useOrder } from '../../context/OrderContext';
-// import { useCart } from '../../context/CartContext';
 
 function Payment() {
   const navigate = useNavigate();
@@ -15,7 +14,6 @@ function Payment() {
   const [loading, setLoading] = useState(false);
 
   const order = orders.find((item) => item.orderId === orderId);
-  // const { clearCart } = useCart();
 
   if (!order) {
     return (
