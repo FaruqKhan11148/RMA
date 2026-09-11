@@ -33,7 +33,7 @@ function DeliveryOrders() {
   const [currentLocation, setCurrentLocation] = useState(null);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [dashboardStats, setDashboardStats] = useState(null);
-  const [activeSection, setAcftiveSection] = useState('today');
+  const [activeSection, setActiveSection] = useState('today');
 
   const [loading, setLoading] = useState(false);
 
