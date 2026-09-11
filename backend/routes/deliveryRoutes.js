@@ -412,6 +412,84 @@ router.get('/orders', deliveryAuth, async (req, res) => {
   }
 });
 
+// GET DELIVERY DASHBOARD SUMMARY
+// GET DELIVERY DASHBOARD SUMMARY
+router.get('/dashboard', deliveryAuth, async (req, res) => {
+  try {
+    const deliveryPerson = req.deliveryPerson;
+
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    const endOfToday = new Date();
+    endOfToday.setHours(23, 59, 59, 999);
+
+    const baseQuery = {
+      ownerId: deliveryPerson.ownerId,
+      orderType: 'delivery',
+    };
+
+    // TODAY'S ORDERS
+    const todayOrders = await Order.find({
+      ...baseQuery,
+      createdAt: {
+        $gte: startOfToday,
+        $lte: endOfToday,
+      },
+    })
+      .populate('ownerId', 'ownerName shopName phone shopId location')
+      .sort({ createdAt: -1 });
+
+    // PENDING DELIVERIES
+    const pendingOrders = todayOrders.filter(
+      (order) => order.status === 'OutForDelivery',
+    );
+
+    // COMPLETED TODAY
+    const completedTodayOrders = todayOrders.filter(
+      (order) => order.status === 'Completed',
+    );
+
+    // ALL-TIME DELIVERED ORDERS
+    const allDeliveredOrders = await Order.find({
+      ...baseQuery,
+      status: 'Completed',
+    })
+      .populate('ownerId', 'ownerName shopName phone shopId location')
+      .sort({ completedAt: -1 });
+
+    res.status(200).json({
+      today: {
+        orders: todayOrders.length,
+        pending: pendingOrders.length,
+        completed: completedTodayOrders.length,
+      },
+
+      allTime: {
+        delivered: allDeliveredOrders.length,
+      },
+
+      orders: {
+        today: todayOrders,
+        pending: pendingOrders,
+        completedToday: completedTodayOrders,
+        allDelivered: allDeliveredOrders,
+      },
+
+      summary: {
+        distance: null,
+        earnings: null,
+      },
+    });
+  } catch (error) {
+    console.error('Get delivery dashboard failed:', error);
+
+    res.status(500).json({
+      message: 'Server error',
+    });
+  }
+});
+
 // GET ROAD ROUTE FOR A DELIVERY ORDER
 router.get('/route/:orderId', deliveryAuth, async (req, res) => {
   try {

@@ -9,11 +9,32 @@ function DeliveryOrders() {
 
   const [otp, setOtp] = useState('');
 
-  const [loginStep, setLoginStep] = useState('login');
+  const getStoredDeliveryPerson = () => {
+    try {
+      const storedDeliveryPerson = sessionStorage.getItem('delivery_person');
 
-  const [deliveryPerson, setDeliveryPerson] = useState(null);
+      return storedDeliveryPerson ? JSON.parse(storedDeliveryPerson) : null;
+    } catch (error) {
+      console.error('Failed to restore delivery person:', error);
+
+      return null;
+    }
+  };
+
+  const [deliveryPerson, setDeliveryPerson] = useState(getStoredDeliveryPerson);
+
+  const [loginStep, setLoginStep] = useState(() => {
+    const token = sessionStorage.getItem('delivery_token');
+    const storedDeliveryPerson = sessionStorage.getItem('delivery_person');
+
+    return token && storedDeliveryPerson ? 'dashboard' : 'login';
+  });
+
   const [orders, setOrders] = useState([]);
   const [currentLocation, setCurrentLocation] = useState(null);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [dashboardStats, setDashboardStats] = useState(null);
+  const [activeSection, setActiveSection] = useState('today');
 
   const [loading, setLoading] = useState(false);
   const [ordersLoading, setOrdersLoading] = useState(false);
@@ -264,6 +285,48 @@ function DeliveryOrders() {
     fetchDeliveryOrders();
   }, [loginStep]);
 
+  // GET DELIVERY DASHBOARD SUMMARY
+  useEffect(() => {
+    if (loginStep !== 'dashboard') {
+      return;
+    }
+
+    const fetchDashboardStats = async () => {
+      try {
+        const token = sessionStorage.getItem('delivery_token');
+
+        if (!token) {
+          return;
+        }
+
+        const response = await fetch(
+          'https://rma-backend-bo4a.onrender.com/api/delivery/dashboard',
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(
+            data.message || 'Failed to load dashboard statistics',
+          );
+        }
+
+        console.log('Delivery dashboard stats:', data);
+
+        setDashboardStats(data);
+      } catch (error) {
+        console.error('Fetch delivery dashboard failed:', error);
+      }
+    };
+
+    fetchDashboardStats();
+  }, [loginStep]);
+
   // VERIFY CUSTOMER DELIVERY OTP
   const handleVerifyOtp = async (orderId, otp) => {
     try {
@@ -294,9 +357,33 @@ function DeliveryOrders() {
 
       alert('Delivery completed successfully');
 
+      // Remove from local delivery orders
       setOrders((currentOrders) =>
         currentOrders.filter((order) => order.orderId !== orderId),
       );
+
+      // Refresh dashboard statistics and order lists
+      try {
+        const dashboardResponse = await fetch(
+          'https://rma-backend-bo4a.onrender.com/api/delivery/dashboard',
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        const dashboardData = await dashboardResponse.json();
+
+        if (dashboardResponse.ok) {
+          setDashboardStats(dashboardData);
+        }
+      } catch (dashboardError) {
+        console.error('Failed to refresh delivery dashboard:', dashboardError);
+      }
+
+      // Close order details
+      setSelectedOrder(null);
     } catch (error) {
       console.error('OTP verification failed:', error);
 
@@ -426,6 +513,15 @@ function DeliveryOrders() {
     );
   }
 
+  const activeOrders =
+    activeSection === 'today'
+      ? dashboardStats?.orders?.today || []
+      : activeSection === 'pending'
+        ? dashboardStats?.orders?.pending || []
+        : activeSection === 'completedToday'
+          ? dashboardStats?.orders?.completedToday || []
+          : dashboardStats?.orders?.allDelivered || [];
+
   // DELIVERY DASHBOARD
   return (
     <main className="delivery_orders">
@@ -443,36 +539,151 @@ function DeliveryOrders() {
         </button>
       </section>
 
+      {dashboardStats && (
+        <div className="delivery_dashboard_tabs">
+          <button
+            type="button"
+            className={`delivery_dashboard_tab ${
+              activeSection === 'today' ? 'active' : ''
+            }`}
+            onClick={() => setActiveSection('today')}
+          >
+            <span>Today's Orders</span>
+            <strong>{dashboardStats.today.orders}</strong>
+          </button>
+
+          <button
+            type="button"
+            className={`delivery_dashboard_tab ${
+              activeSection === 'pending' ? 'active' : ''
+            }`}
+            onClick={() => setActiveSection('pending')}
+          >
+            <span>Pending</span>
+            <strong>{dashboardStats.today.pending}</strong>
+          </button>
+
+          <button
+            type="button"
+            className={`delivery_dashboard_tab ${
+              activeSection === 'completedToday' ? 'active' : ''
+            }`}
+            onClick={() => setActiveSection('completedToday')}
+          >
+            <span>Completed Today</span>
+            <strong>{dashboardStats.today.completed}</strong>
+          </button>
+
+          <button
+            type="button"
+            className={`delivery_dashboard_tab ${
+              activeSection === 'allDelivered' ? 'active' : ''
+            }`}
+            onClick={() => setActiveSection('allDelivered')}
+          >
+            <span>Total Delivered</span>
+            <strong>{dashboardStats.allTime.delivered}</strong>
+          </button>
+        </div>
+      )}
+
       {error && <p className="delivery_error_message">{error}</p>}
 
       {/* ORDERS */}
 
-      <section className="delivery_orders_list">
-        {orders.length === 0 ? (
-          <div className="delivery_no_orders">
-            <h2>No delivery orders</h2>
+      {selectedOrder ? (
+        <DeliveryOrderDetails
+          order={selectedOrder}
+          onBack={() => setSelectedOrder(null)}
+          onVerifyOtp={handleVerifyOtp}
+          currentLocation={currentLocation}
+        />
+      ) : (
+        <section className="delivery_orders_list">
+          <h2 className="delivery_orders_list_title">
+            {activeSection === 'today'
+              ? "Today's Orders"
+              : activeSection === 'pending'
+                ? 'Pending Deliveries'
+                : activeSection === 'completedToday'
+                  ? 'Completed Today'
+                  : 'All Delivered Orders'}
+          </h2>
+          {activeOrders.length === 0 ? (
+            <div className="delivery_no_orders">
+              <h2>
+                {activeSection === 'today'
+                  ? 'No orders today'
+                  : activeSection === 'pending'
+                    ? 'No pending deliveries'
+                    : activeSection === 'completedToday'
+                      ? 'No orders completed today'
+                      : 'No delivered orders yet'}
+              </h2>
 
-            <p>There are currently no orders waiting for delivery.</p>
-          </div>
-        ) : (
-          orders.map((order) => (
-            <DeliveryOrderCard
-              key={order.orderId}
-              order={order}
-              onVerifyOtp={handleVerifyOtp}
-              currentLocation={currentLocation}
-            />
-          ))
-        )}
-      </section>
+              <p>
+                {activeSection === 'today'
+                  ? 'There are no delivery orders for today.'
+                  : activeSection === 'pending'
+                    ? 'There are currently no orders waiting for delivery.'
+                    : activeSection === 'completedToday'
+                      ? 'No delivery orders have been completed today.'
+                      : 'There are no completed delivery orders yet.'}
+              </p>
+            </div>
+          ) : (
+            activeOrders.map((order) => (
+              <button
+                type="button"
+                className="delivery_order_row"
+                key={order.orderId}
+                onClick={() => setSelectedOrder(order)}
+              >
+                <div className="delivery_order_row_main">
+                  <strong>#{order.orderId}</strong>
+
+                  <span className="delivery_order_status">
+                    {order.status === 'Completed'
+                      ? 'Completed'
+                      : order.status === 'OutForDelivery'
+                        ? 'Out for delivery'
+                        : order.status}
+                  </span>
+                </div>
+
+                <div className="delivery_order_row_info">
+                  <span>{order.customer?.name || 'Customer'}</span>
+
+                  <span>
+                    {order.totalItems}{' '}
+                    {order.totalItems === 1 ? 'item' : 'items'}
+                  </span>
+
+                  <strong>₹{Number(order.totalPrice || 0).toFixed(2)}</strong>
+                </div>
+
+                <div className="delivery_order_row_footer">
+                  <span>
+                    {order.deliveryDistance
+                      ? `${Number(order.deliveryDistance).toFixed(1)} km`
+                      : 'Delivery'}
+                  </span>
+
+                  <span>View Details →</span>
+                </div>
+              </button>
+            ))
+          )}
+        </section>
+      )}
     </main>
   );
 }
 
-function DeliveryOrderCard({ order, onVerifyOtp, currentLocation }) {
+function DeliveryOrderDetails({ order, onBack, onVerifyOtp, currentLocation }) {
   const [otp, setOtp] = useState('');
   const [route, setRoute] = useState(null);
-  const [routeLoading, setRouteLoading] = useState(false);
+  const [routeLoading, setRouteLoading] = useState(true);
   const [routeError, setRouteError] = useState('');
 
   useEffect(() => {
@@ -482,11 +693,6 @@ function DeliveryOrderCard({ order, onVerifyOtp, currentLocation }) {
         setRouteError('');
 
         const token = sessionStorage.getItem('delivery_token');
-
-        if (!token) {
-          setRouteError('Delivery login session not found');
-          return;
-        }
 
         const response = await fetch(
           `https://rma-backend-bo4a.onrender.com/api/delivery/route/${order.orderId}`,
@@ -500,15 +706,13 @@ function DeliveryOrderCard({ order, onVerifyOtp, currentLocation }) {
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.message || 'Unable to calculate route');
+          throw new Error(data.message || 'Failed to load route');
         }
 
         setRoute(data.route);
-        console.log('Delivery route:', data.route);
       } catch (error) {
-        console.error('Fetch delivery route failed:', error);
-
-        setRouteError('Unable to calculate delivery route');
+        console.error('Failed to fetch delivery route:', error);
+        setRouteError(error.message);
       } finally {
         setRouteLoading(false);
       }
@@ -517,9 +721,9 @@ function DeliveryOrderCard({ order, onVerifyOtp, currentLocation }) {
     fetchRoute();
   }, [order.orderId]);
 
-  const handleSubmit = () => {
-    if (otp.length !== 6) {
-      alert('Please enter the 6-digit OTP');
+  const handleSubmitOtp = () => {
+    if (!otp.trim()) {
+      alert('Please enter the delivery OTP.');
       return;
     }
 
@@ -527,78 +731,144 @@ function DeliveryOrderCard({ order, onVerifyOtp, currentLocation }) {
   };
 
   return (
-    <div className="delivery_order_card">
-      {/* ORDER HEADER */}
+    <div className="delivery_order_details">
+      <div className="delivery_details_header">
+        <button type="button" className="delivery_back_button" onClick={onBack}>
+          <span className="delivery_back_icon">←</span>
+          <span>Back to Orders</span>
+        </button>
 
-      <div className="delivery_order_top">
-        <strong>#{order.orderId}</strong>
+        <div className="delivery_details_header_main">
+          <div className="delivery_details_heading">
+            <span>DELIVERY ORDER</span>
+            <h2>#{order.orderId}</h2>
+          </div>
 
-        <span className="delivery_order_status">Out for delivery</span>
+          <div className="delivery_details_status">
+            <span>
+              {order.status === 'Completed'
+                ? 'Completed'
+                : order.status === 'OutForDelivery'
+                  ? 'Out for Delivery'
+                  : order.status}
+            </span>
+          </div>
+        </div>
       </div>
 
-      {/* CUSTOMER */}
+      <section className="delivery_details_section">
+        <h3>Customer</h3>
 
-      <div className="delivery_order_info">
-        <h2>{order.customer.name}</h2>
-
-        <p>Mobile: {order.customer.phone}</p>
-
-        <p>
-          <strong>Address:</strong> {order.customer.address}
-        </p>
-
-        {order.deliveryLocation && (
-          <div className="delivery_map_container">
-            <OrderLocationMap
-              latitude={order.deliveryLocation.latitude}
-              longitude={order.deliveryLocation.longitude}
-              route={route}
-              currentLocation={currentLocation}
-            />
+        <div className="delivery_customer_details">
+          <div>
+            <span>Name</span>
+            <strong>{order.customer?.name || 'Customer'}</strong>
           </div>
+
+          <div>
+            <span>Phone</span>
+            <a href={`tel:${order.customer?.phone}`}>
+              {order.customer?.phone || 'Not available'}
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section className="delivery_details_section">
+        <h3>Delivery Address</h3>
+
+        <p className="delivery_address">
+          {order.deliveryAddress || order.address || 'Address not available'}
+        </p>
+      </section>
+
+      <section className="delivery_details_section">
+        <h3>Route</h3>
+
+        {!order.deliveryLocation?.latitude ||
+        !order.deliveryLocation?.longitude ? (
+          <div className="delivery_route_error">
+            Delivery location is not available for this order.
+          </div>
+        ) : routeLoading ? (
+          <div className="delivery_route_message">Loading route...</div>
+        ) : routeError ? (
+          <div className="delivery_route_error">{routeError}</div>
+        ) : (
+          <>
+            <div className="delivery_map_container">
+              <OrderLocationMap
+                latitude={order.deliveryLocation.latitude}
+                longitude={order.deliveryLocation.longitude}
+                route={route}
+                currentLocation={currentLocation}
+              />
+            </div>
+
+            {order.deliveryDistance && (
+              <div className="delivery_distance">
+                Distance: {Number(order.deliveryDistance).toFixed(2)} km
+              </div>
+            )}
+          </>
         )}
+      </section>
 
-        {routeLoading && (
-          <p className="delivery_route_loading">
-            Calculating delivery route...
-          </p>
-        )}
-
-        {routeError && <p className="delivery_error_message">{routeError}</p>}
-
-        {/* ITEMS */}
+      <section className="delivery_details_section">
+        <h3>Order Items</h3>
 
         <div className="delivery_order_items">
-          {order.items.map((item) => (
-            <p key={item.productId}>
-              {item.productName} × {item.quantity}
-            </p>
+          {order.items?.map((item, index) => (
+            <div
+              className="delivery_order_item"
+              key={`${item.productId || item.name}-${index}`}
+            >
+              <div>
+                <strong>{item.name || item.productName}</strong>
+
+                <span>Qty: {item.quantity}</span>
+              </div>
+
+              <strong>
+                ₹
+                {Number(
+                  item.total || item.price * item.quantity || item.price || 0,
+                ).toFixed(2)}
+              </strong>
+            </div>
           ))}
         </div>
 
-        <strong className="delivery_order_total">₹{order.totalPrice}</strong>
-      </div>
+        <div className="delivery_details_total">
+          <span>Total</span>
 
-      {/* CUSTOMER OTP */}
+          <strong>₹{Number(order.totalPrice || 0).toFixed(2)}</strong>
+        </div>
+      </section>
 
-      <div className="delivery_otp_section">
-        <h3>Customer Delivery OTP</h3>
+      {order.status === 'OutForDelivery' && (
+        <section className="delivery_details_section delivery_otp_section">
+          <h3>Customer OTP</h3>
+          <p>
+            Ask the customer for the delivery OTP before completing the
+            delivery.
+          </p>
 
-        <p>Ask the customer for their 6-digit OTP.</p>
+          <div className="delivery_otp_action">
+            <input
+              type="text"
+              value={otp}
+              onChange={(event) => setOtp(event.target.value)}
+              placeholder="Enter OTP"
+              maxLength={6}
+            />
 
-        <input
-          type="text"
-          inputMode="numeric"
-          maxLength="6"
-          placeholder="Enter OTP"
-          value={otp}
-          onChange={(event) => setOtp(event.target.value.replace(/\D/g, ''))}
-        />
-
-        <button className="delivery_complete_button" onClick={handleSubmit}>
-          Delivered
-        </button>
-      </div>
+            <button type="button" onClick={handleSubmitOtp}>
+              Verify & Deliver
+            </button>
+          </div>
+        </section>
+      )}
     </div>
   );
 }

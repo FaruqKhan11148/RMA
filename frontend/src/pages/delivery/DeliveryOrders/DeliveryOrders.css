@@ -21,6 +21,217 @@
   margin: 0 auto 28px;
 }
 
+/* =========================================================
+   DELIVERY DASHBOARD TABS
+   ========================================================= */
+
+.delivery_dashboard_tabs {
+  max-width: 960px;
+
+  margin: 0 auto 20px;
+
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 12px;
+}
+
+/* =========================================================
+   TAB
+   ========================================================= */
+
+.delivery_dashboard_tab {
+  position: relative;
+
+  min-width: 0;
+
+  padding: 15px 16px;
+
+  border: 1px solid #e1e8e3;
+  border-radius: 13px;
+
+  background: #ffffff;
+  color: #172018;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  gap: 5px;
+
+  font-family: inherit;
+  text-align: left;
+
+  cursor: pointer;
+
+  box-shadow: 0 3px 10px rgba(23, 32, 24, 0.035);
+
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+}
+
+/* TOP GREEN LINE */
+
+.delivery_dashboard_tab::before {
+  content: '';
+
+  position: absolute;
+
+  top: 0;
+  left: 14px;
+  right: 14px;
+
+  height: 3px;
+
+  border-radius: 0 0 5px 5px;
+
+  background: #d9eadf;
+
+  transition: background-color 0.2s ease;
+}
+
+/* LABEL */
+
+.delivery_dashboard_tab span {
+  margin-top: 3px;
+
+  color: #748078;
+
+  font-size: 11px;
+  line-height: 1.3;
+
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+/* NUMBER */
+
+.delivery_dashboard_tab strong {
+  color: #172018;
+
+  font-size: 23px;
+  line-height: 1.2;
+
+  font-weight: 800;
+}
+
+/* =========================================================
+   HOVER
+   ========================================================= */
+
+.delivery_dashboard_tab:hover {
+  border-color: #bcdcc5;
+
+  background: #fcfffc;
+
+  box-shadow: 0 6px 16px rgba(23, 32, 24, 0.06);
+
+  transform: translateY(-1px);
+}
+
+.delivery_dashboard_tab:hover::before {
+  background: #16803a;
+}
+
+/* =========================================================
+   ACTIVE
+   ========================================================= */
+
+.delivery_dashboard_tab.active {
+  border-color: #16803a;
+
+  background: #16803a;
+
+  box-shadow: 0 6px 16px rgba(22, 128, 58, 0.15);
+}
+
+.delivery_dashboard_tab.active::before {
+  background: #ffffff;
+}
+
+.delivery_dashboard_tab.active span {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.delivery_dashboard_tab.active strong {
+  color: #ffffff;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+  .delivery_dashboard_tabs {
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 8px;
+
+    margin-bottom: 13px;
+
+    padding: 0;
+  }
+
+  .delivery_dashboard_tab {
+    min-width: 0;
+
+    padding: 11px 12px;
+
+    border-radius: 10px;
+
+    gap: 3px;
+
+    box-shadow: 0 2px 7px rgba(23, 32, 24, 0.035);
+  }
+
+  .delivery_dashboard_tab::before {
+    left: 10px;
+    right: 10px;
+
+    height: 2px;
+  }
+
+  .delivery_dashboard_tab span {
+    margin-top: 2px;
+
+    font-size: 9px;
+  }
+
+  .delivery_dashboard_tab strong {
+    font-size: 19px;
+  }
+}
+
+/* =========================================================
+   VERY SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 360px) {
+  .delivery_dashboard_tabs {
+    gap: 6px;
+  }
+
+  .delivery_dashboard_tab {
+    padding: 9px 10px;
+
+    border-radius: 9px;
+  }
+
+  .delivery_dashboard_tab span {
+    font-size: 8px;
+  }
+
+  .delivery_dashboard_tab strong {
+    font-size: 17px;
+  }
+}
+
 .delivery_orders_header h1 {
   margin: 0 0 8px;
 
@@ -578,179 +789,1400 @@
 }
 
 /* =========================================================
+   DELIVERY ORDER ROW
+   ========================================================= */
+
+.delivery_order_row {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 18px 20px;
+
+  border: 1px solid #e3e9e4;
+  border-radius: 14px;
+
+  background: #ffffff;
+  color: #172018;
+
+  font-family: inherit;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 4px 14px rgba(23, 32, 24, 0.04),
+    0 1px 4px rgba(23, 32, 24, 0.02);
+
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+}
+
+.delivery_order_row:hover {
+  border-color: #bfe0c8;
+
+  background: #fcfffc;
+
+  box-shadow:
+    0 7px 20px rgba(23, 32, 24, 0.07),
+    0 2px 6px rgba(23, 32, 24, 0.03);
+
+  transform: translateY(-1px);
+}
+
+.delivery_order_row:active {
+  transform: translateY(0);
+}
+
+.delivery_order_row:focus-visible {
+  outline: 3px solid rgba(22, 128, 58, 0.15);
+  outline-offset: 2px;
+}
+
+/* =========================================================
+   ROW HEADER
+   ========================================================= */
+
+.delivery_order_row_main {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+}
+
+.delivery_order_row_main strong {
+  color: #172018;
+
+  font-size: 14px;
+  font-weight: 750;
+
+  overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   ROW INFORMATION
+   ========================================================= */
+
+.delivery_order_row_info {
+  display: flex;
+
+  align-items: center;
+
+  gap: 20px;
+
+  margin-top: 13px;
+}
+
+.delivery_order_row_info span {
+  color: #68736b;
+
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.delivery_order_row_info strong {
+  margin-left: auto;
+
+  color: #16803a;
+
+  font-size: 16px;
+  font-weight: 800;
+}
+
+/* =========================================================
+   ROW FOOTER
+   ========================================================= */
+
+.delivery_order_row_footer {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  margin-top: 13px;
+
+  padding-top: 12px;
+
+  border-top: 1px solid #edf1ee;
+}
+
+.delivery_order_row_footer span {
+  color: #68736b;
+
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.delivery_order_row_footer span:last-child {
+  color: #16803a;
+
+  font-weight: 700;
+}
+/* =========================================================
+   DELIVERY ORDER DETAILS
+   ========================================================= */
+
+.delivery_order_details {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding-bottom: 20px;
+}
+
+/* =========================================================
+   DETAILS HEADER
+   ========================================================= */
+/* =========================================================
+   DELIVERY DETAILS HEADER
+   ========================================================= */
+
+.delivery_details_header {
+  display: grid;
+
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+
+  align-items: center;
+
+  column-gap: 14px;
+  row-gap: 12px;
+
+  margin-bottom: 18px;
+}
+
+/* BACK BUTTON — FIRST ROW */
+
+.delivery_back_button {
+  grid-column: 1 / -1;
+  grid-row: 1;
+
+  justify-self: flex-start;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 9px 13px;
+
+  border: 1px solid #dfe6e1;
+  border-radius: 9px;
+
+  background: #ffffff;
+  color: #344039;
+
+  font: inherit;
+  font-size: 12px;
+  font-weight: 650;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.delivery_back_button:hover {
+  background: #f7faf8;
+  border-color: #cdd8d0;
+}
+
+.delivery_back_button:active {
+  transform: translateY(1px);
+}
+
+/* ORDER ID — SECOND ROW */
+
+.delivery_details_heading {
+  grid-column: 1;
+  grid-row: 2;
+
+  min-width: 0;
+}
+
+.delivery_details_heading span {
+  display: block;
+
+  margin-bottom: 3px;
+
+  color: #7a847d;
+
+  font-size: 10px;
+  line-height: 1.2;
+
+  font-weight: 600;
+  letter-spacing: 0.8px;
+}
+
+.delivery_details_heading h2 {
+  margin: 0;
+
+  color: #172018;
+
+  font-size: 20px;
+  line-height: 1.2;
+
+  font-weight: 800;
+
+  overflow-wrap: anywhere;
+}
+
+/* STATUS — SAME ROW AS ORDER ID */
+
+.delivery_details_header .delivery_details_status {
+  grid-column: 2;
+  grid-row: 2;
+
+  margin: 0;
+
+  align-self: center;
+}
+
+.delivery_details_status span {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 6px 10px;
+
+  border-radius: 999px;
+
+  background: #eaf7ee;
+  color: #16803a;
+
+  font-size: 11px;
+  line-height: 1.2;
+
+  font-weight: 750;
+
+  white-space: nowrap;
+
+  border: 1px solid #c9e8d3;
+}
+
+/* =========================================================
+   DETAIL CARDS
+   ========================================================= */
+
+.delivery_details_section {
+  margin-bottom: 12px;
+  padding: 17px 18px;
+
+  border: 1px solid #e3e9e4;
+  border-radius: 13px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 4px 14px rgba(23, 32, 24, 0.035),
+    0 1px 3px rgba(23, 32, 24, 0.02);
+}
+
+.delivery_details_section h3 {
+  margin: 0 0 13px;
+
+  color: #172018;
+
+  font-size: 14px;
+  line-height: 1.35;
+  font-weight: 800;
+}
+
+/* =========================================================
+   CUSTOMER
+   ========================================================= */
+
+.delivery_customer_details {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 20px;
+}
+
+.delivery_customer_details div {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 4px;
+
+  min-width: 0;
+}
+
+.delivery_customer_details span {
+  color: #7a857d;
+
+  font-size: 10px;
+  line-height: 1.3;
+}
+
+.delivery_customer_details strong,
+.delivery_customer_details a {
+  color: #172018;
+
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 700;
+
+  text-decoration: none;
+
+  overflow-wrap: anywhere;
+}
+
+.delivery_customer_details a {
+  color: #16803a;
+}
+
+/* =========================================================
+   ADDRESS
+   ========================================================= */
+
+.delivery_address {
+  margin: 0;
+
+  color: #4d5951;
+
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* =========================================================
+   ROUTE
+   ========================================================= */
+
+.delivery_route_message,
+.delivery_route_error {
+  padding: 14px;
+
+  border-radius: 9px;
+
+  background: #f7faf8;
+
+  color: #68736b;
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.delivery_route_error {
+  background: #fff5f5;
+  color: #b42318;
+}
+
+.delivery_map_container {
+  position: relative;
+  z-index: 0;
+
+  margin-top: 10px;
+
+  overflow: hidden;
+
+  border: 1px solid #e3e9e4;
+  border-radius: 11px;
+
+  background: #f8faf8;
+}
+
+.delivery_map_container .leaflet-container {
+  position: relative;
+  z-index: 0 !important;
+}
+
+.delivery_distance {
+  margin-top: 8px;
+
+  color: #68736b;
+
+  font-size: 11px;
+  font-weight: 650;
+}
+
+/* =========================================================
+   ORDER ITEMS
+   ========================================================= */
+
+.delivery_order_items {
+  margin-top: 6px;
+
+  padding: 7px 12px;
+
+  border: 1px solid #e3e9e4;
+  border-radius: 9px;
+
+  background: #f8faf8;
+}
+
+.delivery_order_item {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  padding: 10px 0;
+
+  border-bottom: 1px solid #e9eeea;
+}
+
+.delivery_order_item:last-child {
+  border-bottom: none;
+}
+
+.delivery_order_item > div {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 3px;
+
+  min-width: 0;
+}
+
+.delivery_order_item strong {
+  color: #253029;
+
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 700;
+
+  overflow-wrap: anywhere;
+}
+
+.delivery_order_item span {
+  color: #7a847d;
+
+  font-size: 10px;
+}
+
+/* =========================================================
+   TOTAL
+   ========================================================= */
+
+.delivery_details_total {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  margin-top: 10px;
+  padding-top: 11px;
+
+  border-top: 1px solid #dfe6e1;
+}
+
+.delivery_details_total span {
+  color: #4d5951;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.delivery_details_total strong {
+  color: #16803a;
+
+  font-size: 17px;
+  font-weight: 800;
+}
+
+/* =========================================================
+   OTP
+   ========================================================= */
+
+.delivery_otp_section {
+  margin-bottom: 0;
+}
+
+.delivery_otp_section h3 {
+  margin-bottom: 5px;
+}
+
+.delivery_otp_section p {
+  margin: 0 0 11px;
+
+  color: #68736b;
+
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.delivery_otp_action {
+  display: flex;
+
+  gap: 9px;
+}
+
+.delivery_otp_action input {
+  flex: 1;
+
+  min-width: 0;
+
+  min-height: 44px;
+
+  padding: 9px 12px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #d7dfd9;
+  border-radius: 9px;
+
+  background: #ffffff;
+  color: #172018;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 650;
+
+  letter-spacing: 3px;
+
+  text-align: center;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.delivery_otp_action input::placeholder {
+  color: #a0aaa3;
+
+  font-size: 11px;
+  font-weight: 400;
+
+  letter-spacing: 0;
+}
+
+.delivery_otp_action input:focus {
+  border-color: #16803a;
+
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.1);
+}
+
+.delivery_otp_action button {
+  min-width: 145px;
+
+  min-height: 44px;
+
+  padding: 0 15px;
+
+  border: 1px solid #16803a;
+  border-radius: 9px;
+
+  background: #16803a;
+  color: #ffffff;
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 750;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.delivery_otp_action button:hover {
+  background: #126d31;
+
+  box-shadow: 0 5px 14px rgba(22, 128, 58, 0.16);
+}
+
+/* =========================================================
    MOBILE
    ========================================================= */
 
-@media (max-width: 768px) {
-  .delivery_orders {
-    padding: 30px 16px 55px;
+@media (max-width: 600px) {
+  .delivery_order_details {
+    width: 100%;
+    max-width: 100%;
+
+    /*
+      Extra bottom space because your
+      bottom navigation is fixed.
+    */
+    padding-bottom: 75px;
   }
 
-  .delivery_orders_header h1 {
-    font-size: 25px;
-  }
+  /* BACK */
 
-  .delivery_order_card {
-    padding: 19px;
-  }
-}
+  .delivery_back_button {
+    min-height: 34px;
 
-/* =========================================================
-   SMALL MOBILE
-   ========================================================= */
+    padding: 6px 10px;
 
-@media (max-width: 480px) {
-  .delivery_orders {
-    min-height: 100dvh;
+    border-radius: 8px;
 
-    padding: 20px 12px 40px;
-  }
-
-  .delivery_orders_header {
-    margin-bottom: 20px;
-  }
-
-  .delivery_orders_header h1 {
-    font-size: 23px;
-  }
-
-  .delivery_orders_header p {
-    font-size: 13px;
-  }
-
-  .delivery_orders_list {
-    gap: 14px;
-  }
-
-  .delivery_order_card {
-    padding: 16px;
-
-    border-radius: 14px;
-  }
-
-  .delivery_order_top {
-    align-items: flex-start;
-
-    flex-direction: column;
-
-    gap: 10px;
-  }
-
-  .delivery_order_top strong {
-    font-size: 14px;
-  }
-
-  .delivery_order_status {
     font-size: 11px;
   }
 
-  .delivery_order_info {
-    padding: 17px 0;
+  .delivery_back_icon {
+    font-size: 15px;
   }
 
-  .delivery_order_info h2 {
-    font-size: 18px;
+  /* HEADER */
+  /* =========================================================
+   DELIVERY DETAILS HEADER — MOBILE
+   ========================================================= */
+
+  @media (max-width: 600px) {
+    .delivery_details_header {
+      grid-template-columns: minmax(0, 1fr) auto;
+
+      column-gap: 10px;
+      row-gap: 11px;
+
+      margin-bottom: 13px;
+    }
+
+    .delivery_back_button {
+      padding: 7px 10px;
+
+      border-radius: 8px;
+
+      font-size: 11px;
+    }
+
+    .delivery_details_heading span {
+      margin-bottom: 2px;
+
+      font-size: 9px;
+      letter-spacing: 0.7px;
+    }
+
+    .delivery_details_heading h2 {
+      font-size: 16px;
+      line-height: 1.2;
+    }
+
+    .delivery_details_header .delivery_details_status {
+      margin: 0;
+    }
+
+    .delivery_details_status span {
+      padding: 5px 8px;
+
+      font-size: 9px;
+    }
   }
 
-  .delivery_order_info p {
-    font-size: 13px;
+  /* =========================================================
+   VERY SMALL MOBILE
+   ========================================================= */
+
+  @media (max-width: 360px) {
+    .delivery_details_header {
+      column-gap: 7px;
+    }
+
+    .delivery_back_button {
+      padding: 6px 8px;
+      font-size: 10px;
+    }
+
+    .delivery_details_heading h2 {
+      font-size: 14px;
+    }
+
+    .delivery_details_status span {
+      padding: 4px 7px;
+      font-size: 8px;
+    }
   }
+
+  /* CARDS */
+
+  .delivery_details_section {
+    margin-bottom: 9px;
+
+    padding: 12px;
+
+    border-radius: 10px;
+
+    box-shadow: 0 2px 8px rgba(23, 32, 24, 0.035);
+  }
+
+  .delivery_details_section h3 {
+    margin-bottom: 8px;
+
+    font-size: 12px;
+  }
+
+  /* CUSTOMER */
+
+  .delivery_customer_details {
+    grid-template-columns: 1fr 1fr;
+
+    gap: 8px;
+  }
+
+  .delivery_customer_details div {
+    gap: 3px;
+  }
+
+  .delivery_customer_details span {
+    font-size: 8px;
+  }
+
+  .delivery_customer_details strong,
+  .delivery_customer_details a {
+    font-size: 11px;
+    line-height: 1.35;
+  }
+
+  /* ADDRESS */
+
+  .delivery_address {
+    font-size: 10px;
+    line-height: 1.5;
+  }
+
+  /* ROUTE */
+
+  .delivery_route_message,
+  .delivery_route_error {
+    padding: 10px;
+
+    border-radius: 8px;
+
+    font-size: 10px;
+  }
+
+  .delivery_map_container {
+    margin-top: 7px;
+
+    border-radius: 8px;
+  }
+
+  .delivery_distance {
+    margin-top: 6px;
+
+    font-size: 9px;
+  }
+
+  /* ITEMS */
 
   .delivery_order_items {
-    padding: 12px;
+    margin-top: 5px;
+
+    padding: 5px 9px;
+
+    border-radius: 8px;
   }
 
-  .delivery_order_total {
-    font-size: 19px;
+  .delivery_order_item {
+    gap: 8px;
+
+    padding: 8px 0;
   }
 
-  .delivery_otp_section h3 {
-    font-size: 16px;
+  .delivery_order_item > div {
+    gap: 2px;
   }
 
-  .delivery_otp_section input {
-    min-height: 50px;
-
-    font-size: 18px;
-
-    letter-spacing: 5px;
+  .delivery_order_item strong {
+    font-size: 10px;
   }
 
-  .delivery_complete_button {
-    min-height: 48px;
+  .delivery_order_item span {
+    font-size: 8px;
+  }
 
+  /* TOTAL */
+
+  .delivery_details_total {
+    margin-top: 7px;
+
+    padding-top: 7px;
+  }
+
+  .delivery_details_total span {
+    font-size: 10px;
+  }
+
+  .delivery_details_total strong {
     font-size: 14px;
   }
 
-  /* LOGIN / OTP */
+  /* OTP */
 
-  .delivery_orders > .delivery_no_orders {
-    margin-top: 25px;
-    margin-bottom: 25px;
+  .delivery_otp_section p {
+    margin-bottom: 8px;
 
-    padding: 30px 18px;
-
-    border-radius: 15px;
+    font-size: 9px;
+    line-height: 1.45;
   }
 
-  .delivery_no_orders h1 {
-    font-size: 24px;
+  .delivery_otp_action {
+    flex-direction: column;
+
+    gap: 6px;
   }
 
-  .delivery_no_orders h2 {
-    font-size: 19px;
+  .delivery_otp_action input {
+    width: 100%;
+
+    min-height: 42px;
+
+    padding: 8px 10px;
+
+    border-radius: 8px;
+
+    font-size: 13px;
   }
 
-  .delivery_no_orders input {
-    min-height: 48px;
+  .delivery_otp_action button {
+    width: 100%;
 
-    margin-top: 14px;
+    min-width: 0;
+
+    min-height: 42px;
+
+    padding: 0 12px;
+
+    border-radius: 8px;
+
+    font-size: 11px;
   }
 }
 
 /* =========================================================
-   VERY SMALL DEVICES
+   VERY SMALL MOBILE
    ========================================================= */
 
 @media (max-width: 360px) {
   .delivery_orders {
-    padding-left: 8px;
-    padding-right: 8px;
+    padding-left: 9px;
+    padding-right: 9px;
   }
 
-  .delivery_order_card {
-    padding: 14px;
+  .delivery_details_header_main {
+    gap: 6px;
   }
 
-  .delivery_orders_header h1 {
-    font-size: 21px;
+  .delivery_details_heading h2 {
+    font-size: 14px;
   }
 
-  .delivery_order_info h2 {
-    font-size: 17px;
+  .delivery_details_status span {
+    padding: 4px 7px;
+
+    font-size: 8px;
   }
 
-  .delivery_order_status {
-    white-space: normal;
+  .delivery_details_section {
+    padding: 10px;
   }
 
-  .delivery_no_orders {
-    padding: 30px 16px;
+  .delivery_customer_details {
+    gap: 6px;
   }
 
-  .delivery_orders > .delivery_no_orders {
-    padding: 26px 15px;
+  .delivery_customer_details strong,
+  .delivery_customer_details a {
+    font-size: 10px;
   }
 }
 
 /* =========================================================
-   REDUCED MOTION
+   MOBILE — CLEAN COMPACT LAYOUT
    ========================================================= */
 
-@media (prefers-reduced-motion: reduce) {
-  .delivery_complete_button,
-  .delivery_otp_section input,
-  .delivery_no_orders input {
-    transition: none;
+@media (max-width: 600px) {
+  .delivery_orders {
+    padding: 18px 12px 35px;
+  }
+
+  /* HEADER */
+  .delivery_orders_header {
+    margin-bottom: 14px;
+  }
+
+  .delivery_orders_header h1 {
+    margin-bottom: 5px;
+    font-size: 21px;
+  }
+
+  .delivery_orders_header p {
+    font-size: 12px;
+  }
+
+  .delivery_orders_header .delivery_complete_button {
+    min-height: 42px;
+    margin-top: 9px;
+    padding: 0 14px;
+    font-size: 13px;
+  }
+
+  /* DASHBOARD TABS */
+  .delivery_dashboard_tabs {
+    gap: 6px;
+    margin-bottom: 13px;
+    padding: 1px 1px 6px;
+  }
+
+  .delivery_dashboard_tab {
+    min-width: 112px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    gap: 2px;
+  }
+
+  .delivery_dashboard_tab span {
+    font-size: 10px;
+  }
+
+  .delivery_dashboard_tab strong {
+    font-size: 18px;
+  }
+
+  /* ORDERS LIST */
+  .delivery_orders_list {
+    gap: 10px;
+  }
+
+  .delivery_orders_list_title {
+    margin-bottom: 8px;
+    font-size: 17px;
+    font-weight: 650;
+    margin-top: 20px;
+  }
+
+  /* ORDER ROW */
+  .delivery_order_row {
+    padding: 12px 13px;
+    border-radius: 11px;
+  }
+
+  .delivery_order_row_main {
+    align-items: center;
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .delivery_order_row_main strong {
+    font-size: 12px;
+  }
+
+  .delivery_order_status {
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+
+  .delivery_order_row_info {
+    gap: 8px;
+    margin-top: 9px;
+  }
+
+  .delivery_order_row_info span {
+    font-size: 11px;
+  }
+
+  .delivery_order_row_info strong {
+    font-size: 13px;
+  }
+
+  .delivery_order_row_footer {
+    gap: 8px;
+    margin-top: 8px;
+    padding-top: 8px;
+  }
+
+  .delivery_order_row_footer span {
+    font-size: 10px;
+  }
+
+  /* EMPTY STATE */
+  .delivery_no_orders {
+    margin: 25px auto;
+    padding: 28px 16px;
+    border-radius: 12px;
+  }
+
+  .delivery_no_orders h2 {
+    font-size: 18px;
+  }
+
+  .delivery_no_orders p {
+    font-size: 12px;
+  }
+
+  /* ORDER DETAILS */
+  .delivery_order_details {
+    width: 100%;
+  }
+
+  .delivery_details_header {
+    gap: 9px;
+    margin-bottom: 12px;
+  }
+
+  .delivery_back_button {
+    padding: 8px 11px;
+    border-radius: 8px;
+    font-size: 12px;
+  }
+
+  .delivery_details_header span {
+    margin-bottom: 2px;
+    font-size: 10px;
+  }
+
+  .delivery_details_header h2 {
+    font-size: 18px;
+  }
+
+  .delivery_details_status {
+    margin-bottom: 12px;
+  }
+
+  .delivery_details_status span {
+    padding: 5px 9px;
+    font-size: 10px;
+  }
+
+  /* DETAIL CARDS */
+  .delivery_details_section {
+    margin-bottom: 10px;
+    padding: 13px;
+    border-radius: 11px;
+  }
+
+  .delivery_details_section h3 {
+    margin-bottom: 10px;
+    font-size: 13px;
+  }
+
+  /* CUSTOMER */
+  .delivery_customer_details {
+    gap: 9px;
+  }
+
+  .delivery_customer_details div {
+    gap: 3px;
+  }
+
+  .delivery_customer_details span {
+    font-size: 10px;
+  }
+
+  .delivery_customer_details strong,
+  .delivery_customer_details a {
+    font-size: 13px;
+  }
+
+  /* ADDRESS */
+  .delivery_address {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  /* MAP */
+  .delivery_map_container {
+    margin-top: 10px;
+    border-radius: 10px;
+  }
+
+  .delivery_distance {
+    margin-top: 8px;
+    font-size: 11px;
+  }
+
+  /* ITEMS */
+  .delivery_order_items {
+    margin-top: 9px;
+    padding: 9px 11px;
+    border-radius: 9px;
+  }
+
+  .delivery_order_item {
+    gap: 8px;
+    padding: 9px 0;
+  }
+
+  .delivery_order_item strong {
+    font-size: 12px;
+  }
+
+  .delivery_order_item span {
+    font-size: 10px;
+  }
+
+  /* TOTAL */
+  .delivery_details_total {
+    margin-top: 9px;
+    padding-top: 9px;
+  }
+
+  .delivery_details_total span {
+    font-size: 12px;
+  }
+
+  .delivery_details_total strong {
+    font-size: 16px;
+  }
+
+  /* OTP */
+  .delivery_otp_section p {
+    margin: -3px 0 10px;
+    font-size: 11px;
+  }
+
+  .delivery_otp_action {
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .delivery_otp_action input {
+    min-height: 44px;
+    padding: 9px 11px;
+    border-radius: 8px;
+    font-size: 14px;
+  }
+
+  .delivery_complete_button {
+    min-height: 44px;
+    padding: 0 14px;
+    font-size: 12px;
+  }
+}
+
+/* =========================================================
+   DELIVERY ORDER DETAILS — MOBILE POLISH
+   ========================================================= */
+
+@media (max-width: 600px) {
+  .delivery_order_details {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* HEADER */
+  .delivery_details_header {
+    flex-direction: column;
+    gap: 10px;
+
+    margin-bottom: 10px;
+  }
+
+  .delivery_back_button {
+    flex-shrink: 0;
+    padding: 6px 8px;
+    margin-top: 10px;
+
+    border-radius: 8px;
+
+    font-size: 15px;
+    font-weight: 650;
+  }
+
+  .delivery_details_heading{
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .delivery_details_header > div {
+    min-width: 0;
+  }
+
+  .delivery_details_header span {
+    margin-bottom: 1px;
+
+    font-size: 9px;
+  }
+
+  .delivery_details_header h2 {
+    font-size: 16px;
+
+    overflow-wrap: anywhere;
+  }
+
+  /* STATUS */
+  .delivery_details_status {
+    margin-bottom: 10px;
+  }
+
+  .delivery_details_status span {
+    padding: 5px 9px;
+
+    font-size: 10px;
+  }
+
+  /* ALL DETAIL SECTIONS */
+  .delivery_details_section {
+    margin-bottom: 9px;
+    padding: 12px;
+
+    border-radius: 10px;
+
+    box-shadow: 0 2px 8px rgba(23, 32, 24, 0.035);
+  }
+
+  .delivery_details_section h3 {
+    margin-bottom: 9px;
+
+    font-size: 13px;
+  }
+
+  /* CUSTOMER */
+  .delivery_customer_details {
+    grid-template-columns: 1fr 1fr;
+
+    gap: 10px;
+  }
+
+  .delivery_customer_details div {
+    gap: 3px;
+  }
+
+  .delivery_customer_details span {
+    font-size: 9px;
+  }
+
+  .delivery_customer_details strong,
+  .delivery_customer_details a {
+    font-size: 12px;
+
+    overflow-wrap: anywhere;
+  }
+
+  /* ADDRESS */
+  .delivery_address {
+    font-size: 11px;
+    line-height: 1.5;
+  }
+
+  /* ROUTE */
+  .delivery_route_message,
+  .delivery_route_error {
+    padding: 12px;
+
+    border-radius: 8px;
+
+    font-size: 11px;
+  }
+
+  .delivery_map_container {
+    margin-top: 8px;
+
+    border-radius: 9px;
+  }
+
+  .delivery_distance {
+    margin-top: 7px;
+
+    font-size: 10px;
+  }
+
+  /* ORDER ITEMS */
+  .delivery_order_items {
+    margin-top: 7px;
+
+    padding: 7px 10px;
+
+    border-radius: 8px;
+  }
+
+  .delivery_order_item {
+    gap: 8px;
+
+    padding: 8px 0;
+  }
+
+  .delivery_order_item > div {
+    gap: 2px;
+
+    min-width: 0;
+  }
+
+  .delivery_order_item strong {
+    font-size: 11px;
+
+    overflow-wrap: anywhere;
+  }
+
+  .delivery_order_item span {
+    font-size: 9px;
+  }
+
+  /* TOTAL */
+  .delivery_details_total {
+    margin-top: 8px;
+    padding-top: 8px;
+  }
+
+  .delivery_details_total span {
+    font-size: 11px;
+  }
+
+  .delivery_details_total strong {
+    font-size: 15px;
+  }
+
+  /* OTP */
+  .delivery_otp_section {
+    margin-bottom: 0;
+
+    padding-top: 12px;
+  }
+
+  .delivery_otp_section h3 {
+    margin-bottom: 5px;
+
+    font-size: 13px;
+  }
+
+  .delivery_otp_section p {
+    margin: 0 0 9px;
+
+    font-size: 10px;
+    line-height: 1.45;
+  }
+
+  .delivery_otp_action {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+  }
+
+  .delivery_otp_action input {
+    width: 100%;
+    min-height: 43px;
+
+    box-sizing: border-box;
+
+    padding: 9px 10px;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .delivery_otp_action input::placeholder {
+    font-size: 11px;
+  }
+
+  .delivery_otp_action button {
+    width: 100%;
+    min-height: 43px;
+
+    padding: 0 12px;
+
+    border-radius: 8px;
+
+    font-size: 12px;
   }
 }

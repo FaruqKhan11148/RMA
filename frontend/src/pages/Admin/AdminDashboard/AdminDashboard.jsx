@@ -81,7 +81,7 @@ function AdminDashboard() {
   }, [navigate]);
 
   if (loading) {
-    return <div className="admin-loading">Checking admin session...</div>;
+    return <div className="admin-loading">wait it's Loading...</div>;
   }
 
   if (!admin) {
