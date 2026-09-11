@@ -13,10 +13,12 @@
 
 .find_shop_content {
   width: 100%;
-  max-width: 520px;
+  max-width: 600px;
 
   margin-top: var(--rma-space-4);
   padding: var(--rma-space-8);
+
+  box-sizing: border-box;
 
   background: var(--rma-card);
   border: 1px solid var(--rma-border);
@@ -26,25 +28,311 @@
 }
 
 /* --------------------------------
-   Header
+   My Shop
 -------------------------------- */
 
-.find_shop_content h1 {
+.find_shop_my_shop {
+  margin-bottom: var(--rma-space-8);
+}
+
+.find_shop_section_title {
+  margin-bottom: var(--rma-space-3);
+}
+
+.find_shop_section_title h2 {
+  margin: 0;
+
+  color: var(--rma-text);
+  font-size: var(--rma-font-xl);
+  font-weight: var(--rma-weight-bold);
+  line-height: 1.3;
+}
+
+/* --------------------------------
+   Shop Message
+-------------------------------- */
+
+.find_shop_message {
+  padding: var(--rma-space-5);
+
+  background: var(--rma-bg);
+  border: 1px solid var(--rma-border);
+  border-radius: var(--rma-radius-lg);
+
+  color: var(--rma-text-secondary);
+
+  font-size: var(--rma-font-sm);
+  line-height: 1.6;
+}
+
+.find_shop_message h3 {
+  margin: 0 0 var(--rma-space-2);
+
+  color: var(--rma-text);
+
+  font-size: var(--rma-font-md);
+  font-weight: var(--rma-weight-semibold);
+}
+
+.find_shop_message p {
+  margin: 0;
+
+  color: var(--rma-text-secondary);
+
+  font-size: var(--rma-font-sm);
+  line-height: 1.6;
+}
+
+.find_shop_error {
+  color: #b42318;
+
+  background: #fff5f5;
+  border-color: #f3c7c7;
+}
+
+/* --------------------------------
+   Shop Card
+-------------------------------- */
+
+.find_shop_card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--rma-space-5);
+
+  padding: var(--rma-space-5);
+
+  background: var(--rma-bg);
+  border: 1px solid var(--rma-border);
+  border-radius: var(--rma-radius-lg);
+
+  transition:
+    border-color var(--rma-transition-normal),
+    box-shadow var(--rma-transition-normal);
+}
+
+.find_shop_card:hover {
+  border-color: var(--rma-border-dark);
+  box-shadow: var(--rma-shadow-sm);
+}
+
+.find_shop_card_info {
+  min-width: 0;
+  flex: 1;
+}
+
+.find_shop_card_info h3 {
+  margin: 0 0 var(--rma-space-2);
+
+  color: var(--rma-text);
+
+  font-size: var(--rma-font-lg);
+  font-weight: var(--rma-weight-bold);
+
+  overflow-wrap: anywhere;
+}
+
+.find_shop_card_info p {
+  margin: 0 0 var(--rma-space-2);
+
+  color: var(--rma-text-secondary);
+
+  font-size: var(--rma-font-sm);
+  line-height: 1.5;
+
+  overflow-wrap: anywhere;
+}
+
+.find_shop_card_info span {
+  display: block;
+
+  color: var(--rma-text-muted);
+
+  font-size: var(--rma-font-sm);
+  line-height: 1.5;
+
+  overflow-wrap: anywhere;
+}
+
+/* --------------------------------
+   Order Button
+-------------------------------- */
+
+.find_shop_order_button {
+  flex-shrink: 0;
+
+  min-width: 90px;
+  height: 44px;
+
+  padding: 0 var(--rma-space-4);
+
+  border: none;
+  border-radius: var(--rma-radius-md);
+
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+
+  font-family: inherit;
+  font-size: var(--rma-font-sm);
+  font-weight: var(--rma-weight-semibold);
+
+  cursor: pointer;
+
+  transition:
+    background var(--rma-transition-normal),
+    transform var(--rma-transition-fast),
+    box-shadow var(--rma-transition-normal);
+}
+
+.find_shop_order_button:hover {
+  background: var(--rma-primary-dark);
+  box-shadow: var(--rma-shadow-sm);
+}
+
+.find_shop_order_button:active {
+  transform: scale(0.98);
+}
+
+.find_shop_order_button:focus-visible {
+  outline: 3px solid rgba(22, 128, 58, 0.2);
+  outline-offset: 2px;
+}
+
+/* --------------------------------
+   Find Your Shop
+-------------------------------- */
+
+.find_shop_search {
+  padding-top: var(--rma-space-8);
+
+  border-top: 1px solid var(--rma-border);
+}
+
+.find_shop_search h1 {
   margin: 0 0 var(--rma-space-3);
 
   color: var(--rma-text);
+
   font-size: var(--rma-font-3xl);
   font-weight: var(--rma-weight-extrabold);
+
   line-height: 1.2;
   letter-spacing: -0.5px;
 }
 
-.find_shop_content > p {
-  margin: 0 0 var(--rma-space-8);
+.find_shop_search > p {
+  margin: 0 0 var(--rma-space-6);
 
   color: var(--rma-text-secondary);
+
   font-size: var(--rma-font-md);
   line-height: 1.6;
+}
+
+/* --------------------------------
+   Scan QR Button
+-------------------------------- */
+
+.find_shop_scan_button {
+  width: 100%;
+
+  min-height: 58px;
+
+  padding: var(--rma-space-3) var(--rma-space-4);
+
+  display: flex;
+  align-items: center;
+  gap: var(--rma-space-4);
+
+  box-sizing: border-box;
+
+  border: 1px solid var(--rma-border);
+  border-radius: var(--rma-radius-md);
+
+  background: var(--rma-bg);
+  color: var(--rma-text);
+
+  font-family: inherit;
+  font-size: var(--rma-font-md);
+  font-weight: var(--rma-weight-semibold);
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    border-color var(--rma-transition-normal),
+    background var(--rma-transition-normal),
+    box-shadow var(--rma-transition-normal),
+    transform var(--rma-transition-fast);
+}
+
+.find_shop_scan_button:hover {
+  border-color: var(--rma-primary);
+
+  box-shadow: var(--rma-shadow-sm);
+}
+
+.find_shop_scan_button:active {
+  transform: scale(0.99);
+}
+
+.find_shop_scan_button:focus-visible {
+  outline: 3px solid rgba(22, 128, 58, 0.2);
+  outline-offset: 2px;
+}
+
+.find_shop_scan_icon {
+  width: 42px;
+  height: 42px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: var(--rma-radius-md);
+
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+
+  font-size: var(--rma-font-sm);
+  font-weight: var(--rma-weight-bold);
+}
+
+/* --------------------------------
+   OR Divider
+-------------------------------- */
+
+.find_shop_or {
+  display: flex;
+  align-items: center;
+  gap: var(--rma-space-3);
+
+  margin: var(--rma-space-6) 0;
+}
+
+.find_shop_or::before,
+.find_shop_or::after {
+  content: '';
+
+  flex: 1;
+
+  height: 1px;
+
+  background: var(--rma-border);
+}
+
+.find_shop_or span {
+  flex-shrink: 0;
+
+  color: var(--rma-text-muted);
+
+  font-size: var(--rma-font-xs);
+  font-weight: var(--rma-weight-semibold);
+  letter-spacing: 0.5px;
 }
 
 /* --------------------------------
@@ -60,13 +348,10 @@
   margin-bottom: var(--rma-space-2);
 
   color: var(--rma-text-primary);
+
   font-size: var(--rma-font-sm);
   font-weight: var(--rma-weight-semibold);
 }
-
-/* --------------------------------
-   Shop ID Input
--------------------------------- */
 
 .find_shop input {
   width: 100%;
@@ -156,8 +441,6 @@
 
 @media (min-width: 768px) {
   .find_shop {
-    min-height: calc(100vh - 120px);
-
     padding: var(--rma-space-12) var(--rma-tablet-padding);
   }
 
@@ -176,12 +459,69 @@
   }
 
   .find_shop_content {
-    max-width: 560px;
+    max-width: 620px;
     padding: var(--rma-space-10);
   }
 
-  .find_shop_content h1 {
+  .find_shop_search h1 {
     font-size: var(--rma-font-4xl);
+  }
+}
+
+/* --------------------------------
+   Mobile
+-------------------------------- */
+
+@media (max-width: 600px) {
+  .find_shop_content {
+    padding: var(--rma-space-6);
+  }
+
+  .find_shop_card {
+    align-items: flex-start;
+    gap: var(--rma-space-3);
+    padding: var(--rma-space-4);
+  }
+
+  .find_shop_card_info h3 {
+    font-size: var(--rma-font-md);
+  }
+
+  .find_shop_card_info p,
+  .find_shop_card_info span {
+    font-size: var(--rma-font-xs);
+  }
+
+  .find_shop_order_button {
+    min-width: 78px;
+    height: 40px;
+
+    padding: 0 var(--rma-space-3);
+
+    font-size: var(--rma-font-xs);
+  }
+
+  .find_shop_search h1 {
+    font-size: var(--rma-font-2xl);
+  }
+
+  .find_shop_search > p {
+    font-size: var(--rma-font-sm);
+  }
+
+  .find_shop_scan_button {
+    min-height: 54px;
+
+    padding: var(--rma-space-2) var(--rma-space-3);
+
+    gap: var(--rma-space-3);
+
+    font-size: var(--rma-font-sm);
+  }
+
+  .find_shop_scan_icon {
+    width: 40px;
+    height: 40px;
   }
 }
 
@@ -196,17 +536,17 @@
 
   .find_shop_content {
     margin-top: 0;
-    padding: var(--rma-space-6);
+    padding: var(--rma-space-5);
 
     border-radius: var(--rma-radius-lg);
   }
 
-  .find_shop_content h1 {
-    font-size: var(--rma-font-2xl);
+  .find_shop_card {
+    flex-direction: column;
   }
 
-  .find_shop_content > p {
-    font-size: var(--rma-font-sm);
+  .find_shop_order_button {
+    width: 100%;
   }
 
   .find_shop input,

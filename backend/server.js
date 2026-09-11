@@ -24,7 +24,11 @@ const PORT = process.env.PORT || 5000;
    CORS
 ========================= */
 
-const allowedOrigins = ['http://localhost:3000', 'https://rma-rho.vercel.app'];
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:8081',
+  'https://rma-rho.vercel.app',
+];
 
 const corsOptions = {
   origin: function (origin, callback) {
