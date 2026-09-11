@@ -30,14 +30,12 @@ function DeliveryOrders() {
     return token && storedDeliveryPerson ? 'dashboard' : 'login';
   });
 
-  const [orders, setOrders] = useState([]);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [dashboardStats, setDashboardStats] = useState(null);
-  const [activeSection, setActiveSection] = useState('today');
+  const [activeSection, setAcftiveSection] = useState('today');
 
   const [loading, setLoading] = useState(false);
-  const [ordersLoading, setOrdersLoading] = useState(false);
 
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -237,54 +235,6 @@ function DeliveryOrders() {
     }
   };
 
-  // GET DELIVERY ORDERS FOR LOGGED-IN DELIVERY PERSON
-  useEffect(() => {
-    if (loginStep !== 'dashboard') {
-      return;
-    }
-
-    const fetchDeliveryOrders = async () => {
-      try {
-        setOrdersLoading(true);
-        setError('');
-
-        const token = sessionStorage.getItem('delivery_token');
-
-        if (!token) {
-          setError('Delivery login session not found');
-          setLoginStep('login');
-          return;
-        }
-
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/delivery/orders',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          setError(data.message || 'Failed to load delivery orders');
-          return;
-        }
-
-        setOrders(data.orders || []);
-      } catch (error) {
-        console.error('Fetch delivery orders failed:', error);
-
-        setError('Unable to load delivery orders');
-      } finally {
-        setOrdersLoading(false);
-      }
-    };
-
-    fetchDeliveryOrders();
-  }, [loginStep]);
-
   // GET DELIVERY DASHBOARD SUMMARY
   useEffect(() => {
     if (loginStep !== 'dashboard') {
@@ -357,11 +307,6 @@ function DeliveryOrders() {
 
       alert('Delivery completed successfully');
 
-      // Remove from local delivery orders
-      setOrders((currentOrders) =>
-        currentOrders.filter((order) => order.orderId !== orderId),
-      );
-
       // Refresh dashboard statistics and order lists
       try {
         const dashboardResponse = await fetch(
@@ -397,13 +342,13 @@ function DeliveryOrders() {
     sessionStorage.removeItem('delivery_person');
 
     setCurrentLocation(null);
-    setOrders([]);
     setDeliveryPerson(null);
     setError('');
     setSuccessMessage('');
     setShopId('');
     setPhone('');
     setOtp('');
+    setDashboardStats(null);
 
     setLoginStep('login');
   };
@@ -497,17 +442,6 @@ function DeliveryOrders() {
           )}
 
           {error && <p className="delivery_error_message">{error}</p>}
-        </section>
-      </main>
-    );
-  }
-
-  // LOADING ORDERS
-  if (ordersLoading) {
-    return (
-      <main className="delivery_orders">
-        <section className="delivery_no_orders">
-          <h2>Loading delivery orders...</h2>
         </section>
       </main>
     );
