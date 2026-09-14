@@ -214,8 +214,24 @@ const ownerSchema = new mongoose.Schema(
         default: 45,
         min: 1,
       },
-    },
 
+      openingTime: {
+        type: String,
+        default: '10:00',
+      },
+
+      closingTime: {
+        type: String,
+        default: '22:00',
+      },
+
+      shopStatusMode: {
+        type: String,
+        enum: ['auto', 'open', 'closed'],
+        default: 'auto',
+      },
+    },
+    
     categories: {
       type: [String],
       default: [],

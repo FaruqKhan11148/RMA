@@ -24,6 +24,25 @@
   gap: 14px;
 }
 
+.owner_order_item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.owner_order_item strong {
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.owner_order_distance {
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #222;
+}
+
 .owner_orders_header > div {
   min-width: 0;
 }

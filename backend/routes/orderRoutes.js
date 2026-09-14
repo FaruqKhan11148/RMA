@@ -314,6 +314,7 @@ router.post('/', async (req, res) => {
         productName: product.name,
         price,
         quantity,
+        unit: product.unit,
       });
     }
 

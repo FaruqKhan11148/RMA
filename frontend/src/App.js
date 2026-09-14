@@ -1,7 +1,7 @@
 import './App.css';
 import './index.css';
 
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import OwnerProtectedRoute from './pages/Owner/OwnerProtectedRoute/OwnerProtectedRoute';
 
 import Navbar from './components/Navbar/Navbar';
@@ -88,10 +88,14 @@ import Privacy from './pages/Privacy/Privacy';
 import Terms from './pages/Terms/Terms';
 import ShopPromotion from './pages/Owner/OwnerSettings/ShopPromotion/ShopPromotion';
 
-function App() {
+function AppLayout() {
+  const location = useLocation();
+
+  const isHomePage = location.pathname === '/';
+
   return (
-    <BrowserRouter>
-      <Navbar />
+    <>
+      {!isHomePage && <Navbar />}
 
       <div className="app_content">
         <Routes>
@@ -304,6 +308,14 @@ function App() {
       <SiteFooter />
 
       <Footer />
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppLayout />
     </BrowserRouter>
   );
 }

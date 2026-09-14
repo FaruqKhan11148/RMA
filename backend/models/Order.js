@@ -19,6 +19,11 @@ const orderItemSchema = new mongoose.Schema(
       required: true,
       min: 1,
     },
+    unit: {
+      type: String,
+      required: true,
+      trim: true,
+    },
   },
   {
     _id: false,

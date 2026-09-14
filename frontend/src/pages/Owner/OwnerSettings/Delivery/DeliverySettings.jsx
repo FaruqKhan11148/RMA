@@ -12,6 +12,9 @@ function DeliverySettings() {
     deliveryCharge: '',
     freeDeliveryAbove: '',
     estimatedDeliveryTime: '',
+    openingTime: '10:00',
+    closingTime: '22:00',
+    shopStatusMode: 'auto',
   });
 
   const [loading, setLoading] = useState(true);
@@ -49,14 +52,13 @@ function DeliverySettings() {
 
         setSettings({
           deliveryRadius: deliverySettings.deliveryRadius ?? 5,
-
           minimumOrderAmount: deliverySettings.minimumOrderAmount ?? 0,
-
           deliveryCharge: deliverySettings.deliveryCharge ?? 20,
-
           freeDeliveryAbove: deliverySettings.freeDeliveryAbove ?? 0,
-
           estimatedDeliveryTime: deliverySettings.estimatedDeliveryTime ?? 45,
+          openingTime: deliverySettings.openingTime ?? '10:00',
+          closingTime: deliverySettings.closingTime ?? '22:00',
+          shopStatusMode: deliverySettings.shopStatusMode ?? 'auto',
         });
 
         localStorage.setItem('rma_owner', JSON.stringify(data.owner));
@@ -94,6 +96,10 @@ function DeliverySettings() {
     const freeDeliveryAbove = Number(settings.freeDeliveryAbove);
     const estimatedDeliveryTime = Number(settings.estimatedDeliveryTime);
 
+    const openingTime = settings.openingTime;
+    const closingTime = settings.closingTime;
+    const shopStatusMode = settings.shopStatusMode;
+
     if (!Number.isFinite(deliveryRadius) || deliveryRadius <= 0) {
       setError('Delivery radius must be greater than 0.');
       return;
@@ -120,6 +126,20 @@ function DeliverySettings() {
     }
 
     try {
+      if (!/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(openingTime)) {
+        setError('Opening time must be in HH:mm format.');
+        return;
+      }
+
+      if (!/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(closingTime)) {
+        setError('Closing time must be in HH:mm format.');
+        return;
+      }
+
+      if (!['auto', 'open', 'closed'].includes(shopStatusMode)) {
+        setError('Invalid shop status mode.');
+        return;
+      }
       setSaving(true);
 
       const response = await fetch(
@@ -131,11 +151,14 @@ function DeliverySettings() {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            deliveryRadius,
-            minimumOrderAmount,
-            deliveryCharge,
-            freeDeliveryAbove,
-            estimatedDeliveryTime,
+            deliveryRadius: Number(deliveryRadius),
+            minimumOrderAmount: Number(minimumOrderAmount),
+            deliveryCharge: Number(deliveryCharge),
+            freeDeliveryAbove: Number(freeDeliveryAbove),
+            estimatedDeliveryTime: Number(estimatedDeliveryTime),
+            openingTime,
+            closingTime,
+            shopStatusMode,
           }),
         },
       );
@@ -149,18 +172,14 @@ function DeliverySettings() {
       const updatedSettings = data.owner.deliverySettings || {};
 
       setSettings({
-        deliveryRadius: updatedSettings.deliveryRadius ?? deliveryRadius,
-
-        minimumOrderAmount:
-          updatedSettings.minimumOrderAmount ?? minimumOrderAmount,
-
-        deliveryCharge: updatedSettings.deliveryCharge ?? deliveryCharge,
-
-        freeDeliveryAbove:
-          updatedSettings.freeDeliveryAbove ?? freeDeliveryAbove,
-
-        estimatedDeliveryTime:
-          updatedSettings.estimatedDeliveryTime ?? estimatedDeliveryTime,
+        deliveryRadius: updatedSettings.deliveryRadius ?? 5,
+        minimumOrderAmount: updatedSettings.minimumOrderAmount ?? 0,
+        deliveryCharge: updatedSettings.deliveryCharge ?? 20,
+        freeDeliveryAbove: updatedSettings.freeDeliveryAbove ?? 0,
+        estimatedDeliveryTime: updatedSettings.estimatedDeliveryTime ?? 45,
+        openingTime: updatedSettings.openingTime ?? '10:00',
+        closingTime: updatedSettings.closingTime ?? '22:00',
+        shopStatusMode: updatedSettings.shopStatusMode ?? 'auto',
       });
 
       localStorage.setItem('rma_owner', JSON.stringify(data.owner));
@@ -348,6 +367,61 @@ function DeliverySettings() {
           {successMessage && (
             <div className="owner_setting_success">{successMessage}</div>
           )}
+
+          <div className="delivery_setting_group">
+            <label htmlFor="openingTime">Opening Time</label>
+
+            <input
+              type="time"
+              id="openingTime"
+              name="openingTime"
+              value={settings.openingTime}
+              onChange={handleChange}
+              disabled={saving}
+            />
+
+            <small>
+              Time when your shop automatically opens for customers.
+            </small>
+          </div>
+
+          <div className="delivery_setting_group">
+            <label htmlFor="closingTime">Closing Time</label>
+
+            <input
+              type="time"
+              id="closingTime"
+              name="closingTime"
+              value={settings.closingTime}
+              onChange={handleChange}
+              disabled={saving}
+            />
+
+            <small>
+              Time when your shop automatically closes for customers.
+            </small>
+          </div>
+
+          <div className="delivery_setting_group">
+            <label htmlFor="shopStatusMode">Shop Status</label>
+
+            <select
+              id="shopStatusMode"
+              name="shopStatusMode"
+              value={settings.shopStatusMode}
+              onChange={handleChange}
+              disabled={saving}
+            >
+              <option value="auto">Automatic</option>
+              <option value="open">Always Open</option>
+              <option value="closed">Always Closed</option>
+            </select>
+
+            <small>
+              Automatic follows the opening and closing time. Always Open or
+              Always Closed manually overrides the schedule.
+            </small>
+          </div>
 
           {/* SAVE */}
 

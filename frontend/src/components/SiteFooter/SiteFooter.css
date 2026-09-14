@@ -211,6 +211,11 @@
     align-items: flex-start;
 
     gap: 5px;
+    margin-bottom: 60px;
+  }
+
+  .production_name {
+    color: antiquewhite;
   }
 
   .site_footer_bottom p {
@@ -231,5 +236,6 @@
   .site_footer_bottom {
     padding-left: 15px;
     padding-right: 15px;
+    margin-bottom: 80px;
   }
 }

@@ -54,17 +54,6 @@ function OwnerDashboard() {
     return null;
   }
 
-  const pendingOrders = orders.filter((order) => order.status === 'Pending');
-
-  const completedOrders = orders.filter(
-    (order) => order.status === 'Completed',
-  );
-
-  const totalRevenue = completedOrders.reduce(
-    (total, order) => total + order.totalPrice,
-    0,
-  );
-
   const handleLogout = () => {
     localStorage.removeItem('rma_owner');
 
@@ -131,6 +120,30 @@ function OwnerDashboard() {
     }
   };
 
+  const todayOrders = orders.filter((order) => {
+    const orderDate = new Date(order.createdAt);
+    const today = new Date();
+
+    return (
+      orderDate.getDate() === today.getDate() &&
+      orderDate.getMonth() === today.getMonth() &&
+      orderDate.getFullYear() === today.getFullYear()
+    );
+  });
+
+  const pendingOrders = todayOrders.filter(
+    (order) => order.status === 'Pending',
+  );
+
+  const completedOrders = todayOrders.filter(
+    (order) => order.status === 'Completed',
+  );
+
+  const totalRevenue = completedOrders.reduce(
+    (total, order) => total + order.totalPrice,
+    0,
+  );
+
   return (
     <main className="owner_dashboard">
       {/* HEADER */}
@@ -161,25 +174,21 @@ function OwnerDashboard() {
       <section className="owner_stats">
         <div className="owner_stat_card">
           <span>Today's Orders</span>
-
-          <strong>{orders.length}</strong>
+          <strong>{todayOrders.length}</strong>
         </div>
 
         <div className="owner_stat_card">
           <span>Pending</span>
-
           <strong>{pendingOrders.length}</strong>
         </div>
 
         <div className="owner_stat_card">
           <span>Completed</span>
-
           <strong>{completedOrders.length}</strong>
         </div>
 
         <div className="owner_stat_card">
           <span>Today's Revenue</span>
-
           <strong>₹{totalRevenue}</strong>
         </div>
       </section>

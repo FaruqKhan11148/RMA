@@ -3,6 +3,7 @@ import './Shop.css';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import FlashMessage from '../../components/FlashMessage/FlashMessage';
 import { useCart } from '../../context/CartContext';
 
 function Shop() {
@@ -14,6 +15,8 @@ function Shop() {
   const [shop, setShop] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  const [flashMessage, setFlashMessage] = useState('');
 
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [orderType, setOrderType] = useState('delivery');
@@ -64,6 +67,57 @@ function Shop() {
     );
   }
 
+  const isShopCurrentlyOpen = () => {
+    const openingTime = shop.deliverySettings?.openingTime;
+    const closingTime = shop.deliverySettings?.closingTime;
+    const shopStatusMode = shop.deliverySettings?.shopStatusMode;
+
+    if (!openingTime || !closingTime) {
+      return true;
+    }
+
+    if (shopStatusMode === 'open') {
+      return true;
+    }
+
+    if (shopStatusMode === 'closed') {
+      return false;
+    }
+
+    const now = new Date();
+
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+    const [openingHour, openingMinute] = openingTime.split(':').map(Number);
+    const [closingHour, closingMinute] = closingTime.split(':').map(Number);
+
+    const openingMinutes = openingHour * 60 + openingMinute;
+    const closingMinutes = closingHour * 60 + closingMinute;
+
+    if (openingMinutes < closingMinutes) {
+      return (
+        currentMinutes >= openingMinutes && currentMinutes < closingMinutes
+      );
+    }
+
+    if (openingMinutes > closingMinutes) {
+      return (
+        currentMinutes >= openingMinutes || currentMinutes < closingMinutes
+      );
+    }
+
+    return true;
+  };
+
+  const handleAddToCart = (product) => {
+    if (!isShopCurrentlyOpen()) {
+      setFlashMessage('Shop is currently closed.');
+      return;
+    }
+
+    addToCart(product, shop);
+  };
+
   const filteredProducts =
     selectedCategory === 'All'
       ? shop.products
@@ -73,6 +127,10 @@ function Shop() {
 
   return (
     <main className="shop">
+      <FlashMessage
+        message={flashMessage}
+        onClose={() => setFlashMessage('')}
+      />
       <section className="shop_header">
         <p className="shop_id">{shop.shopId}</p>
 
@@ -156,7 +214,7 @@ function Shop() {
                 <button
                   className="add_button"
                   disabled={!product.available}
-                  onClick={() => addToCart(product, shop)}
+                  onClick={() => handleAddToCart(product)}
                 >
                   {product.available ? 'Add' : 'Unavailable'}
                 </button>

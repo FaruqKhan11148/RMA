@@ -255,15 +255,25 @@ function OwnerOrders() {
 
                 <div className="owner_order_items">
                   {order.items.map((item) => (
-                    <p key={item.productId}>
-                      {item.productName} × {item.quantity}
-                    </p>
+                    <div className="owner_order_item" key={item.productId}>
+                      <span>
+                        {item.productName} × {item.quantity} {item.unit}
+                      </span>
+
+                      <strong>₹{item.price * item.quantity}</strong>
+                    </div>
                   ))}
                 </div>
 
                 <strong className="owner_order_total">
                   ₹{order.totalPrice}
                 </strong>
+
+                {order.orderType === 'delivery' && (
+                  <p className="owner_order_distance">
+                    Distance: {Number(order.deliveryDistance).toFixed(4)} KM
+                  </p>
+                )}
               </div>
 
               {/* ACTIONS */}

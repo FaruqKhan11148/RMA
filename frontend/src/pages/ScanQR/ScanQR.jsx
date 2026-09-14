@@ -241,9 +241,49 @@ function ScanQR() {
     };
   }, []);
 
+  const handleGalleryScan = async (event) => {
+    setError('');
+
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    try {
+      const scanner = new Html5Qrcode('qr-gallery-reader');
+
+      const decodedText = await scanner.scanFile(file, true);
+
+      console.log('QR Scanned From Gallery:', decodedText);
+
+      await scanner.clear();
+
+      const shopId = extractShopId(decodedText);
+
+      if (!shopId) {
+        setError('Invalid RMA shop QR code.');
+        return;
+      }
+
+      localStorage.setItem('rma_trusted_shop_id', shopId);
+
+      navigate(`/shop/${shopId}`);
+    } catch (err) {
+      console.error('Gallery QR scan error:', err);
+
+      setError(
+        'No valid QR code was found in this image. Please select a clear photo of an RMA shop QR code.',
+      );
+    } finally {
+      event.target.value = '';
+    }
+  };
+
   return (
     <main className="scan_qr">
       <section className="scan_qr_card">
+        <div id="qr-gallery-reader" style={{ display: 'none' }} />
         {/* =========================================
             HEADER
         ========================================= */}
@@ -390,6 +430,20 @@ function ScanQR() {
             {showManual ? 'Hide Shop ID' : 'Enter Shop ID Instead'}
           </button>
         )}
+
+        {!scanning && (
+          <label htmlFor="qr-gallery-input" className="gallery_qr_button">
+            Upload From Gallery
+          </label>
+        )}
+
+        <input
+          id="qr-gallery-input"
+          type="file"
+          accept="image/*"
+          onChange={handleGalleryScan}
+          style={{ display: 'none' }}
+        />
       </section>
     </main>
   );

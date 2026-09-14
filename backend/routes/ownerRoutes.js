@@ -25,6 +25,97 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.get('/nearby', async (req, res) => {
+  try {
+    const { latitude, longitude } = req.query;
+
+    const customerLatitude = Number(latitude);
+    const customerLongitude = Number(longitude);
+
+    if (
+      !Number.isFinite(customerLatitude) ||
+      !Number.isFinite(customerLongitude)
+    ) {
+      return res.status(400).json({
+        message: 'Valid latitude and longitude are required',
+      });
+    }
+
+    if (
+      customerLatitude < -90 ||
+      customerLatitude > 90 ||
+      customerLongitude < -180 ||
+      customerLongitude > 180
+    ) {
+      return res.status(400).json({
+        message: 'Invalid location coordinates',
+      });
+    }
+
+    const shops = await Owner.find({
+      'location.latitude': { $ne: null },
+      'location.longitude': { $ne: null },
+    }).select(
+      'shopId shopName description address location isOpen delivery pickup deliverySettings products',
+    );
+
+    const toRadians = (degrees) => (degrees * Math.PI) / 180;
+
+    const calculateDistance = (customerLat, customerLng, shopLat, shopLng) => {
+      const earthRadiusKm = 6371;
+
+      const latitudeDifference = toRadians(shopLat - customerLat);
+      const longitudeDifference = toRadians(shopLng - customerLng);
+
+      const a =
+        Math.sin(latitudeDifference / 2) ** 2 +
+        Math.cos(toRadians(customerLat)) *
+          Math.cos(toRadians(shopLat)) *
+          Math.sin(longitudeDifference / 2) ** 2;
+
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+      return earthRadiusKm * c;
+    };
+
+    const nearbyShops = shops
+      .map((shop) => {
+        const distance = calculateDistance(
+          customerLatitude,
+          customerLongitude,
+          shop.location.latitude,
+          shop.location.longitude,
+        );
+
+        return {
+          shopId: shop.shopId,
+          shopName: shop.shopName,
+          description: shop.description,
+          address: shop.address,
+          location: shop.location,
+          isOpen: shop.isOpen,
+          delivery: shop.delivery,
+          pickup: shop.pickup,
+          deliverySettings: shop.deliverySettings,
+          distance: Number(distance.toFixed(2)),
+          products: shop.products,
+        };
+      })
+      .filter((shop) => shop.distance <= 5)
+      .sort((a, b) => a.distance - b.distance);
+
+    return res.status(200).json({
+      shops: nearbyShops,
+    });
+  } catch (error) {
+    console.error('Nearby shops fetch failed:', error);
+
+    return res.status(500).json({
+      message: 'Failed to fetch nearby shops',
+    });
+  }
+});
+
 // GET SHOP BY SHOP ID
 router.get('/shop/:shopId', async (req, res) => {
   try {
@@ -962,6 +1053,9 @@ router.patch('/settings/delivery-settings', ownerAuth, async (req, res) => {
       deliveryCharge,
       freeDeliveryAbove,
       estimatedDeliveryTime,
+      openingTime,
+      closingTime,
+      shopStatusMode,
     } = req.body;
 
     const radius = Number(deliveryRadius);
@@ -969,6 +1063,26 @@ router.patch('/settings/delivery-settings', ownerAuth, async (req, res) => {
     const charge = Number(deliveryCharge);
     const freeAbove = Number(freeDeliveryAbove);
     const estimatedTime = Number(estimatedDeliveryTime);
+
+    const timeRegex = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
+
+    if (!timeRegex.test(openingTime)) {
+      return res.status(400).json({
+        message: 'Opening time must be in HH:mm format',
+      });
+    }
+
+    if (!timeRegex.test(closingTime)) {
+      return res.status(400).json({
+        message: 'Closing time must be in HH:mm format',
+      });
+    }
+
+    if (!['auto', 'open', 'closed'].includes(shopStatusMode)) {
+      return res.status(400).json({
+        message: 'Invalid shop status mode',
+      });
+    }
 
     if (!Number.isFinite(radius) || radius <= 0) {
       return res.status(400).json({
@@ -1009,6 +1123,10 @@ router.patch('/settings/delivery-settings', ownerAuth, async (req, res) => {
           'deliverySettings.deliveryCharge': charge,
           'deliverySettings.freeDeliveryAbove': freeAbove,
           'deliverySettings.estimatedDeliveryTime': estimatedTime,
+
+          'deliverySettings.openingTime': openingTime,
+          'deliverySettings.closingTime': closingTime,
+          'deliverySettings.shopStatusMode': shopStatusMode,
         },
       },
       {

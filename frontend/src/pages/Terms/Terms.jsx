@@ -1,4 +1,4 @@
-import './Terms.css';
+  import './Terms.css';
 
 import { useNavigate } from 'react-router-dom';
 
