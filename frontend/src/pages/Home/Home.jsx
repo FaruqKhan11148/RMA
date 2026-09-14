@@ -8,10 +8,8 @@ function Home() {
   const { t } = useLanguage();
   const navigate = useNavigate();
 
-  const [shop, setShop] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
   const [nearbyShops, setNearbyShops] = useState([]);
-  const [loadingShop, setLoadingShop] = useState(true);
   const [loadingNearbyShops, setLoadingNearbyShops] = useState(false);
   const [nearbyShopsError, setNearbyShopsError] = useState('');
   const [locationName, setLocationName] = useState('');
@@ -43,42 +41,6 @@ function Home() {
     'https://res.cloudinary.com/dsznfqgu3/image/upload/v1788692737/HvH-wvV2Ns1JsiDwYYwiIYWBD_hqSX8kp1axRoAClbVhzgoWkE5TkikoHxnr2C0bQAw4aBUFLWycd27_90ebE8wSxKxrFrBI3SjSlEWRKqAxOQhgmSY4UWNMwVBfvq3JG4XYJmNwD3yDHiWKdGAJD3UzuZ2vrUT_oxr4PYw6Qc5cxr602P66rA5dFNzXo5SQ.jpg',
     'https://res.cloudinary.com/dsznfqgu3/image/upload/v1788692757/7W8FjPyWPZUer7tM7Vf1Ntr-yvriGGEZoIxfsb6GHEhWFboo2qh240DsoFOT6lZaT8sTSjQzIrUApTLiMrLG1Qs4HIRh1KZIL183xoSxb8VAWP7P_MJCjRWEa-bWvByIcPOgdtuoNUk3WtA5Fr0FONPBkkyp1ER2nJT-MRk6KSOU4Jur_0KCl5dejm-Nptwz.jpg',
   ];
-
-  // ==========================================
-  // FETCH TRUSTED SHOP
-  // ==========================================
-
-  useEffect(() => {
-    const fetchShop = async () => {
-      const trustedShopId = localStorage.getItem('rma_trusted_shop_id');
-
-      // No trusted shop yet.
-      if (!trustedShopId) {
-        setShop(null);
-        setLoadingShop(false);
-        return;
-      }
-
-      try {
-        const response = await fetch(
-          `https://rma-backend-bo4a.onrender.com/api/owners/shop/${trustedShopId}`,
-        );
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message || 'Failed to load shop');
-        }
-
-        setShop(data.shop);
-      } catch (error) {
-        console.error('Fetch shop error:', error);
-        setShop(null);
-      }
-    };
-
-    fetchShop();
-  }, []);
 
   const handleLocationClick = () => {
     if (!navigator.geolocation) {
