@@ -1,19 +1,17 @@
 import './Home.css';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
-import productCatalogue from '../../data/productCatalogue';
 
 function Home() {
   const { t } = useLanguage();
   const navigate = useNavigate();
 
   const [shop, setShop] = useState(null);
-  const [loadingShop, setLoadingShop] = useState(true);
-  const [shopError, setShopError] = useState('');
   const [userLocation, setUserLocation] = useState(null);
   const [nearbyShops, setNearbyShops] = useState([]);
+  const [loadingShop, setLoadingShop] = useState(true);
   const [loadingNearbyShops, setLoadingNearbyShops] = useState(false);
   const [nearbyShopsError, setNearbyShopsError] = useState('');
   const [locationName, setLocationName] = useState('');
@@ -62,9 +60,6 @@ function Home() {
       }
 
       try {
-        setLoadingShop(true);
-        setShopError('');
-
         const response = await fetch(
           `https://rma-backend-bo4a.onrender.com/api/owners/shop/${trustedShopId}`,
         );
@@ -78,12 +73,7 @@ function Home() {
         setShop(data.shop);
       } catch (error) {
         console.error('Fetch shop error:', error);
-
-        setShopError('Unable to load trusted shop.');
-
         setShop(null);
-      } finally {
-        setLoadingShop(false);
       }
     };
 
@@ -170,16 +160,6 @@ function Home() {
   // ==========================================
   // ORDER FROM TRUSTED SHOP
   // ==========================================
-
-  const handleOrder = () => {
-    if (!shop) return;
-
-    const trustedShopId = localStorage.getItem('rma_trusted_shop_id');
-
-    if (!trustedShopId) return;
-
-    navigate(`/shop/${trustedShopId}`);
-  };
 
   const fetchNearbyShops = async (latitude, longitude) => {
     try {
