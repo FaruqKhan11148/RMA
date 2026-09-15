@@ -17,7 +17,6 @@ function FindShop() {
   const [loadingNearbyShops, setLoadingNearbyShops] = useState(false);
   const [nearbyShopsError, setNearbyShopsError] = useState('');
 
-  const [userLocation, setUserLocation] = useState(null);
   const [locationName, setLocationName] = useState('');
 
   const [showLocationSheet, setShowLocationSheet] = useState(false);
@@ -126,11 +125,6 @@ function FindShop() {
         Number.isFinite(parsedLocation.latitude) &&
         Number.isFinite(parsedLocation.longitude)
       ) {
-        setUserLocation({
-          latitude: parsedLocation.latitude,
-          longitude: parsedLocation.longitude,
-        });
-
         fetchNearbyShops(parsedLocation.latitude, parsedLocation.longitude);
       }
 
@@ -157,11 +151,6 @@ function FindShop() {
     const handleSuccess = async (position) => {
       const latitude = position.coords.latitude;
       const longitude = position.coords.longitude;
-
-      setUserLocation({
-        latitude,
-        longitude,
-      });
 
       localStorage.setItem(
         RMA_LOCATION_KEY,
@@ -254,11 +243,6 @@ function FindShop() {
 
     const latitude = Number(savedAddress.latitude);
     const longitude = Number(savedAddress.longitude);
-
-    setUserLocation({
-      latitude,
-      longitude,
-    });
 
     setLocationName(savedAddress.address);
 
