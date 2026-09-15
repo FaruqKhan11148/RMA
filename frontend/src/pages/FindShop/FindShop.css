@@ -1,7 +1,9 @@
 .find_shop {
   width: 100%;
   min-height: calc(100vh - 120px);
-  padding: var(--rma-space-8) var(--rma-mobile-padding);
+
+  padding: var(--rma-space-6) var(--rma-mobile-padding);
+
   box-sizing: border-box;
 
   display: flex;
@@ -13,69 +15,268 @@
 
 .find_shop_content {
   width: 100%;
-  max-width: 600px;
+  max-width: 680px;
 
-  margin-top: var(--rma-space-4);
-  padding: var(--rma-space-8);
+  margin-top: var(--rma-space-3);
+
+  box-sizing: border-box;
+}
+
+/* ==========================================
+   PAGE HEADER
+========================================== */
+
+.find_shop_header {
+  margin-bottom: var(--rma-space-6);
+}
+
+.find_shop_eyebrow,
+.find_shop_section_eyebrow {
+  display: block;
+
+  margin-bottom: var(--rma-space-2);
+
+  color: var(--rma-primary);
+
+  font-size: var(--rma-font-xs);
+  font-weight: var(--rma-weight-bold);
+
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.find_shop_header h1 {
+  margin: 0 0 var(--rma-space-2);
+
+  color: var(--rma-text);
+
+  font-size: var(--rma-font-3xl);
+  font-weight: var(--rma-weight-extrabold);
+
+  line-height: 1.15;
+  letter-spacing: -0.6px;
+}
+
+.find_shop_header p {
+  max-width: 520px;
+
+  margin: 0;
+
+  color: var(--rma-text-secondary);
+
+  font-size: var(--rma-font-md);
+  line-height: 1.6;
+}
+
+/* ==========================================
+   LOCATION
+========================================== */
+
+.find_shop_location {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: var(--rma-space-3);
+
+  padding: var(--rma-space-4);
 
   box-sizing: border-box;
 
   background: var(--rma-card);
+
   border: 1px solid var(--rma-border);
-  border-radius: var(--rma-radius-xl);
+  border-radius: var(--rma-radius-lg);
 
   box-shadow: var(--rma-shadow-sm);
-}
 
-/* --------------------------------
-   My Shop
--------------------------------- */
-
-.find_shop_my_shop {
   margin-bottom: var(--rma-space-8);
 }
 
-.find_shop_section_title {
-  margin-bottom: var(--rma-space-3);
+.find_shop_location_icon {
+  width: 44px;
+  height: 44px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: var(--rma-radius-md);
+
+  background: rgba(22, 128, 58, 0.1);
+
+  color: var(--rma-primary);
 }
 
-.find_shop_section_title h2 {
-  margin: 0;
+.find_shop_location_content {
+  min-width: 0;
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+}
+
+.find_shop_location_content span {
+  color: var(--rma-text-muted);
+
+  font-size: var(--rma-font-xs);
+  font-weight: var(--rma-weight-semibold);
+
+  letter-spacing: 0.5px;
+}
+
+.find_shop_location_content strong {
+  color: var(--rma-text);
+
+  font-size: var(--rma-font-sm);
+  font-weight: var(--rma-weight-semibold);
+
+  overflow-wrap: anywhere;
+}
+
+.find_shop_change_location {
+  flex-shrink: 0;
+
+  padding: 8px 12px;
+
+  border: none;
+  border-radius: var(--rma-radius-md);
+
+  background: transparent;
+  color: var(--rma-primary);
+
+  font-family: inherit;
+  font-size: var(--rma-font-xs);
+  font-weight: var(--rma-weight-bold);
+
+  cursor: pointer;
+
+  transition:
+    background var(--rma-transition-normal),
+    transform var(--rma-transition-fast);
+}
+
+.find_shop_change_location:hover {
+  background: rgba(22, 128, 58, 0.08);
+}
+
+.find_shop_change_location:active {
+  transform: scale(0.97);
+}
+
+/* ==========================================
+   SECTION HEADER
+========================================== */
+
+.find_shop_section_header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: var(--rma-space-4);
+
+  margin-bottom: var(--rma-space-4);
+}
+
+.find_shop_section_header h2 {
+  margin: 0 0 4px;
 
   color: var(--rma-text);
+
   font-size: var(--rma-font-xl);
   font-weight: var(--rma-weight-bold);
+
   line-height: 1.3;
 }
 
-/* --------------------------------
-   Shop Message
--------------------------------- */
-
-.find_shop_message {
-  padding: var(--rma-space-5);
-
-  background: var(--rma-bg);
-  border: 1px solid var(--rma-border);
-  border-radius: var(--rma-radius-lg);
+.find_shop_section_header p {
+  margin: 0;
 
   color: var(--rma-text-secondary);
 
   font-size: var(--rma-font-sm);
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
-.find_shop_message h3 {
+.find_shop_section_eyebrow {
+  margin-bottom: 4px;
+
+  font-size: 10px;
+  letter-spacing: 1.3px;
+}
+
+.find_shop_distance {
+  flex-shrink: 0;
+
+  padding: 7px 10px;
+
+  border-radius: 999px;
+
+  background: rgba(22, 128, 58, 0.08);
+  color: var(--rma-primary);
+
+  font-size: var(--rma-font-xs);
+  font-weight: var(--rma-weight-semibold);
+}
+
+/* ==========================================
+   NEARBY SHOPS
+========================================== */
+
+.find_shop_nearby {
+  margin-bottom: var(--rma-space-8);
+}
+
+.find_shop_nearby_placeholder {
+  padding: var(--rma-space-8) var(--rma-space-5);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+
+  background: var(--rma-card);
+
+  border: 1px solid var(--rma-border);
+  border-radius: var(--rma-radius-xl);
+}
+
+.find_shop_placeholder_icon {
+  width: 58px;
+  height: 58px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: var(--rma-space-4);
+
+  border-radius: 50%;
+
+  background: rgba(22, 128, 58, 0.1);
+
+  color: var(--rma-primary);
+}
+
+.find_shop_nearby_placeholder h3 {
   margin: 0 0 var(--rma-space-2);
 
   color: var(--rma-text);
 
   font-size: var(--rma-font-md);
-  font-weight: var(--rma-weight-semibold);
+  font-weight: var(--rma-weight-bold);
 }
 
-.find_shop_message p {
-  margin: 0;
+.find_shop_nearby_placeholder p {
+  max-width: 380px;
+
+  margin: 0 0 var(--rma-space-5);
 
   color: var(--rma-text-secondary);
 
@@ -83,89 +284,10 @@
   line-height: 1.6;
 }
 
-.find_shop_error {
-  color: #b42318;
+.find_shop_nearby_placeholder button {
+  min-height: 44px;
 
-  background: #fff5f5;
-  border-color: #f3c7c7;
-}
-
-/* --------------------------------
-   Shop Card
--------------------------------- */
-
-.find_shop_card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  gap: var(--rma-space-5);
-
-  padding: var(--rma-space-5);
-
-  background: var(--rma-bg);
-  border: 1px solid var(--rma-border);
-  border-radius: var(--rma-radius-lg);
-
-  transition:
-    border-color var(--rma-transition-normal),
-    box-shadow var(--rma-transition-normal);
-}
-
-.find_shop_card:hover {
-  border-color: var(--rma-border-dark);
-  box-shadow: var(--rma-shadow-sm);
-}
-
-.find_shop_card_info {
-  min-width: 0;
-  flex: 1;
-}
-
-.find_shop_card_info h3 {
-  margin: 0 0 var(--rma-space-2);
-
-  color: var(--rma-text);
-
-  font-size: var(--rma-font-lg);
-  font-weight: var(--rma-weight-bold);
-
-  overflow-wrap: anywhere;
-}
-
-.find_shop_card_info p {
-  margin: 0 0 var(--rma-space-2);
-
-  color: var(--rma-text-secondary);
-
-  font-size: var(--rma-font-sm);
-  line-height: 1.5;
-
-  overflow-wrap: anywhere;
-}
-
-.find_shop_card_info span {
-  display: block;
-
-  color: var(--rma-text-muted);
-
-  font-size: var(--rma-font-sm);
-  line-height: 1.5;
-
-  overflow-wrap: anywhere;
-}
-
-/* --------------------------------
-   Order Button
--------------------------------- */
-
-.find_shop_order_button {
-  flex-shrink: 0;
-
-  min-width: 90px;
-  height: 44px;
-
-  padding: 0 var(--rma-space-4);
+  padding: 0 var(--rma-space-5);
 
   border: none;
   border-radius: var(--rma-radius-md);
@@ -185,107 +307,338 @@
     box-shadow var(--rma-transition-normal);
 }
 
-.find_shop_order_button:hover {
+.find_shop_nearby_placeholder button:hover {
   background: var(--rma-primary-dark);
   box-shadow: var(--rma-shadow-sm);
 }
 
-.find_shop_order_button:active {
+.find_shop_nearby_placeholder button:active {
   transform: scale(0.98);
 }
 
-.find_shop_order_button:focus-visible {
-  outline: 3px solid rgba(22, 128, 58, 0.2);
-  outline-offset: 2px;
-}
-
-/* --------------------------------
-   Find Your Shop
--------------------------------- */
+/* ==========================================
+   SEARCH BY SHOP ID
+========================================== */
 
 .find_shop_search {
-  padding-top: var(--rma-space-8);
+  padding-top: var(--rma-space-6);
+
+  margin-bottom: var(--rma-space-8);
 
   border-top: 1px solid var(--rma-border);
 }
 
-.find_shop_search h1 {
-  margin: 0 0 var(--rma-space-3);
+.find_shop_search form {
+  display: flex;
+  flex-direction: column;
+}
+
+.find_shop_search label {
+  margin-bottom: var(--rma-space-2);
 
   color: var(--rma-text);
 
-  font-size: var(--rma-font-3xl);
-  font-weight: var(--rma-weight-extrabold);
-
-  line-height: 1.2;
-  letter-spacing: -0.5px;
+  font-size: var(--rma-font-sm);
+  font-weight: var(--rma-weight-semibold);
 }
 
-.find_shop_search > p {
-  margin: 0 0 var(--rma-space-6);
-
-  color: var(--rma-text-secondary);
-
-  font-size: var(--rma-font-md);
-  line-height: 1.6;
-}
-
-/* --------------------------------
-   Scan QR Button
--------------------------------- */
-
-.find_shop_scan_button {
+.find_shop_search input {
   width: 100%;
+  height: 54px;
 
-  min-height: 58px;
-
-  padding: var(--rma-space-3) var(--rma-space-4);
-
-  display: flex;
-  align-items: center;
-  gap: var(--rma-space-4);
+  padding: 0 var(--rma-space-4);
 
   box-sizing: border-box;
 
-  border: 1px solid var(--rma-border);
+  border: 1px solid var(--rma-border-dark);
   border-radius: var(--rma-radius-md);
 
-  background: var(--rma-bg);
+  outline: none;
+
+  background: var(--rma-card);
   color: var(--rma-text);
+
+  font-family: inherit;
+  font-size: var(--rma-font-md);
+
+  transition:
+    border-color var(--rma-transition-normal),
+    box-shadow var(--rma-transition-normal);
+}
+
+.find_shop_search input::placeholder {
+  color: var(--rma-text-muted);
+}
+
+.find_shop_search input:hover {
+  border-color: #aebbb2;
+}
+
+.find_shop_search input:focus {
+  border-color: var(--rma-primary);
+
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.12);
+}
+
+.find_shop_search form button {
+  width: 100%;
+  height: 54px;
+
+  margin-top: var(--rma-space-4);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  border: none;
+  border-radius: var(--rma-radius-md);
+
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
 
   font-family: inherit;
   font-size: var(--rma-font-md);
   font-weight: var(--rma-weight-semibold);
 
+  cursor: pointer;
+
+  transition:
+    background var(--rma-transition-normal),
+    transform var(--rma-transition-fast),
+    box-shadow var(--rma-transition-normal);
+}
+
+.find_shop_search form button:hover {
+  background: var(--rma-primary-dark);
+  box-shadow: var(--rma-shadow-sm);
+}
+
+.find_shop_search form button:active {
+  transform: scale(0.98);
+}
+
+.find_shop_search form button span {
+  font-size: 18px;
+}
+
+/* ==========================================
+   NEARBY SHOP CARDS
+========================================== */
+
+.find_shop_nearby_list {
+  width: 100%;
+  display: flex;
+  gap: var(--rma-space-4);
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  padding: 4px 2px 12px;
+
+  box-sizing: border-box;
+
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+
+  scrollbar-width: none;
+}
+
+.find_shop_nearby_list::-webkit-scrollbar {
+  display: none;
+}
+
+.find_shop_nearby_card {
+  width: 270px;
+  min-width: 270px;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: var(--rma-space-5);
+
+  box-sizing: border-box;
+
+  border: 1px solid var(--rma-border);
+  border-radius: var(--rma-radius-xl);
+
+  background: var(--rma-card);
+
   text-align: left;
 
   cursor: pointer;
 
+  scroll-snap-align: start;
+
+  box-shadow: var(--rma-shadow-sm);
+
   transition:
+    transform var(--rma-transition-fast),
     border-color var(--rma-transition-normal),
-    background var(--rma-transition-normal),
-    box-shadow var(--rma-transition-normal),
-    transform var(--rma-transition-fast);
+    box-shadow var(--rma-transition-normal);
 }
 
-.find_shop_scan_button:hover {
-  border-color: var(--rma-primary);
+.find_shop_nearby_card:hover {
+  border-color: var(--rma-border-dark);
+  box-shadow: var(--rma-shadow-md);
+  transform: translateY(-2px);
+}
 
+.find_shop_nearby_card:active {
+  transform: scale(0.98);
+}
+
+.find_shop_nearby_card_top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: var(--rma-space-5);
+}
+
+.find_shop_nearby_icon {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: var(--rma-radius-md);
+
+  background: rgba(22, 128, 58, 0.1);
+
+  color: var(--rma-primary);
+}
+
+.find_shop_nearby_icon span {
+  font-size: 11px;
+  font-weight: var(--rma-weight-bold);
+  letter-spacing: 0.5px;
+}
+
+.find_shop_nearby_status {
+  padding: 5px 8px;
+
+  border-radius: 999px;
+
+  font-size: 10px;
+  font-weight: var(--rma-weight-semibold);
+}
+
+.find_shop_nearby_status_open {
+  background: rgba(22, 128, 58, 0.1);
+  color: var(--rma-primary);
+}
+
+.find_shop_nearby_status_closed {
+  background: rgba(180, 35, 24, 0.08);
+  color: #b42318;
+}
+
+.find_shop_nearby_card_content {
+  flex: 1;
+}
+
+.find_shop_nearby_card_content h3 {
+  margin: 0 0 6px;
+
+  color: var(--rma-text);
+
+  font-size: var(--rma-font-md);
+  font-weight: var(--rma-weight-bold);
+
+  line-height: 1.3;
+
+  overflow-wrap: anywhere;
+}
+
+.find_shop_nearby_card_content p {
+  min-height: 42px;
+
+  margin: 0 0 var(--rma-space-4);
+
+  color: var(--rma-text-secondary);
+
+  font-size: var(--rma-font-xs);
+
+  line-height: 1.5;
+
+  overflow-wrap: anywhere;
+}
+
+.find_shop_nearby_meta {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  color: var(--rma-text-muted);
+
+  font-size: var(--rma-font-xs);
+  font-weight: var(--rma-weight-semibold);
+}
+
+.find_shop_nearby_card_footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--rma-space-3);
+
+  margin-top: var(--rma-space-5);
+  padding-top: var(--rma-space-4);
+
+  border-top: 1px solid var(--rma-border);
+
+  font-size: 10px;
+  font-weight: var(--rma-weight-semibold);
+}
+
+.find_shop_nearby_card_footer span:first-child {
+  color: var(--rma-text-muted);
+}
+
+.find_shop_nearby_card_footer span:last-child {
+  color: var(--rma-primary);
+}
+
+/* ==========================================
+   QR SECTION
+========================================== */
+
+.find_shop_qr {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: var(--rma-space-4);
+
+  padding: var(--rma-space-5);
+
+  box-sizing: border-box;
+
+  background: var(--rma-card);
+
+  border: 1px solid var(--rma-border);
+  border-radius: var(--rma-radius-xl);
+
+  margin-bottom: var(--rma-space-8);
+
+  transition:
+    border-color var(--rma-transition-normal),
+    box-shadow var(--rma-transition-normal);
+}
+
+.find_shop_qr:hover {
+  border-color: var(--rma-border-dark);
   box-shadow: var(--rma-shadow-sm);
 }
 
-.find_shop_scan_button:active {
-  transform: scale(0.99);
-}
-
-.find_shop_scan_button:focus-visible {
-  outline: 3px solid rgba(22, 128, 58, 0.2);
-  outline-offset: 2px;
-}
-
-.find_shop_scan_icon {
-  width: 42px;
-  height: 42px;
+.find_shop_qr_icon {
+  width: 52px;
+  height: 52px;
 
   flex-shrink: 0;
 
@@ -297,110 +650,157 @@
 
   background: var(--rma-primary);
   color: var(--rma-text-white);
+}
 
+.find_shop_qr_icon span {
   font-size: var(--rma-font-sm);
   font-weight: var(--rma-weight-bold);
 }
 
-/* --------------------------------
-   OR Divider
--------------------------------- */
-
-.find_shop_or {
-  display: flex;
-  align-items: center;
-  gap: var(--rma-space-3);
-
-  margin: var(--rma-space-6) 0;
-}
-
-.find_shop_or::before,
-.find_shop_or::after {
-  content: '';
-
+.find_shop_qr_content {
+  min-width: 0;
   flex: 1;
-
-  height: 1px;
-
-  background: var(--rma-border);
 }
 
-.find_shop_or span {
+.find_shop_qr_content .find_shop_section_eyebrow {
+  margin-bottom: 4px;
+}
+
+.find_shop_qr_content h2 {
+  margin: 0 0 4px;
+
+  color: var(--rma-text);
+
+  font-size: var(--rma-font-md);
+  font-weight: var(--rma-weight-bold);
+}
+
+.find_shop_qr_content p {
+  margin: 0;
+
+  color: var(--rma-text-secondary);
+
+  font-size: var(--rma-font-xs);
+  line-height: 1.5;
+}
+
+.find_shop_qr_button {
+  min-width: 74px;
+  height: 40px;
+
   flex-shrink: 0;
 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 5px;
+
+  border: none;
+  border-radius: var(--rma-radius-md);
+
+  background: var(--rma-bg);
+  color: var(--rma-primary);
+
+  font-family: inherit;
+  font-size: var(--rma-font-xs);
+  font-weight: var(--rma-weight-bold);
+
+  cursor: pointer;
+
+  transition:
+    background var(--rma-transition-normal),
+    transform var(--rma-transition-fast);
+}
+
+.find_shop_qr_button:hover {
+  background: rgba(22, 128, 58, 0.08);
+}
+
+.find_shop_qr_button:active {
+  transform: scale(0.97);
+}
+
+.find_shop_qr_button span {
+  font-size: 16px;
+}
+
+/* ==========================================
+   SAVED SHOP
+========================================== */
+
+.find_shop_saved {
+  padding-top: var(--rma-space-6);
+
+  border-top: 1px solid var(--rma-border);
+}
+
+.find_shop_saved_card {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--rma-space-4);
+
+  padding: var(--rma-space-5);
+
+  box-sizing: border-box;
+
+  background: var(--rma-card);
+
+  border: 1px solid var(--rma-border);
+  border-radius: var(--rma-radius-xl);
+
+  box-shadow: var(--rma-shadow-sm);
+}
+
+.find_shop_saved_info {
+  min-width: 0;
+  flex: 1;
+}
+
+.find_shop_saved_info h3 {
+  margin: 0 0 5px;
+
+  color: var(--rma-text);
+
+  font-size: var(--rma-font-md);
+  font-weight: var(--rma-weight-bold);
+
+  overflow-wrap: anywhere;
+}
+
+.find_shop_saved_info p {
+  margin: 0 0 5px;
+
+  color: var(--rma-text-secondary);
+
+  font-size: var(--rma-font-xs);
+  line-height: 1.5;
+
+  overflow-wrap: anywhere;
+}
+
+.find_shop_saved_info span {
   color: var(--rma-text-muted);
 
   font-size: var(--rma-font-xs);
   font-weight: var(--rma-weight-semibold);
-  letter-spacing: 0.5px;
 }
 
-/* --------------------------------
-   Form
--------------------------------- */
+.find_shop_saved_card > button {
+  min-width: 78px;
+  height: 40px;
 
-.find_shop form {
+  flex-shrink: 0;
+
   display: flex;
-  flex-direction: column;
-}
+  align-items: center;
+  justify-content: center;
 
-.find_shop label {
-  margin-bottom: var(--rma-space-2);
-
-  color: var(--rma-text-primary);
-
-  font-size: var(--rma-font-sm);
-  font-weight: var(--rma-weight-semibold);
-}
-
-.find_shop input {
-  width: 100%;
-  height: 54px;
-
-  padding: 0 var(--rma-space-4);
-
-  box-sizing: border-box;
-
-  color: var(--rma-text);
-  background: var(--rma-card);
-
-  border: 1px solid var(--rma-border-dark);
-  border-radius: var(--rma-radius-md);
-
-  outline: none;
-
-  font-family: inherit;
-  font-size: var(--rma-font-md);
-
-  transition:
-    border-color var(--rma-transition-normal),
-    box-shadow var(--rma-transition-normal),
-    background var(--rma-transition-normal);
-}
-
-.find_shop input::placeholder {
-  color: var(--rma-text-muted);
-}
-
-.find_shop input:hover {
-  border-color: #aebbb2;
-}
-
-.find_shop input:focus {
-  border-color: var(--rma-primary);
-
-  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.12);
-}
-
-/* --------------------------------
-   Continue Button
--------------------------------- */
-
-.find_shop form button {
-  width: 100%;
-  height: 54px;
-
-  margin-top: var(--rma-space-4);
+  gap: 5px;
 
   border: none;
   border-radius: var(--rma-radius-md);
@@ -409,148 +809,567 @@
   color: var(--rma-text-white);
 
   font-family: inherit;
-  font-size: var(--rma-font-md);
+  font-size: var(--rma-font-xs);
   font-weight: var(--rma-weight-semibold);
 
   cursor: pointer;
 
   transition:
     background var(--rma-transition-normal),
-    transform var(--rma-transition-fast),
-    box-shadow var(--rma-transition-normal);
+    transform var(--rma-transition-fast);
 }
 
-.find_shop form button:hover {
+.find_shop_saved_card > button:hover {
   background: var(--rma-primary-dark);
-
-  box-shadow: var(--rma-shadow-sm);
 }
 
-.find_shop form button:active {
+.find_shop_saved_card > button:active {
   transform: scale(0.98);
 }
 
-.find_shop form button:focus-visible {
-  outline: 3px solid rgba(22, 128, 58, 0.2);
+.find_shop_saved_card > button span {
+  font-size: 16px;
+}
+
+/* ==========================================
+   MESSAGES
+========================================== */
+
+.find_shop_message {
+  padding: var(--rma-space-4);
+
+  border: 1px solid var(--rma-border);
+  border-radius: var(--rma-radius-lg);
+
+  background: var(--rma-bg);
+
+  color: var(--rma-text-secondary);
+
+  font-size: var(--rma-font-sm);
+  line-height: 1.5;
+}
+
+.find_shop_error {
+  color: #b42318;
+
+  background: #fff5f5;
+
+  border-color: #f3c7c7;
+}
+
+/* ==========================================
+   FOCUS STATES
+========================================== */
+
+.find_shop button:focus-visible,
+.find_shop input:focus-visible {
+  outline: 3px solid rgba(22, 128, 58, 0.18);
   outline-offset: 2px;
 }
 
-/* --------------------------------
-   Tablet
--------------------------------- */
+/* ==========================================
+   TABLET
+========================================== */
 
 @media (min-width: 768px) {
   .find_shop {
-    padding: var(--rma-space-12) var(--rma-tablet-padding);
+    padding: var(--rma-space-10) var(--rma-tablet-padding);
   }
 
   .find_shop_content {
-    margin-top: var(--rma-space-6);
-  }
-}
-
-/* --------------------------------
-   Desktop
--------------------------------- */
-
-@media (min-width: 1024px) {
-  .find_shop {
-    padding-top: var(--rma-space-16);
+    margin-top: var(--rma-space-5);
   }
 
-  .find_shop_content {
-    max-width: 620px;
-    padding: var(--rma-space-10);
-  }
-
-  .find_shop_search h1 {
+  .find_shop_header h1 {
     font-size: var(--rma-font-4xl);
   }
 }
 
-/* --------------------------------
-   Mobile
--------------------------------- */
+/* ==========================================
+   DESKTOP
+========================================== */
 
-@media (max-width: 600px) {
+@media (min-width: 1024px) {
+  .find_shop {
+    padding-top: var(--rma-space-14);
+  }
+
   .find_shop_content {
-    padding: var(--rma-space-6);
+    max-width: 720px;
   }
 
-  .find_shop_card {
-    align-items: flex-start;
-    gap: var(--rma-space-3);
-    padding: var(--rma-space-4);
+  .find_shop_header {
+    margin-bottom: var(--rma-space-8);
   }
 
-  .find_shop_card_info h3 {
-    font-size: var(--rma-font-md);
-  }
-
-  .find_shop_card_info p,
-  .find_shop_card_info span {
-    font-size: var(--rma-font-xs);
-  }
-
-  .find_shop_order_button {
-    min-width: 78px;
-    height: 40px;
-
-    padding: 0 var(--rma-space-3);
-
-    font-size: var(--rma-font-xs);
-  }
-
-  .find_shop_search h1 {
-    font-size: var(--rma-font-2xl);
-  }
-
-  .find_shop_search > p {
-    font-size: var(--rma-font-sm);
-  }
-
-  .find_shop_scan_button {
-    min-height: 54px;
-
-    padding: var(--rma-space-2) var(--rma-space-3);
-
-    gap: var(--rma-space-3);
-
-    font-size: var(--rma-font-sm);
-  }
-
-  .find_shop_scan_icon {
-    width: 40px;
-    height: 40px;
+  .find_shop_nearby_placeholder {
+    padding: var(--rma-space-10);
   }
 }
 
-/* --------------------------------
-   Small Mobile
--------------------------------- */
+/* ==========================================
+   MOBILE
+========================================== */
 
-@media (max-width: 380px) {
+@media (max-width: 600px) {
   .find_shop {
-    padding: var(--rma-space-5) var(--rma-space-3);
+    padding: var(--rma-space-5) var(--rma-mobile-padding);
   }
 
   .find_shop_content {
     margin-top: 0;
-    padding: var(--rma-space-5);
-
-    border-radius: var(--rma-radius-lg);
   }
 
-  .find_shop_card {
-    flex-direction: column;
+  .find_shop_header h1 {
+    font-size: var(--rma-font-2xl);
   }
 
-  .find_shop_order_button {
-    width: 100%;
+  .find_shop_header p {
+    font-size: var(--rma-font-sm);
   }
 
-  .find_shop input,
-  .find_shop form button {
-    height: 52px;
+  .find_shop_location {
+    padding: var(--rma-space-3);
+  }
+
+  .find_shop_location_icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .find_shop_location_content strong {
+    font-size: var(--rma-font-xs);
+  }
+
+  .find_shop_section_header h2 {
+    font-size: var(--rma-font-lg);
+  }
+
+  .find_shop_distance {
+    padding: 6px 8px;
+
+    font-size: 10px;
+  }
+
+  .find_shop_nearby_placeholder {
+    padding: var(--rma-space-7) var(--rma-space-4);
+  }
+
+  .find_shop_qr {
+    padding: var(--rma-space-4);
+
+    gap: var(--rma-space-3);
+  }
+
+  .find_shop_qr_icon {
+    width: 46px;
+    height: 46px;
+  }
+
+  .find_shop_qr_content h2 {
+    font-size: var(--rma-font-sm);
+  }
+
+  .find_shop_qr_content p {
+    font-size: 11px;
+  }
+
+  .find_shop_qr_button {
+    min-width: 64px;
+  }
+
+  .find_shop_saved_card {
+    padding: var(--rma-space-4);
+  }
+
+  .find_shop_nearby_list {
+    gap: var(--rma-space-3);
+    padding-left: 1px;
+    padding-right: 1px;
+  }
+
+  .find_shop_nearby_card {
+    width: 82%;
+    min-width: 82%;
+    padding: var(--rma-space-4);
+  }
+}
+
+/* ==========================================
+   LOCATION BOTTOM SHEET
+========================================== */
+
+.location_sheet_overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  display: flex;
+  align-items: flex-end;
+
+  background: rgba(0, 0, 0, 0.45);
+
+  animation: location_sheet_overlay_in 0.2s ease;
+}
+
+.location_sheet {
+  width: 100%;
+  max-height: 82vh;
+
+  box-sizing: border-box;
+
+  padding: 10px 16px 24px;
+
+  background: var(--rma-card);
+
+  border-radius: 24px 24px 0 0;
+
+  overflow-y: auto;
+
+  animation: location_sheet_up 0.25s ease;
+}
+
+.location_sheet_handle {
+  width: 42px;
+  height: 4px;
+
+  margin: 2px auto 18px;
+
+  border-radius: 999px;
+
+  background: var(--rma-border-dark);
+}
+
+.location_sheet_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 20px;
+}
+
+.location_sheet_header h2 {
+  margin: 0;
+
+  color: var(--rma-text);
+
+  font-size: var(--rma-font-xl);
+  font-weight: var(--rma-weight-bold);
+}
+
+.location_sheet_header button {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: none;
+  border-radius: 50%;
+
+  background: var(--rma-bg);
+
+  color: var(--rma-text-secondary);
+
+  font-size: 24px;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.location_sheet_options {
+  display: flex;
+  flex-direction: column;
+
+  border: 1px solid var(--rma-border);
+  border-radius: var(--rma-radius-xl);
+
+  overflow: hidden;
+}
+
+.location_sheet_option {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: var(--rma-space-3);
+
+  padding: 16px;
+
+  border: none;
+
+  background: var(--rma-card);
+
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.location_sheet_option + .location_sheet_option {
+  border-top: 1px solid var(--rma-border);
+}
+
+.location_sheet_option:hover {
+  background: var(--rma-bg);
+}
+
+.location_sheet_option_icon {
+  width: 44px;
+  height: 44px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: var(--rma-radius-md);
+
+  background: rgba(22, 128, 58, 0.1);
+
+  color: var(--rma-primary);
+}
+
+.location_sheet_option_icon span {
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.location_sheet_option_content {
+  min-width: 0;
+
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.location_sheet_option_content strong {
+  color: var(--rma-text);
+
+  font-size: var(--rma-font-sm);
+  font-weight: var(--rma-weight-bold);
+}
+
+.location_sheet_option_content span {
+  color: var(--rma-text-secondary);
+
+  font-size: var(--rma-font-xs);
+  line-height: 1.4;
+}
+
+.location_sheet_arrow {
+  flex-shrink: 0;
+
+  color: var(--rma-text-secondary);
+
+  font-size: 28px;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.location_sheet_saved {
+  padding-top: 24px;
+}
+
+.location_sheet_saved_title {
+  display: block;
+
+  margin-bottom: 12px;
+
+  color: var(--rma-text-muted);
+
+  font-size: 11px;
+  font-weight: var(--rma-weight-semibold);
+
+  letter-spacing: 1.5px;
+}
+
+.location_sheet_empty {
+  padding: 18px;
+
+  border: 1px solid var(--rma-border);
+
+  border-radius: var(--rma-radius-lg);
+
+  background: var(--rma-bg);
+
+  color: var(--rma-text-secondary);
+
+  font-size: var(--rma-font-sm);
+
+  text-align: center;
+}
+
+@keyframes location_sheet_overlay_in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes location_sheet_up {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+.location_sheet_saved_list {
+  display: flex;
+  flex-direction: column;
+
+  border: 1px solid var(--rma-border);
+  border-radius: var(--rma-radius-xl);
+
+  overflow: hidden;
+}
+
+.location_sheet_saved_address {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: var(--rma-space-3);
+
+  padding: 15px;
+
+  border: none;
+
+  background: var(--rma-card);
+
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.location_sheet_saved_address + .location_sheet_saved_address {
+  border-top: 1px solid var(--rma-border);
+}
+
+.location_sheet_saved_address:hover {
+  background: var(--rma-bg);
+}
+
+.location_sheet_saved_address_icon {
+  width: 44px;
+  height: 44px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: var(--rma-radius-md);
+
+  background: var(--rma-bg);
+
+  color: var(--rma-text-secondary);
+
+  font-size: 22px;
+}
+
+.location_sheet_saved_address_content {
+  min-width: 0;
+  flex: 1;
+}
+
+.location_sheet_saved_address_title {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  margin-bottom: 4px;
+}
+
+.location_sheet_saved_address_title strong {
+  color: var(--rma-text);
+
+  font-size: var(--rma-font-sm);
+
+  font-weight: var(--rma-weight-bold);
+}
+
+.location_sheet_default {
+  padding: 3px 6px;
+
+  border-radius: 999px;
+
+  background: rgba(22, 128, 58, 0.08);
+
+  color: var(--rma-primary);
+
+  font-size: 8px;
+
+  font-weight: var(--rma-weight-bold);
+
+  letter-spacing: 0.5px;
+}
+
+.location_sheet_saved_address_content p {
+  margin: 0;
+
+  color: var(--rma-text-secondary);
+
+  font-size: var(--rma-font-xs);
+
+  line-height: 1.5;
+
+  overflow-wrap: anywhere;
+}
+
+/* ==========================================
+   SMALL MOBILE
+========================================== */
+
+@media (max-width: 380px) {
+  .find_shop {
+    padding-left: var(--rma-space-3);
+    padding-right: var(--rma-space-3);
+  }
+
+  .find_shop_location {
+    align-items: flex-start;
+  }
+
+  .find_shop_change_location {
+    padding: 7px 8px;
+  }
+
+  .find_shop_section_header {
+    align-items: flex-start;
+  }
+
+  .find_shop_distance {
+    font-size: 9px;
+  }
+
+  .find_shop_qr {
+    align-items: flex-start;
+  }
+
+  .find_shop_qr_button {
+    min-width: 58px;
+    height: 38px;
+  }
+
+  .find_shop_saved_card {
+    align-items: flex-start;
   }
 }

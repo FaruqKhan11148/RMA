@@ -44,84 +44,100 @@ function Home() {
 
   const handleLocationClick = () => {
     if (!navigator.geolocation) {
-      setLocationName('Location not supported');
+      setLocationName('Location is not supported on this device.');
       return;
     }
 
     setLocationLoading(true);
+    setLocationName('Finding your location...');
 
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
+    const handleSuccess = async (position) => {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
 
-        setUserLocation({
-          latitude,
-          longitude,
-        });
+      setUserLocation({
+        latitude,
+        longitude,
+      });
 
-        await fetchNearbyShops(latitude, longitude);
+      await fetchNearbyShops(latitude, longitude);
 
-        try {
-          const response = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`,
-          );
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`,
+        );
 
-          const data = await response.json();
+        const data = await response.json();
 
-          const address = data.address || {};
+        const address = data.address || {};
 
-          const locality =
-            address.neighbourhood ||
-            address.suburb ||
-            address.quarter ||
-            address.residential ||
-            address.village ||
-            address.hamlet ||
-            '';
+        const locality =
+          address.neighbourhood ||
+          address.suburb ||
+          address.quarter ||
+          address.residential ||
+          address.village ||
+          address.hamlet ||
+          '';
 
-          const area =
-            address.city_district || address.town || address.municipality || '';
+        const area =
+          address.city_district || address.town || address.municipality || '';
 
-          const city = address.city || address.county || '';
+        const city = address.city || address.county || '';
 
-          const locationParts = [locality, area, city].filter(Boolean);
+        const locationParts = [locality, area, city].filter(Boolean);
 
-          const uniqueParts = [...new Set(locationParts)];
+        const uniqueParts = [...new Set(locationParts)];
 
-          setLocationName(
-            uniqueParts.length > 0 ? uniqueParts.join(', ') : 'Location found',
-          );
-
-          if (area && city && area !== city) {
-            setLocationName(`${area}, ${city}`);
-          } else {
-            setLocationName(city || area || 'Location found');
-          }
-        } catch (error) {
-          console.error('Reverse geocoding error:', error);
-          setLocationName('Location found');
-        } finally {
-          setLocationLoading(false);
-        }
-      },
-      (error) => {
-        console.error('Location error:', error);
-
-        setLocationName('Unable to get location');
+        setLocationName(
+          uniqueParts.length > 0 ? uniqueParts.join(', ') : 'Location found',
+        );
+      } catch (error) {
+        console.error('Reverse geocoding error:', error);
+        setLocationName('Location found');
+      } finally {
         setLocationLoading(false);
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 300000,
-      },
-    );
+      }
+    };
+
+    const handleError = (error) => {
+      console.error('Location error:', {
+        code: error.code,
+        message: error.message,
+      });
+
+      if (error.code === 1) {
+        setLocationName(
+          'Location permission is blocked. Please allow location access in your browser settings.',
+        );
+        setLocationLoading(false);
+        return;
+      }
+
+      if (error.code === 2) {
+        setLocationName('Unable to detect your location. Please try again.');
+        setLocationLoading(false);
+        return;
+      }
+
+      if (error.code === 3) {
+        setLocationName('Location is taking too long. Please try again.');
+        setLocationLoading(false);
+        return;
+      }
+
+      setLocationName('Unable to get your location. Please try again.');
+      setLocationLoading(false);
+    };
+
+    navigator.geolocation.getCurrentPosition(handleSuccess, handleError, {
+      enableHighAccuracy: false,
+      timeout: 20000,
+      maximumAge: 300000,
+    });
   };
 
-  // ==========================================
-  // ORDER FROM TRUSTED SHOP
-  // ==========================================
+  // FETCH NEARBY SHOPS
 
   const fetchNearbyShops = async (latitude, longitude) => {
     try {
@@ -417,11 +433,29 @@ function Home() {
                       We couldn't find any shops within 5 km of your location.
                     </p>
 
-                    <button onClick={handleLocationClick}>
+                    <button
+                      style={{
+                        marginRight: '10px',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        verticalAlign: 'middle',
+                      }}
+                      onClick={handleLocationClick}
+                    >
                       Change Location
                     </button>
 
-                    <button onClick={() => navigate('/find-shop')}>
+                    <button
+                      style={{
+                        marginLeft: '10px',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        verticalAlign: 'middle',
+                      }}
+                      onClick={() => navigate('/find-shop')}
+                    >
                       Explore Shops
                     </button>
                   </>
@@ -551,6 +585,31 @@ function Home() {
               )}
           </section>
         )}
+
+        <section className="rma_promo">
+          <div className="rma_promo_overlay">
+            <div className="rma_promo_content">
+              <span className="rma_promo_eyebrow">
+                FRESH. LOCAL. CONVENIENT.
+              </span>
+
+              <h2>Fresh meat from shops you trust.</h2>
+
+              <p>
+                Order fresh meat and seafood from local shops and get it
+                delivered to your doorstep.
+              </p>
+
+              <button
+                className="rma_promo_button"
+                onClick={() => navigate('/find-shop')}
+              >
+                Explore More Shops
+                <span>→</span>
+              </button>
+            </div>
+          </div>
+        </section>
       </div>
     </main>
   );

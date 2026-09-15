@@ -91,11 +91,13 @@ import ShopPromotion from './pages/Owner/OwnerSettings/ShopPromotion/ShopPromoti
 function AppLayout() {
   const location = useLocation();
 
-  const isHomePage = location.pathname === '/';
+  const hideNavbar =
+  location.pathname === '/' ||
+  location.pathname === '/find-shop';
 
   return (
     <>
-      {!isHomePage && <Navbar />}
+      {!hideNavbar && <Navbar />}
 
       <div className="app_content">
         <Routes>
