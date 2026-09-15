@@ -10,8 +10,6 @@ function OwnerDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const ownerData = localStorage.getItem('rma_owner');
-
   const [shopOwner, setShopOwner] = useState(() => {
     const ownerData = localStorage.getItem('rma_owner');
 
@@ -53,7 +51,7 @@ function OwnerDashboard() {
   }, [shopOwner, navigate]);
 
   useEffect(() => {
-    if (!shopOwner) {
+    if (!shopOwner?.id) {
       return;
     }
 
@@ -82,7 +80,6 @@ function OwnerDashboard() {
         }
 
         setShopOwner(data.owner);
-
         localStorage.setItem('rma_owner', JSON.stringify(data.owner));
       } catch (error) {
         console.error('Fetch owner status failed:', error);
@@ -96,7 +93,7 @@ function OwnerDashboard() {
     return () => {
       clearInterval(intervalId);
     };
-  }, [navigate]);
+  }, [navigate, shopOwner?.id]);
 
   if (!shopOwner) {
     return null;
