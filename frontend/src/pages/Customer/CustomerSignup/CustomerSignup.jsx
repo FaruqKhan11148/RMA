@@ -1,10 +1,13 @@
 import './CustomerSignup.css';
 
-import { useState } from 'react';
+import { useLocation, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function CustomerSignup() {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const redirect = new URLSearchParams(location.search).get('redirect');
 
   const [formData, setFormData] = useState({
     name: '',
@@ -71,7 +74,11 @@ function CustomerSignup() {
       setSuccess('Account created successfully!');
 
       setTimeout(() => {
-        navigate('/customer/login');
+        navigate(
+          redirect
+            ? `/customer/login?redirect=${encodeURIComponent(redirect)}`
+            : '/customer/login',
+        );
       }, 1000);
     } catch (error) {
       console.error('Customer signup error:', error);

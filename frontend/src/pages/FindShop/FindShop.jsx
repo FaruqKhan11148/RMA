@@ -3,6 +3,8 @@ import './FindShop.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const RMA_LOCATION_KEY = 'rma_user_location';
+
 function FindShop() {
   const navigate = useNavigate();
 
@@ -10,12 +12,19 @@ function FindShop() {
   const [shop, setShop] = useState(null);
   const [loadingShop, setLoadingShop] = useState(true);
   const [shopError, setShopError] = useState('');
+
   const [nearbyShops, setNearbyShops] = useState([]);
   const [loadingNearbyShops, setLoadingNearbyShops] = useState(false);
   const [nearbyShopsError, setNearbyShopsError] = useState('');
+
+  const [userLocation, setUserLocation] = useState(null);
+  const [locationName, setLocationName] = useState('');
+
   const [showLocationSheet, setShowLocationSheet] = useState(false);
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [loadingAddresses, setLoadingAddresses] = useState(false);
+
+  const [customerLoggedIn, setCustomerLoggedIn] = useState(false);
 
   useEffect(() => {
     const fetchSavedShop = async () => {
@@ -103,6 +112,38 @@ function FindShop() {
     }
   };
 
+  useEffect(() => {
+    const savedLocation = localStorage.getItem(RMA_LOCATION_KEY);
+
+    if (!savedLocation) {
+      return;
+    }
+
+    try {
+      const parsedLocation = JSON.parse(savedLocation);
+
+      if (
+        Number.isFinite(parsedLocation.latitude) &&
+        Number.isFinite(parsedLocation.longitude)
+      ) {
+        setUserLocation({
+          latitude: parsedLocation.latitude,
+          longitude: parsedLocation.longitude,
+        });
+
+        fetchNearbyShops(parsedLocation.latitude, parsedLocation.longitude);
+      }
+
+      if (parsedLocation.locationName) {
+        setLocationName(parsedLocation.locationName);
+      }
+    } catch (error) {
+      console.error('Saved location parse error:', error);
+
+      localStorage.removeItem(RMA_LOCATION_KEY);
+    }
+  }, []);
+
   const handleLocationClick = () => {
     if (!navigator.geolocation) {
       setNearbyShopsError('Location is not supported on this device.');
@@ -110,11 +151,25 @@ function FindShop() {
     }
 
     setLoadingNearbyShops(true);
+    setNearbyShops([]);
     setNearbyShopsError('');
 
     const handleSuccess = async (position) => {
       const latitude = position.coords.latitude;
       const longitude = position.coords.longitude;
+
+      setUserLocation({
+        latitude,
+        longitude,
+      });
+
+      localStorage.setItem(
+        RMA_LOCATION_KEY,
+        JSON.stringify({
+          latitude,
+          longitude,
+        }),
+      );
 
       await fetchNearbyShops(latitude, longitude);
     };
@@ -188,6 +243,67 @@ function FindShop() {
     }
   };
 
+  const handleSavedAddressSelect = async (savedAddress) => {
+    if (
+      !Number.isFinite(Number(savedAddress.latitude)) ||
+      !Number.isFinite(Number(savedAddress.longitude))
+    ) {
+      setNearbyShopsError('This saved address does not have a valid location.');
+      return;
+    }
+
+    const latitude = Number(savedAddress.latitude);
+    const longitude = Number(savedAddress.longitude);
+
+    setUserLocation({
+      latitude,
+      longitude,
+    });
+
+    setLocationName(savedAddress.address);
+
+    localStorage.setItem(
+      RMA_LOCATION_KEY,
+      JSON.stringify({
+        latitude,
+        longitude,
+        locationName: savedAddress.address,
+      }),
+    );
+
+    setShowLocationSheet(false);
+
+    setNearbyShops([]);
+    setNearbyShopsError('');
+
+    await fetchNearbyShops(latitude, longitude);
+  };
+
+  useEffect(() => {
+    const checkCustomerLogin = async () => {
+      try {
+        const response = await fetch(
+          'https://rma-backend-bo4a.onrender.com/api/customers/me',
+          {
+            credentials: 'include',
+          },
+        );
+
+        if (response.ok) {
+          setCustomerLoggedIn(true);
+        } else {
+          setCustomerLoggedIn(false);
+        }
+      } catch (error) {
+        console.error('Customer login check failed:', error);
+
+        setCustomerLoggedIn(false);
+      }
+    };
+
+    checkCustomerLogin();
+  }, []);
+
   return (
     <main className="find_shop">
       <div className="find_shop_content">
@@ -236,7 +352,7 @@ function FindShop() {
 
           <div className="find_shop_location_content">
             <span>DELIVERING TO</span>
-            <strong>Your current location</strong>
+            <strong>{locationName || 'Your current location'}</strong>
           </div>
 
           <button
@@ -574,7 +690,22 @@ function FindShop() {
                 <span className="location_sheet_arrow">›</span>
               </button>
 
-              <button type="button" className="location_sheet_option">
+              <button
+                type="button"
+                className="location_sheet_option"
+                onClick={() => {
+                  setShowLocationSheet(false);
+
+                  if (customerLoggedIn) {
+                    navigate('/profile/saved-addresses/add');
+                    return;
+                  }
+
+                  navigate(
+                    '/customer/login?redirect=/profile/saved-addresses/add',
+                  );
+                }}
+              >
                 <div className="location_sheet_option_icon">
                   <span>+</span>
                 </div>
@@ -612,6 +743,7 @@ function FindShop() {
                       key={savedAddress._id}
                       type="button"
                       className="location_sheet_saved_address"
+                      onClick={() => handleSavedAddressSelect(savedAddress)}
                     >
                       <div className="location_sheet_saved_address_icon">
                         {savedAddress.label === 'Home' && <span>⌂</span>}

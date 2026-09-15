@@ -10,7 +10,7 @@ function Shop() {
   const { shopId } = useParams();
   const navigate = useNavigate();
 
-  const { addToCart, totalItems } = useCart();
+  const { addToCart, cartItems, totalItems } = useCart();
 
   const [shop, setShop] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -131,19 +131,84 @@ function Shop() {
         message={flashMessage}
         onClose={() => setFlashMessage('')}
       />
-      <section className="shop_header">
-        <p className="shop_id">{shop.shopId}</p>
+      <section className="shop_hero">
+        <div className="shop_hero_top">
+          <button
+            type="button"
+            className="shop_back_button"
+            onClick={() => navigate(-1)}
+            aria-label="Go back"
+          >
+            ←
+          </button>
 
-        <h1>Welcome to {shop.shopName}</h1>
+          <span className="shop_hero_id">{shop.shopId}</span>
 
-        <p className="shop_description">{shop.description}</p>
+          <button
+            type="button"
+            className="shop_share_button"
+            aria-label="Share shop"
+          >
+            ↗
+          </button>
+        </div>
 
-        <div className="shop_status">
-          <span className={shop.isOpen ? 'status_open' : 'status_closed'}>
-            {shop.isOpen ? 'Open' : 'Closed'}
-          </span>
+        <div className="shop_hero_content">
+          <div className="shop_status_row">
+            <span
+              className={
+                shop.isOpen
+                  ? 'shop_status_badge shop_status_open'
+                  : 'shop_status_badge shop_status_closed'
+              }
+            >
+              <span className="shop_status_dot" />
+              {shop.isOpen ? 'Open' : 'Closed'}
+            </span>
+          </div>
 
-          <span>{shop.address}</span>
+          <h1>{shop.shopName}</h1>
+
+          <p className="shop_hero_description">{shop.description}</p>
+
+          <div className="shop_location">
+            <span className="shop_location_icon">⌖</span>
+            <span>{shop.address}</span>
+          </div>
+        </div>
+
+        <div className="shop_delivery_card">
+          <div className="shop_delivery_main">
+            <span className="shop_delivery_icon">⚡</span>
+
+            <div>
+              <strong>
+                {shop.delivery
+                  ? `Delivery in ${shop.deliverySettings?.estimatedDeliveryTime || 45} mins`
+                  : 'Pickup available'}
+              </strong>
+
+              <span>
+                {shop.delivery
+                  ? 'Freshly prepared and delivered to you'
+                  : 'Order now and pick up from the shop'}
+              </span>
+            </div>
+          </div>
+
+          {shop.delivery && (
+            <div className="shop_delivery_details">
+              <span>
+                Delivery charge ₹{shop.deliverySettings?.deliveryCharge || 0}
+              </span>
+
+              {shop.deliverySettings?.freeDeliveryAbove > 0 && (
+                <span>
+                  Free delivery above ₹{shop.deliverySettings.freeDeliveryAbove}
+                </span>
+              )}
+            </div>
+          )}
         </div>
       </section>
 
@@ -153,7 +218,10 @@ function Shop() {
             className={orderType === 'delivery' ? 'order_type_active' : ''}
             onClick={() => setOrderType('delivery')}
           >
-            Delivery
+            <span>Delivery</span>
+            <small>
+              {shop.deliverySettings?.estimatedDeliveryTime || 45} mins
+            </small>
           </button>
         )}
 
@@ -162,7 +230,8 @@ function Shop() {
             className={orderType === 'pickup' ? 'order_type_active' : ''}
             onClick={() => setOrderType('pickup')}
           >
-            Pickup
+            <span>Pickup</span>
+            <small>From shop</small>
           </button>
         )}
       </section>
@@ -203,6 +272,14 @@ function Shop() {
           ) : (
             filteredProducts.map((product) => (
               <div className="product_card" key={product.productId}>
+                <div className="product_image">
+                  {product.imageUrl ? (
+                    <img src={product.imageUrl} alt={product.name} />
+                  ) : (
+                    <div className="product_image_placeholder">RMA</div>
+                  )}
+                </div>
+
                 <div className="product_info">
                   <h3>{product.name}</h3>
 
@@ -222,15 +299,37 @@ function Shop() {
             ))
           )}
         </div>
-        {totalItems > 0 && (
-          <div className="continue_cart_container">
-            <button
-              type="button"
-              className="continue_cart_button"
-              onClick={() => navigate('/cart')}
-            >
-              Continue to Cart
-            </button>
+        {totalItems > 0 && cartItems.length > 0 && (
+          <div className="floating_cart_bar">
+            <div className="floating_cart_item">
+              <div className="floating_cart_image">
+                {cartItems[0].imageUrl ? (
+                  <img
+                    src={cartItems[0].imageUrl}
+                    alt={cartItems[0].productName}
+                  />
+                ) : (
+                  <div className="floating_cart_image_placeholder">RMA</div>
+                )}
+              </div>
+
+              <div className="floating_cart_info">
+                <strong>{cartItems[0].productName}</strong>
+
+                <span>
+                  {totalItems} {totalItems === 1 ? 'item' : 'items'}
+                </span>
+              </div>
+
+              <button
+                type="button"
+                className="floating_cart_button"
+                onClick={() => navigate('/cart')}
+              >
+                <span>View Cart</span>
+                <span>→</span>
+              </button>
+            </div>
           </div>
         )}
       </section>

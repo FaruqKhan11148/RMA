@@ -1,10 +1,13 @@
 import './CustomerLogin.css';
 
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function CustomerLogin() {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const redirect = new URLSearchParams(location.search).get('redirect');
 
   const [formData, setFormData] = useState({
     email: '',
@@ -50,7 +53,7 @@ function CustomerLogin() {
 
       console.log('Customer login successful:', data.customer);
 
-      navigate('/profile');
+      navigate(redirect || '/profile');
     } catch (error) {
       console.error('Customer login error:', error);
 
@@ -112,7 +115,16 @@ function CustomerLogin() {
         <div className="customer_login_signup">
           <span>Don't have an account?</span>
 
-          <button type="button" onClick={() => navigate('/customer/signup')}>
+          <button
+            type="button"
+            onClick={() =>
+              navigate(
+                redirect
+                  ? `/customer/signup?redirect=${encodeURIComponent(redirect)}`
+                  : '/customer/signup',
+              )
+            }
+          >
             Create Account
           </button>
         </div>

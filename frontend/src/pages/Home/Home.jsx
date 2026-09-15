@@ -1,8 +1,10 @@
 import './Home.css';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
+
+const RMA_LOCATION_KEY = 'rma_user_location';
 
 function Home() {
   const { t } = useLanguage();
@@ -14,6 +16,38 @@ function Home() {
   const [nearbyShopsError, setNearbyShopsError] = useState('');
   const [locationName, setLocationName] = useState('');
   const [locationLoading, setLocationLoading] = useState(false);
+
+  useEffect(() => {
+    const savedLocation = localStorage.getItem(RMA_LOCATION_KEY);
+
+    if (!savedLocation) {
+      return;
+    }
+
+    try {
+      const parsedLocation = JSON.parse(savedLocation);
+
+      if (
+        Number.isFinite(parsedLocation.latitude) &&
+        Number.isFinite(parsedLocation.longitude)
+      ) {
+        setUserLocation({
+          latitude: parsedLocation.latitude,
+          longitude: parsedLocation.longitude,
+        });
+
+        fetchNearbyShops(parsedLocation.latitude, parsedLocation.longitude);
+      }
+
+      if (parsedLocation.locationName) {
+        setLocationName(parsedLocation.locationName);
+      }
+    } catch (error) {
+      console.error('Saved location parse error:', error);
+
+      localStorage.removeItem(RMA_LOCATION_KEY);
+    }
+  }, []);
 
   const popularProducts = nearbyShops
     .flatMap((shop) =>
@@ -50,6 +84,9 @@ function Home() {
 
     setLocationLoading(true);
     setLocationName('Finding your location...');
+
+    setNearbyShops([]);
+    setNearbyShopsError('');
 
     const handleSuccess = async (position) => {
       const latitude = position.coords.latitude;
@@ -89,8 +126,18 @@ function Home() {
 
         const uniqueParts = [...new Set(locationParts)];
 
-        setLocationName(
-          uniqueParts.length > 0 ? uniqueParts.join(', ') : 'Location found',
+        const resolvedLocationName =
+          uniqueParts.length > 0 ? uniqueParts.join(', ') : 'Location found';
+
+        setLocationName(resolvedLocationName);
+
+        localStorage.setItem(
+          RMA_LOCATION_KEY,
+          JSON.stringify({
+            latitude,
+            longitude,
+            locationName: resolvedLocationName,
+          }),
         );
       } catch (error) {
         console.error('Reverse geocoding error:', error);
@@ -144,6 +191,9 @@ function Home() {
       setLoadingNearbyShops(true);
       setNearbyShopsError('');
 
+      // Clear shops from the previous location
+      setNearbyShops([]);
+
       const response = await fetch(
         `https://rma-backend-bo4a.onrender.com/api/owners/nearby?latitude=${latitude}&longitude=${longitude}`,
       );
@@ -151,15 +201,17 @@ function Home() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to load nearby shops');
+        throw new Error(data.message || 'Failed to fetch nearby shops');
       }
 
       setNearbyShops(data.shops || []);
     } catch (error) {
       console.error('Fetch nearby shops error:', error);
 
+      // Never keep shops from the previous location
       setNearbyShops([]);
-      setNearbyShopsError('Unable to load nearby shops.');
+
+      setNearbyShopsError('Unable to find nearby shops. Please try again.');
     } finally {
       setLoadingNearbyShops(false);
     }
@@ -550,8 +602,10 @@ function Home() {
                       onClick={() => navigate(`/shop/${product.shopId}`)}
                     >
                       <div className="popular_product_image">
-                        <img src={product.imageUrl} alt={product.name} />
-
+                        <img
+                          src={product.imageUrl || null}
+                          alt={product.name}
+                        />
                         <span className="popular_product_tag">POPULAR</span>
                       </div>
 
