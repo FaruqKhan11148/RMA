@@ -418,8 +418,9 @@ function DeliverySettings() {
             </select>
 
             <small>
-              Automatic follows the opening and closing time. Always Open or
-              Always Closed manually overrides the schedule.
+              Automatic follows your opening and closing time. Always Open or
+              Always Closed keeps your shop in that status regardless of the
+              schedule.
             </small>
           </div>
 

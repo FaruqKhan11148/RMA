@@ -174,6 +174,17 @@ const ownerSchema = new mongoose.Schema(
       default: true,
     },
 
+    statusOverride: {
+      type: String,
+      enum: ['none', 'open', 'closed'],
+      default: 'none',
+    },
+
+    statusOverrideAt: {
+      type: Date,
+      default: null,
+    },
+
     delivery: {
       type: Boolean,
       default: true,
@@ -231,7 +242,7 @@ const ownerSchema = new mongoose.Schema(
         default: 'auto',
       },
     },
-    
+
     categories: {
       type: [String],
       default: [],

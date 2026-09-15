@@ -1,6 +1,6 @@
 import './OwnerDashboard.css';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function OwnerDashboard() {
@@ -12,9 +12,11 @@ function OwnerDashboard() {
 
   const ownerData = localStorage.getItem('rma_owner');
 
-  const shopOwner = useMemo(() => {
+  const [shopOwner, setShopOwner] = useState(() => {
+    const ownerData = localStorage.getItem('rma_owner');
+
     return ownerData ? JSON.parse(ownerData) : null;
-  }, [ownerData]);
+  });
 
   useEffect(() => {
     if (!shopOwner) {
@@ -49,6 +51,52 @@ function OwnerDashboard() {
 
     fetchOrders();
   }, [shopOwner, navigate]);
+
+  useEffect(() => {
+    if (!shopOwner) {
+      return;
+    }
+
+    const token = localStorage.getItem('rma_owner_token');
+
+    if (!token) {
+      navigate('/owner/login');
+      return;
+    }
+
+    const fetchOwner = async () => {
+      try {
+        const response = await fetch(
+          'https://rma-backend-bo4a.onrender.com/api/owners/me',
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          return;
+        }
+
+        setShopOwner(data.owner);
+
+        localStorage.setItem('rma_owner', JSON.stringify(data.owner));
+      } catch (error) {
+        console.error('Fetch owner status failed:', error);
+      }
+    };
+
+    fetchOwner();
+
+    const intervalId = setInterval(fetchOwner, 30000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [navigate]);
 
   if (!shopOwner) {
     return null;

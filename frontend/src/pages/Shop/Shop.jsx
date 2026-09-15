@@ -172,7 +172,31 @@ function Shop() {
           <p className="shop_hero_description">{shop.description}</p>
 
           <div className="shop_location">
-            <span className="shop_location_icon">⌖</span>
+            <span className="rma_location_arrow_shop">
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12 21C12 21 19 14.5 19 9C19 5.134 15.866 2 12 2C8.134 2 5 5.134 5 9C5 14.5 12 21 12 21Z"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+
+                <circle
+                  cx="12"
+                  cy="9"
+                  r="2.5"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                />
+              </svg>
+            </span>
             <span>{shop.address}</span>
           </div>
         </div>
@@ -299,40 +323,41 @@ function Shop() {
             ))
           )}
         </div>
-        {totalItems > 0 && cartItems.length > 0 && (
-          <div className="floating_cart_bar">
-            <div className="floating_cart_item">
-              <div className="floating_cart_image">
-                {cartItems[0].imageUrl ? (
-                  <img
-                    src={cartItems[0].imageUrl}
-                    alt={cartItems[0].productName}
-                  />
-                ) : (
-                  <div className="floating_cart_image_placeholder">RMA</div>
-                )}
-              </div>
-
-              <div className="floating_cart_info">
-                <strong>{cartItems[0].productName}</strong>
-
-                <span>
-                  {totalItems} {totalItems === 1 ? 'item' : 'items'}
-                </span>
-              </div>
-
-              <button
-                type="button"
-                className="floating_cart_button"
-                onClick={() => navigate('/cart')}
-              >
-                <span>View Cart</span>
-                <span>→</span>
-              </button>
-            </div>
-          </div>
-        )}
       </section>
+
+      {totalItems > 0 && cartItems.length > 0 && (
+        <div className="floating_cart_bar">
+          <div className="floating_cart_item">
+            <div className="floating_cart_image">
+              {cartItems[0].imageUrl ? (
+                <img
+                  src={cartItems[0].imageUrl}
+                  alt={cartItems[0].productName}
+                />
+              ) : (
+                <div className="floating_cart_image_placeholder">RMA</div>
+              )}
+            </div>
+
+            <div className="floating_cart_info">
+              <strong>{cartItems[0].productName}</strong>
+
+              <span>
+                {totalItems} {totalItems === 1 ? 'item' : 'items'}
+              </span>
+            </div>
+
+            <button
+              type="button"
+              className="floating_cart_button"
+              onClick={() => navigate('/cart')}
+            >
+              <span>View Cart</span>
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

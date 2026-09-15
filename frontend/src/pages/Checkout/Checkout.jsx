@@ -1,7 +1,8 @@
 import './Checkout.css';
+
 import MapPicker from '../../components/map/MapPicker';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useCart } from '../../context/CartContext';
@@ -10,13 +11,13 @@ import { useOrder } from '../../context/OrderContext';
 function Checkout() {
   const navigate = useNavigate();
 
-  const { cartItems,   totalPrice, clearCart } = useCart();
+  const { cartItems, totalPrice, clearCart } = useCart();
+
   const { createOrder } = useOrder();
 
   const [orderType, setOrderType] = useState('delivery');
   const [paymentMethod, setPaymentMethod] = useState('COD');
 
-  // Customer's selected map location
   const [deliveryLocation, setDeliveryLocation] = useState(null);
 
   const [customer, setCustomer] = useState({
@@ -28,6 +29,11 @@ function Checkout() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const [deliveryDistance, setDeliveryDistance] = useState(null);
+  const [deliveryCharge, setDeliveryCharge] = useState(0);
+  const [deliveryLoading, setDeliveryLoading] = useState(false);
+  const [payuConvenienceCharge, setPayuConvenienceCharge] = useState(0);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -37,6 +43,92 @@ function Checkout() {
     }));
   };
 
+  const handleOrderTypeChange = (type) => {
+    setOrderType(type);
+    setError('');
+
+    if (type === 'pickup') {
+      setDeliveryLocation(null);
+    }
+  };
+
+  useEffect(() => {
+    if (orderType !== 'delivery' || !deliveryLocation) {
+      setDeliveryDistance(null);
+      setDeliveryCharge(0);
+      setDeliveryLoading(false);
+      return;
+    }
+
+    const calculateDeliveryCharge = async () => {
+      try {
+        setDeliveryLoading(true);
+        setError('');
+
+        const ownerId = cartItems[0]?.ownerId;
+
+        if (!ownerId) {
+          throw new Error('Shop information is missing.');
+        }
+
+        const response = await fetch(
+          'https://rma-backend-bo4a.onrender.com/api/orders/delivery-preview',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              ownerId,
+              deliveryLocation: {
+                latitude: Number(deliveryLocation.latitude),
+                longitude: Number(deliveryLocation.longitude),
+              },
+            }),
+          },
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(
+            data.message || 'Unable to calculate delivery charge',
+          );
+        }
+
+        setDeliveryDistance(data.deliveryDistance);
+        setDeliveryCharge(data.deliveryCharge);
+      } catch (error) {
+        console.error('Delivery charge calculation failed:', error);
+
+        setDeliveryDistance(null);
+        setDeliveryCharge(0);
+        setError(error.message || 'Unable to calculate delivery charge');
+      } finally {
+        setDeliveryLoading(false);
+      }
+    };
+
+    calculateDeliveryCharge();
+  }, [deliveryLocation, orderType, cartItems]);
+
+  useEffect(() => {
+    const baseAmount =
+      totalPrice + (orderType === 'delivery' ? deliveryCharge : 0);
+
+    if (paymentMethod !== 'ONLINE') {
+      setPayuConvenienceCharge(0);
+      return;
+    }
+
+    const payuFee = baseAmount * 0.02;
+    const gst = payuFee * 0.18;
+
+    const totalPayuCharge = Number((payuFee + gst).toFixed(2));
+
+    setPayuConvenienceCharge(totalPayuCharge);
+  }, [totalPrice, deliveryCharge, orderType, paymentMethod]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -44,18 +136,16 @@ function Checkout() {
       setLoading(true);
       setError('');
 
-      // MongoDB _id of the shop owner
       const ownerId = cartItems[0].ownerId;
 
-      // Convert cart items into Order.js format
       const items = cartItems.map((item) => ({
         productId: item.product.productId,
         productName: item.product.name,
         price: item.product.price,
         quantity: item.quantity,
+        unit: item.product.unit,
       }));
 
-      // Require location for delivery orders
       if (orderType === 'delivery' && !deliveryLocation) {
         setError('Please select your delivery location on the map.');
         setLoading(false);
@@ -73,7 +163,6 @@ function Checkout() {
 
       console.log('Sending Order:', orderData);
 
-      // Create order in backend
       const order = await createOrder(orderData);
 
       console.log('BACKEND CALCULATED ORDER:', {
@@ -87,11 +176,9 @@ function Checkout() {
 
       console.log('Order Created:', order);
 
-      // ONLINE → payment page
       if (paymentMethod === 'ONLINE') {
         navigate(`/payment/${order.orderId}`);
       } else {
-        // COD → clear cart immediately
         clearCart();
 
         navigate(`/delivery-status/${order.orderId}`);
@@ -108,169 +195,476 @@ function Checkout() {
   if (cartItems.length === 0) {
     return (
       <main className="checkout_empty">
+        <div className="checkout_empty_icon">🛒</div>
+
         <h1>Your cart is empty</h1>
 
-        <button onClick={() => navigate('/')}>Go Home</button>
+        <p>Add some products to your cart before continuing to checkout.</p>
+
+        <button type="button" onClick={() => navigate('/find-shop')}>
+          Explore Shops
+          <span>→</span>
+        </button>
       </main>
     );
   }
 
+  const shop = cartItems[0];
+
+  const hasDelivery = shop.shopDelivery;
+  const hasPickup = shop.shopPickup;
+
   return (
     <main className="checkout">
-      {/* DELIVERY MAP */}
-
-      {orderType === 'delivery' && (
-        <MapPicker
-          onLocationSelect={(location) => {
-            console.log('Selected Delivery Location:', location);
-
-            setDeliveryLocation(location);
-          }}
-        />
-      )}
-
-      {/* HEADER */}
+      {/* ========================================
+          HEADER
+      ======================================== */}
 
       <section className="checkout_header">
-        <h1>Checkout</h1>
+        <div className="checkout_header_content">
+          <span className="checkout_eyebrow">FINAL STEP</span>
 
-        <p>Complete your details to place the order.</p>
-      </section>
+          <h1>Checkout</h1>
 
-      {/* ORDER TYPE */}
-
-      <section className="checkout_section">
-        <h2>Order Type</h2>
-
-        <div className="order_type">
-          {cartItems[0].shopDelivery && (
-            <button
-              type="button"
-              className={orderType === 'delivery' ? 'selected' : ''}
-              onClick={() => setOrderType('delivery')}
-            >
-              Delivery
-            </button>
-          )}
-
-          {cartItems[0].shopPickup && (
-            <button
-              type="button"
-              className={orderType === 'pickup' ? 'selected' : ''}
-              onClick={() => setOrderType('pickup')}
-            >
-              Pickup
-            </button>
-          )}
+          <p>
+            Review your order and complete your details to place your order.
+          </p>
         </div>
       </section>
 
-      {/* PAYMENT METHOD */}
+      {/* ========================================
+          SHOP
+      ======================================== */}
 
-      <section className="checkout_section">
-        <h2>Payment Method</h2>
+      <section className="checkout_shop_card">
+        <div className="checkout_shop_icon">R</div>
 
-        <div className="payment_method">
-          <button
-            type="button"
-            className={paymentMethod === 'COD' ? 'selected' : ''}
-            onClick={() => setPaymentMethod('COD')}
-          >
-            Cash on Delivery
-          </button>
+        <div className="checkout_shop_info">
+          <span>ORDERING FROM</span>
 
-          <button
-            type="button"
-            className={paymentMethod === 'ONLINE' ? 'selected' : ''}
-            onClick={() => setPaymentMethod('ONLINE')}
-          >
-            Online Payment
-          </button>
+          <h2>{shop.shopName}</h2>
         </div>
       </section>
 
-      {/* CUSTOMER DETAILS */}
+      {/* ========================================
+          MAIN CHECKOUT CONTENT
+      ======================================== */}
 
-      <section className="checkout_section">
-        <h2>Your Details</h2>
+      <div className="checkout_layout">
+        <div className="checkout_main">
+          {/* ======================================
+              ORDER TYPE
+          ====================================== */}
 
-        <form onSubmit={handleSubmit}>
-          <label>
-            Name
-            <input
-              type="text"
-              name="name"
-              placeholder="Enter your name"
-              value={customer.name}
-              onChange={handleChange}
-              required
-            />
-          </label>
+          {(hasDelivery || hasPickup) && (
+            <section className="checkout_card checkout_order_type">
+              <div className="checkout_card_header">
+                <div>
+                  <span className="checkout_step">01</span>
 
-          <label>
-            Mobile Number
-            <input
-              type="tel"
-              name="phone"
-              placeholder="Enter mobile number"
-              value={customer.phone}
-              onChange={handleChange}
-              required
-            />
-          </label>
+                  <div>
+                    <h2>How would you like your order?</h2>
+
+                    <p>Choose delivery or pickup.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="order_type_options">
+                {hasDelivery && (
+                  <button
+                    type="button"
+                    className={
+                      orderType === 'delivery'
+                        ? 'order_type_option selected'
+                        : 'order_type_option'
+                    }
+                    onClick={() => handleOrderTypeChange('delivery')}
+                  >
+                    <div className="order_type_icon">
+                      <span>⌖</span>
+                    </div>
+
+                    <div className="order_type_content">
+                      <strong>Delivery</strong>
+
+                      <span>Delivered to your doorstep</span>
+
+                      <small>
+                        {shop.deliverySettings?.estimatedDeliveryTime || 45}{' '}
+                        mins
+                      </small>
+                    </div>
+
+                    <span className="order_type_check">
+                      {orderType === 'delivery' ? '✓' : ''}
+                    </span>
+                  </button>
+                )}
+
+                {hasPickup && (
+                  <button
+                    type="button"
+                    className={
+                      orderType === 'pickup'
+                        ? 'order_type_option selected'
+                        : 'order_type_option'
+                    }
+                    onClick={() => handleOrderTypeChange('pickup')}
+                  >
+                    <div className="order_type_icon">
+                      <span>⌂</span>
+                    </div>
+
+                    <div className="order_type_content">
+                      <strong>Pickup</strong>
+
+                      <span>Collect from the shop</span>
+
+                      <small>Ready at the shop</small>
+                    </div>
+
+                    <span className="order_type_check">
+                      {orderType === 'pickup' ? '✓' : ''}
+                    </span>
+                  </button>
+                )}
+              </div>
+            </section>
+          )}
+
+          {/* ======================================
+              DELIVERY LOCATION
+          ====================================== */}
 
           {orderType === 'delivery' && (
-            <label>
-              Delivery Address
-              <textarea
-                name="address"
-                placeholder="Enter your delivery address"
-                value={customer.address}
-                onChange={handleChange}
-                required
-              />
-            </label>
+            <section className="checkout_card checkout_location_card">
+              <div className="checkout_card_header">
+                <div>
+                  <span className="checkout_step">02</span>
+
+                  <div>
+                    <h2>Delivery Location</h2>
+
+                    <p>Select exactly where you want your order delivered.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="checkout_map">
+                <MapPicker
+                  onLocationSelect={(location) => {
+                    console.log('Selected Delivery Location:', location);
+
+                    setDeliveryLocation(location);
+                    setError('');
+                  }}
+                />
+              </div>
+
+              {deliveryLocation && (
+                <div className="location_selected">
+                  <span className="location_selected_icon">✓</span>
+
+                  <div>
+                    <strong>Delivery location selected</strong>
+
+                    <span>Your location has been pinned on the map.</span>
+                  </div>
+                </div>
+              )}
+            </section>
           )}
 
-          {error && <p className="checkout_error">{error}</p>}
+          {/* ======================================
+              CUSTOMER DETAILS
+          ====================================== */}
+
+          <section className="checkout_card checkout_customer_card">
+            <div className="checkout_card_header">
+              <div>
+                <span className="checkout_step">
+                  {orderType === 'delivery' ? '03' : '02'}
+                </span>
+
+                <div>
+                  <h2>Your Details</h2>
+
+                  <p>Enter your contact information.</p>
+                </div>
+              </div>
+            </div>
+
+            <form
+              id="checkout-form"
+              className="checkout_form"
+              onSubmit={handleSubmit}
+            >
+              <div className="checkout_form_group">
+                <label htmlFor="checkout-name">Full Name</label>
+
+                <input
+                  id="checkout-name"
+                  type="text"
+                  name="name"
+                  placeholder="Enter your name"
+                  value={customer.name}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="checkout_form_group">
+                <label htmlFor="checkout-phone">Mobile Number</label>
+
+                <input
+                  id="checkout-phone"
+                  type="tel"
+                  name="phone"
+                  placeholder="Enter your mobile number"
+                  value={customer.phone}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              {orderType === 'delivery' && (
+                <div className="checkout_form_group">
+                  <label htmlFor="checkout-address">Delivery Address</label>
+
+                  <textarea
+                    id="checkout-address"
+                    name="address"
+                    placeholder="Enter your complete delivery address"
+                    value={customer.address}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+              )}
+
+              {/* ==================================
+                  PAYMENT METHOD
+              ================================== */}
+
+              <div className="checkout_payment">
+                <div className="checkout_payment_header">
+                  <div>
+                    <span className="checkout_step">
+                      {orderType === 'delivery' ? '04' : '03'}
+                    </span>
+
+                    <div>
+                      <h2>Payment Method</h2>
+
+                      <p>Choose how you want to pay.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="payment_options">
+                  <button
+                    type="button"
+                    className={
+                      paymentMethod === 'COD'
+                        ? 'payment_option selected'
+                        : 'payment_option'
+                    }
+                    onClick={() => setPaymentMethod('COD')}
+                  >
+                    <div className="payment_option_icon">₹</div>
+
+                    <div className="payment_option_content">
+                      <strong>Cash on Delivery</strong>
+
+                      <span>Pay when your order arrives</span>
+                    </div>
+
+                    <span className="payment_check">
+                      {paymentMethod === 'COD' ? '✓' : ''}
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    className={
+                      paymentMethod === 'ONLINE'
+                        ? 'payment_option selected'
+                        : 'payment_option'
+                    }
+                    onClick={() => setPaymentMethod('ONLINE')}
+                  >
+                    <div className="payment_option_icon">↗</div>
+
+                    <div className="payment_option_content">
+                      <strong>Online Payment</strong>
+
+                      <span>Pay securely online</span>
+                    </div>
+
+                    <span className="payment_check">
+                      {paymentMethod === 'ONLINE' ? '✓' : ''}
+                    </span>
+                  </button>
+                </div>
+              </div>
+
+              {error && (
+                <div className="checkout_error">
+                  <span>!</span>
+
+                  <p>{error}</p>
+                </div>
+              )}
+            </form>
+          </section>
+        </div>
+
+        {/* ========================================
+            ORDER SUMMARY
+        ======================================== */}
+
+        <aside className="checkout_sidebar">
+          <section className="checkout_summary_card">
+            <div className="checkout_summary_header">
+              <div>
+                <span>YOUR ORDER</span>
+
+                <h2>Order Summary</h2>
+              </div>
+
+              <span className="checkout_summary_count">
+                {cartItems.reduce((total, item) => total + item.quantity, 0)}{' '}
+                items
+              </span>
+            </div>
+
+            <div className="checkout_summary_shop">
+              <div className="checkout_summary_shop_icon">R</div>
+
+              <div>
+                <span>SHOP</span>
+
+                <strong>{shop.shopName}</strong>
+              </div>
+            </div>
+
+            <div className="checkout_summary_items">
+              {cartItems.map((item) => (
+                <div className="summary_item" key={item.product.productId}>
+                  <div className="summary_item_info">
+                    <strong>{item.product.name}</strong>
+
+                    <span>
+                      {item.quantity} × ₹{item.product.price}
+                    </span>
+                  </div>
+
+                  <strong className="summary_item_price">
+                    ₹{item.product.price * item.quantity}
+                  </strong>
+                </div>
+              ))}
+            </div>
+
+            <div className="checkout_summary_divider" />
+
+            {/* ITEM TOTAL */}
+
+            <div className="summary_row">
+              <span>Item Total</span>
+
+              <strong>₹{totalPrice}</strong>
+            </div>
+
+            {/* DELIVERY */}
+
+            <div className="summary_row summary_delivery_row">
+              <div className="summary_delivery_label">
+                <span>Delivery</span>
+
+                {orderType === 'delivery' && (
+                  <small>
+                    ₹18 + ₹8/km
+                    {deliveryDistance !== null && ` • ${deliveryDistance} km`}
+                  </small>
+                )}
+              </div>
+
+              <strong>
+                {orderType === 'delivery'
+                  ? deliveryLoading
+                    ? 'Calculating...'
+                    : `₹${deliveryCharge.toFixed(2)}`
+                  : 'Free'}
+              </strong>
+            </div>
+
+            {/* PAYU */}
+
+            {paymentMethod === 'ONLINE' && (
+              <div className="summary_row summary_payu_row">
+                <div className="summary_payu_label">
+                  <span>PayU Convenience Charge</span>
+
+                  <small>2% + 18% GST</small>
+                </div>
+
+                <strong>₹{payuConvenienceCharge.toFixed(2)}</strong>
+              </div>
+            )}
+
+            <div className="checkout_summary_divider" />
+
+            {/* FINAL TOTAL */}
+
+            <div className="summary_total">
+              <span>Final Customer Total</span>
+
+              <strong>
+                {deliveryLoading
+                  ? 'Calculating...'
+                  : `₹${(
+                      totalPrice +
+                      (orderType === 'delivery' ? deliveryCharge : 0) +
+                      payuConvenienceCharge
+                    ).toFixed(2)}`}
+              </strong>
+            </div>
+          </section>
+
+          {/* ======================================
+              SECURE NOTE
+          ====================================== */}
+
+          <div className="checkout_secure_note">
+            <span>✓</span>
+
+            <p>Your order details are securely processed by RMA.</p>
+          </div>
+
+          {/* ======================================
+              PLACE ORDER
+          ====================================== */}
 
           <button
             className="place_order_button"
             type="submit"
+            form="checkout-form"
             disabled={loading}
           >
-            {loading ? 'Placing Order...' : 'Continue'}
-          </button>
-        </form>
-      </section>
-
-      {/* ORDER SUMMARY */}
-
-      <section className="checkout_section">
-        <h2>Order Summary</h2>
-
-        <div className="summary_shop">
-          <span>Shop</span>
-
-          <strong>{cartItems[0].shopName}</strong>
-        </div>
-
-        {cartItems.map((item) => (
-          <div className="summary_item" key={item.product.productId}>
             <span>
-              {item.product.name} × {item.quantity}
+              {loading
+                ? 'Placing Order...'
+                : paymentMethod === 'ONLINE'
+                  ? 'Continue to Payment'
+                  : 'Place Order'}
             </span>
 
-            <strong>₹{item.product.price * item.quantity}</strong>
-          </div>
-        ))}
-
-        <div className="summary_total">
-          <span>Total</span>
-
-          <strong>₹{totalPrice}</strong>
-        </div>
-      </section>
+            {!loading && <span className="place_order_arrow">→</span>}
+          </button>
+        </aside>
+      </div>
     </main>
   );
 }

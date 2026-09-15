@@ -21,8 +21,14 @@ function OpenClosed() {
       return;
     }
 
-    const fetchOwner = async () => {
+    let intervalId;
+
+    const fetchOwner = async (showLoading = false) => {
       try {
+        if (showLoading) {
+          setLoading(true);
+        }
+
         const response = await fetch(
           'https://rma-backend-bo4a.onrender.com/api/owners/me',
           {
@@ -41,14 +47,26 @@ function OpenClosed() {
         setIsOpen(Boolean(data.owner.isOpen));
 
         localStorage.setItem('rma_owner', JSON.stringify(data.owner));
+
+        setError('');
       } catch (error) {
         setError(error.message);
       } finally {
-        setLoading(false);
+        if (showLoading) {
+          setLoading(false);
+        }
       }
     };
 
-    fetchOwner();
+    fetchOwner(true);
+
+    intervalId = setInterval(() => {
+      fetchOwner();
+    }, 30000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
   }, [navigate, token]);
 
   const handleStatusChange = async (newStatus) => {

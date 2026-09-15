@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const Owner = require('../models/Owner');
 const Counter = require('../models/Counter');
 const ownerAuth = require('../middleware/ownerAuth');
+const getShopStatus = require('../utils/shopStatus');
 
 const router = express.Router();
 
@@ -56,7 +57,7 @@ router.get('/nearby', async (req, res) => {
       'location.latitude': { $ne: null },
       'location.longitude': { $ne: null },
     }).select(
-      'shopId shopName description address location isOpen delivery pickup deliverySettings products',
+      'shopId shopName description address location isOpen delivery pickup deliverySettings products statusOverride statusOverrideAt',
     );
 
     const toRadians = (degrees) => (degrees * Math.PI) / 180;
@@ -87,13 +88,15 @@ router.get('/nearby', async (req, res) => {
           shop.location.longitude,
         );
 
+        const currentIsOpen = getShopStatus(shop);
+
         return {
           shopId: shop.shopId,
           shopName: shop.shopName,
           description: shop.description,
           address: shop.address,
           location: shop.location,
-          isOpen: shop.isOpen,
+          isOpen: currentIsOpen,
           delivery: shop.delivery,
           pickup: shop.pickup,
           deliverySettings: shop.deliverySettings,
@@ -129,8 +132,13 @@ router.get('/shop/:shopId', async (req, res) => {
       });
     }
 
-    res.status(200).json({
-      shop: owner,
+    const currentIsOpen = getShopStatus(owner);
+
+    return res.status(200).json({
+      shop: {
+        ...owner.toObject(),
+        isOpen: currentIsOpen,
+      },
     });
   } catch (error) {
     console.error('Get shop failed:', error.message);
@@ -258,7 +266,7 @@ router.post('/register', async (req, res) => {
         description: owner.description,
         address: owner.address,
         phone: owner.phone,
-        isOpen: owner.isOpen,
+        isOpen: getShopStatus(owner),
         delivery: owner.delivery,
         pickup: owner.pickup,
         categories: owner.categories,
@@ -326,7 +334,7 @@ router.post('/login', async (req, res) => {
         address: owner.address,
         phone: owner.phone,
         email: owner.email,
-        isOpen: owner.isOpen,
+        isOpen: getShopStatus(owner),
         delivery: owner.delivery,
         pickup: owner.pickup,
         categories: owner.categories,
@@ -358,6 +366,8 @@ router.get('/protected-test', ownerAuth, async (req, res) => {
 
 router.get('/me', ownerAuth, async (req, res) => {
   try {
+    const currentIsOpen = getShopStatus(req.owner);
+
     res.status(200).json({
       owner: {
         id: req.owner._id,
@@ -369,7 +379,7 @@ router.get('/me', ownerAuth, async (req, res) => {
         description: req.owner.description,
         address: req.owner.address,
         location: req.owner.location,
-        isOpen: req.owner.isOpen,
+        isOpen: currentIsOpen,
         delivery: req.owner.delivery,
         pickup: req.owner.pickup,
         categories: req.owner.categories,
@@ -379,53 +389,6 @@ router.get('/me', ownerAuth, async (req, res) => {
     });
   } catch (error) {
     console.error('Get owner profile failed:', error.message);
-
-    res.status(500).json({
-      message: 'Server error',
-    });
-  }
-});
-
-router.patch('/settings/owner-name', ownerAuth, async (req, res) => {
-  try {
-    const { ownerName } = req.body;
-
-    if (!ownerName || !ownerName.trim()) {
-      return res.status(400).json({
-        message: 'Owner name is required',
-      });
-    }
-
-    const updatedOwner = await Owner.findByIdAndUpdate(
-      req.owner._id,
-      {
-        ownerName: ownerName.trim(),
-      },
-      {
-        new: true,
-        runValidators: true,
-      },
-    ).select('-password');
-
-    if (!updatedOwner) {
-      return res.status(404).json({
-        message: 'Owner account not found',
-      });
-    }
-
-    res.status(200).json({
-      message: 'Owner name updated successfully',
-      owner: {
-        id: updatedOwner._id,
-        shopId: updatedOwner.shopId,
-        ownerName: updatedOwner.ownerName,
-        phone: updatedOwner.phone,
-        email: updatedOwner.email,
-        shopName: updatedOwner.shopName,
-      },
-    });
-  } catch (error) {
-    console.error('Update owner name failed:', error.message);
 
     res.status(500).json({
       message: 'Server error',
@@ -893,20 +856,18 @@ router.patch('/settings/open-closed', ownerAuth, async (req, res) => {
 
     if (typeof isOpen !== 'boolean') {
       return res.status(400).json({
-        message: 'Shop status must be true or false',
-      });
-    }
-
-    if (req.owner.isOpen === isOpen) {
-      return res.status(400).json({
-        message: `Shop is already ${isOpen ? 'open' : 'closed'}`,
+        message: 'isOpen must be a boolean',
       });
     }
 
     const updatedOwner = await Owner.findByIdAndUpdate(
       req.owner._id,
       {
-        isOpen,
+        $set: {
+          isOpen,
+          statusOverride: isOpen ? 'open' : 'closed',
+          statusOverrideAt: new Date(),
+        },
       },
       {
         new: true,
@@ -916,7 +877,7 @@ router.patch('/settings/open-closed', ownerAuth, async (req, res) => {
 
     if (!updatedOwner) {
       return res.status(404).json({
-        message: 'Owner account not found',
+        message: 'Owner not found',
       });
     }
 
@@ -930,10 +891,13 @@ router.patch('/settings/open-closed', ownerAuth, async (req, res) => {
         email: updatedOwner.email,
         shopName: updatedOwner.shopName,
         isOpen: updatedOwner.isOpen,
+        statusOverride: updatedOwner.statusOverride,
+        statusOverrideAt: updatedOwner.statusOverrideAt,
+        deliverySettings: updatedOwner.deliverySettings,
       },
     });
   } catch (error) {
-    console.error('Update shop status failed:', error);
+    console.error('Error updating shop status:', error);
 
     return res.status(500).json({
       message: 'Failed to update shop status',
@@ -1123,10 +1087,12 @@ router.patch('/settings/delivery-settings', ownerAuth, async (req, res) => {
           'deliverySettings.deliveryCharge': charge,
           'deliverySettings.freeDeliveryAbove': freeAbove,
           'deliverySettings.estimatedDeliveryTime': estimatedTime,
-
           'deliverySettings.openingTime': openingTime,
           'deliverySettings.closingTime': closingTime,
           'deliverySettings.shopStatusMode': shopStatusMode,
+
+          statusOverride: 'none',
+          statusOverrideAt: null,
         },
       },
       {

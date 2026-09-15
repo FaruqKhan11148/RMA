@@ -125,6 +125,80 @@ function calculateDistanceKm(lat1, lon1, lat2, lon2) {
   return earthRadiusKm * c;
 }
 
+// ==========================================
+// PREVIEW DELIVERY CHARGE
+// ==========================================
+
+router.post('/delivery-preview', async (req, res) => {
+  try {
+    const { ownerId, deliveryLocation } = req.body;
+
+    if (!ownerId) {
+      return res.status(400).json({
+        message: 'Owner ID is required',
+      });
+    }
+
+    if (
+      !deliveryLocation ||
+      deliveryLocation.latitude === undefined ||
+      deliveryLocation.longitude === undefined
+    ) {
+      return res.status(400).json({
+        message: 'Valid delivery location is required',
+      });
+    }
+
+    const owner = await Owner.findById(ownerId);
+
+    if (!owner) {
+      return res.status(404).json({
+        message: 'Shop owner not found',
+      });
+    }
+
+    const shopLatitude = owner.location?.latitude;
+    const shopLongitude = owner.location?.longitude;
+
+    const customerLatitude = Number(deliveryLocation.latitude);
+
+    const customerLongitude = Number(deliveryLocation.longitude);
+
+    if (
+      shopLatitude === undefined ||
+      shopLongitude === undefined ||
+      !Number.isFinite(customerLatitude) ||
+      !Number.isFinite(customerLongitude)
+    ) {
+      return res.status(400).json({
+        message: 'Valid shop and delivery locations are required',
+      });
+    }
+
+    const deliveryDistance = calculateDistanceKm(
+      Number(shopLatitude),
+      Number(shopLongitude),
+      customerLatitude,
+      customerLongitude,
+    );
+
+    // RMA delivery pricing:
+    // ₹18 base + ₹8 per kilometre
+    const deliveryCharge = Number((18 + 8 * deliveryDistance).toFixed(2));
+
+    return res.status(200).json({
+      deliveryDistance: Number(deliveryDistance.toFixed(2)),
+      deliveryCharge,
+    });
+  } catch (error) {
+    console.error('Delivery preview failed:', error);
+
+    return res.status(500).json({
+      message: 'Failed to calculate delivery charge',
+    });
+  }
+});
+
 // GET ALL ORDERS
 router.get('/', async (req, res) => {
   try {
@@ -369,8 +443,8 @@ router.post('/', async (req, res) => {
       );
 
       // RMA delivery pricing:
-      // ₹13 base + ₹8 per kilometre
-      deliveryCharge = Number((13 + 8 * deliveryDistance).toFixed(2));
+      // ₹18 base + ₹8 per kilometre
+      deliveryCharge = Number((18 + 8 * deliveryDistance).toFixed(2));
     }
 
     // ==========================================
