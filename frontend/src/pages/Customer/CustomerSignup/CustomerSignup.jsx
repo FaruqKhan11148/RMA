@@ -1,7 +1,7 @@
 import './CustomerSignup.css';
 
-import { useLocation, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function CustomerSignup() {
   const navigate = useNavigate();
