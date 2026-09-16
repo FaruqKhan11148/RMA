@@ -19,7 +19,6 @@ function Shop() {
   const [flashMessage, setFlashMessage] = useState('');
 
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [orderType, setOrderType] = useState('delivery');
 
   const COMMON_SHOP_IMAGE =
     'https://res.cloudinary.com/dsznfqgu3/image/upload/v1789550262/Gemini_Generated_Image_2u7tlf2u7tlf2u7t.png';
