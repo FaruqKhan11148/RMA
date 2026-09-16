@@ -1183,4 +1183,244 @@
     min-height: 52px;
   }
 }
-  
+
+.checkout_choose_location {
+  width: 100%;
+}
+
+.checkout_choose_location_button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+}
+
+.checkout_choose_location_icon {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #f1f1f1;
+}
+
+.checkout_choose_location_content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.checkout_choose_location_content strong {
+  font-size: 15px;
+  font-weight: 600;
+  color: #222;
+}
+
+.checkout_choose_location_content span {
+  font-size: 13px;
+  color: #777;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.checkout_choose_location_arrow {
+  font-size: 26px;
+  line-height: 1;
+  color: #777;
+}
+
+/* Location Sheet */
+
+.location_sheet_overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: flex-end;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.location_sheet {
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 10px 18px 24px;
+  background: #fff;
+  border-radius: 20px 20px 0 0;
+  box-sizing: border-box;
+}
+
+.location_sheet_handle {
+  width: 42px;
+  height: 4px;
+  margin: 0 auto 16px;
+  border-radius: 10px;
+  background: #d0d0d0;
+}
+
+.location_sheet_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.location_sheet_header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #222;
+}
+
+.location_sheet_close {
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 50%;
+  background: #f2f2f2;
+  color: #333;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.location_sheet_current,
+.location_sheet_add {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+  border: none;
+  border-bottom: 1px solid #eee;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.location_sheet_option_icon {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #f3f3f3;
+}
+
+.location_sheet_option_icon span {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.location_sheet_current > div:nth-child(2),
+.location_sheet_add > div:nth-child(2) {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.location_sheet_current strong,
+.location_sheet_add strong {
+  font-size: 15px;
+  font-weight: 600;
+  color: #222;
+}
+
+.location_sheet_current span,
+.location_sheet_add span {
+  font-size: 13px;
+  color: #777;
+}
+
+.location_sheet_arrow {
+  flex-shrink: 0;
+  font-size: 25px;
+  color: #888;
+}
+
+.location_sheet_saved {
+  padding-top: 20px;
+}
+
+.location_sheet_saved h4 {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+}
+
+.location_sheet_saved_item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+  border: none;
+  border-bottom: 1px solid #eee;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.location_sheet_saved_icon {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #f3f3f3;
+}
+
+.location_sheet_saved_icon span {
+  font-size: 22px;
+}
+
+.location_sheet_saved_content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.location_sheet_saved_content strong {
+  font-size: 14px;
+  font-weight: 600;
+  color: #222;
+}
+
+.location_sheet_saved_content span {
+  font-size: 13px;
+  line-height: 1.4;
+  color: #777;
+}
+
+.location_sheet_empty {
+  margin: 0;
+  padding: 10px 0 20px;
+  font-size: 14px;
+  color: #777;
+}
+
+@media (min-width: 768px) {
+  .location_sheet {
+    width: 500px;
+    margin: 0 auto;
+  }
+}

@@ -1,15 +1,17 @@
 import './Checkout.css';
 
 import MapPicker from '../../components/map/MapPicker';
+import FlashMessage from '../../components/FlashMessage/FlashMessage';
 
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useCart } from '../../context/CartContext';
 import { useOrder } from '../../context/OrderContext';
 
 function Checkout() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { cartItems, totalPrice } = useCart();
 
@@ -19,6 +21,9 @@ function Checkout() {
   const paymentMethod = 'ONLINE';
 
   const [deliveryLocation, setDeliveryLocation] = useState(null);
+  const [showLocationSheet, setShowLocationSheet] = useState(false);
+  const [savedAddresses, setSavedAddresses] = useState([]);
+  const [loadingAddresses, setLoadingAddresses] = useState(false);
 
   const [customer, setCustomer] = useState({
     name: '',
@@ -28,6 +33,7 @@ function Checkout() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [flashMessage, setFlashMessage] = useState('');
 
   const [deliveryDistance, setDeliveryDistance] = useState(null);
   const [deliveryCharge, setDeliveryCharge] = useState(0);
@@ -43,14 +49,61 @@ function Checkout() {
     }));
   };
 
-  // const handleOrderTypeChange = (type) => {
-  //   setOrderType(type);
-  //   setError('');
+  const fetchSavedAddresses = async () => {
+    try {
+      setLoadingAddresses(true);
 
-  //   if (type === 'pickup') {
-  //     setDeliveryLocation(null);
-  //   }
-  // };
+      const response = await fetch(
+        'https://rma-backend-bo4a.onrender.com/api/customers/addresses',
+        {
+          credentials: 'include',
+        },
+      );
+
+      const data = await response.json();
+
+      if (response.status === 401) {
+        setSavedAddresses([]);
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to fetch saved addresses');
+      }
+
+      setSavedAddresses(data.addresses || []);
+    } catch (error) {
+      console.error('Fetch saved addresses error:', error);
+
+      setSavedAddresses([]);
+    } finally {
+      setLoadingAddresses(false);
+    }
+  };
+
+  const handleSavedAddressSelect = (savedAddress) => {
+    if (
+      !Number.isFinite(Number(savedAddress.latitude)) ||
+      !Number.isFinite(Number(savedAddress.longitude))
+    ) {
+      setError('This saved address does not have a valid location.');
+      return;
+    }
+
+    setDeliveryLocation({
+      latitude: Number(savedAddress.latitude),
+      longitude: Number(savedAddress.longitude),
+      address: savedAddress.address,
+    });
+
+    setCustomer((current) => ({
+      ...current,
+      address: savedAddress.address,
+    }));
+
+    setShowLocationSheet(false);
+    setError('');
+  };
 
   useEffect(() => {
     if (orderType !== 'delivery' || !deliveryLocation) {
@@ -111,6 +164,40 @@ function Checkout() {
 
     calculateDeliveryCharge();
   }, [deliveryLocation, orderType, cartItems]);
+
+  useEffect(() => {
+    if (!location.state?.openLocationSheet) {
+      return;
+    }
+
+    const newlySavedAddress = location.state?.newlySavedAddress;
+
+    if (newlySavedAddress) {
+      const latitude = Number(newlySavedAddress.latitude);
+      const longitude = Number(newlySavedAddress.longitude);
+
+      setCustomer((current) => ({
+        ...current,
+        address: newlySavedAddress.address || '',
+      }));
+
+      if (Number.isFinite(latitude) && Number.isFinite(longitude)) {
+        setDeliveryLocation({
+          latitude,
+          longitude,
+          address: newlySavedAddress.address || '',
+        });
+      }
+    }
+
+    setShowLocationSheet(true);
+    fetchSavedAddresses();
+
+    navigate('/checkout', {
+      replace: true,
+      state: {},
+    });
+  }, [location.state, navigate]);
 
   useEffect(() => {
     const baseAmount = totalPrice + deliveryCharge;
@@ -203,6 +290,10 @@ function Checkout() {
 
   return (
     <main className="checkout">
+      <FlashMessage
+        message={flashMessage}
+        onClose={() => setFlashMessage('')}
+      />
       {/* ========================================
           HEADER
       ======================================== */}
@@ -297,15 +388,57 @@ function Checkout() {
                 </div>
               </div>
 
-              <div className="checkout_map">
-                <MapPicker
-                  onLocationSelect={(location) => {
-                    console.log('Selected Delivery Location:', location);
-
-                    setDeliveryLocation(location);
-                    setError('');
+              <div className="checkout_choose_location">
+                <button
+                  type="button"
+                  className="checkout_choose_location_button"
+                  onClick={() => {
+                    setShowLocationSheet(true);
+                    fetchSavedAddresses();
                   }}
-                />
+                >
+                  <div className="checkout_choose_location_icon">
+                    <svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M12 21C12 21 19 14.5 19 9C19 5.134 15.866 2 12 2C8.134 2 5 5 5 9C5 14.5 12 21 12 21Z"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+
+                      <circle
+                        cx="12"
+                        cy="9"
+                        r="2.5"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      />
+                    </svg>
+                  </div>
+
+                  <div className="checkout_choose_location_content">
+                    <strong>
+                      {deliveryLocation?.address
+                        ? 'Delivery address selected'
+                        : 'Choose delivery address'}
+                    </strong>
+
+                    <span>
+                      {deliveryLocation?.address
+                        ? deliveryLocation.address
+                        : 'Select a saved address or add a new one'}
+                    </span>
+                  </div>
+
+                  <span className="checkout_choose_location_arrow">›</span>
+                </button>
               </div>
 
               {deliveryLocation && (
@@ -315,7 +448,10 @@ function Checkout() {
                   <div>
                     <strong>Delivery location selected</strong>
 
-                    <span>Your location has been pinned on the map.</span>
+                    <span>
+                      {deliveryLocation.address ||
+                        'Your current location is selected for delivery.'}
+                    </span>
                   </div>
                 </div>
               )}
@@ -575,6 +711,185 @@ function Checkout() {
           </button>
         </aside>
       </div>
+
+      {showLocationSheet && (
+        <div
+          className="location_sheet_overlay"
+          onClick={() => setShowLocationSheet(false)}
+        >
+          <div
+            className="location_sheet"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="location_sheet_handle" />
+
+            <div className="location_sheet_header">
+              <h3>Choose delivery address</h3>
+
+              <button
+                type="button"
+                className="location_sheet_close"
+                onClick={() => setShowLocationSheet(false)}
+              >
+                ×
+              </button>
+            </div>
+
+            <button
+              type="button"
+              className="location_sheet_current"
+              onClick={() => {
+                if (!navigator.geolocation) {
+                  setError('Location access is not supported on this device.');
+                  return;
+                }
+
+                navigator.geolocation.getCurrentPosition(
+                  (position) => {
+                    setDeliveryLocation({
+                      latitude: position.coords.latitude,
+                      longitude: position.coords.longitude,
+                    });
+
+                    setShowLocationSheet(false);
+                    setError('');
+                  },
+                  (error) => {
+                    console.error('Current location failed:', error);
+
+                    if (error.code === 1) {
+                      setFlashMessage(
+                        'Location permission is required. Please allow location access and try again.',
+                      );
+                    } else if (error.code === 2) {
+                      setFlashMessage(
+                        'Unable to determine your current location. Please try again.',
+                      );
+                    } else if (error.code === 3) {
+                      setFlashMessage(
+                        'Location request timed out. Please try again.',
+                      );
+                    } else {
+                      setFlashMessage(
+                        'Unable to get your current location. Please try again.',
+                      );
+                    }
+                  },
+                  {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0,
+                  },
+                );
+              }}
+            >
+              <div className="location_sheet_option_icon">
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 2V6"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    d="M12 18V22"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    d="M2 12H6"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    d="M18 12H22"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="5"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  />
+                </svg>
+              </div>
+
+              <div>
+                <strong>Use current location</strong>
+                <span>Use your device's current location</span>
+              </div>
+
+              <span className="location_sheet_arrow">›</span>
+            </button>
+
+            <button
+              type="button"
+              className="location_sheet_add"
+              onClick={() => {
+                navigate('/profile/saved-addresses/add', {
+                  state: {
+                    returnToLocationSheet: true,
+                    returnPath: '/checkout',
+                  },
+                });
+              }}
+            >
+              <div className="location_sheet_option_icon">
+                <span>+</span>
+              </div>
+
+              <div>
+                <strong>Add Address</strong>
+                <span>Add a new delivery address</span>
+              </div>
+
+              <span className="location_sheet_arrow">›</span>
+            </button>
+
+            <div className="location_sheet_saved">
+              <h4>Saved addresses</h4>
+
+              {loadingAddresses ? (
+                <p className="location_sheet_empty">Loading addresses...</p>
+              ) : savedAddresses.length === 0 ? (
+                <p className="location_sheet_empty">No saved addresses yet.</p>
+              ) : (
+                savedAddresses.map((savedAddress) => (
+                  <button
+                    type="button"
+                    key={savedAddress._id}
+                    className="location_sheet_saved_item"
+                    onClick={() => handleSavedAddressSelect(savedAddress)}
+                  >
+                    <div className="location_sheet_saved_icon">
+                      <span>⌖</span>
+                    </div>
+
+                    <div className="location_sheet_saved_content">
+                      <strong>{savedAddress.label}</strong>
+
+                      <span>{savedAddress.address}</span>
+                    </div>
+
+                    <span className="location_sheet_arrow">›</span>
+                  </button>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

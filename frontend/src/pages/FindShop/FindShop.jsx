@@ -1,12 +1,13 @@
 import './FindShop.css';
 
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const RMA_LOCATION_KEY = 'rma_user_location';
 
 function FindShop() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [shopId, setShopId] = useState('');
   const [shop, setShop] = useState(null);
@@ -231,6 +232,45 @@ function FindShop() {
       setLoadingAddresses(false);
     }
   };
+
+  useEffect(() => {
+    if (!location.state?.openLocationSheet) {
+      return;
+    }
+
+    const newlySavedAddress = location.state?.newlySavedAddress;
+
+    if (newlySavedAddress) {
+      const latitude = Number(newlySavedAddress.latitude);
+      const longitude = Number(newlySavedAddress.longitude);
+
+      setLocationName(newlySavedAddress.address);
+
+      if (Number.isFinite(latitude) && Number.isFinite(longitude)) {
+        localStorage.setItem(
+          RMA_LOCATION_KEY,
+          JSON.stringify({
+            latitude,
+            longitude,
+            locationName: newlySavedAddress.address,
+          }),
+        );
+
+        setNearbyShops([]);
+        setNearbyShopsError('');
+
+        fetchNearbyShops(latitude, longitude);
+      }
+    }
+
+    setShowLocationSheet(true);
+    fetchSavedAddresses();
+
+    navigate('/find-shop', {
+      replace: true,
+      state: {},
+    });
+  }, [location.state, navigate]);
 
   const handleSavedAddressSelect = async (savedAddress) => {
     if (
@@ -681,7 +721,12 @@ function FindShop() {
                   setShowLocationSheet(false);
 
                   if (customerLoggedIn) {
-                    navigate('/profile/saved-addresses/add');
+                    navigate('/profile/saved-addresses/add', {
+                      state: {
+                        returnToLocationSheet: true,
+                        returnPath: '/find-shop',
+                      },
+                    });
                     return;
                   }
 

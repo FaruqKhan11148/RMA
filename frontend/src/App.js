@@ -3,6 +3,7 @@ import './index.css';
 
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import OwnerProtectedRoute from './pages/Owner/OwnerProtectedRoute/OwnerProtectedRoute';
+import ScrollToTop from './components/ScrollToTop/ScrollToTop';
 
 import Navbar from './components/Navbar/Navbar';
 import SiteFooter from './components/SiteFooter/SiteFooter';
@@ -92,11 +93,12 @@ function AppLayout() {
   const location = useLocation();
 
   const hideNavbar =
-  location.pathname === '/' ||
-  location.pathname === '/find-shop';
+    location.pathname === '/' || location.pathname === '/find-shop';
 
   return (
     <>
+      <ScrollToTop />
+
       {!hideNavbar && <Navbar />}
 
       <div className="app_content">

@@ -1,11 +1,12 @@
 import './AddAddress.css';
 
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import MapPicker from '../../../components/map/MapPicker';
 
 function AddAddress() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [label, setLabel] = useState('Home');
   const [address, setAddress] = useState('');
@@ -55,6 +56,20 @@ function AddAddress() {
 
       if (!response.ok) {
         throw new Error(data.message || 'Unable to save address');
+      }
+
+      if (location.state?.returnToLocationSheet) {
+        const returnPath =
+          location.state?.returnPath || '/profile/saved-addresses';
+
+        navigate(returnPath, {
+          state: {
+            openLocationSheet: true,
+            newlySavedAddress: data.address,
+          },
+        });
+
+        return;
       }
 
       navigate('/profile/saved-addresses');
