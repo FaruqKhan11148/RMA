@@ -21,6 +21,9 @@ function Shop() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [orderType, setOrderType] = useState('delivery');
 
+  const COMMON_SHOP_IMAGE =
+    'https://res.cloudinary.com/dsznfqgu3/image/upload/v1789550262/Gemini_Generated_Image_2u7tlf2u7tlf2u7t.png';
+
   useEffect(() => {
     const fetchShop = async () => {
       try {
@@ -132,132 +135,122 @@ function Shop() {
         onClose={() => setFlashMessage('')}
       />
       <section className="shop_hero">
-        <div className="shop_hero_top">
-          <button
-            type="button"
-            className="shop_back_button"
-            onClick={() => navigate(-1)}
-            aria-label="Go back"
-          >
-            ←
-          </button>
+        <img
+          className="shop_hero_image"
+          src={COMMON_SHOP_IMAGE}
+          alt={shop.shopName}
+        />
 
-          <span className="shop_hero_id">{shop.shopId}</span>
+        <div className="shop_hero_overlay"></div>
 
-          <button
-            type="button"
-            className="shop_share_button"
-            aria-label="Share shop"
-          >
-            ↗
-          </button>
-        </div>
-
-        <div className="shop_hero_content">
-          <div className="shop_status_row">
-            <span
-              className={
-                shop.isOpen
-                  ? 'shop_status_badge shop_status_open'
-                  : 'shop_status_badge shop_status_closed'
-              }
+        <div className="shop_hero_content_wrapper">
+          <div className="shop_hero_top">
+            <button
+              type="button"
+              className="shop_back_button"
+              onClick={() => navigate(-1)}
+              aria-label="Go back"
             >
-              <span className="shop_status_dot" />
-              {shop.isOpen ? 'Open' : 'Closed'}
-            </span>
+              ←
+            </button>
+
+            <span className="shop_hero_id">{shop.shopId}</span>
+
+            <button
+              type="button"
+              className="shop_share_button"
+              aria-label="Share shop"
+            >
+              ↗
+            </button>
           </div>
 
-          <h1>{shop.shopName}</h1>
-
-          <p className="shop_hero_description">{shop.description}</p>
-
-          <div className="shop_location">
-            <span className="rma_location_arrow_shop">
-              <svg
-                width="22"
-                height="22"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+          <div className="shop_hero_content">
+            <div className="shop_status_row">
+              <span
+                className={
+                  shop.isOpen
+                    ? 'shop_status_badge shop_status_open'
+                    : 'shop_status_badge shop_status_closed'
+                }
               >
-                <path
-                  d="M12 21C12 21 19 14.5 19 9C19 5.134 15.866 2 12 2C8.134 2 5 5.134 5 9C5 14.5 12 21 12 21Z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-
-                <circle
-                  cx="12"
-                  cy="9"
-                  r="2.5"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                />
-              </svg>
-            </span>
-            <span>{shop.address}</span>
-          </div>
-        </div>
-
-        <div className="shop_delivery_card">
-          <div className="shop_delivery_main">
-            <span className="shop_delivery_icon">⚡</span>
-
-            <div>
-              <strong>
-                {shop.delivery
-                  ? `Delivery in ${shop.deliverySettings?.estimatedDeliveryTime || 45} mins`
-                  : 'Pickup available'}
-              </strong>
-
-              <span>
-                {shop.delivery
-                  ? 'Freshly prepared and delivered to you'
-                  : 'Order now and pick up from the shop'}
+                <span className="shop_status_dot" />
+                {shop.isOpen ? 'Open' : 'Closed'}
               </span>
+            </div>
+
+            <h1>{shop.shopName}</h1>
+
+            <p className="shop_hero_description">{shop.description}</p>
+
+            <div className="shop_location">
+              <span className="rma_location_arrow_shop">
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 21C12 21 19 14.5 19 9C19 5.134 15.866 2 12 2C8.134 2 5 5.134 5 9C5 14.5 12 21 12 21Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+
+                  <circle
+                    cx="12"
+                    cy="9"
+                    r="2.5"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  />
+                </svg>
+              </span>
+
+              <span>{shop.address}</span>
             </div>
           </div>
 
-          {shop.delivery && (
-            <div className="shop_delivery_details">
-              <span>
-                Delivery charge ₹{shop.deliverySettings?.deliveryCharge || 0}
-              </span>
+          <div className="shop_delivery_card">
+            <div className="shop_delivery_main">
+              <span className="shop_delivery_icon">⚡</span>
 
-              {shop.deliverySettings?.freeDeliveryAbove > 0 && (
+              <div>
+                <strong>
+                  {shop.delivery
+                    ? `Delivery in ${
+                        shop.deliverySettings?.estimatedDeliveryTime || 45
+                      } mins`
+                    : 'Pickup available'}
+                </strong>
+
                 <span>
-                  Free delivery above ₹{shop.deliverySettings.freeDeliveryAbove}
+                  {shop.delivery
+                    ? 'Freshly prepared and delivered to you'
+                    : 'Order now and pick up from the shop'}
                 </span>
-              )}
+              </div>
             </div>
-          )}
+
+            {shop.delivery && (
+              <div className="shop_delivery_details">
+                <span>
+                  Delivery charge ₹{shop.deliverySettings?.deliveryCharge || 0}
+                </span>
+
+                {shop.deliverySettings?.freeDeliveryAbove > 0 && (
+                  <span>
+                    Free delivery above ₹
+                    {shop.deliverySettings.freeDeliveryAbove}
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
         </div>
-      </section>
-
-      <section className="order_options">
-        {shop.delivery && (
-          <button
-            className={orderType === 'delivery' ? 'order_type_active' : ''}
-            onClick={() => setOrderType('delivery')}
-          >
-            <span>Delivery</span>
-            <small>
-              {shop.deliverySettings?.estimatedDeliveryTime || 45} mins
-            </small>
-          </button>
-        )}
-
-        {shop.pickup && (
-          <button
-            className={orderType === 'pickup' ? 'order_type_active' : ''}
-            onClick={() => setOrderType('pickup')}
-          >
-            <span>Pickup</span>
-            <small>From shop</small>
-          </button>
-        )}
       </section>
 
       <section className="categories">

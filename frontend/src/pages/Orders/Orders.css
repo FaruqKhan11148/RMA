@@ -1,210 +1,625 @@
-/* ==========================================
+/* =========================================
    RMA — ORDERS PAGE
-   ========================================== */
+========================================= */
 
 .orders {
-  min-height: calc(100vh - 60px);
-  padding: 24px 16px 100px;
+  min-height: calc(100vh - 120px);
+
+  padding: var(--rma-space-6) var(--rma-mobile-padding) 100px;
+
+  box-sizing: border-box;
+
   background: var(--rma-bg);
 }
 
-/* ==========================================
+/* =========================================
    HEADER
-   ========================================== */
+========================================= */
 
 .orders_header {
+  width: 100%;
   max-width: var(--rma-max-width);
-  margin: 0 auto 24px;
+
+  margin: 0 auto var(--rma-space-6);
 }
 
 .orders_header h1 {
   margin: 0;
+
   color: var(--rma-text);
-  font-size: 28px;
-  font-weight: 800;
+
+  font-size: var(--rma-font-3xl);
+  font-weight: var(--rma-weight-extrabold);
+
   line-height: 1.2;
   letter-spacing: -0.5px;
 }
 
 .orders_header p {
-  margin: 6px 0 0;
+  margin: var(--rma-space-2) 0 0;
+
   color: var(--rma-text-secondary);
-  font-size: 14px;
+
+  font-size: var(--rma-font-sm);
+
+  line-height: 1.5;
 }
 
-/* ==========================================
+/* =========================================
    ORDERS LIST
-   ========================================== */
+========================================= */
 
 .orders_list {
+  width: 100%;
   max-width: var(--rma-max-width);
+
   margin: 0 auto;
 
   display: grid;
+
   grid-template-columns: 1fr;
-  gap: 16px;
+
+  gap: 12px;
 }
 
-/* ==========================================
+/* =========================================
    ORDER CARD
-   ========================================== */
+========================================= */
 
 .order_card {
-  background: var(--rma-card);
-  border: 1px solid var(--rma-border);
-  border-radius: var(--rma-radius-lg);
-  padding: 18px;
+  width: 100%;
 
-  box-shadow: var(--rma-shadow-sm);
+  min-height: 108px;
+
+  padding: var(--rma-space-4);
+
+  box-sizing: border-box;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: space-between;
+
+  background: var(--rma-card);
+
+  border: 1px solid var(--rma-border);
+
+  border-radius: var(--rma-radius-xl);
+
+  box-shadow: var(--rma-shadow-xs);
+
+  cursor: pointer;
+
+  user-select: none;
 
   transition:
-    transform var(--rma-transition-normal),
-    box-shadow var(--rma-transition-normal),
-    border-color var(--rma-transition-normal);
+    transform var(--rma-transition-fast),
+    box-shadow var(--rma-transition-fast),
+    border-color var(--rma-transition-fast);
 }
 
 .order_card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-1px);
+
   border-color: var(--rma-border-dark);
-  box-shadow: var(--rma-shadow-md);
+
+  box-shadow: var(--rma-shadow-sm);
 }
 
-/* ==========================================
-   CARD HEADER
-   ========================================== */
+.order_card:active {
+  transform: scale(0.99);
+}
 
-.order_card_header {
+.order_card:focus-visible {
+  outline: 3px solid rgba(22, 128, 58, 0.25);
+
+  outline-offset: 2px;
+}
+
+/* =========================================
+   CARD TOP
+========================================= */
+
+.order_card_top {
   display: flex;
-  align-items: flex-start;
+
+  align-items: center;
+
   justify-content: space-between;
-  gap: 12px;
 
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--rma-border-light);
+  gap: var(--rma-space-3);
 }
 
-.order_card_header > div {
+.order_card_top > strong {
   min-width: 0;
-}
 
-.order_card_header span:first-child {
-  display: block;
-  margin-bottom: 4px;
-
-  color: var(--rma-text-muted);
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-}
-
-.order_card_header strong {
-  display: block;
+  overflow: hidden;
 
   color: var(--rma-text);
-  font-size: 14px;
-  font-weight: 700;
 
-  word-break: break-all;
+  font-size: var(--rma-font-sm);
+
+  font-weight: var(--rma-weight-bold);
+
+  line-height: 1.3;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
 }
 
-/* ==========================================
+/* =========================================
    ORDER STATUS
-   ========================================== */
+========================================= */
 
 .order_status {
   flex-shrink: 0;
 
   display: inline-flex;
+
   align-items: center;
+
   justify-content: center;
 
-  min-height: 28px;
-  padding: 5px 10px;
+  min-height: 27px;
+
+  padding: 4px 10px;
+
+  box-sizing: border-box;
 
   border-radius: var(--rma-radius-full);
 
   background: var(--rma-primary-light);
+
   color: var(--rma-primary-dark);
 
-  font-size: 11px;
-  font-weight: 700;
+  font-size: var(--rma-font-xs);
+
+  font-weight: var(--rma-weight-bold);
+
   white-space: nowrap;
 }
 
-/* ==========================================
-   SHOP
-   ========================================== */
+/* =========================================
+   CARD MIDDLE
+========================================= */
 
-.order_shop {
+.order_card_middle {
   display: flex;
-  flex-direction: column;
-  gap: 5px;
 
-  padding: 16px 0;
-}
-
-.order_shop span {
-  color: var(--rma-text-muted);
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.order_shop strong {
-  color: var(--rma-text);
-  font-size: 16px;
-  font-weight: 700;
-}
-
-/* ==========================================
-   ORDER INFO
-   ========================================== */
-
-.order_info {
-  display: grid;
-  grid-template-columns: 1fr 1fr auto;
   align-items: center;
-  gap: 10px;
 
-  padding: 14px 0;
+  justify-content: space-between;
 
-  border-top: 1px solid var(--rma-border-light);
+  gap: var(--rma-space-3);
+
+  margin-top: var(--rma-space-2);
+}
+
+.order_card_middle strong {
+  min-width: 0;
+
+  overflow: hidden;
+
+  color: var(--rma-text);
+
+  font-size: var(--rma-font-md);
+
+  font-weight: var(--rma-weight-bold);
+
+  line-height: 1.3;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+/* =========================================
+   CARD ARROW
+========================================= */
+
+.order_card_arrow {
+  flex-shrink: 0;
+
+  width: 26px;
+  height: 26px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: var(--rma-radius-full);
+
+  background: var(--rma-bg-secondary);
+
+  color: var(--rma-text-secondary);
+
+  font-size: 21px;
+
+  line-height: 1;
+
+  transition:
+    background var(--rma-transition-fast),
+    color var(--rma-transition-fast),
+    transform var(--rma-transition-fast);
+}
+
+.order_card:hover .order_card_arrow {
+  background: var(--rma-primary-light);
+
+  color: var(--rma-primary);
+
+  transform: translateX(2px);
+}
+
+/* =========================================
+   CARD BOTTOM
+========================================= */
+
+.order_card_bottom {
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  margin-top: var(--rma-space-2);
+
+  color: var(--rma-text-secondary);
+
+  font-size: var(--rma-font-xs);
+
+  line-height: 1.3;
+}
+
+.order_card_bottom strong {
+  margin-left: auto;
+
+  color: var(--rma-text);
+
+  font-size: var(--rma-font-md);
+
+  font-weight: var(--rma-weight-extrabold);
+
+  white-space: nowrap;
+}
+
+.order_card_separator {
+  color: var(--rma-text-muted);
+
+  font-size: 10px;
+}
+
+/* =========================================
+   TAP HINT
+========================================= */
+
+.order_card_hint {
+  margin-top: 5px;
+
+  color: var(--rma-text-muted);
+
+  font-size: 10px;
+
+  font-weight: var(--rma-weight-medium);
+
+  line-height: 1.2;
+}
+
+/* =========================================
+   BOTTOM SHEET OVERLAY
+========================================= */
+
+.order_sheet_overlay {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 9998;
+
+  display: flex;
+
+  align-items: flex-end;
+
+  justify-content: center;
+
+  background: rgba(0, 0, 0, 0.45);
+
+  animation: order_sheet_overlay_in 0.25s ease;
+}
+
+/* =========================================
+   BOTTOM SHEET
+========================================= */
+
+.order_sheet {
+  width: 100%;
+  max-width: 720px;
+
+  max-height: 90vh;
+
+  padding: var(--rma-space-3) var(--rma-space-5)
+    calc(var(--rma-space-5) + env(safe-area-inset-bottom));
+
+  box-sizing: border-box;
+
+  background: var(--rma-card);
+
+  border-radius: var(--rma-radius-xl) var(--rma-radius-xl) 0 0;
+
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.15);
+
+  overflow-y: auto;
+
+  animation: order_sheet_slide_up 0.3s ease;
+}
+
+/* =========================================
+   SHEET HANDLE
+========================================= */
+
+.order_sheet_handle {
+  width: 42px;
+  height: 4px;
+
+  margin: 0 auto var(--rma-space-5);
+
+  border-radius: var(--rma-radius-full);
+
+  background: var(--rma-border-dark);
+}
+
+/* =========================================
+   SHEET HEADER
+========================================= */
+
+.order_sheet_header {
+  display: flex;
+
+  align-items: flex-start;
+
+  justify-content: space-between;
+
+  gap: var(--rma-space-4);
+
+  padding-bottom: var(--rma-space-5);
+
   border-bottom: 1px solid var(--rma-border-light);
 }
 
-.order_info span {
-  color: var(--rma-text-secondary);
-  font-size: 13px;
+.order_sheet_header > div {
+  min-width: 0;
 }
 
-.order_info strong {
+.order_sheet_header span {
+  display: block;
+
+  margin-bottom: var(--rma-space-1);
+
+  color: var(--rma-text-muted);
+
+  font-size: var(--rma-font-xs);
+
+  font-weight: var(--rma-weight-semibold);
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.6px;
+}
+
+.order_sheet_header h2 {
+  margin: 0;
+
   color: var(--rma-text);
-  font-size: 17px;
-  font-weight: 800;
-  text-align: right;
+
+  font-size: var(--rma-font-xl);
+
+  font-weight: var(--rma-weight-extrabold);
+
+  line-height: 1.3;
+
+  word-break: break-all;
 }
 
-/* ==========================================
-   VIEW ORDER BUTTON
-   ========================================== */
+/* =========================================
+   CLOSE BUTTON
+========================================= */
 
-.track_order_button {
-  width: 100%;
-  min-height: 46px;
+.order_sheet_close {
+  flex-shrink: 0;
 
-  margin-top: 16px;
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  margin-top: -2px;
+
+  padding: 0;
 
   border: none;
+
+  border-radius: var(--rma-radius-full);
+
+  background: var(--rma-bg-secondary);
+
+  color: var(--rma-text-secondary);
+
+  font-family: inherit;
+
+  font-size: 26px;
+
+  font-weight: 400;
+
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition:
+    background var(--rma-transition-fast),
+    color var(--rma-transition-fast),
+    transform var(--rma-transition-fast);
+}
+
+.order_sheet_close:hover {
+  background: var(--rma-border);
+
+  color: var(--rma-text);
+}
+
+.order_sheet_close:active {
+  transform: scale(0.94);
+}
+
+/* =========================================
+   SHEET STATUS
+========================================= */
+
+.order_sheet_status {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: var(--rma-space-4);
+
+  margin-top: var(--rma-space-5);
+
+  padding: var(--rma-space-4);
+
+  border-radius: var(--rma-radius-lg);
+
+  background: var(--rma-primary-light);
+}
+
+.order_sheet_status span {
+  color: var(--rma-text-secondary);
+
+  font-size: var(--rma-font-sm);
+
+  font-weight: var(--rma-weight-medium);
+}
+
+.order_sheet_status strong {
+  color: var(--rma-primary-dark);
+
+  font-size: var(--rma-font-sm);
+
+  font-weight: var(--rma-weight-bold);
+}
+
+/* =========================================
+   SHEET DETAILS
+========================================= */
+
+.order_sheet_details {
+  margin-top: var(--rma-space-4);
+
+  border-top: 1px solid var(--rma-border-light);
+}
+
+.order_sheet_detail {
+  display: flex;
+
+  align-items: flex-start;
+
+  justify-content: space-between;
+
+  gap: var(--rma-space-5);
+
+  padding: var(--rma-space-4) 0;
+
+  border-bottom: 1px solid var(--rma-border-light);
+}
+
+.order_sheet_detail span {
+  flex-shrink: 0;
+
+  color: var(--rma-text-secondary);
+
+  font-size: var(--rma-font-sm);
+
+  line-height: 1.5;
+}
+
+.order_sheet_detail strong {
+  color: var(--rma-text);
+
+  font-size: var(--rma-font-sm);
+
+  font-weight: var(--rma-weight-semibold);
+
+  text-align: right;
+
+  word-break: break-word;
+}
+
+/* =========================================
+   SHEET TOTAL
+========================================= */
+
+.order_sheet_detail.order_sheet_total {
+  padding-top: var(--rma-space-5);
+
+  padding-bottom: var(--rma-space-5);
+
+  border-bottom: none;
+}
+
+.order_sheet_total span {
+  color: var(--rma-text);
+
+  font-size: var(--rma-font-md);
+
+  font-weight: var(--rma-weight-bold);
+}
+
+.order_sheet_total strong {
+  color: var(--rma-text);
+
+  font-size: var(--rma-font-xl);
+
+  font-weight: var(--rma-weight-extrabold);
+}
+
+/* =========================================
+   SHEET BUTTON
+========================================= */
+
+.order_sheet_button {
+  display: block;
+
+  width: 100%;
+
+  min-height: 50px;
+
+  margin-top: var(--rma-space-2);
+
+  padding: 0 var(--rma-space-5);
+
+  border: none;
+
   border-radius: var(--rma-radius-md);
 
   background: var(--rma-primary);
+
   color: var(--rma-text-white);
 
   font-family: inherit;
-  font-size: 14px;
-  font-weight: 700;
+
+  font-size: var(--rma-font-md);
+
+  font-weight: var(--rma-weight-bold);
 
   cursor: pointer;
+
+  box-shadow: var(--rma-shadow-sm);
 
   transition:
     background var(--rma-transition-fast),
@@ -212,28 +627,34 @@
     box-shadow var(--rma-transition-fast);
 }
 
-.track_order_button:hover {
+.order_sheet_button:hover {
   background: var(--rma-primary-dark);
-  box-shadow: var(--rma-shadow-sm);
+
+  box-shadow: var(--rma-shadow-md);
 }
 
-.track_order_button:active {
-  transform: scale(0.98);
+.order_sheet_button:active {
+  transform: translateY(1px);
 }
 
-/* ==========================================
+/* =========================================
    EMPTY STATE
-   ========================================== */
+========================================= */
 
 .orders_empty {
-  min-height: calc(100vh - 60px);
+  min-height: calc(100vh - 120px);
+
+  padding: var(--rma-space-8) var(--rma-mobile-padding) 100px;
+
+  box-sizing: border-box;
 
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
 
-  padding: 32px 20px;
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
 
   background: var(--rma-bg);
 
@@ -244,156 +665,312 @@
   margin: 0;
 
   color: var(--rma-text);
-  font-size: 26px;
-  font-weight: 800;
+
+  font-size: var(--rma-font-2xl);
+
+  font-weight: var(--rma-weight-extrabold);
+
+  line-height: 1.2;
 }
 
 .orders_empty p {
-  max-width: 360px;
-  margin: 10px 0 24px;
+  max-width: 380px;
+
+  margin: var(--rma-space-2) 0 var(--rma-space-5);
 
   color: var(--rma-text-secondary);
-  font-size: 14px;
+
+  font-size: var(--rma-font-sm);
+
   line-height: 1.6;
 }
 
 .orders_empty button {
-  min-height: 46px;
-  padding: 0 22px;
+  min-height: 48px;
+
+  padding: 0 var(--rma-space-5);
 
   border: none;
+
   border-radius: var(--rma-radius-md);
 
   background: var(--rma-primary);
+
   color: var(--rma-text-white);
 
   font-family: inherit;
-  font-size: 14px;
-  font-weight: 700;
+
+  font-size: var(--rma-font-sm);
+
+  font-weight: var(--rma-weight-bold);
 
   cursor: pointer;
 
+  box-shadow: var(--rma-shadow-xs);
+
   transition:
     background var(--rma-transition-fast),
-    transform var(--rma-transition-fast);
+    transform var(--rma-transition-fast),
+    box-shadow var(--rma-transition-fast);
 }
 
 .orders_empty button:hover {
   background: var(--rma-primary-dark);
+
+  box-shadow: var(--rma-shadow-sm);
 }
 
 .orders_empty button:active {
-  transform: scale(0.98);
+  transform: translateY(1px);
 }
 
-/* ==========================================
+/* =========================================
+   SHEET ANIMATIONS
+========================================= */
+
+@keyframes order_sheet_overlay_in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes order_sheet_slide_up {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* =========================================
    TABLET
-   ========================================== */
+========================================= */
 
 @media (min-width: 600px) {
   .orders {
-    padding: 32px 24px 80px;
+    padding: var(--rma-space-8) var(--rma-tablet-padding) 80px;
+  }
+
+  .orders_header {
+    margin-bottom: var(--rma-space-7);
   }
 
   .orders_header h1 {
-    font-size: 32px;
+    font-size: var(--rma-font-4xl);
   }
 
   .orders_list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px;
+
+    gap: var(--rma-space-4);
   }
 
   .order_card {
-    padding: 20px;
+    min-height: 110px;
+
+    padding: var(--rma-space-5);
+  }
+
+  .order_sheet {
+    margin: 0 var(--rma-space-5) var(--rma-space-5);
+
+    max-width: 720px;
+
+    border-radius: var(--rma-radius-xl);
+
+    padding: var(--rma-space-5);
   }
 }
 
-/* ==========================================
+/* =========================================
    DESKTOP
-   ========================================== */
+========================================= */
 
 @media (min-width: 960px) {
   .orders {
-    padding: 40px 32px 80px;
+    padding: var(--rma-space-10) var(--rma-space-8) 80px;
   }
 
   .orders_header {
-    margin-bottom: 28px;
+    margin-bottom: var(--rma-space-8);
   }
 
   .orders_header h1 {
-    font-size: 34px;
+    font-size: var(--rma-font-4xl);
   }
 
   .orders_list {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 22px;
+
+    gap: var(--rma-space-5);
   }
 
   .order_card {
-    padding: 22px;
+    min-height: 112px;
+
+    padding: var(--rma-space-5);
+  }
+
+  .order_sheet {
+    max-width: 600px;
   }
 }
 
-/* ==========================================
+/* =========================================
    SMALL MOBILE
-   ========================================== */
+========================================= */
 
 @media (max-width: 380px) {
   .orders {
-    padding: 20px 12px 90px;
+    padding: var(--rma-space-5) 12px 90px;
   }
 
   .orders_header h1 {
-    font-size: 25px;
+    font-size: var(--rma-font-2xl);
+  }
+
+  .orders_header p {
+    font-size: var(--rma-font-xs);
+  }
+
+  .orders_list {
+    gap: 10px;
   }
 
   .order_card {
-    padding: 15px;
-    border-radius: var(--rma-radius-md);
+    min-height: 102px;
+
+    padding: 13px;
+
+    border-radius: var(--rma-radius-lg);
   }
 
-  .order_info {
-    gap: 6px;
+  .order_card_top {
+    gap: 8px;
   }
 
-  .order_info span {
-    font-size: 12px;
-  }
-
-  .order_info strong {
-    font-size: 16px;
+  .order_card_top > strong {
+    font-size: 13px;
   }
 
   .order_status {
-    padding: 5px 8px;
+    min-height: 26px;
+
+    padding: 4px 8px;
+
     font-size: 10px;
+  }
+
+  .order_card_middle {
+    gap: 8px;
+
+    margin-top: 6px;
+  }
+
+  .order_card_middle strong {
+    font-size: 13px;
+  }
+
+  .order_card_arrow {
+    width: 24px;
+    height: 24px;
+
+    font-size: 20px;
+  }
+
+  .order_card_bottom {
+    gap: 6px;
+
+    margin-top: 6px;
+
+    font-size: 11px;
+  }
+
+  .order_card_bottom strong {
+    font-size: 14px;
+  }
+
+  .order_card_hint {
+    margin-top: 4px;
+
+    font-size: 9px;
+  }
+
+  .order_sheet {
+    padding-left: var(--rma-space-4);
+
+    padding-right: var(--rma-space-4);
+
+    border-radius: var(--rma-radius-lg) var(--rma-radius-lg) 0 0;
+  }
+
+  .order_sheet_header h2 {
+    font-size: var(--rma-font-lg);
+  }
+
+  .order_sheet_close {
+    width: 36px;
+    height: 36px;
+  }
+
+  .order_sheet_detail {
+    gap: var(--rma-space-3);
+  }
+
+  .order_sheet_detail span,
+  .order_sheet_detail strong {
+    font-size: 13px;
+  }
+
+  .order_sheet_total span {
+    font-size: var(--rma-font-sm);
+  }
+
+  .order_sheet_total strong {
+    font-size: var(--rma-font-lg);
   }
 }
 
-/* ==========================================
+/* =========================================
    ACCESSIBILITY
-   ========================================== */
+========================================= */
 
-.track_order_button:focus-visible,
+.order_sheet_close:focus-visible,
+.order_sheet_button:focus-visible,
 .orders_empty button:focus-visible {
   outline: 3px solid rgba(22, 128, 58, 0.25);
+
   outline-offset: 2px;
 }
 
-/* ==========================================
+/* =========================================
    REDUCED MOTION
-   ========================================== */
+========================================= */
 
 @media (prefers-reduced-motion: reduce) {
   .order_card,
-  .track_order_button,
-  .orders_empty button {
+  .order_card_arrow,
+  .order_sheet_close,
+  .order_sheet_button,
+  .orders_empty button,
+  .order_sheet_overlay,
+  .order_sheet {
     transition: none;
+
+    animation: none;
   }
 
   .order_card:hover {
+    transform: none;
+  }
+
+  .order_card:hover .order_card_arrow {
     transform: none;
   }
 }

@@ -55,7 +55,7 @@
 
   margin: 0 auto;
 
-  padding: var(--rma-space-8) var(--rma-space-6);
+  padding: var(--rma-space-8) var(--rma-space-5);
 
   box-sizing: border-box;
 
@@ -71,7 +71,7 @@
 }
 
 /* =========================================
-   STATUS ICON
+   MAIN STATUS ICON
 ========================================= */
 
 .status_icon {
@@ -129,21 +129,25 @@
   text-align: left;
 }
 
-/* Timeline line */
+/* =========================================
+   TIMELINE BASE LINE
+========================================= */
 
 .status_steps::before {
   content: '';
 
   position: absolute;
 
-  left: 17px;
+  left: 19px;
 
-  top: 18px;
-  bottom: 18px;
+  top: 20px;
+  bottom: 20px;
 
   width: 2px;
 
   background: var(--rma-border);
+
+  z-index: 0;
 }
 
 /* =========================================
@@ -155,22 +159,26 @@
 
   display: flex;
 
+  align-items: flex-start;
+
   gap: var(--rma-space-4);
 
-  padding: 14px 0;
+  min-height: 72px;
+
+  padding: 10px 0;
 }
 
 /* =========================================
-   STEP CIRCLE
+   STEP ICON
 ========================================= */
 
-.status_step > span {
+.status_step_icon {
   position: relative;
 
   z-index: 2;
 
-  width: 34px;
-  height: 34px;
+  width: 38px;
+  height: 38px;
 
   flex-shrink: 0;
 
@@ -189,19 +197,75 @@
   color: var(--rma-text-muted);
 
   font-size: var(--rma-font-xs);
+
   font-weight: var(--rma-weight-bold);
 
   box-shadow: 0 0 0 1px var(--rma-border);
+
+  transition:
+    background var(--rma-transition-normal),
+    color var(--rma-transition-normal),
+    box-shadow var(--rma-transition-normal),
+    transform var(--rma-transition-normal);
 }
 
-/* ACTIVE / COMPLETED */
+/* =========================================
+   SVG DELIVERY BIKE
+========================================= */
 
-.status_step.active > span {
+.status_step_icon svg {
+  width: 22px;
+  height: 22px;
+
+  display: block;
+}
+
+/* =========================================
+   COMPLETED STEP
+========================================= */
+
+.status_step.completed .status_step_icon {
   background: var(--rma-primary);
 
   color: var(--rma-text-white);
 
   box-shadow: 0 0 0 1px var(--rma-primary);
+}
+
+/* =========================================
+   CURRENT STEP
+========================================= */
+
+.status_step.current .status_step_icon {
+  width: 44px;
+  height: 44px;
+
+  margin-left: -3px;
+
+  background: var(--rma-primary);
+
+  color: var(--rma-text-white);
+
+  border-color: var(--rma-card);
+
+  box-shadow:
+    0 0 0 2px var(--rma-primary),
+    0 0 0 7px var(--rma-primary-light);
+
+  transform: scale(1.02);
+}
+
+.status_step.current .status_step_icon svg {
+  width: 25px;
+  height: 25px;
+}
+
+/* =========================================
+   CURRENT OUT FOR DELIVERY
+========================================= */
+
+.status_step.current {
+  min-height: 84px;
 }
 
 /* =========================================
@@ -211,7 +275,7 @@
 .status_step > div {
   min-width: 0;
 
-  padding-top: 2px;
+  padding-top: 5px;
 }
 
 .status_step strong {
@@ -222,15 +286,14 @@
   color: var(--rma-text-muted);
 
   font-size: var(--rma-font-sm);
+
   font-weight: var(--rma-weight-semibold);
 
   line-height: 1.4;
-}
 
-.status_step.active strong {
-  color: var(--rma-text);
-
-  font-weight: var(--rma-weight-bold);
+  transition:
+    color var(--rma-transition-normal),
+    font-weight var(--rma-transition-normal);
 }
 
 .status_step p {
@@ -243,8 +306,92 @@
   line-height: 1.5;
 }
 
-.status_step.active p {
+/* =========================================
+   COMPLETED CONTENT
+========================================= */
+
+.status_step.completed strong {
+  color: var(--rma-text);
+
+  font-weight: var(--rma-weight-bold);
+}
+
+.status_step.completed p {
   color: var(--rma-text-secondary);
+}
+
+/* =========================================
+   CURRENT CONTENT
+========================================= */
+
+.status_step.current strong {
+  color: var(--rma-primary);
+
+  font-weight: var(--rma-weight-extrabold);
+
+  font-size: var(--rma-font-md);
+}
+
+.status_step.current p {
+  color: var(--rma-text-secondary);
+
+  font-weight: var(--rma-weight-medium);
+}
+
+/* =========================================
+   COMPLETED TIMELINE
+========================================= */
+
+.status_step.completed::before {
+  content: '';
+
+  position: absolute;
+
+  left: 18px;
+
+  top: -10px;
+
+  width: 4px;
+
+  height: calc(100% + 10px);
+
+  background: var(--rma-primary);
+
+  z-index: 1;
+}
+
+/* =========================================
+   CURRENT STEP TIMELINE
+========================================= */
+
+.status_step.current::before {
+  content: '';
+
+  position: absolute;
+
+  left: 18px;
+
+  top: -10px;
+
+  width: 4px;
+
+  height: 20px;
+
+  background: var(--rma-primary);
+
+  z-index: 1;
+}
+
+/* =========================================
+   FIRST STEP
+========================================= */
+
+.status_step:first-child {
+  padding-top: 0;
+}
+
+.status_step:first-child::before {
+  top: 20px;
 }
 
 /* =========================================
@@ -257,7 +404,7 @@
 
   margin: var(--rma-space-5) auto 0;
 
-  padding: var(--rma-space-6);
+  padding: var(--rma-space-6) var(--rma-space-5);
 
   box-sizing: border-box;
 
@@ -278,6 +425,7 @@
   color: var(--rma-text);
 
   font-size: var(--rma-font-xl);
+
   font-weight: var(--rma-weight-bold);
 }
 
@@ -293,7 +441,9 @@
   line-height: 1.55;
 }
 
-/* OTP */
+/* =========================================
+   OTP
+========================================= */
 
 .delivery_otp {
   display: inline-flex;
@@ -302,7 +452,6 @@
   justify-content: center;
 
   min-width: 190px;
-
   min-height: 66px;
 
   padding: 0 var(--rma-space-5);
@@ -318,6 +467,7 @@
   color: var(--rma-text);
 
   font-size: 32px;
+
   font-weight: var(--rma-weight-extrabold);
 
   letter-spacing: 8px;
@@ -358,6 +508,7 @@
   color: var(--rma-text);
 
   font-size: var(--rma-font-lg);
+
   font-weight: var(--rma-weight-bold);
 }
 
@@ -390,6 +541,14 @@
   font-weight: var(--rma-weight-semibold);
 }
 
+.order_details p span {
+  text-align: right;
+
+  color: var(--rma-text-secondary);
+
+  word-break: break-word;
+}
+
 /* =========================================
    HOME BUTTON
 ========================================= */
@@ -415,6 +574,7 @@
   font-family: inherit;
 
   font-size: var(--rma-font-md);
+
   font-weight: var(--rma-weight-bold);
 
   cursor: pointer;
@@ -452,6 +612,24 @@
 }
 
 /* =========================================
+   REFUND CARD
+========================================= */
+
+.refund_card {
+  margin-top: var(--rma-space-5);
+}
+
+.refund_card .status_icon {
+  background: var(--rma-primary);
+
+  box-shadow: 0 0 0 8px var(--rma-primary-light);
+}
+
+.refund_card p + p {
+  margin-top: var(--rma-space-3);
+}
+
+/* =========================================
    EMPTY / LOADING / ERROR
 ========================================= */
 
@@ -479,6 +657,7 @@
   color: var(--rma-text);
 
   font-size: var(--rma-font-2xl);
+
   font-weight: var(--rma-weight-bold);
 }
 
@@ -510,6 +689,7 @@
   font-family: inherit;
 
   font-size: var(--rma-font-sm);
+
   font-weight: var(--rma-weight-semibold);
 
   cursor: pointer;
@@ -560,6 +740,16 @@
 
   .status_step {
     padding: var(--rma-space-4) 0;
+  }
+
+  .status_step_icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .status_step.current .status_step_icon {
+    width: 46px;
+    height: 46px;
   }
 
   .status_step strong {
@@ -636,18 +826,46 @@
 
   .status_step {
     gap: var(--rma-space-3);
+
+    min-height: 68px;
   }
 
-  .status_step > span {
-    width: 32px;
-    height: 32px;
+  .status_step_icon {
+    width: 34px;
+    height: 34px;
+  }
+
+  .status_step.current .status_step_icon {
+    width: 40px;
+    height: 40px;
+
+    margin-left: -3px;
+  }
+
+  .status_step_icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .status_step.current .status_step_icon svg {
+    width: 23px;
+    height: 23px;
   }
 
   .status_steps::before {
+    left: 17px;
+  }
+
+  .status_step.completed::before,
+  .status_step.current::before {
     left: 16px;
   }
 
   .status_step strong {
+    font-size: var(--rma-font-sm);
+  }
+
+  .status_step.current strong {
     font-size: var(--rma-font-sm);
   }
 

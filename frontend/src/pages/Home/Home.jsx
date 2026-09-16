@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
 
 const RMA_LOCATION_KEY = 'rma_user_location';
+const COMMON_SHOP_IMAGE =
+  'https://res.cloudinary.com/dsznfqgu3/image/upload/v1789550262/Gemini_Generated_Image_2u7tlf2u7tlf2u7t.png';
 
 function Home() {
   const { t } = useLanguage();
@@ -526,11 +528,7 @@ function Home() {
                     onClick={() => navigate(`/shop/${shop.shopId}`)}
                   >
                     <div className="nearby_shop_image">
-                      {shop.image ? (
-                        <img src={shop.image} alt={shop.shopName} />
-                      ) : (
-                        <span>{shop.delivery ? 'MEAT' : 'SHOP'}</span>
-                      )}
+                      <img src={COMMON_SHOP_IMAGE} alt="RMA shop" />
                     </div>
 
                     <div className="nearby_shop_content">

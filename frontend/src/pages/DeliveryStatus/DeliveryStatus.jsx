@@ -1,6 +1,6 @@
 import './DeliveryStatus.css';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useCart } from '../../context/CartContext';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -15,7 +15,10 @@ function DeliveryStatus() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  // ==========================================
   // GET ORDER FROM BACKEND
+  // ==========================================
+
   const fetchOrder = useCallback(async () => {
     try {
       const response = await fetch(
@@ -30,6 +33,9 @@ function DeliveryStatus() {
       }
 
       setOrder(data.order);
+
+      // Cart is cleared only after the order-status
+      // page successfully loads.
       clearCart();
     } catch (error) {
       console.error('Fetch order failed:', error);
@@ -40,12 +46,18 @@ function DeliveryStatus() {
     }
   }, [orderId, clearCart]);
 
+  // ==========================================
   // FETCH ORDER WHEN PAGE LOADS
+  // ==========================================
+
   useEffect(() => {
     fetchOrder();
   }, [fetchOrder]);
 
+  // ==========================================
   // REFRESH ORDER STATUS EVERY 5 SECONDS
+  // ==========================================
+
   useEffect(() => {
     const interval = setInterval(() => {
       fetchOrder();
@@ -53,6 +65,10 @@ function DeliveryStatus() {
 
     return () => clearInterval(interval);
   }, [fetchOrder]);
+
+  // ==========================================
+  // LOADING
+  // ==========================================
 
   if (loading) {
     return (
@@ -64,6 +80,10 @@ function DeliveryStatus() {
     );
   }
 
+  // ==========================================
+  // ERROR
+  // ==========================================
+
   if (error || !order) {
     return (
       <main className="delivery_status_empty">
@@ -71,10 +91,16 @@ function DeliveryStatus() {
 
         <p>{error || 'We could not find this order.'}</p>
 
-        <button onClick={() => navigate('/')}>Back to Home</button>
+        <button type="button" onClick={() => navigate('/')}>
+          Back to Home
+        </button>
       </main>
     );
   }
+
+  // ==========================================
+  // STATUS STEPS
+  // ==========================================
 
   const statusSteps = [
     {
@@ -94,14 +120,8 @@ function DeliveryStatus() {
     },
     {
       status: 'Ready',
-      title:
-        order.orderType === 'delivery'
-          ? 'Ready for Delivery'
-          : 'Ready for Pickup',
-      description:
-        order.orderType === 'delivery'
-          ? 'Your order is ready and will be delivered soon.'
-          : 'Your order is ready for pickup.',
+      title: 'Ready for Delivery',
+      description: 'Your order is ready and will be delivered soon.',
     },
     {
       status: 'OutForDelivery',
@@ -126,6 +146,10 @@ function DeliveryStatus() {
 
   const currentStatusIndex = statusOrder.indexOf(order.status);
 
+  // ==========================================
+  // STATUS MESSAGE
+  // ==========================================
+
   const getStatusMessage = () => {
     switch (order.status) {
       case 'Pending':
@@ -138,9 +162,7 @@ function DeliveryStatus() {
         return 'The shop is currently preparing your order.';
 
       case 'Ready':
-        return order.orderType === 'delivery'
-          ? 'Your order is ready and will be delivered soon.'
-          : 'Your order is ready for pickup.';
+        return 'Your order is ready and will be delivered soon.';
 
       case 'OutForDelivery':
         return 'Your order is on the way. Please provide the delivery OTP when your order arrives.';
@@ -158,8 +180,10 @@ function DeliveryStatus() {
 
   const shopName = order.ownerId?.shopName || 'Shop';
 
+  // ==========================================
   // REJECTED ORDER
-  // REJECTED ORDER
+  // ==========================================
+
   if (order.status === 'Rejected') {
     return (
       <main className="delivery_status">
@@ -176,6 +200,8 @@ function DeliveryStatus() {
 
           <p>{getStatusMessage()}</p>
         </section>
+
+        {/* REFUND PROCESSING */}
 
         {order.refundStatus === 'Processing' && (
           <section className="order_status_card refund_card">
@@ -203,6 +229,8 @@ function DeliveryStatus() {
           </section>
         )}
 
+        {/* REFUND COMPLETED */}
+
         {order.refundStatus === 'Completed' && (
           <section className="order_status_card refund_card">
             <div className="status_icon">✓</div>
@@ -227,6 +255,8 @@ function DeliveryStatus() {
           </section>
         )}
 
+        {/* REFUND FAILED */}
+
         {order.refundStatus === 'Failed' && (
           <section className="order_status_card refund_card">
             <div className="status_icon">!</div>
@@ -242,35 +272,57 @@ function DeliveryStatus() {
           </section>
         )}
 
+        {/* ORDER DETAILS */}
+
         <section className="order_details">
           <h2>Order Details</h2>
 
           <p>
-            <strong>Order ID:</strong> {order.orderId}
+            <strong>Order ID:</strong>
+
+            <span>{order.orderId}</span>
           </p>
 
           <p>
-            <strong>Shop:</strong> {shopName}
+            <strong>Shop:</strong>
+
+            <span>{shopName}</span>
           </p>
 
           <p>
-            <strong>Order Type:</strong>{' '}
-            {order.orderType === 'delivery' ? 'Delivery' : 'Pickup'}
+            <strong>Order Type:</strong>
+
+            <span>Delivery</span>
           </p>
 
           <p>
-            <strong>Total:</strong> ₹{Number(order.totalPrice).toFixed(2)}
+            <strong>Payment:</strong>
+
+            <span>Online Payment</span>
+          </p>
+
+          <p>
+            <strong>Total:</strong>
+
+            <span>₹{Number(order.totalPrice).toFixed(2)}</span>
           </p>
         </section>
 
-        <button className="home_button" onClick={() => navigate('/')}>
+        <button
+          type="button"
+          className="home_button"
+          onClick={() => navigate('/')}
+        >
           Back to Home
         </button>
       </main>
     );
   }
 
+  // ==========================================
   // NORMAL ORDER
+  // ==========================================
+
   return (
     <main className="delivery_status">
       <section className="delivery_status_header">
@@ -281,6 +333,8 @@ function DeliveryStatus() {
         <p>Track your order from the shop.</p>
       </section>
 
+      {/* STATUS CARD */}
+
       <section className="order_status_card">
         <div className="status_icon">✓</div>
 
@@ -290,14 +344,78 @@ function DeliveryStatus() {
 
         <div className="status_steps">
           {statusSteps.map((step, index) => {
-            const isActive = index <= currentStatusIndex;
+            const isCompleted = index < currentStatusIndex;
+            const isCurrent = index === currentStatusIndex;
 
             return (
               <div
-                className={`status_step ${isActive ? 'active' : ''}`}
+                className={`status_step ${
+                  isCompleted ? 'completed' : ''
+                } ${isCurrent ? 'current' : ''}`}
                 key={step.status}
               >
-                <span>{isActive ? '✓' : index + 1}</span>
+                <span className="status_step_icon">
+                  {isCurrent && step.status === 'OutForDelivery' ? (
+                    <svg
+                      viewBox="0 0 64 64"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden="true"
+                    >
+                      <circle
+                        cx="18"
+                        cy="46"
+                        r="7"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+
+                      <circle
+                        cx="47"
+                        cy="46"
+                        r="7"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+
+                      <path
+                        d="M25 46H40L35 30H25L18 46"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+
+                      <path
+                        d="M35 30H43L50 38V46H40"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+
+                      <path
+                        d="M31 24L35 30"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                        strokeLinecap="round"
+                      />
+
+                      <path
+                        d="M43 38H50"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  ) : isCompleted ? (
+                    '✓'
+                  ) : isCurrent ? (
+                    '✓'
+                  ) : (
+                    index + 1
+                  )}
+                </span>
 
                 <div>
                   <strong>{step.title}</strong>
@@ -311,40 +429,58 @@ function DeliveryStatus() {
       </section>
 
       {/* DELIVERY OTP */}
-      {order.orderType === 'delivery' &&
-        order.status === 'OutForDelivery' &&
-        order.deliveryOtp && (
-          <section className="delivery_otp_card">
-            <h2>Delivery OTP</h2>
 
-            <p>Give this OTP to the delivery person when your order arrives.</p>
+      {order.status === 'OutForDelivery' && order.deliveryOtp && (
+        <section className="delivery_otp_card">
+          <h2>Delivery OTP</h2>
 
-            <div className="delivery_otp">{order.deliveryOtp}</div>
-          </section>
-        )}
+          <p>Give this OTP to the delivery person when your order arrives.</p>
+
+          <div className="delivery_otp">{order.deliveryOtp}</div>
+        </section>
+      )}
+
+      {/* ORDER DETAILS */}
 
       <section className="order_details">
         <h2>Order Details</h2>
 
         <p>
-          <strong>Order ID:</strong> {order.orderId}
+          <strong>Order ID:</strong>
+
+          <span>{order.orderId}</span>
         </p>
 
         <p>
-          <strong>Shop:</strong> {shopName}
+          <strong>Shop:</strong>
+
+          <span>{shopName}</span>
         </p>
 
         <p>
-          <strong>Order Type:</strong>{' '}
-          {order.orderType === 'delivery' ? 'Delivery' : 'Pickup'}
+          <strong>Order Type:</strong>
+
+          <span>Delivery</span>
         </p>
 
         <p>
-          <strong>Total:</strong> ₹{order.totalPrice}
+          <strong>Payment:</strong>
+
+          <span>Online Payment</span>
+        </p>
+
+        <p>
+          <strong>Total:</strong>
+
+          <span>₹{Number(order.totalPrice).toFixed(2)}</span>
         </p>
       </section>
 
-      <button className="home_button" onClick={() => navigate('/')}>
+      <button
+        type="button"
+        className="home_button"
+        onClick={() => navigate('/')}
+      >
         Back to Home
       </button>
     </main>

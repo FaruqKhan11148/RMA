@@ -11,12 +11,12 @@ import { useOrder } from '../../context/OrderContext';
 function Checkout() {
   const navigate = useNavigate();
 
-  const { cartItems, totalPrice, clearCart } = useCart();
+  const { cartItems, totalPrice } = useCart();
 
   const { createOrder } = useOrder();
 
-  const [orderType, setOrderType] = useState('delivery');
-  const [paymentMethod, setPaymentMethod] = useState('COD');
+  const orderType = 'delivery';
+  const paymentMethod = 'ONLINE';
 
   const [deliveryLocation, setDeliveryLocation] = useState(null);
 
@@ -43,14 +43,14 @@ function Checkout() {
     }));
   };
 
-  const handleOrderTypeChange = (type) => {
-    setOrderType(type);
-    setError('');
+  // const handleOrderTypeChange = (type) => {
+  //   setOrderType(type);
+  //   setError('');
 
-    if (type === 'pickup') {
-      setDeliveryLocation(null);
-    }
-  };
+  //   if (type === 'pickup') {
+  //     setDeliveryLocation(null);
+  //   }
+  // };
 
   useEffect(() => {
     if (orderType !== 'delivery' || !deliveryLocation) {
@@ -113,13 +113,7 @@ function Checkout() {
   }, [deliveryLocation, orderType, cartItems]);
 
   useEffect(() => {
-    const baseAmount =
-      totalPrice + (orderType === 'delivery' ? deliveryCharge : 0);
-
-    if (paymentMethod !== 'ONLINE') {
-      setPayuConvenienceCharge(0);
-      return;
-    }
+    const baseAmount = totalPrice + deliveryCharge;
 
     const payuFee = baseAmount * 0.02;
     const gst = payuFee * 0.18;
@@ -127,7 +121,7 @@ function Checkout() {
     const totalPayuCharge = Number((payuFee + gst).toFixed(2));
 
     setPayuConvenienceCharge(totalPayuCharge);
-  }, [totalPrice, deliveryCharge, orderType, paymentMethod]);
+  }, [totalPrice, deliveryCharge]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -146,7 +140,7 @@ function Checkout() {
         unit: item.product.unit,
       }));
 
-      if (orderType === 'delivery' && !deliveryLocation) {
+      if (!deliveryLocation) {
         setError('Please select your delivery location on the map.');
         setLoading(false);
         return;
@@ -158,7 +152,7 @@ function Checkout() {
         orderType,
         items,
         paymentMethod,
-        deliveryLocation: orderType === 'delivery' ? deliveryLocation : null,
+        deliveryLocation,
       };
 
       console.log('Sending Order:', orderData);
@@ -176,13 +170,7 @@ function Checkout() {
 
       console.log('Order Created:', order);
 
-      if (paymentMethod === 'ONLINE') {
-        navigate(`/payment/${order.orderId}`);
-      } else {
-        clearCart();
-
-        navigate(`/delivery-status/${order.orderId}`);
-      }
+      navigate(`/payment/${order.orderId}`);
     } catch (error) {
       console.error('Create order failed:', error);
 
@@ -212,7 +200,6 @@ function Checkout() {
   const shop = cartItems[0];
 
   const hasDelivery = shop.shopDelivery;
-  const hasPickup = shop.shopPickup;
 
   return (
     <main className="checkout">
@@ -256,79 +243,38 @@ function Checkout() {
               ORDER TYPE
           ====================================== */}
 
-          {(hasDelivery || hasPickup) && (
+          {hasDelivery && (
             <section className="checkout_card checkout_order_type">
               <div className="checkout_card_header">
                 <div>
                   <span className="checkout_step">01</span>
 
                   <div>
-                    <h2>How would you like your order?</h2>
+                    <h2>Delivery</h2>
 
-                    <p>Choose delivery or pickup.</p>
+                    <p>Your order will be delivered to your doorstep.</p>
                   </div>
                 </div>
               </div>
 
               <div className="order_type_options">
-                {hasDelivery && (
-                  <button
-                    type="button"
-                    className={
-                      orderType === 'delivery'
-                        ? 'order_type_option selected'
-                        : 'order_type_option'
-                    }
-                    onClick={() => handleOrderTypeChange('delivery')}
-                  >
-                    <div className="order_type_icon">
-                      <span>⌖</span>
-                    </div>
+                <div className="order_type_option selected">
+                  <div className="order_type_icon">
+                    <span>⌖</span>
+                  </div>
 
-                    <div className="order_type_content">
-                      <strong>Delivery</strong>
+                  <div className="order_type_content">
+                    <strong>Delivery</strong>
 
-                      <span>Delivered to your doorstep</span>
+                    <span>Delivered to your doorstep</span>
 
-                      <small>
-                        {shop.deliverySettings?.estimatedDeliveryTime || 45}{' '}
-                        mins
-                      </small>
-                    </div>
+                    <small>
+                      {shop.deliverySettings?.estimatedDeliveryTime || 45} mins
+                    </small>
+                  </div>
 
-                    <span className="order_type_check">
-                      {orderType === 'delivery' ? '✓' : ''}
-                    </span>
-                  </button>
-                )}
-
-                {hasPickup && (
-                  <button
-                    type="button"
-                    className={
-                      orderType === 'pickup'
-                        ? 'order_type_option selected'
-                        : 'order_type_option'
-                    }
-                    onClick={() => handleOrderTypeChange('pickup')}
-                  >
-                    <div className="order_type_icon">
-                      <span>⌂</span>
-                    </div>
-
-                    <div className="order_type_content">
-                      <strong>Pickup</strong>
-
-                      <span>Collect from the shop</span>
-
-                      <small>Ready at the shop</small>
-                    </div>
-
-                    <span className="order_type_check">
-                      {orderType === 'pickup' ? '✓' : ''}
-                    </span>
-                  </button>
-                )}
+                  <span className="order_type_check">✓</span>
+                </div>
               </div>
             </section>
           )}
@@ -383,9 +329,7 @@ function Checkout() {
           <section className="checkout_card checkout_customer_card">
             <div className="checkout_card_header">
               <div>
-                <span className="checkout_step">
-                  {orderType === 'delivery' ? '03' : '02'}
-                </span>
+                <span className="checkout_step">03</span>
 
                 <div>
                   <h2>Your Details</h2>
@@ -450,62 +394,28 @@ function Checkout() {
               <div className="checkout_payment">
                 <div className="checkout_payment_header">
                   <div>
-                    <span className="checkout_step">
-                      {orderType === 'delivery' ? '04' : '03'}
-                    </span>
+                    <span className="checkout_step">04</span>
 
                     <div>
-                      <h2>Payment Method</h2>
+                      <h2>Payment</h2>
 
-                      <p>Choose how you want to pay.</p>
+                      <p>Pay securely online through PayU.</p>
                     </div>
                   </div>
                 </div>
 
                 <div className="payment_options">
-                  <button
-                    type="button"
-                    className={
-                      paymentMethod === 'COD'
-                        ? 'payment_option selected'
-                        : 'payment_option'
-                    }
-                    onClick={() => setPaymentMethod('COD')}
-                  >
-                    <div className="payment_option_icon">₹</div>
-
-                    <div className="payment_option_content">
-                      <strong>Cash on Delivery</strong>
-
-                      <span>Pay when your order arrives</span>
-                    </div>
-
-                    <span className="payment_check">
-                      {paymentMethod === 'COD' ? '✓' : ''}
-                    </span>
-                  </button>
-
-                  <button
-                    type="button"
-                    className={
-                      paymentMethod === 'ONLINE'
-                        ? 'payment_option selected'
-                        : 'payment_option'
-                    }
-                    onClick={() => setPaymentMethod('ONLINE')}
-                  >
+                  <div className="payment_option selected">
                     <div className="payment_option_icon">↗</div>
 
                     <div className="payment_option_content">
                       <strong>Online Payment</strong>
 
-                      <span>Pay securely online</span>
+                      <span>Pay securely online through PayU</span>
                     </div>
 
-                    <span className="payment_check">
-                      {paymentMethod === 'ONLINE' ? '✓' : ''}
-                    </span>
-                  </button>
+                    <span className="payment_check">✓</span>
+                  </div>
                 </div>
               </div>
 
@@ -626,7 +536,7 @@ function Checkout() {
                   ? 'Calculating...'
                   : `₹${(
                       totalPrice +
-                      (orderType === 'delivery' ? deliveryCharge : 0) +
+                      deliveryCharge +
                       payuConvenienceCharge
                     ).toFixed(2)}`}
               </strong>
