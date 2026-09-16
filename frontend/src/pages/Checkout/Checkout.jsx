@@ -1,6 +1,5 @@
 import './Checkout.css';
 
-import MapPicker from '../../components/map/MapPicker';
 import FlashMessage from '../../components/FlashMessage/FlashMessage';
 
 import { useEffect, useState } from 'react';
