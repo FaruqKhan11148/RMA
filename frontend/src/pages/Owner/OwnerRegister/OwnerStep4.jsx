@@ -10,6 +10,11 @@ function OwnerStep4() {
 
   const ownerData = savedOwnerData ? JSON.parse(savedOwnerData) : null;
 
+  const [bankHolderName, setBankHolderName] = useState('');
+  const [bankAccountNumber, setBankAccountNumber] = useState('');
+  const [confirmAccountNumber, setConfirmAccountNumber] = useState('');
+  const [ifscCode, setIfscCode] = useState('');
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -21,7 +26,10 @@ function OwnerStep4() {
 
           <p>Please start the shop registration again.</p>
 
-          <button onClick={() => navigate('/owner/register/step-1')}>
+          <button
+            type="button"
+            onClick={() => navigate('/owner/register/step-1')}
+          >
             Start Registration
           </button>
         </section>
@@ -33,16 +41,51 @@ function OwnerStep4() {
     try {
       setLoading(true);
       setError('');
-      console.log('FINAL OWNER DATA:', ownerData);
 
-      console.log({
-        ownerName: ownerData.ownerName,
-        shopName: ownerData.shopName,
-        email: ownerData.email,
-        address: ownerData.address,
-        phone: ownerData.phone,
-        password: ownerData.password,
-      });
+      const trimmedHolderName = bankHolderName.trim();
+      const trimmedAccountNumber = bankAccountNumber.trim();
+      const trimmedConfirmAccountNumber = confirmAccountNumber.trim();
+      const normalizedIfsc = ifscCode.trim().toUpperCase();
+
+      // ========================================
+      // VALIDATION
+      // ========================================
+
+      if (!trimmedHolderName) {
+        throw new Error('Account holder name is required');
+      }
+
+      if (!/^\d{9,18}$/.test(trimmedAccountNumber)) {
+        throw new Error('Enter a valid bank account number');
+      }
+
+      if (trimmedAccountNumber !== trimmedConfirmAccountNumber) {
+        throw new Error('Bank account numbers do not match');
+      }
+
+      if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(normalizedIfsc)) {
+        throw new Error('Enter a valid IFSC code');
+      }
+
+      // ========================================
+      // FINAL OWNER DATA
+      // ========================================
+
+      const finalOwnerData = {
+        ...ownerData,
+
+        bankHolderName: trimmedHolderName,
+
+        bankAccountNumber: trimmedAccountNumber,
+
+        ifscCode: normalizedIfsc,
+      };
+
+      console.log('FINAL OWNER DATA:', finalOwnerData);
+
+      // ========================================
+      // CREATE OWNER
+      // ========================================
 
       const response = await fetch(
         'https://rma-backend-bo4a.onrender.com/api/owners/register',
@@ -51,7 +94,7 @@ function OwnerStep4() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(ownerData),
+          body: JSON.stringify(finalOwnerData),
         },
       );
 
@@ -63,7 +106,7 @@ function OwnerStep4() {
 
       console.log('Owner registered successfully:', data);
 
-      // Registration is complete, so remove temporary registration data.
+      // Registration is complete
       sessionStorage.removeItem('rma_owner_registration');
 
       navigate('/owner/shop-created', {
@@ -97,10 +140,7 @@ function OwnerStep4() {
 
           <h1>Payment & Settlement</h1>
 
-          <p>
-            Connect your payment account so you can receive money from customer
-            orders.
-          </p>
+          <p>Add your bank account details for receiving future settlements.</p>
         </div>
 
         {/* PROGRESS */}
@@ -133,73 +173,163 @@ function OwnerStep4() {
           </div>
         </div>
 
-        {/* PAYMENT CARD */}
+        {/* BANK DETAILS */}
 
         <section className="payment_setup">
           <div className="payment_icon">₹</div>
 
-          <h2>Payment & Settlement</h2>
+          <h2>Bank Account Details</h2>
 
           <p>
-            RMA uses a secure payment provider to process customer payments and
-            manage seller settlements.
+            Enter the bank account where your future shop settlements will be
+            received.
           </p>
         </section>
 
-        {/* SETTLEMENT FLOW */}
+        <section className="bank_details_section">
+          {/* ACCOUNT HOLDER */}
 
-        <section className="settlement_section">
-          <h2>Settlement Setup</h2>
+          <div className="bank_field">
+            <label htmlFor="bankHolderName">Account Holder Name</label>
 
-          <div className="settlement_steps">
-            <div className="settlement_step">
-              <span>1</span>
-              <div>
-                <strong>Payment Account</strong>
-                <p>
-                  Set up your payment account for receiving customer payments.
-                </p>
-              </div>
-            </div>
+            <input
+              id="bankHolderName"
+              type="text"
+              value={bankHolderName}
+              onChange={(event) => setBankHolderName(event.target.value)}
+              placeholder="Enter account holder name"
+              autoComplete="name"
+            />
+          </div>
 
-            <div className="settlement_step">
-              <span>2</span>
-              <div>
-                <strong>Bank Account</strong>
-                <p>Connect your bank account for receiving settlements.</p>
-              </div>
-            </div>
+          {/* ACCOUNT NUMBER */}
 
-            <div className="settlement_step">
-              <span>3</span>
-              <div>
-                <strong>KYC Verification</strong>
-                <p>
-                  Complete the required verification with the payment provider.
-                </p>
-              </div>
-            </div>
+          <div className="bank_field">
+            <label htmlFor="bankAccountNumber">Account Number</label>
 
-            <div className="settlement_step">
-              <span>4</span>
-              <div>
-                <strong>Receive Settlements</strong>
-                <p>Once verified, receive settlements from customer orders.</p>
-              </div>
-            </div>
+            <input
+              id="bankAccountNumber"
+              type="text"
+              inputMode="numeric"
+              value={bankAccountNumber}
+              onChange={(event) =>
+                setBankAccountNumber(event.target.value.replace(/\D/g, ''))
+              }
+              placeholder="Enter bank account number"
+              autoComplete="off"
+              maxLength={18}
+            />
+          </div>
+
+          {/* CONFIRM ACCOUNT NUMBER */}
+
+          <div className="bank_field">
+            <label htmlFor="confirmAccountNumber">Confirm Account Number</label>
+
+            <input
+              id="confirmAccountNumber"
+              type="text"
+              inputMode="numeric"
+              value={confirmAccountNumber}
+              onChange={(event) =>
+                setConfirmAccountNumber(event.target.value.replace(/\D/g, ''))
+              }
+              placeholder="Re-enter bank account number"
+              autoComplete="off"
+              maxLength={18}
+            />
+          </div>
+
+          {/* IFSC */}
+
+          <div className="bank_field">
+            <label htmlFor="ifscCode">IFSC Code</label>
+
+            <input
+              id="ifscCode"
+              type="text"
+              value={ifscCode}
+              onChange={(event) =>
+                setIfscCode(
+                  event.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''),
+                )
+              }
+              placeholder="Enter IFSC code"
+              autoComplete="off"
+              maxLength={11}
+            />
           </div>
         </section>
 
         {/* SECURITY */}
 
         <section className="security_section">
-          <strong>Your financial information is secure</strong>
+          <strong>Your bank information is secure</strong>
 
           <p>
-            RMA does not need to store your banking credentials. Payment and
-            verification information will be handled through the payment
-            provider.
+            Your bank details are collected for settlement purposes. RMA does
+            not require your banking password, PIN, CVV, or OTP.
           </p>
+        </section>
+
+        {/* REVIEW STATUS */}
+
+        <section className="settlement_section">
+          <h2>Settlement Verification</h2>
+
+          <div className="settlement_steps">
+            <div className="settlement_step">
+              <span>1</span>
+
+              <div>
+                <strong>Submit Bank Details</strong>
+
+                <p>
+                  Your bank account details will be submitted with your shop
+                  registration.
+                </p>
+              </div>
+            </div>
+
+            <div className="settlement_step">
+              <span>2</span>
+
+              <div>
+                <strong>RMA Verification</strong>
+
+                <p>
+                  An RMA administrator will review and approve your settlement
+                  account.
+                </p>
+              </div>
+            </div>
+
+            <div className="settlement_step">
+              <span>3</span>
+
+              <div>
+                <strong>PayU Onboarding</strong>
+
+                <p>
+                  PayU child-merchant onboarding will be connected when the
+                  required PayU access is enabled.
+                </p>
+              </div>
+            </div>
+
+            <div className="settlement_step">
+              <span>4</span>
+
+              <div>
+                <strong>Receive Settlements</strong>
+
+                <p>
+                  Once the settlement account is activated, future eligible
+                  settlements can be processed.
+                </p>
+              </div>
+            </div>
+          </div>
         </section>
 
         {/* ERROR */}
@@ -224,7 +354,7 @@ function OwnerStep4() {
             onClick={handleCreateShop}
             disabled={loading}
           >
-            {loading ? 'Creating Shop...' : 'Create Shop'}
+            {loading ? 'Creating Shop...' : 'Submit & Create Shop'}
           </button>
         </div>
       </section>

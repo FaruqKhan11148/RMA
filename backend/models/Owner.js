@@ -128,6 +128,8 @@ const ownerSchema = new mongoose.Schema(
     },
 
     payment: {
+      // PAYMENT PROVIDER
+
       provider: {
         type: String,
         default: 'PAYU',
@@ -138,9 +140,62 @@ const ownerSchema = new mongoose.Schema(
         default: null,
       },
 
+      // ========================================
+      // BANK DETAILS
+      // ========================================
+
+      bankHolderName: {
+        type: String,
+        default: null,
+        trim: true,
+      },
+
+      bankAccountNumber: {
+        type: String,
+        default: null,
+        trim: true,
+      },
+
+      ifscCode: {
+        type: String,
+        default: null,
+        trim: true,
+        uppercase: true,
+      },
+
+      // ========================================
+      // RMA ADMIN APPROVAL
+      // ========================================
+
+      rmaApprovalStatus: {
+        type: String,
+        enum: ['PENDING', 'APPROVED', 'REJECTED'],
+        default: 'PENDING',
+      },
+
+      rmaApprovedAt: {
+        type: Date,
+        default: null,
+      },
+
+      rmaRejectedAt: {
+        type: Date,
+        default: null,
+      },
+
+      // ========================================
+      // PAYU ONBOARDING
+      // ========================================
+
       onboardingStatus: {
         type: String,
-        enum: ['NOT_STARTED', 'PENDING', 'VERIFIED', 'REJECTED'],
+        enum: [
+          'NOT_STARTED',
+          'PENDING',
+          'UNDER_REVIEW',
+          'VERIFIED',
+          'REJECTED',
+        ],
         default: 'NOT_STARTED',
       },
 
@@ -155,6 +210,24 @@ const ownerSchema = new mongoose.Schema(
         enum: ['NOT_STARTED', 'PENDING', 'VERIFIED', 'REJECTED'],
         default: 'NOT_STARTED',
       },
+
+      // ========================================
+      // FUTURE PAYU CHILD MERCHANT
+      // ========================================
+
+      payuChildMerchantId: {
+        type: String,
+        default: null,
+      },
+
+      payuChildMerchantUuid: {
+        type: String,
+        default: null,
+      },
+
+      // ========================================
+      // EXISTING PAYU FIELDS
+      // ========================================
 
       onboardingUrl: {
         type: String,

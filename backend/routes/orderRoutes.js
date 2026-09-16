@@ -218,6 +218,50 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.get('/owner/:ownerId/daily-reward', async (req, res) => {
+  try {
+    const { ownerId } = req.params;
+
+    if (!ownerId) {
+      return res.status(400).json({
+        message: 'Owner ID is required',
+      });
+    }
+
+    const now = new Date();
+
+    const startOfDay = new Date(now);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const startOfNextDay = new Date(startOfDay);
+    startOfNextDay.setDate(startOfNextDay.getDate() + 1);
+
+    const completedOrders = await Order.countDocuments({
+      ownerId,
+      status: 'Completed',
+      completedAt: {
+        $gte: startOfDay,
+        $lt: startOfNextDay,
+      },
+    });
+
+    return res.status(200).json({
+      completedOrders,
+      targetOrders: 60,
+      rewardAmount: 199,
+      rewardUnlocked: completedOrders >= 60,
+      startOfDay,
+      startOfNextDay,
+    });
+  } catch (error) {
+    console.error('Daily reward order count failed:', error);
+
+    return res.status(500).json({
+      message: 'Failed to fetch daily reward progress',
+    });
+  }
+});
+
 // GET ORDERS FOR ONE OWNER
 router.get('/owner/:ownerId', async (req, res) => {
   try {

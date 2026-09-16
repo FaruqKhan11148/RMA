@@ -134,6 +134,18 @@ function OwnerSettings() {
         },
       ],
     },
+    {
+      title: 'Offers & Rewards',
+      description: 'Complete offers and earn rewards from RMA',
+      items: [
+        {
+          title: 'RMA Rewards',
+          description:
+            'Complete orders, refer shop owners and track your rewards',
+          path: '/owner/offers',
+        },
+      ],
+    },
   ];
 
   return (

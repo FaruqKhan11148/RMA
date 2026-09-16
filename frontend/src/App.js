@@ -24,6 +24,7 @@ import OwnerSettings from './pages/Owner/OwnerSettings/OwnerSettings';
 import OwnerLogin from './pages/Owner/OwnerLogin/OwnerLogin';
 import OwnerDashboard from './pages/Owner/OwnerDashboard/OwnerDashboard';
 import OwnerOrders from './pages/Owner/OwnerOrders/OwnerOrders';
+import Offers from './pages/Owner/Offers/Offers';
 import ShopCreated from './pages/Owner/ShopCreated/ShopCreated';
 import Location from './pages/Owner/OwnerSettings/Shop/Location';
 import OpenClosed from './pages/Owner/OwnerSettings/Shop/OpenClosed';
@@ -144,6 +145,8 @@ function AppLayout() {
             <Route path="/owner/dashboard" element={<OwnerDashboard />} />
 
             <Route path="/owner/orders" element={<OwnerOrders />} />
+
+            <Route path="/owner/offers" element={<Offers />} />
 
             {/* ---------- ACCOUNT SETTINGS ---------- */}
 

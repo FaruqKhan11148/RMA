@@ -899,3 +899,47 @@
     transition: none;
   }
 }
+
+/* ========================================
+   BANK DETAILS
+======================================== */
+
+.bank_details_section {
+  margin-top: 28px;
+}
+
+.bank_field {
+  margin-bottom: 18px;
+}
+
+.bank_field label {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+}
+
+.bank_field input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 13px;
+  border: 1px solid #d9d9d9;
+  border-radius: 9px;
+  background: #fff;
+  color: #222;
+  font-size: 14px;
+  outline: none;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.bank_field input:focus {
+  border-color: #2e7d32;
+  box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.08);
+}
+
+.bank_field input::placeholder {
+  color: #aaa;
+}

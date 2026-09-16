@@ -18,3 +18,18 @@ body {
   padding-top: 0px;
   padding-bottom: 0px;
 }
+
+button,
+a,
+input,
+textarea,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus,
+button:focus-visible,
+a:focus,
+a:focus-visible {
+  outline: none;
+}

@@ -164,12 +164,46 @@ router.post('/register', async (req, res) => {
       pickup,
       products,
       location,
+
+      // BANK DETAILS
+      bankHolderName,
+      bankAccountNumber,
+      ifscCode,
     } = req.body;
 
     // Check required fields
     if (!ownerName || !shopName || !email || !address || !phone || !password) {
       return res.status(400).json({
         message: 'Required fields are missing',
+      });
+    }
+
+    // Check bank details
+    if (!bankHolderName || !bankAccountNumber || !ifscCode) {
+      return res.status(400).json({
+        message: 'Bank details are required',
+      });
+    }
+
+    const normalizedBankHolderName = bankHolderName.trim();
+    const normalizedBankAccountNumber = bankAccountNumber.trim();
+    const normalizedIfscCode = ifscCode.trim().toUpperCase();
+
+    if (!normalizedBankHolderName) {
+      return res.status(400).json({
+        message: 'Bank account holder name is required',
+      });
+    }
+
+    if (!/^\d{9,18}$/.test(normalizedBankAccountNumber)) {
+      return res.status(400).json({
+        message: 'Invalid bank account number',
+      });
+    }
+
+    if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(normalizedIfscCode)) {
+      return res.status(400).json({
+        message: 'Invalid IFSC code',
       });
     }
 
@@ -252,6 +286,26 @@ router.post('/register', async (req, res) => {
         latitude: location.latitude,
         longitude: location.longitude,
       },
+
+      // PAYMENT / SETTLEMENT
+      payment: {
+        provider: 'PAYU',
+
+        bankHolderName: normalizedBankHolderName,
+        bankAccountNumber: normalizedBankAccountNumber,
+        ifscCode: normalizedIfscCode,
+
+        // Temporary RMA approval
+        rmaApprovalStatus: 'PENDING',
+
+        // Real PayU onboarding will be connected later
+        onboardingStatus: 'NOT_STARTED',
+        kycStatus: 'NOT_STARTED',
+        bankStatus: 'PENDING',
+
+        payuChildMerchantId: null,
+        payuChildMerchantUuid: null,
+      },
     });
 
     // Send safe owner data to frontend
@@ -272,6 +326,14 @@ router.post('/register', async (req, res) => {
         categories: owner.categories,
         products: owner.products,
         location: owner.location,
+
+        payment: {
+          provider: owner.payment.provider,
+          rmaApprovalStatus: owner.payment.rmaApprovalStatus,
+          onboardingStatus: owner.payment.onboardingStatus,
+          kycStatus: owner.payment.kycStatus,
+          bankStatus: owner.payment.bankStatus,
+        },
       },
     });
   } catch (error) {
