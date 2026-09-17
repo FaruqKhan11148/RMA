@@ -1,280 +1,142 @@
-/* =========================================================
-   RMA NAVBAR
-   Mobile-first design
-   ========================================================= */
-
-.navbar {
+.rma_navbar {
   position: fixed;
   top: 0;
   left: 0;
-
   width: 100%;
-  height: 60px;
+  z-index: 1000;
+
+  transition:
+    transform 0.28s ease,
+    opacity 0.28s ease;
+}
+
+.rma_navbar_visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.rma_navbar_hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.rma_navbar_inner {
+  width: 100%;
+  min-height: 64px;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  padding: 0 14px;
+  padding: 8px 18px;
 
-  background: rgba(255, 255, 255, 0.96);
-  border-bottom: 1px solid var(--rma-border-light);
-
-  box-shadow: var(--rma-shadow-xs);
-
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-
-  box-sizing: border-box;
-
-  z-index: var(--rma-z-header);
-}
-
-/* =========================================================
-   LOGO
-   ========================================================= */
-
-.navbar_logo {
-  margin: 0;
-  padding: 0;
-
-  border: none;
   background: transparent;
 
-  color: var(--rma-primary-dark);
+  box-sizing: border-box;
+}
 
-  font-size: 22px;
-  font-weight: var(--rma-weight-extrabold);
+.rma_navbar_brand {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 
-  letter-spacing: -0.5px;
+.rma_navbar_brand_name {
+  color: #00a63c;
+  font-size: 25px;
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.8px;
+}
+
+.rma_navbar_brand_tagline {
+  margin-top: 4px;
+
+  color: #fefefe;
+  font-size: 7px;
+  font-weight: 700;
+  line-height: 1;
+
+  letter-spacing: 0.8px;
+}
+
+.rma_navbar_profile {
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+
+  background: transparent;
+  color: #fefefe;
 
   cursor: pointer;
 
   transition:
-    transform var(--rma-transition-fast),
-    color var(--rma-transition-normal);
+    background 0.2s ease,
+    transform 0.2s ease;
 }
 
-.navbar_logo:hover {
-  color: var(--rma-primary);
+.rma_navbar_profile svg {
+  width: 18px;
+  height: 18px;
 }
 
-.navbar_logo:active {
+.rma_navbar_profile:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.rma_navbar_profile:active {
   transform: scale(0.95);
 }
 
-/* =========================================================
-   RIGHT SIDE
-   ========================================================= */
-
-.navbar_right {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
-
-/* =========================================================
-   OWNER REGISTER
-   ========================================================= */
-
-.navbar_owner_register_button {
-  height: 36px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 0 11px;
-
-  border: 1px solid var(--rma-primary);
-  border-radius: var(--rma-radius-sm);
-
-  background: var(--rma-primary);
-  color: var(--rma-text-white);
-
-  font-size: 12px;
-  font-weight: var(--rma-weight-semibold);
-
-  white-space: nowrap;
-
-  cursor: pointer;
-
-  box-shadow: 0 3px 10px rgba(22, 128, 58, 0.16);
-
-  transition:
-    background var(--rma-transition-normal),
-    border-color var(--rma-transition-normal),
-    transform var(--rma-transition-fast),
-    box-shadow var(--rma-transition-normal);
-}
-
-.navbar_owner_register_button:hover {
-  background: var(--rma-primary-dark);
-  border-color: var(--rma-primary-dark);
-
-  box-shadow: 0 5px 14px rgba(22, 128, 58, 0.22);
-}
-
-.navbar_owner_register_button:active {
-  transform: scale(0.96);
-}
-
-/* =========================================================
-   LANGUAGE SELECTOR
-   ========================================================= */
-
-.language_selector {
-  height: 36px;
-
-  max-width: 82px;
-
-  padding: 0 7px;
-
-  border: 1px solid var(--rma-border);
-  border-radius: var(--rma-radius-sm);
-
-  outline: none;
-
-  background: var(--rma-card);
-  color: var(--rma-text-primary);
-
-  font-size: 12px;
-  font-weight: var(--rma-weight-medium);
-
-  cursor: pointer;
-
-  transition:
-    border-color var(--rma-transition-normal),
-    background var(--rma-transition-normal),
-    box-shadow var(--rma-transition-normal);
-}
-
-.language_selector:hover {
-  border-color: var(--rma-border-dark);
-  background: var(--rma-bg);
-}
-
-.language_selector:focus {
-  border-color: var(--rma-primary);
-
-  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.1);
-}
-
-/* =========================================================
-   PROFILE
-   ========================================================= */
-
-.navbar_profile {
-  height: 36px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 0 11px;
-
-  border: 1px solid var(--rma-border);
-  border-radius: var(--rma-radius-sm);
-
-  background: var(--rma-card);
-  color: var(--rma-text-primary);
-
-  font-size: 12px;
-  font-weight: var(--rma-weight-semibold);
-
-  cursor: pointer;
-
-  transition:
-    background var(--rma-transition-normal),
-    border-color var(--rma-transition-normal),
-    color var(--rma-transition-normal),
-    transform var(--rma-transition-fast);
-}
-
-.navbar_profile:hover {
-  background: var(--rma-primary-light);
-  border-color: #b9dfc4;
-  color: var(--rma-primary-dark);
-}
-
-.navbar_profile:active {
-  transform: scale(0.96);
-}
-
-/* =========================================================
-   TABLET / DESKTOP
-   ========================================================= */
-
-@media (min-width: 768px) {
-  .navbar {
-    height: 68px;
-    padding: 0 var(--rma-desktop-padding);
+@media (max-width: 600px) {
+  .rma_navbar_inner {
+    min-height: 58px;
+    padding: 7px 14px;
   }
 
-  .navbar_logo {
-    font-size: 24px;
+  .rma_navbar_brand_name {
+    font-size: 22px;
   }
 
-  .navbar_right {
-    gap: 10px;
+  .rma_navbar_brand_tagline {
+    font-size: 7px;
+    letter-spacing: 0.7px;
   }
 
-  .navbar_owner_register_button,
-  .language_selector,
-  .navbar_profile {
-    height: 40px;
+  .rma_navbar_profile {
+    width: 36px;
+    height: 36px;
   }
 
-  .navbar_owner_register_button {
-    padding: 0 14px;
-    font-size: 13px;
-  }
-
-  .language_selector {
-    max-width: none;
-    padding: 0 9px;
-    font-size: 13px;
-  }
-
-  .navbar_profile {
-    padding: 0 14px;
-    font-size: 13px;
+  .rma_navbar_profile svg {
+    width: 17px;
+    height: 17px;
   }
 }
 
-/* =========================================================
-   SMALL PHONES
-   ========================================================= */
+body.rma_navbar_offset {
+  padding-top: 64px;
+}
 
-@media (max-width: 380px) {
-  .navbar {
-    padding: 0 10px;
-  }
+.rma_navbar_inner_page .rma_navbar_brand_tagline {
+  color: #111111;
+}
 
-  .navbar_right {
-    gap: 5px;
-  }
+.rma_navbar_inner_page .rma_navbar_profile {
+  border-color: #111111;
+  color: #111111;
+  background: transparent;
+}
 
-  .navbar_logo {
-    font-size: 20px;
-  }
-
-  .navbar_owner_register_button {
-    height: 34px;
-    padding: 0 8px;
-    font-size: 11px;
-  }
-
-  .language_selector {
-    height: 34px;
-    max-width: 70px;
-    padding: 0 5px;
-    font-size: 11px;
-  }
-
-  .navbar_profile {
-    height: 34px;
-    padding: 0 8px;
-    font-size: 11px;
-  }
+.rma_navbar_inner_page .rma_navbar_profile:hover {
+  background: rgba(0, 0, 0, 0.06);
 }

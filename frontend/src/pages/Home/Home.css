@@ -15,7 +15,7 @@
 
 .rma_home_header {
   position: absolute;
-  top: 0;
+  top: 30px;
   left: 0;
   right: 0;
   z-index: 5;

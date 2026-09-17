@@ -307,42 +307,6 @@ function Home() {
 
       <section className="home_hero">
         <header className="rma_home_header">
-          <div className="rma_header_top">
-            <div className="rma_brand">
-              <span className="rma_brand_name">RMA</span>
-              <span className="rma_brand_tagline">RAW MEAT APPLICATION</span>
-            </div>
-
-            <button
-              className="rma_profile_button"
-              onClick={() => navigate('/profile')}
-              aria-label="Profile"
-            >
-              <svg
-                width="22"
-                height="22"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle
-                  cx="12"
-                  cy="8"
-                  r="4"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                />
-
-                <path
-                  d="M4 21C4.8 16.8 7.4 14 12 14C16.6 14 19.2 16.8 20 21"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </button>
-          </div>
-
           <button className="rma_location_button" onClick={handleLocationClick}>
             <span className="rma_location_arrow">
               <svg

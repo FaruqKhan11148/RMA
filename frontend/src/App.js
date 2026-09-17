@@ -93,14 +93,11 @@ import ShopPromotion from './pages/Owner/OwnerSettings/ShopPromotion/ShopPromoti
 function AppLayout() {
   const location = useLocation();
 
-  const hideNavbar =
-    location.pathname === '/' || location.pathname === '/find-shop';
-
   return (
     <>
       <ScrollToTop />
 
-      {!hideNavbar && <Navbar />}
+      <Navbar />
 
       <div className="app_content">
         <Routes>

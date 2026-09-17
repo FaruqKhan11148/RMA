@@ -6,6 +6,8 @@ import { useNavigate } from 'react-router-dom';
 function Offers() {
   const navigate = useNavigate();
 
+  const shopOwner = JSON.parse(localStorage.getItem('rma_owner'));
+
   const targetOrders = 60;
 
   const [completedOrders, setCompletedOrders] = useState(0);
@@ -18,8 +20,6 @@ function Offers() {
   const progress = Math.min((completedOrders / targetOrders) * 100, 100);
 
   useEffect(() => {
-    const shopOwner = JSON.parse(localStorage.getItem('rma_owner'));
-
     if (!shopOwner?.id) {
       setOrdersError('Owner information not found.');
       setLoadingOrders(false);
@@ -60,11 +60,9 @@ function Offers() {
     fetchDailyRewardProgress();
   }, []);
 
-  const [copied, setCopied] = useState(false);
+  const shopId = shopOwner?.shopId || '';
 
-  // Temporary owner/shop ID.
-  // Later this will come from the logged-in owner.
-  const shopId = 'RMA-000005';
+  const [copied, setCopied] = useState(false);
 
   const handleCopyShopId = async () => {
     try {

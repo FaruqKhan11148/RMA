@@ -590,3 +590,148 @@
     transition: none;
   }
 }
+
+/* ==========================================
+   LOGIN BOTTOM SHEET
+========================================== */
+
+.profile_login_overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  animation: profile_login_overlay_in 0.2s ease;
+}
+
+.profile_login_sheet {
+  width: 100%;
+  max-width: 520px;
+  padding: 12px 20px 24px;
+  border-radius: 22px 22px 0 0;
+  background: #ffffff;
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.15);
+  animation: profile_login_sheet_up 0.25s ease;
+}
+
+.profile_login_sheet_handle {
+  width: 42px;
+  height: 4px;
+  margin: 2px auto 20px;
+  border-radius: 999px;
+  background: #d5d5d5;
+}
+
+.profile_login_sheet_header {
+  margin-bottom: 18px;
+}
+
+.profile_login_sheet_header h2 {
+  margin: 0;
+  color: #18231c;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.profile_login_sheet_header p {
+  margin: 6px 0 0;
+  color: #718078;
+  font-size: 14px;
+}
+
+.profile_login_options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profile_login_option {
+  width: 100%;
+  min-height: 68px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border: 1px solid #e4e9e5;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #18231c;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.profile_login_option:hover {
+  background: #f5faf6;
+  border-color: #b9ddc4;
+}
+
+.profile_login_option:active {
+  transform: scale(0.99);
+}
+
+.profile_login_option > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profile_login_option strong {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.profile_login_option span {
+  color: #718078;
+  font-size: 13px;
+}
+
+.profile_login_option > span:last-child {
+  flex-shrink: 0;
+  color: #15803d;
+  font-size: 25px;
+  line-height: 1;
+}
+
+.profile_login_cancel {
+  width: 100%;
+  margin-top: 14px;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  background: #eef5f0;
+  color: #15803d;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.profile_login_cancel:active {
+  transform: scale(0.99);
+}
+
+@keyframes profile_login_overlay_in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes profile_login_sheet_up {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
