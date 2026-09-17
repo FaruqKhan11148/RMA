@@ -58,7 +58,7 @@ function Offers() {
     };
 
     fetchDailyRewardProgress();
-  }, []);
+  }, [shopOwner.id]);
 
   const shopId = shopOwner?.shopId || '';
 

@@ -1,7 +1,7 @@
 import './App.css';
 import './index.css';
 
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import OwnerProtectedRoute from './pages/Owner/OwnerProtectedRoute/OwnerProtectedRoute';
 import ScrollToTop from './components/ScrollToTop/ScrollToTop';
 
@@ -91,8 +91,6 @@ import Terms from './pages/Terms/Terms';
 import ShopPromotion from './pages/Owner/OwnerSettings/ShopPromotion/ShopPromotion';
 
 function AppLayout() {
-  const location = useLocation();
-
   return (
     <>
       <ScrollToTop />
