@@ -791,3 +791,8 @@
     transition: none;
   }
 }
+
+.scanner_back_button{
+  background-color: #090d0b00;
+  border: none;
+}

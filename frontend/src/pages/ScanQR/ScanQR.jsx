@@ -284,6 +284,14 @@ function ScanQR() {
     <main className="scan_qr">
       <section className="scan_qr_card">
         <div id="qr-gallery-reader" style={{ display: 'none' }} />
+        <button
+          type="button"
+          className="scanner_back_button"
+          onClick={() => navigate(-1)}
+          aria-label="Go back"
+        >
+          ← Back
+        </button>
         {/* =========================================
             HEADER
         ========================================= */}

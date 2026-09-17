@@ -150,7 +150,7 @@ function Shop() {
               onClick={() => navigate(-1)}
               aria-label="Go back"
             >
-              ←
+              ← Back
             </button>
 
             <span className="shop_hero_id">{shop.shopId}</span>
