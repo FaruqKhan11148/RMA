@@ -2272,10 +2272,9 @@
    SMALL PHONES
    ========================================================= */
 
-@media (max-width: 380px) {
+@media (max-width: 420px) {
   .home {
     padding-left: 12px;
-
     padding-right: 12px;
   }
 
