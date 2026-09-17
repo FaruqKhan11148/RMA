@@ -37,13 +37,17 @@
 
   display: flex;
   flex: 1;
+
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  gap: 3px;
 
   min-width: 0;
   min-height: 48px;
 
-  padding: 6px 4px;
+  padding: 5px 4px;
 
   border: none;
   border-radius: 12px;
@@ -60,7 +64,6 @@
 
   cursor: pointer;
 
-  /* Remove mobile browser tap highlight */
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   user-select: none;
@@ -69,6 +72,65 @@
     color 0.2s ease,
     background 0.2s ease,
     transform 0.2s ease;
+}
+
+/* =========================================================
+   NAV ICON
+   ========================================================= */
+
+.nav_icon {
+  width: 21px;
+  height: 21px;
+
+  flex-shrink: 0;
+
+  stroke-width: 2;
+}
+
+.nav_icon_wrapper {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 21px;
+  height: 21px;
+}
+
+/* =========================================================
+   CART BADGE
+   ========================================================= */
+
+.cart_badge {
+  position: absolute;
+
+  top: -10px;
+  right: -8px;
+
+  min-width: 15px;
+  height: 15px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 2px 5px;
+
+  border-radius: 999px;
+
+  background: #16803a;
+  color: #ffffff;
+
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+
+  box-sizing: border-box;
+}
+
+.nav_item.active .nav_icon {
+  stroke-width: 2.4;
 }
 
 .nav_item:focus {
@@ -198,6 +260,15 @@
   .nav_item.active::before {
     width: 18px;
   }
+
+  .nav_icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .nav_item {
+    gap: 2px;
+  }
 }
 
 /* =========================================================
@@ -207,6 +278,11 @@
 @media (max-width: 340px) {
   .nav_item {
     font-size: 9px;
+  }
+
+  .nav_icon {
+    width: 19px;
+    height: 19px;
   }
 }
 

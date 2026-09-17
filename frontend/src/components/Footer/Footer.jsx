@@ -1,6 +1,8 @@
 import './Footer.css';
 
 import { NavLink } from 'react-router-dom';
+import { Home, Store, ShoppingCart, ClipboardList, Bike } from 'lucide-react';
+
 import { useLanguage } from '../../context/LanguageContext';
 import { useCart } from '../../context/CartContext';
 
@@ -15,6 +17,7 @@ function Footer() {
         end
         className={({ isActive }) => `nav_item ${isActive ? 'active' : ''}`}
       >
+        <Home className="nav_icon" />
         <span>{t.bottomNav.home}</span>
       </NavLink>
 
@@ -23,6 +26,7 @@ function Footer() {
         end
         className={({ isActive }) => `nav_item ${isActive ? 'active' : ''}`}
       >
+        <Store className="nav_icon" />
         <span>{t.bottomNav.shops}</span>
       </NavLink>
 
@@ -31,7 +35,13 @@ function Footer() {
         end
         className={({ isActive }) => `nav_item ${isActive ? 'active' : ''}`}
       >
-        <span>Cart {totalItems > 0 && `(${totalItems})`}</span>
+        <div className="nav_icon_wrapper">
+          <ShoppingCart className="nav_icon" />
+
+          {totalItems > 0 && <span className="cart_badge">{totalItems}</span>}
+        </div>
+
+        <span>Cart</span>
       </NavLink>
 
       <NavLink
@@ -39,6 +49,7 @@ function Footer() {
         end
         className={({ isActive }) => `nav_item ${isActive ? 'active' : ''}`}
       >
+        <ClipboardList className="nav_icon" />
         <span>{t.bottomNav.orders}</span>
       </NavLink>
 
@@ -46,6 +57,7 @@ function Footer() {
         to="/delivery/orders"
         className={({ isActive }) => `nav_item ${isActive ? 'active' : ''}`}
       >
+        <Bike className="nav_icon" />
         <span>Delivery</span>
       </NavLink>
     </nav>
