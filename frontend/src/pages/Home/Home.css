@@ -683,18 +683,12 @@
 
 .home_actions {
   display: flex;
+  flex-direction: row;
+  gap: 9px;
 
-  flex-direction: column;
-
-  gap: 11px;
-
-  /*
-    This creates the space between the
-    image hero and Scan QR button.
-  */
+  width: 100%;
 
   margin-top: 22px;
-
   margin-bottom: 34px;
 }
 
@@ -709,14 +703,15 @@
 .qr_action {
   position: relative;
 
-  width: 100%;
+  width: auto;
+  flex: 1;
+  min-width: 0;
 
   display: flex;
   align-items: center;
+  gap: 9px;
 
-  gap: 14px;
-
-  padding: 17px 16px;
+  padding: 12px 10px;
 
   border: 1px solid #b9dfc4;
   border-radius: var(--rma-radius-lg);
@@ -729,11 +724,8 @@
   );
 
   color: var(--rma-text);
-
   text-align: left;
-
   box-sizing: border-box;
-
   cursor: pointer;
 
   box-shadow:
@@ -791,8 +783,8 @@
 .action_icon {
   position: relative;
 
-  width: 56px;
-  height: 56px;
+  width: 42px;
+  height: 42px;
 
   display: flex;
   align-items: center;
@@ -801,10 +793,9 @@
   flex-shrink: 0;
 
   border: 1px solid #acd4b7;
-  border-radius: 15px;
+  border-radius: 12px;
 
   background: rgba(255, 255, 255, 0.82);
-
   color: var(--rma-primary-dark);
 
   box-shadow: 0 3px 9px rgba(22, 128, 58, 0.09);
@@ -813,48 +804,12 @@
 }
 
 .qr_icon_pattern {
-  position: relative;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
   width: 30px;
   height: 30px;
 
-  border: 3px solid var(--rma-primary-dark);
-  border-radius: 4px;
-
   color: var(--rma-primary-dark);
 
-  font-size: 8px;
-  font-weight: var(--rma-weight-extrabold);
-
-  letter-spacing: -0.5px;
-}
-
-.qr_icon_pattern::before,
-.qr_icon_pattern::after {
-  content: '';
-
-  position: absolute;
-
-  width: 7px;
-  height: 7px;
-
-  border: 2px solid var(--rma-primary-dark);
-
-  background: #ffffff;
-}
-
-.qr_icon_pattern::before {
-  top: -6px;
-  left: -6px;
-}
-
-.qr_icon_pattern::after {
-  right: -6px;
-  bottom: -6px;
+  stroke-width: 2;
 }
 
 /* =========================================================
@@ -867,27 +822,24 @@
 
 .action_badge {
   display: inline-block;
-
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 
   color: var(--rma-primary-dark);
 
-  font-size: 8px;
+  font-size: 7px;
   font-weight: var(--rma-weight-extrabold);
 
-  letter-spacing: 0.8px;
-
+  letter-spacing: 0.5px;
   line-height: 1;
 }
 
 .action_content h2 {
-  margin: 0 0 4px;
+  margin: 0 0 2px;
 
   color: var(--rma-text);
 
-  font-size: 17px;
-
-  line-height: 1.25;
+  font-size: 14px;
+  line-height: 1.2;
 
   font-weight: var(--rma-weight-bold);
 }
@@ -897,9 +849,8 @@
 
   color: var(--rma-text-secondary);
 
-  font-size: 12px;
-
-  line-height: 1.45;
+  font-size: 9px;
+  line-height: 1.3;
 }
 
 /* =========================================================
@@ -913,8 +864,8 @@
 
   margin-left: auto;
 
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
 
   display: flex;
   align-items: center;
@@ -928,7 +879,7 @@
 
   color: var(--rma-primary-dark);
 
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 600;
 
   transition:
@@ -948,12 +899,14 @@
 
 .find_action {
   position: relative;
-  width: 100%;
+  width: auto;
+  flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 9px;
 
-  padding: 15px 16px;
+  padding: 12px 10px;
 
   border: 1px solid var(--rma-border);
   border-radius: var(--rma-radius-lg);
@@ -1013,8 +966,8 @@
   position: relative;
   z-index: 1;
 
-  width: 52px;
-  height: 52px;
+  width: 42px;
+  height: 42px;
 
   display: flex;
   align-items: center;
@@ -1104,7 +1057,7 @@
 
   color: var(--rma-text);
 
-  font-size: 16px;
+  font-size: 14px;
   font-weight: var(--rma-weight-bold);
 
   line-height: 1.2;
@@ -1113,9 +1066,9 @@
 .find_description {
   color: var(--rma-text-muted);
 
-  font-size: 11px;
+  font-size: 9px;
 
-  line-height: 1.4;
+  line-height: 1.3;
 }
 
 /* =========================================================
@@ -1124,40 +1077,6 @@
 
 .my_shops {
   margin-top: 26px;
-}
-
-.section_title {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  margin-bottom: 12px;
-}
-
-.section_title h2 {
-  margin: 0;
-
-  color: var(--rma-text);
-
-  font-size: 18px;
-  font-weight: var(--rma-weight-bold);
-
-  line-height: 1.2;
-}
-
-.section_title button {
-  padding: 0;
-
-  border: none;
-  background: transparent;
-
-  color: var(--rma-primary);
-
-  font-family: inherit;
-  font-size: 11px;
-  font-weight: var(--rma-weight-semibold);
-
-  cursor: pointer;
 }
 
 .section_title button:hover {
@@ -2120,8 +2039,8 @@
   }
 
   .qr_icon_pattern {
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
   }
 
   .action_content {
@@ -2353,7 +2272,7 @@
    SMALL PHONES
    ========================================================= */
 
-@media (max-width: 360px) {
+@media (max-width: 380px) {
   .home {
     padding-left: 12px;
 
@@ -2411,20 +2330,47 @@
   /* QR */
 
   .qr_action {
-    min-height: 84px;
+    min-height: 100px;
+    height: 100px;
 
-    padding: 14px 12px;
+    padding: 10px 8px;
 
-    gap: 11px;
+    gap: 6px;
   }
 
   .action_icon {
-    width: 48px;
-    height: 48px;
+    width: 38px;
+    height: 38px;
+  }
+
+  .action_content {
+    min-width: 0;
+  }
+
+  .action_badge {
+    font-size: 7px;
+    line-height: 1;
+
+    margin-bottom: 3px;
   }
 
   .action_content h2 {
-    font-size: 16px;
+    font-size: 13px;
+    line-height: 1.15;
+
+    margin-bottom: 3px;
+  }
+
+  .action_content p {
+    font-size: 8px;
+    line-height: 1.25;
+  }
+
+  .action_arrow {
+    width: 24px;
+    height: 24px;
+
+    font-size: 14px;
   }
 
   /* SHOP */
@@ -2439,23 +2385,48 @@
     padding: 8px 10px;
   }
 
+  /* FIND SHOP */
+
   .find_action {
-    min-height: 80px;
-    padding: 13px 12px;
-    gap: 11px;
+    min-height: 100px;
+    height: 100px;
+
+    padding: 10px 8px;
+
+    gap: 6px;
   }
 
   .find_icon {
-    width: 47px;
-    height: 47px;
+    width: 38px;
+    height: 38px;
+  }
+
+  .find_content {
+    min-width: 0;
+  }
+
+  .find_badge {
+    font-size: 7px;
+    line-height: 1;
+
+    margin-bottom: 3px;
   }
 
   .find_title {
-    font-size: 14px;
+    font-size: 13px;
+    line-height: 1.15;
   }
 
   .find_description {
-    font-size: 10px;
+    font-size: 8px;
+    line-height: 1.25;
+  }
+
+  .find_arrow {
+    width: 24px;
+    height: 24px;
+
+    font-size: 14px;
   }
 
   .rma_brand_name {
@@ -2484,7 +2455,7 @@
   }
 
   .nearby_shops_header p {
-    max-width: 210px;
+    max-width: 260px;
   }
 
   .nearby_shop_card {
