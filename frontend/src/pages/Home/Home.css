@@ -992,8 +992,7 @@
   font-weight: 400;
 
   line-height: 1;
-
-  transform: rotate(-20deg);
+  padding: 0px 0px 7px 0px;
 }
 
 .find_content {
@@ -1480,7 +1479,7 @@
 
   overflow: hidden;
 
-  color: #7a827c;
+  color: #000000;
   font-size: 11px;
   line-height: 1.35;
   text-overflow: ellipsis;
@@ -1492,7 +1491,7 @@
   align-items: center;
   gap: 5px;
 
-  color: #737b75;
+  color: #000000;
   font-size: 10px;
   font-weight: var(--rma-weight-semibold);
 }
@@ -2333,8 +2332,9 @@
     height: 100px;
 
     padding: 10px 8px;
-
     gap: 6px;
+
+    border: 2px solid green;
   }
 
   .action_icon {
@@ -2391,8 +2391,8 @@
     height: 100px;
 
     padding: 10px 8px;
-
     gap: 6px;
+    border: 2px solid green;
   }
 
   .find_icon {
@@ -2460,6 +2460,7 @@
   .nearby_shop_card {
     width: 225px;
     min-width: 225px;
+    border: 2px solid #0c700c;
   }
 
   .popular_products {
@@ -2473,6 +2474,7 @@
   .popular_product_card {
     width: 190px;
     min-width: 190px;
+    border: 2px solid green;
   }
 
   .popular_product_image {

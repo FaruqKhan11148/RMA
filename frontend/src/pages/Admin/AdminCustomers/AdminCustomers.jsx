@@ -90,9 +90,7 @@ function AdminCustomers() {
       setCustomerDetailsError('');
 
       const response = await fetch(
-        `https://rma-backend-bo4a.onrender.com/api/admin/customers/${encodeURIComponent(
-          phone,
-        )}`,
+        `https://rma-backend-bo4a.onrender.com/api/admin/customers/${encodeURIComponent(phone)}`,
         {
           credentials: 'include',
         },
