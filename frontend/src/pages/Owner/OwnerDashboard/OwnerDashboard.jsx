@@ -3,6 +3,11 @@ import './OwnerDashboard.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import {
+  requestOwnerNotificationPermission,
+  listenForOwnerNotifications,
+} from '../../../firebase/ownerNotifications';
+
 function OwnerDashboard() {
   const navigate = useNavigate();
 
@@ -94,6 +99,82 @@ function OwnerDashboard() {
       clearInterval(intervalId);
     };
   }, [navigate, shopOwner?.id]);
+
+  useEffect(() => {
+    if (!shopOwner?.id) {
+      return;
+    }
+
+    const token = localStorage.getItem('rma_owner_token');
+
+    if (!token) {
+      return;
+    }
+
+    let isActive = true;
+
+    const setupOwnerNotifications = async () => {
+      const ownerFcmToken = await requestOwnerNotificationPermission(token);
+
+      if (!isActive) {
+        return;
+      }
+
+      if (ownerFcmToken) {
+        console.log('OWNER NOTIFICATION SETUP COMPLETED.');
+      }
+    };
+
+    setupOwnerNotifications();
+
+    return () => {
+      isActive = false;
+    };
+  }, [shopOwner?.id]);
+
+  useEffect(() => {
+    if (!shopOwner?.id) {
+      return;
+    }
+
+    let unsubscribe;
+    let isActive = true;
+
+    const setupNotificationListener = async () => {
+      const cleanup = await listenForOwnerNotifications((payload) => {
+        if (!isActive) {
+          return;
+        }
+
+        const title = payload.notification?.title || 'RMA Notification';
+
+        const message =
+          payload.notification?.body || 'You have a new notification.';
+
+        alert(`${title}\n\n${message}`);
+      });
+
+      if (!isActive) {
+        if (cleanup) {
+          cleanup();
+        }
+
+        return;
+      }
+
+      unsubscribe = cleanup;
+    };
+
+    setupNotificationListener();
+
+    return () => {
+      isActive = false;
+
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [shopOwner?.id]);
 
   if (!shopOwner) {
     return null;

@@ -1,7 +1,8 @@
 import './Footer.css';
 
-import { NavLink } from 'react-router-dom';
-import { Home, Store, ShoppingCart, ClipboardList, Bike } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
+import { Home, Store, ShoppingCart, ClipboardList, Bell } from 'lucide-react';
 
 import { useLanguage } from '../../context/LanguageContext';
 import { useCart } from '../../context/CartContext';
@@ -9,6 +10,42 @@ import { useCart } from '../../context/CartContext';
 function Footer() {
   const { t } = useLanguage();
   const { totalItems } = useCart();
+  const location = useLocation();
+
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  // Fetch unread notification count for footer badge
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      try {
+        const response = await fetch(
+          'https://rma-backend-bo4a.onrender.com/api/customers/notifications',
+          {
+            credentials: 'include',
+          },
+        );
+
+        if (!response.ok) {
+          return;
+        }
+
+        const data = await response.json();
+
+        setUnreadCount(data.unreadCount || 0);
+      } catch (error) {
+        console.error('Fetch notification unread count failed:', error);
+      }
+    };
+
+    fetchUnreadCount();
+  }, []);
+
+  // Hide footer badge when user visits Messages
+  useEffect(() => {
+    if (location.pathname === '/notifications') {
+      setUnreadCount(0);
+    }
+  }, [location.pathname]);
 
   return (
     <nav className="bottom_nav">
@@ -54,11 +91,20 @@ function Footer() {
       </NavLink>
 
       <NavLink
-        to="/delivery/orders"
+        to="/notifications"
         className={({ isActive }) => `nav_item ${isActive ? 'active' : ''}`}
       >
-        <Bike className="nav_icon" />
-        <span>Delivery</span>
+        <div className="nav_icon_wrapper">
+          <Bell className="nav_icon" />
+
+          {unreadCount > 0 && (
+            <span className="notification_badge">
+              {unreadCount > 99 ? '99+' : unreadCount}
+            </span>
+          )}
+        </div>
+
+        <span>Messages</span>
       </NavLink>
     </nav>
   );

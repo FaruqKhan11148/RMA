@@ -96,6 +96,13 @@ const ownerSchema = new mongoose.Schema(
       required: true,
     },
 
+    fcmTokens: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+
     // SHOP DETAILS
 
     shopName: {

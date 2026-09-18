@@ -4,6 +4,10 @@ import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
 import { QrCode } from 'lucide-react';
+import {
+  requestCustomerNotificationPermission,
+  listenForCustomerNotifications,
+} from '../../firebase/notifications';
 
 const RMA_LOCATION_KEY = 'rma_user_location';
 const COMMON_SHOP_IMAGE =
@@ -411,6 +415,61 @@ function Home() {
 
     fetchNearbyShops(savedAddress.latitude, savedAddress.longitude);
   };
+
+  useEffect(() => {
+    if (!customerLoggedIn) {
+      return;
+    }
+
+    let unsubscribe;
+    let isActive = true;
+
+    const setupNotifications = async () => {
+      await requestCustomerNotificationPermission();
+
+      if (!isActive) {
+        return;
+      }
+
+      const cleanup = await listenForCustomerNotifications((payload) => {
+        if (!isActive) {
+          return;
+        }
+
+        const title =
+          payload.notification?.title ||
+          payload.data?.title ||
+          'RMA Notification';
+
+        const message =
+          payload.notification?.body ||
+          payload.data?.body ||
+          'You have a new notification.';
+
+        alert(`${title}\n\n${message}`);
+      });
+
+      if (!isActive) {
+        if (cleanup) {
+          cleanup();
+        }
+
+        return;
+      }
+
+      unsubscribe = cleanup;
+    };
+
+    setupNotifications();
+
+    return () => {
+      isActive = false;
+
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [customerLoggedIn]);
 
   return (
     <main className="home">

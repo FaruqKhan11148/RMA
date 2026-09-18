@@ -3,9 +3,17 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const Owner = require('../models/Owner');
+const Customer = require('../models/Customer');
+const Order = require('../models/Order');
 const Counter = require('../models/Counter');
 const ownerAuth = require('../middleware/ownerAuth');
 const getShopStatus = require('../utils/shopStatus');
+
+const Notification = require('../models/Notification');
+
+const {
+  createAndSendNotification,
+} = require('../services/notificationService');
 
 const router = express.Router();
 
@@ -413,6 +421,47 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// ==========================================
+// SAVE OWNER FCM TOKEN
+// ==========================================
+router.post('/notification-token', ownerAuth, async (req, res) => {
+  try {
+    const { token } = req.body;
+
+    if (!token || typeof token !== 'string' || !token.trim()) {
+      return res.status(400).json({
+        message: 'FCM token is required',
+      });
+    }
+
+    const owner = await Owner.findById(req.owner._id);
+
+    if (!owner) {
+      return res.status(404).json({
+        message: 'Owner account not found',
+      });
+    }
+
+    const trimmedToken = token.trim();
+
+    await Owner.findByIdAndUpdate(owner._id, {
+      $addToSet: {
+        fcmTokens: trimmedToken,
+      },
+    });
+
+    return res.status(200).json({
+      message: 'Notification token saved successfully',
+    });
+  } catch (error) {
+    console.error('Save owner FCM token failed:', error);
+    
+    return res.status(500).json({
+      message: 'Unable to save notification token',
+    });
+  }
+});
+
 router.get('/protected-test', ownerAuth, async (req, res) => {
   res.status(200).json({
     message: 'Owner authentication successful',
@@ -457,6 +506,114 @@ router.get('/me', ownerAuth, async (req, res) => {
     });
   }
 });
+
+// ==========================================
+// GET OWNER NOTIFICATIONS
+// ==========================================
+
+router.get('/notifications', ownerAuth, async (req, res) => {
+  try {
+    const notifications = await Notification.find({
+      recipientType: 'owner',
+      recipientId: req.owner._id,
+    }).sort({ createdAt: -1 });
+
+    const unreadCount = await Notification.countDocuments({
+      recipientType: 'owner',
+      recipientId: req.owner._id,
+      isRead: false,
+    });
+
+    return res.status(200).json({
+      notifications,
+      unreadCount,
+    });
+  } catch (error) {
+    console.error('Get owner notifications failed:', error);
+
+    return res.status(500).json({
+      message: 'Unable to fetch notifications',
+    });
+  }
+});
+
+// ==========================================
+// MARK ALL OWNER NOTIFICATIONS AS READ
+// ==========================================
+
+router.patch('/notifications/read-all', ownerAuth, async (req, res) => {
+  try {
+    await Notification.updateMany(
+      {
+        recipientType: 'owner',
+        recipientId: req.owner._id,
+        isRead: false,
+      },
+      {
+        $set: {
+          isRead: true,
+        },
+      },
+    );
+
+    return res.status(200).json({
+      message: 'All notifications marked as read',
+    });
+  } catch (error) {
+    console.error('Mark all owner notifications as read failed:', error);
+
+    return res.status(500).json({
+      message: 'Unable to update notifications',
+    });
+  }
+});
+
+// ==========================================
+// MARK ONE OWNER NOTIFICATION AS READ
+// ==========================================
+
+router.patch(
+  '/notifications/:notificationId/read',
+  ownerAuth,
+  async (req, res) => {
+    try {
+      const { notificationId } = req.params;
+
+      const notification = await Notification.findOneAndUpdate(
+        {
+          _id: notificationId,
+          recipientType: 'owner',
+          recipientId: req.owner._id,
+        },
+        {
+          $set: {
+            isRead: true,
+          },
+        },
+        {
+          new: true,
+        },
+      );
+
+      if (!notification) {
+        return res.status(404).json({
+          message: 'Notification not found',
+        });
+      }
+
+      return res.status(200).json({
+        message: 'Notification marked as read',
+        notification,
+      });
+    } catch (error) {
+      console.error('Mark owner notification as read failed:', error);
+
+      return res.status(500).json({
+        message: 'Unable to update notification',
+      });
+    }
+  },
+);
 
 router.patch('/settings/phone', ownerAuth, async (req, res) => {
   try {

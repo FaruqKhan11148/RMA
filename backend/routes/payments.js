@@ -3,6 +3,10 @@ const crypto = require('crypto');
 
 const Order = require('../models/Order');
 
+const {
+  createAndSendNotification,
+} = require('../services/notificationService');
+
 const router = express.Router();
 
 // PayU sends success/failure callbacks as
@@ -326,6 +330,8 @@ router.post('/payu/success', async (req, res) => {
       return res.status(400).send('Payment amount mismatch');
     }
 
+    const wasAlreadyPaid = order.paymentStatus === 'Paid';
+
     order.paymentStatus = 'Paid';
     order.paymentMethod = 'ONLINE';
 
@@ -367,6 +373,27 @@ router.post('/payu/success', async (req, res) => {
     order.refundCompletedAt = null;
 
     await order.save();
+
+    if (!wasAlreadyPaid) {
+      try {
+        await createAndSendNotification({
+          recipientType: 'owner',
+          recipientId: order.ownerId,
+          type: 'NEW_ORDER',
+          title: 'New Order',
+          message: `You have received a new order ${order.orderId}.`,
+          orderId: order.orderId,
+          data: {
+            screen: 'orders',
+          },
+        });
+      } catch (notificationError) {
+        console.error(
+          'Owner new order notification failed:',
+          notificationError,
+        );
+      }
+    }
 
     console.log('PayU payment verified successfully:', order.orderId);
 

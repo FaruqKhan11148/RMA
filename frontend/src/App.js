@@ -18,6 +18,7 @@ import DeliveryStatus from './pages/DeliveryStatus/DeliveryStatus';
 import Orders from './pages/Orders/Orders';
 import Profile from './pages/Profile/Profile';
 import Payment from './pages/payment/Payment';
+import Notifications from './pages/Notifications/Notifications';
 
 import OwnerSettings from './pages/Owner/OwnerSettings/OwnerSettings';
 
@@ -117,7 +118,7 @@ function AppLayout() {
           />
 
           <Route path="/orders" element={<Orders />} />
-
+          <Route path="/notifications" element={<Notifications />} />
           <Route path="/profile" element={<Profile />} />
 
           {/* ==================== OWNER PUBLIC ROUTES ==================== */}

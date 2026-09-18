@@ -40,6 +40,13 @@ const customerSchema = new mongoose.Schema(
       default: null,
     },
 
+    fcmTokens: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+
     addresses: [
       {
         label: {

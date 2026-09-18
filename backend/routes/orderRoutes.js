@@ -4,8 +4,11 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const Order = require('../models/Order');
 const Owner = require('../models/Owner');
-const customerAuth = require('../middleware/customerAuth');
 const Customer = require('../models/Customer');
+
+const {
+  createAndSendNotification,
+} = require('../services/notificationService');
 
 const router = express.Router();
 
@@ -275,7 +278,10 @@ router.get('/owner/:ownerId', async (req, res) => {
       });
     }
 
-    const orders = await Order.find({ ownerId }).sort({ createdAt: -1 });
+    const orders = await Order.find({
+      ownerId,
+      paymentStatus: 'Paid',
+    }).sort({ createdAt: -1 });
 
     res.status(200).json({
       orders,
@@ -634,6 +640,12 @@ router.patch('/:orderId/status', async (req, res) => {
       });
     }
 
+    if (order.status === status) {
+      return res.status(400).json({
+        message: `Order is already ${status}`,
+      });
+    }
+
     // ==========================================
     // RECORD STATUS TIMESTAMP
     // ==========================================
@@ -709,6 +721,31 @@ router.patch('/:orderId/status', async (req, res) => {
 
           await order.save();
 
+          // ==========================================
+          // CUSTOMER REJECTION NOTIFICATION
+          // ==========================================
+
+          if (order.customerId) {
+            try {
+              await createAndSendNotification({
+                recipientType: 'customer',
+                recipientId: order.customerId,
+                type: 'ORDER_REJECTED',
+                title: 'Order Rejected',
+                message: `Your order ${order.orderId} has been rejected by the shop.`,
+                orderId: order.orderId,
+                data: {
+                  screen: 'orders',
+                },
+              });
+            } catch (notificationError) {
+              console.error(
+                'Customer rejection notification failed:',
+                notificationError,
+              );
+            }
+          }
+
           await order.populate('ownerId', 'ownerName shopName phone');
 
           return res.status(200).json({
@@ -746,6 +783,79 @@ router.patch('/:orderId/status', async (req, res) => {
     order.status = status;
 
     await order.save();
+
+    // ==========================================
+    // CUSTOMER ORDER STATUS NOTIFICATION
+    // ==========================================
+
+    if (order.customerId) {
+      try {
+        const statusNotifications = {
+          Accepted: {
+            type: 'ORDER_ACCEPTED',
+            title: 'Order Accepted',
+            message: `Your order ${order.orderId} has been accepted by the shop.`,
+          },
+
+          Preparing: {
+            type: 'ORDER_PREPARING',
+            title: 'Order Being Prepared',
+            message: `Your order ${order.orderId} is now being prepared.`,
+          },
+
+          Ready: {
+            type: 'ORDER_READY',
+            title: 'Order Ready',
+            message:
+              order.orderType === 'delivery'
+                ? `Your order ${order.orderId} is ready for delivery.`
+                : `Your order ${order.orderId} is ready for pickup.`,
+          },
+
+          OutForDelivery: {
+            type: 'ORDER_OUT_FOR_DELIVERY',
+            title: 'Order Out for Delivery',
+            message: `Your order ${order.orderId} is out for delivery.`,
+          },
+
+          Completed: {
+            type: 'ORDER_COMPLETED',
+            title: 'Order Completed',
+            message: `Your order ${order.orderId} has been completed. Thank you for ordering with RMA!`,
+          },
+
+          Rejected: {
+            type: 'ORDER_REJECTED',
+            title: 'Order Rejected',
+            message: `Your order ${order.orderId} has been rejected by the shop.`,
+          },
+        };
+
+        const notification = statusNotifications[status];
+
+        if (notification) {
+          await createAndSendNotification({
+            recipientType: 'customer',
+            recipientId: order.customerId,
+            type: notification.type,
+            title: notification.title,
+            message: notification.message,
+            orderId: order.orderId,
+            data: {
+              screen: 'orders',
+              ...(status === 'Completed' && {
+                showRating: 'true',
+              }),
+            },
+          });
+        }
+      } catch (notificationError) {
+        console.error(
+          'Customer order status notification failed:',
+          notificationError,
+        );
+      }
+    }
 
     await order.populate('ownerId', 'ownerName shopName phone');
 
@@ -810,6 +920,32 @@ router.post('/:orderId/verify-otp', async (req, res) => {
     order.completedAt = new Date();
 
     await order.save();
+
+    // ==========================================
+    // CUSTOMER COMPLETION NOTIFICATION
+    // ==========================================
+
+    if (order.customerId) {
+      try {
+        await createAndSendNotification({
+          recipientType: 'customer',
+          recipientId: order.customerId,
+          type: 'ORDER_COMPLETED',
+          title: 'Order Completed',
+          message: `Your order ${order.orderId} has been completed. Thank you for ordering with RMA!`,
+          orderId: order.orderId,
+          data: {
+            screen: 'orders',
+            showRating: 'true',
+          },
+        });
+      } catch (notificationError) {
+        console.error(
+          'Customer completion notification failed:',
+          notificationError,
+        );
+      }
+    }
 
     await order.populate('ownerId', 'ownerName shopName phone');
 
