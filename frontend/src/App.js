@@ -1,6 +1,13 @@
 import './App.css';
 import './index.css';
 
+import { useEffect, useState } from 'react';
+
+import {
+  requestCustomerNotificationPermission,
+  listenForCustomerNotifications,
+} from './firebase/notifications';
+
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import OwnerProtectedRoute from './pages/Owner/OwnerProtectedRoute/OwnerProtectedRoute';
 import ScrollToTop from './components/ScrollToTop/ScrollToTop';
@@ -92,6 +99,99 @@ import Terms from './pages/Terms/Terms';
 import ShopPromotion from './pages/Owner/OwnerSettings/ShopPromotion/ShopPromotion';
 
 function AppLayout() {
+  const [customerLoggedIn, setCustomerLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const checkCustomerLogin = async () => {
+      try {
+        const response = await fetch(
+          'https://rma-backend-bo4a.onrender.com/api/customers/me',
+          {
+            credentials: 'include',
+          },
+        );
+
+        if (response.ok) {
+          setCustomerLoggedIn(true);
+        } else {
+          setCustomerLoggedIn(false);
+        }
+      } catch (error) {
+        console.error('Customer login check failed:', error);
+
+        setCustomerLoggedIn(false);
+      }
+    };
+
+    checkCustomerLogin();
+  }, []);
+
+  useEffect(() => {
+    if (!customerLoggedIn) {
+      return;
+    }
+
+    let unsubscribe;
+    let isActive = true;
+
+    const setupNotifications = async () => {
+      await requestCustomerNotificationPermission();
+
+      if (!isActive) {
+        return;
+      }
+
+      const cleanup = await listenForCustomerNotifications((payload) => {
+        if (!isActive) {
+          return;
+        }
+
+        const title =
+          payload.notification?.title ||
+          payload.data?.title ||
+          'RMA Notification';
+
+        const message =
+          payload.notification?.body ||
+          payload.data?.body ||
+          'You have a new notification.';
+
+        if (Notification.permission === 'granted') {
+          new Notification(title, {
+            body: message,
+            icon: '/rma-notification-icon.png',
+          });
+        }
+
+        window.dispatchEvent(
+          new CustomEvent('rma-notification', {
+            detail: payload,
+          }),
+        );
+      });
+
+      if (!isActive) {
+        if (cleanup) {
+          cleanup();
+        }
+
+        return;
+      }
+
+      unsubscribe = cleanup;
+    };
+
+    setupNotifications();
+
+    return () => {
+      isActive = false;
+
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [customerLoggedIn]);
+
   return (
     <>
       <ScrollToTop />
