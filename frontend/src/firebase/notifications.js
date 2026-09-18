@@ -89,6 +89,23 @@ export const listenForCustomerNotifications = async (onNotification) => {
     const unsubscribe = onMessage(messaging, (payload) => {
       console.log('CUSTOMER FOREGROUND NOTIFICATION:', payload);
 
+      const title =
+        payload.notification?.title ||
+        payload.data?.title ||
+        'RMA Notification';
+
+      const message =
+        payload.notification?.body ||
+        payload.data?.body ||
+        'You have a new notification.';
+
+      if (Notification.permission === 'granted') {
+        new Notification(title, {
+          body: message,
+          icon: '/rma-notification-icon.png',
+        });
+      }
+
       if (onNotification) {
         onNotification(payload);
       }
