@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Bell, X } from 'lucide-react';
 import './Notifications.css';
 
-const API_URL = 'http://localhost:5000';
+const API_URL = 'https://rma-backend-bo4a.onrender.com/';
 
 function Notifications() {
   const [notifications, setNotifications] = useState([]);
@@ -17,7 +17,7 @@ function Notifications() {
         setLoading(true);
         setError('');
 
-        const response = await fetch(`${API_URL}/api/customers/notifications`, {
+        const response = await fetch(`${API_URL}api/customers/notifications`, {
           credentials: 'include',
         });
 
@@ -47,7 +47,7 @@ function Notifications() {
     if (!notification.isRead) {
       try {
         const response = await fetch(
-          `${API_URL}/api/customers/notifications/${notification._id}/read`,
+          `${API_URL}api/customers/notifications/${notification._id}/read`,
           {
             method: 'PATCH',
             credentials: 'include',
