@@ -2,7 +2,6 @@ import { getToken, onMessage } from 'firebase/messaging';
 import { messagingPromise } from './firebase';
 
 const VAPID_KEY = process.env.REACT_APP_FIREBASE_VAPID_KEY;
-const API_URL = 'http://localhost:5000/';
 
 export const requestOwnerNotificationPermission = async (ownerAuthToken) => {
   try {
@@ -48,7 +47,7 @@ export const requestOwnerNotificationPermission = async (ownerAuthToken) => {
 
     console.log('OWNER FCM TOKEN:', ownerFcmToken);
 
-    const response = await fetch(`${API_URL}api/owners/notification-token`, {
+    const response = await fetch(`https://rma-backend-bo4a.onrender.com/api/owners/notification-token`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
