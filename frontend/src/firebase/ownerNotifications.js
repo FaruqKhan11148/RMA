@@ -47,16 +47,19 @@ export const requestOwnerNotificationPermission = async (ownerAuthToken) => {
 
     console.log('OWNER FCM TOKEN:', ownerFcmToken);
 
-    const response = await fetch(`https://rma-backend-bo4a.onrender.com/api/owners/notification-token`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${ownerAuthToken}`,
+    const response = await fetch(
+      `https://rma-backend-bo4a.onrender.com/api/owners/notification-token`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${ownerAuthToken}`,
+        },
+        body: JSON.stringify({
+          token: ownerFcmToken,
+        }),
       },
-      body: JSON.stringify({
-        token: ownerFcmToken,
-      }),
-    });
+    );
 
     const data = await response.json();
 

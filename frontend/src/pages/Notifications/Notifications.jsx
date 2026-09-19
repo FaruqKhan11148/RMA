@@ -241,8 +241,9 @@ function Notifications() {
 
                 {selectedNotification.type === 'ORDER_COMPLETED' && (
                   <p>
-                    Your order has been completed. Thank you for ordering with
-                    RMA.
+                    Your order has been delivered successfully. Thank you for
+                    ordering with RMA. Please rate your experience with RMA, the
+                    shop, and delivery.
                   </p>
                 )}
 

@@ -384,7 +384,8 @@ router.post('/payu/success', async (req, res) => {
           message: `You have received a new order ${order.orderId}.`,
           orderId: order.orderId,
           data: {
-            screen: 'orders',
+            screen: 'owner-dashboard',
+            orderId: order.orderId,
           },
         });
       } catch (notificationError) {

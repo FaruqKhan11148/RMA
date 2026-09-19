@@ -100,10 +100,22 @@ export const listenForCustomerNotifications = async (onNotification) => {
         'You have a new notification.';
 
       if (Notification.permission === 'granted') {
-        new Notification(title, {
+        const notification = new Notification(title, {
           body: message,
           icon: '/rma-notification-icon.png',
+          data: payload.data || {},
         });
+
+        notification.onclick = () => {
+          const screen = payload.data?.screen;
+          const orderId = payload.data?.orderId;
+
+          window.focus();
+
+          if (screen === 'order-status' && orderId) {
+            window.location.href = `/delivery-status/${orderId}`;
+          }
+        };
       }
 
       if (onNotification) {

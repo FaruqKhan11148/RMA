@@ -17,6 +17,10 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
+// ==========================================
+// BACKGROUND FCM MESSAGE
+// ==========================================
+
 messaging.onBackgroundMessage((payload) => {
   console.log('[RMA SERVICE WORKER] Background message received:', payload);
 
@@ -29,4 +33,60 @@ messaging.onBackgroundMessage((payload) => {
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
+// ==========================================
+// NOTIFICATION CLICK
+// ==========================================
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+
+  const data = event.notification.data || {};
+
+  console.log('[RMA SW] Notification clicked:', data);
+
+  const screen = data.screen;
+  const orderId = data.orderId;
+
+  let targetPath = '/';
+
+  if (screen === 'owner-dashboard') {
+    targetPath = '/owner/dashboard';
+  } else if (screen === 'order-status' && orderId) {
+    targetPath = `/delivery-status/${orderId}`;
+  }
+
+  const targetUrl = new URL(targetPath, self.location.origin).href;
+
+  console.log('[RMA SW] Opening:', targetUrl);
+
+  event.waitUntil(
+    clients
+      .matchAll({
+        type: 'window',
+        includeUncontrolled: true,
+      })
+      .then(async (clientList) => {
+        for (const client of clientList) {
+          if (client.url.startsWith(self.location.origin)) {
+            try {
+              await client.navigate(targetUrl);
+            } catch (error) {
+              console.error('[RMA SW] Navigation failed:', error);
+            }
+
+            try {
+              await client.focus();
+            } catch (error) {
+              console.warn('[RMA SW] Could not focus existing window:', error);
+            }
+
+            return;
+          }
+        }
+
+        return clients.openWindow(targetUrl);
+      }),
+  );
 });

@@ -23,6 +23,7 @@ import Cart from './pages/Cart/Cart';
 import Checkout from './pages/Checkout/Checkout';
 import DeliveryStatus from './pages/DeliveryStatus/DeliveryStatus';
 import Orders from './pages/Orders/Orders';
+import RateOrder from './pages/RateOrder/RateOrder';
 import Profile from './pages/Profile/Profile';
 import Payment from './pages/payment/Payment';
 import Notifications from './pages/Notifications/Notifications';
@@ -216,6 +217,8 @@ function AppLayout() {
             path="/delivery-status/:orderId"
             element={<DeliveryStatus />}
           />
+
+          <Route path="/rate-order/:orderId" element={<RateOrder />} />
 
           <Route path="/orders" element={<Orders />} />
           <Route path="/notifications" element={<Notifications />} />

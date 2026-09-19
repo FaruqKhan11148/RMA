@@ -457,10 +457,6 @@ router.post('/', async (req, res) => {
     );
 
     // ==========================================
-    // DELIVERY CHARGE
-    // ==========================================
-
-    // ==========================================
     // DELIVERY DISTANCE & DELIVERY CHARGE
     // ==========================================
 
@@ -795,39 +791,35 @@ router.patch('/:orderId/status', async (req, res) => {
             type: 'ORDER_ACCEPTED',
             title: 'Order Accepted',
             message: `Your order ${order.orderId} has been accepted by the shop.`,
-          },
-
-          Preparing: {
-            type: 'ORDER_PREPARING',
-            title: 'Order Being Prepared',
-            message: `Your order ${order.orderId} is now being prepared.`,
-          },
-
-          Ready: {
-            type: 'ORDER_READY',
-            title: 'Order Ready',
-            message:
-              order.orderType === 'delivery'
-                ? `Your order ${order.orderId} is ready for delivery.`
-                : `Your order ${order.orderId} is ready for pickup.`,
+            data: {
+              screen: 'order-status',
+            },
           },
 
           OutForDelivery: {
             type: 'ORDER_OUT_FOR_DELIVERY',
-            title: 'Order Out for Delivery',
+            title: 'Order On The Way',
             message: `Your order ${order.orderId} is out for delivery.`,
+            data: {
+              screen: 'order-status',
+            },
           },
 
           Completed: {
             type: 'ORDER_COMPLETED',
-            title: 'Order Completed',
-            message: `Your order ${order.orderId} has been completed. Thank you for ordering with RMA!`,
+            title: 'Order Delivered',
+            message: `Your order ${order.orderId} has been delivered. Thank you for ordering with RMA!`,
+            data: {
+              screen: 'order-status',
+            },
           },
-
           Rejected: {
             type: 'ORDER_REJECTED',
             title: 'Order Rejected',
             message: `Your order ${order.orderId} has been rejected by the shop.`,
+            data: {
+              screen: 'order-status',
+            },
           },
         };
 
@@ -842,10 +834,8 @@ router.patch('/:orderId/status', async (req, res) => {
             message: notification.message,
             orderId: order.orderId,
             data: {
-              screen: 'orders',
-              ...(status === 'Completed' && {
-                showRating: 'true',
-              }),
+              ...notification.data,
+              orderId: order.orderId,
             },
           });
         }
@@ -931,12 +921,12 @@ router.post('/:orderId/verify-otp', async (req, res) => {
           recipientType: 'customer',
           recipientId: order.customerId,
           type: 'ORDER_COMPLETED',
-          title: 'Order Completed',
-          message: `Your order ${order.orderId} has been completed. Thank you for ordering with RMA!`,
+          title: 'Order Delivered',
+          message: `Your order ${order.orderId} has been delivered. Thank you for ordering with RMA!`,
           orderId: order.orderId,
           data: {
-            screen: 'orders',
-            showRating: 'true',
+            screen: 'order-status',
+            orderId: order.orderId,
           },
         });
       } catch (notificationError) {

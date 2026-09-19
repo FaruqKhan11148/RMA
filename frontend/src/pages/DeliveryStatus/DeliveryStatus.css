@@ -901,3 +901,348 @@
     font-size: 13px;
   }
 }
+
+/* ==========================================
+   RATE YOUR EXPERIENCE
+   ========================================== */
+
+.rate_order_card {
+  margin-top: 20px;
+  padding: 22px 18px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  text-align: center;
+}
+
+.rate_order_card h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.rate_order_card p {
+  margin: 8px 0 16px;
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.rate_order_button {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 11px;
+  background: #111827;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    opacity 0.2s ease,
+    transform 0.15s ease;
+}
+
+.rate_order_button:hover {
+  opacity: 0.92;
+}
+
+.rate_order_button:active {
+  transform: scale(0.98);
+}
+
+.review_submitted_message {
+  margin-bottom: 0 !important;
+  color: #059669 !important;
+  font-weight: 600;
+}
+
+/* ==========================================
+   RATING MODAL
+   ========================================== */
+
+.rating_modal_overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.rating_modal {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 24px 16px 28px;
+  box-sizing: border-box;
+  background: #ffffff;
+  border-radius: 22px 22px 0 0;
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.18);
+}
+
+.rating_modal_close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: #f3f4f6;
+  color: #374151;
+  font-size: 25px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.rating_modal_header {
+  padding: 4px 42px 18px 4px;
+  text-align: center;
+}
+
+.rating_modal_header h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.rating_modal_header p {
+  margin: 7px 0 0;
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ==========================================
+   RATING ERROR
+   ========================================== */
+
+.rating_modal_error {
+  margin-bottom: 14px;
+  padding: 11px 13px;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* ==========================================
+   RATING SECTIONS
+   ========================================== */
+
+.rating_modal .rating_section {
+  margin-bottom: 12px;
+  padding: 17px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  text-align: center;
+}
+
+.rating_modal .rating_section h3 {
+  margin: 0;
+  color: #111827;
+  font-size: 16px;
+  font-weight: 650;
+}
+
+.rating_modal .rating_section p {
+  margin: 6px 0 12px;
+  color: #6b7280;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* ==========================================
+   STARS
+   ========================================== */
+
+.rating_stars {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+}
+
+.rating_star {
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #d1d5db;
+  font-size: 31px;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.rating_star.active {
+  color: #f59e0b;
+}
+
+.rating_star:hover {
+  transform: scale(1.08);
+}
+
+/* ==========================================
+   FEEDBACK
+   ========================================== */
+
+.rating_modal .feedback_section {
+  position: relative;
+  margin-bottom: 14px;
+  padding: 17px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.rating_modal .feedback_section label {
+  display: block;
+  margin-bottom: 9px;
+  color: #111827;
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.rating_modal .feedback_section label span {
+  color: #9ca3af;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.rating_modal .feedback_section textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 11px;
+  box-sizing: border-box;
+  resize: vertical;
+  border: 1px solid #d1d5db;
+  border-radius: 9px;
+  outline: none;
+  background: #ffffff;
+  color: #111827;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.rating_modal .feedback_section textarea::placeholder {
+  color: #9ca3af;
+}
+
+.rating_modal .feedback_section textarea:focus {
+  border-color: #111827;
+}
+
+.rating_modal .feedback_section small {
+  display: block;
+  margin-top: 5px;
+  text-align: right;
+  color: #9ca3af;
+  font-size: 11px;
+}
+
+/* ==========================================
+   SUBMIT REVIEW
+   ========================================== */
+
+.submit_review_button {
+  width: 100%;
+  min-height: 50px;
+  border: none;
+  border-radius: 11px;
+  background: #111827;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    opacity 0.2s ease,
+    transform 0.15s ease;
+}
+
+.submit_review_button:hover {
+  opacity: 0.92;
+}
+
+.submit_review_button:active {
+  transform: scale(0.98);
+}
+
+.submit_review_button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ==========================================
+   REVIEW SUCCESS
+   ========================================== */
+
+.review_success {
+  padding: 35px 10px 15px;
+  text-align: center;
+}
+
+.review_success_icon {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  background: #ecfdf5;
+  color: #059669;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.review_success h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 23px;
+}
+
+.review_success p {
+  margin: 9px 0 22px;
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ==========================================
+   DESKTOP
+   ========================================== */
+
+@media (min-width: 768px) {
+  .rating_modal_overlay {
+    align-items: center;
+    padding: 20px;
+  }
+
+  .rating_modal {
+    max-height: 85vh;
+    padding: 28px 24px 30px;
+    border-radius: 20px;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+  }
+
+  .rate_order_card {
+    padding: 24px;
+  }
+}

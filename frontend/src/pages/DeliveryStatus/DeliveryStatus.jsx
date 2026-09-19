@@ -15,6 +15,17 @@ function DeliveryStatus() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  const [showRatingModal, setShowRatingModal] = useState(false);
+
+  const [rmaRating, setRmaRating] = useState(0);
+  const [shopRating, setShopRating] = useState(0);
+  const [deliveryRating, setDeliveryRating] = useState(0);
+
+  const [feedback, setFeedback] = useState('');
+  const [submittingReview, setSubmittingReview] = useState(false);
+  const [reviewError, setReviewError] = useState('');
+  const [reviewSubmitted, setReviewSubmitted] = useState(false);
+
   // ==========================================
   // GET ORDER FROM BACKEND
   // ==========================================
@@ -65,6 +76,71 @@ function DeliveryStatus() {
 
     return () => clearInterval(interval);
   }, [fetchOrder]);
+
+  const handleSubmitReview = async (event) => {
+    event.preventDefault();
+
+    if (rmaRating === 0 || shopRating === 0 || deliveryRating === 0) {
+      setReviewError('Please rate all three categories before submitting.');
+      return;
+    }
+
+    try {
+      setSubmittingReview(true);
+      setReviewError('');
+
+      const response = await fetch(
+        'https://rma-backend-bo4a.onrender.com/api/reviews',
+        {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            orderId: order.orderId,
+            rmaRating,
+            shopRating,
+            deliveryRating,
+            feedback,
+          }),
+        },
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setReviewError(data.message || 'Unable to submit review');
+        return;
+      }
+
+      setReviewSubmitted(true);
+    } catch (error) {
+      console.error('Submit review failed:', error);
+
+      setReviewError('Unable to connect to server');
+    } finally {
+      setSubmittingReview(false);
+    }
+  };
+
+  const renderStars = (rating, setRating) => {
+    return (
+      <div className="rating_stars">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <button
+            key={star}
+            type="button"
+            className={`rating_star ${star <= rating ? 'active' : ''}`}
+            onClick={() => setRating(star)}
+            aria-label={`Rate ${star} out of 5`}
+          >
+            ★
+          </button>
+        ))}
+      </div>
+    );
+  };
 
   // ==========================================
   // LOADING
@@ -428,6 +504,34 @@ function DeliveryStatus() {
         </div>
       </section>
 
+      {order.status === 'Completed' && (
+        <section className="rate_order_card">
+          <h2>How was your experience?</h2>
+
+          <p>
+            Your order has been delivered successfully. We'd love to hear your
+            feedback.
+          </p>
+
+          {!reviewSubmitted ? (
+            <button
+              type="button"
+              className="rate_order_button"
+              onClick={() => {
+                setReviewError('');
+                setShowRatingModal(true);
+              }}
+            >
+              Rate Your Experience
+            </button>
+          ) : (
+            <p className="review_submitted_message">
+              Thank you for sharing your experience with RMA.
+            </p>
+          )}
+        </section>
+      )}
+
       {/* DELIVERY OTP */}
 
       {order.status === 'OutForDelivery' && order.deliveryOtp && (
@@ -483,6 +587,102 @@ function DeliveryStatus() {
       >
         Back to Home
       </button>
+
+      {showRatingModal && (
+        <div className="rating_modal_overlay">
+          <section className="rating_modal">
+            <button
+              type="button"
+              className="rating_modal_close"
+              onClick={() => setShowRatingModal(false)}
+              aria-label="Close rating"
+            >
+              ×
+            </button>
+
+            {!reviewSubmitted ? (
+              <>
+                <div className="rating_modal_header">
+                  <h2>Rate Your Experience</h2>
+
+                  <p>Tell us how your RMA order went.</p>
+                </div>
+
+                {reviewError && (
+                  <div className="rating_modal_error">{reviewError}</div>
+                )}
+
+                <form onSubmit={handleSubmitReview}>
+                  <div className="rating_section">
+                    <h3>RMA Experience</h3>
+
+                    <p>How was your overall experience with RMA?</p>
+
+                    {renderStars(rmaRating, setRmaRating)}
+                  </div>
+
+                  <div className="rating_section">
+                    <h3>Shop Experience</h3>
+
+                    <p>How was your experience with {shopName}?</p>
+
+                    {renderStars(shopRating, setShopRating)}
+                  </div>
+
+                  <div className="rating_section">
+                    <h3>Delivery Experience</h3>
+
+                    <p>How was your delivery experience?</p>
+
+                    {renderStars(deliveryRating, setDeliveryRating)}
+                  </div>
+
+                  <div className="feedback_section">
+                    <label htmlFor="delivery-rating-feedback">
+                      Feedback <span>(Optional)</span>
+                    </label>
+
+                    <textarea
+                      id="delivery-rating-feedback"
+                      value={feedback}
+                      onChange={(event) => setFeedback(event.target.value)}
+                      placeholder="Tell us about your experience..."
+                      maxLength={1000}
+                      rows={4}
+                    />
+
+                    <small>{feedback.length}/1000</small>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="submit_review_button"
+                    disabled={submittingReview}
+                  >
+                    {submittingReview ? 'Submitting...' : 'Submit Review'}
+                  </button>
+                </form>
+              </>
+            ) : (
+              <div className="review_success">
+                <div className="review_success_icon">✓</div>
+
+                <h2>Thank You!</h2>
+
+                <p>Your review has been submitted successfully.</p>
+
+                <button
+                  type="button"
+                  className="submit_review_button"
+                  onClick={() => setShowRatingModal(false)}
+                >
+                  Done
+                </button>
+              </div>
+            )}
+          </section>
+        </div>
+      )}
     </main>
   );
 }

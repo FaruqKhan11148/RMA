@@ -7,6 +7,7 @@ const connectDB = require('./config/db.js');
 
 const ownerRoutes = require('./routes/ownerRoutes');
 const orderRoutes = require('./routes/orderRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
 const shopRoutes = require('./routes/shopRoutes');
 const paymentRoutes = require('./routes/payments');
 const deliveryRoutes = require('./routes/deliveryRoutes');
@@ -90,6 +91,8 @@ app.use('/api/admin/orders', adminOrderRoutes);
 app.use('/api/admin/delivery', adminDeliveryRoutes);
 
 app.use('/api/customers', customerRoutes);
+
+app.use('/api/reviews', reviewRoutes);
 
 /* =========================
    HEALTH CHECK
