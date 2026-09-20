@@ -14,6 +14,7 @@ function DeliveryStatus() {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [notFound, setNotFound] = useState(false);
 
   const [showRatingModal, setShowRatingModal] = useState(false);
 
@@ -38,19 +39,39 @@ function DeliveryStatus() {
 
       const data = await response.json();
 
-      if (!response.ok) {
-        setError(data.message || 'Failed to load order');
+      // ==========================================
+      // ORDER REALLY DOES NOT EXIST
+      // ==========================================
+
+      if (response.status === 404) {
+        setNotFound(true);
+        setError('');
+        setOrder(null);
         return;
       }
 
-      setOrder(data.order);
+      // ==========================================
+      // TEMPORARY SERVER / NETWORK ERROR
+      // ==========================================
 
-      // Cart is cleared only after the order-status
-      // page successfully loads.
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to load order');
+      }
+
+      // ==========================================
+      // SUCCESS
+      // ==========================================
+
+      setOrder(data.order);
+      setError('');
+      setNotFound(false);
+
       clearCart();
     } catch (error) {
       console.error('Fetch order failed:', error);
 
+      // Do NOT remove an already loaded order.
+      // The next polling request will try again.
       setError('Unable to connect to server');
     } finally {
       setLoading(false);
@@ -156,16 +177,29 @@ function DeliveryStatus() {
     );
   }
 
+  if (!order && error) {
+    return (
+      <main className="delivery_status_empty">
+        <h1>Connecting to your order...</h1>
+
+        <p>
+          We're reconnecting to the server. Your order is safe and we'll
+          automatically try again.
+        </p>
+      </main>
+    );
+  }
+
   // ==========================================
   // ERROR
   // ==========================================
 
-  if (error || !order) {
+  if (notFound) {
     return (
       <main className="delivery_status_empty">
         <h1>Order Not Found</h1>
 
-        <p>{error || 'We could not find this order.'}</p>
+        <p>We could not find this order.</p>
 
         <button type="button" onClick={() => navigate('/')}>
           Back to Home
@@ -406,6 +440,9 @@ function DeliveryStatus() {
 
   return (
     <main className="delivery_status">
+      {error && order && (
+        <div className="delivery_status_connection">Reconnecting...</div>
+      )}
       <section className="delivery_status_header">
         <h1>
           {order.status === 'Completed' ? 'Order Completed!' : 'Order Status'}

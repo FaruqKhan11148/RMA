@@ -557,12 +557,12 @@
 
 .find_shop_nearby_status_open {
   color: var(--rma-primary);
+  font-size: 13px;
 }
 
 .find_shop_nearby_status_closed {
-  background: rgba(180, 35, 24, 0.08);
-
   color: #b42318;
+  font-size: 13px;
 }
 
 /* ==========================================
@@ -972,9 +972,8 @@
 }
 
 .find_shop_nearby_status_closed {
-  background: rgba(180, 35, 24, 0.08);
-
   color: #b42318;
+  font-size: 13px;
 }
 
 /* ==========================================

@@ -21,6 +21,10 @@
   pointer-events: none;
 }
 
+/* ==========================================
+   NAVBAR INNER
+========================================== */
+
 .rma_navbar_inner {
   width: 100%;
   min-height: 64px;
@@ -30,16 +34,20 @@
   justify-content: space-between;
 
   padding: 8px 18px;
+  box-sizing: border-box;
 
   background: transparent;
-
-  box-sizing: border-box;
 }
+
+/* ==========================================
+   BRAND
+========================================== */
 
 .rma_navbar_brand {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .rma_navbar_brand_name {
@@ -57,9 +65,147 @@
   font-size: 7px;
   font-weight: 700;
   line-height: 1;
-
   letter-spacing: 0.8px;
 }
+
+/* ==========================================
+   APP DOWNLOAD
+========================================== */
+
+.rma_navbar_app {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-left: 150px;
+}
+
+.rma_navbar_app_button {
+  position: relative;
+
+  width: 42px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  padding: 0;
+  margin: 0;
+
+  border: 0;
+  background: transparent;
+
+  color: #fefefe;
+
+  cursor: pointer;
+}
+
+.rma_navbar_app_icon {
+  position: relative;
+  z-index: 3;
+
+  width: 25px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  background: transparent;
+  color: currentColor;
+}
+
+.rma_navbar_app_icon svg {
+  width: 19px;
+  height: 19px;
+}
+
+.rma_navbar_app_separator {
+  position: relative;
+  z-index: 3;
+
+  margin-left: 4px;
+
+  color: currentColor;
+  font-size: 17px;
+  font-weight: 300;
+  line-height: 1;
+
+  opacity: 0.7;
+}
+
+.rma_navbar_app_button:active .rma_navbar_app_icon {
+  transform: scale(0.92);
+}
+
+/* ==========================================
+   DOWNLOAD TEXT ANIMATION
+========================================== */
+
+.rma_navbar_app_text {
+  position: absolute;
+
+  top: 50%;
+  right: 35px;
+
+  z-index: 2;
+
+  width: max-content;
+
+  padding: 6px 10px;
+
+  border: 0;
+  border-radius: 7px;
+
+  background: rgba(0, 0, 0, 0.72);
+  color: #ffffff;
+
+  font-size: 12px;
+  font-weight: var(--rma-weight-semibold);
+  line-height: 1;
+
+  white-space: nowrap;
+
+  transform: translateY(-50%) translateX(14px);
+
+  opacity: 0;
+  pointer-events: none;
+
+  animation: rma_app_text_entry 7s ease-in-out 1;
+}
+
+@keyframes rma_app_text_entry {
+  0% {
+    opacity: 0;
+    transform: translateY(-50%) translateX(14px);
+  }
+
+  10% {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+
+  75% {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+
+  90% {
+    opacity: 0;
+    transform: translateY(-50%) translateX(14px);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-50%) translateX(14px);
+  }
+}
+
+/* ==========================================
+   PROFILE
+========================================== */
 
 .rma_navbar_profile {
   width: 38px;
@@ -68,6 +214,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
+  flex-shrink: 0;
 
   padding: 0;
 
@@ -97,6 +245,255 @@
   transform: scale(0.95);
 }
 
+/* ==========================================
+   INNER PAGE NAVBAR
+========================================== */
+
+.rma_navbar_inner_page .rma_navbar_brand_tagline {
+  color: #111111;
+}
+
+.rma_navbar_inner_page .rma_navbar_profile {
+  border-color: #111111;
+  color: #111111;
+  background: transparent;
+}
+
+.rma_navbar_inner_page .rma_navbar_profile:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.rma_navbar_inner_page .rma_navbar_app_button {
+  color: #111111;
+}
+
+/* ==========================================
+   PAGE OFFSET
+========================================== */
+
+body.rma_navbar_offset {
+  padding-top: 64px;
+}
+
+/* ==========================================
+   RMA APP MODAL
+========================================== */
+
+.rma_app_modal_overlay {
+  position: fixed;
+
+  /*
+    Start below the navbar so the modal
+    is centered inside the actual page area.
+  */
+  top: 64px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 16px;
+  box-sizing: border-box;
+
+  background: rgba(10, 18, 12, 0.48);
+
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+
+  overflow-y: auto;
+}
+
+.rma_app_modal {
+  position: relative;
+
+  width: min(430px, 100%);
+  max-height: calc(100dvh - 96px);
+
+  box-sizing: border-box;
+
+  padding: 30px 26px 25px;
+
+  border: 1px solid var(--rma-border);
+  border-radius: 24px;
+
+  background: var(--rma-card);
+
+  text-align: center;
+
+  box-shadow: 0 25px 70px rgba(10, 25, 15, 0.18);
+
+  overflow-y: auto;
+
+  animation: rma_app_modal_entry 0.25s ease-out;
+}
+
+@keyframes rma_app_modal_entry {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ==========================================
+   MODAL CLOSE
+========================================== */
+
+.rma_app_modal_close {
+  position: absolute;
+
+  top: 13px;
+  right: 14px;
+
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 50%;
+
+  background: transparent;
+
+  color: var(--rma-text-muted);
+
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.rma_app_modal_close:hover {
+  background: rgba(20, 35, 25, 0.05);
+  color: var(--rma-text);
+}
+
+/* ==========================================
+   MODAL ICON
+========================================== */
+
+.rma_app_modal_icon {
+  width: 64px;
+  height: 64px;
+
+  margin: 0 auto 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 19px;
+
+  background: rgba(22, 128, 58, 0.08);
+  color: var(--rma-primary);
+}
+
+/* ==========================================
+   MODAL CONTENT
+========================================== */
+
+.rma_app_modal h2 {
+  margin: 0 0 10px;
+
+  color: var(--rma-text);
+
+  font-size: 21px;
+  font-weight: var(--rma-weight-semibold);
+}
+
+.rma_app_modal p {
+  margin: 0 auto 12px;
+
+  color: var(--rma-text-secondary);
+
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.rma_app_modal_message {
+  color: var(--rma-text) !important;
+}
+
+/* ==========================================
+   MODAL NOTE
+========================================== */
+
+.rma_app_modal_note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  margin: 20px 0;
+
+  font-size: 10px;
+  font-weight: var(--rma-weight-semibold);
+}
+
+.rma_app_modal_note span:first-child {
+  padding: 6px 9px;
+
+  border-radius: 999px;
+
+  background: rgba(22, 128, 58, 0.09);
+  color: var(--rma-primary);
+}
+
+.rma_app_modal_note span:last-child {
+  color: var(--rma-text-muted);
+}
+
+/* ==========================================
+   MODAL BUTTON
+========================================== */
+
+.rma_app_modal_button {
+  width: 100%;
+  min-height: 45px;
+
+  border: 0;
+  border-radius: 12px;
+
+  background: var(--rma-primary);
+  color: #fff;
+
+  font-size: 13px;
+  font-weight: var(--rma-weight-semibold);
+
+  cursor: pointer;
+
+  transition:
+    transform var(--rma-transition-fast),
+    opacity var(--rma-transition-fast);
+}
+
+.rma_app_modal_button:hover {
+  opacity: 0.92;
+}
+
+.rma_app_modal_button:active {
+  transform: scale(0.98);
+}
+
+/* ==========================================
+   MOBILE
+========================================== */
+
 @media (max-width: 600px) {
   .rma_navbar_inner {
     min-height: 58px;
@@ -121,22 +518,53 @@
     width: 17px;
     height: 17px;
   }
-}
 
-body.rma_navbar_offset {
-  padding-top: 64px;
-}
+  /* App download */
 
-.rma_navbar_inner_page .rma_navbar_brand_tagline {
-  color: #111111;
-}
+  .rma_navbar_app_button {
+    width: 40px;
+    height: 36px;
+  }
 
-.rma_navbar_inner_page .rma_navbar_profile {
-  border-color: #111111;
-  color: #111111;
-  background: transparent;
-}
+  .rma_navbar_app_icon {
+    width: 36px;
+    height: 36px;
+  }
 
-.rma_navbar_inner_page .rma_navbar_profile:hover {
-  background: rgba(0, 0, 0, 0.06);
+  .rma_navbar_app_icon svg {
+    width: 25px;
+    height: 25px;
+  }
+
+  .rma_navbar_app_separator {
+    margin-left: 3px;
+    font-size: 16px;
+  }
+
+  /* Modal */
+
+  .rma_app_modal_overlay {
+    top: 58px;
+    padding: 16px;
+    height: 500px;
+  }
+
+  .rma_app_modal {
+    width: 100%;
+    max-width: 430px;
+
+    max-height: calc(100dvh - 90px);
+
+    padding: 28px 22px 22px;
+
+    border-radius: 22px;
+  }
+
+  .rma_app_modal h2 {
+    font-size: 19px;
+  }
+
+  .rma_app_modal p {
+    font-size: 12px;
+  }
 }

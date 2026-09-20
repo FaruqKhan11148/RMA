@@ -1514,10 +1514,12 @@
 
 .shop_status_open {
   color: #18864b;
+  font-size: 12px;
 }
 
 .shop_status_closed {
   color: #a04b4b;
+  font-size: 12px;
 }
 
 .nearby_shops_loading,

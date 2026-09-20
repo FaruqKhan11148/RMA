@@ -253,13 +253,13 @@
 }
 
 .shop_status_open {
-  background: var(--rma-primary-light);
-
   color: var(--rma-primary-dark);
+  font-size: 12px;
 }
 
 .shop_status_closed {
   color: var(--rma-danger);
+  font-size: 12px;
 }
 
 /* =========================================
