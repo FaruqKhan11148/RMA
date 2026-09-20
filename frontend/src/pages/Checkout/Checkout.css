@@ -312,7 +312,7 @@
   background: var(--rma-primary-light);
 }
 
-.location_selected_icon {
+.location_selected .location_selected_icon {
   width: 24px;
   height: 24px;
   flex-shrink: 0;
@@ -321,7 +321,7 @@
   justify-content: center;
   border-radius: 50%;
   background: var(--rma-primary);
-  color: var(--rma-text-white);
+  color: white;
   font-size: 12px;
   font-weight: var(--rma-weight-bold);
 }

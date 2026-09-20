@@ -6,6 +6,14 @@ import { useNavigate, useParams } from 'react-router-dom';
 import FlashMessage from '../../components/FlashMessage/FlashMessage';
 import { useCart } from '../../context/CartContext';
 
+const optimizeCloudinaryImage = (url, width = 400) => {
+  if (!url || !url.includes('res.cloudinary.com')) {
+    return url;
+  }
+
+  return url.replace('/upload/', `/upload/f_auto,q_auto,w_${width}/`);
+};
+
 function Shop() {
   const { shopId } = useParams();
   const navigate = useNavigate();
@@ -19,9 +27,6 @@ function Shop() {
   const [flashMessage, setFlashMessage] = useState('');
 
   const [selectedCategory, setSelectedCategory] = useState('All');
-
-  const COMMON_SHOP_IMAGE =
-    'https://res.cloudinary.com/dsznfqgu3/image/upload/v1789550262/Gemini_Generated_Image_2u7tlf2u7tlf2u7t.png';
 
   useEffect(() => {
     const fetchShop = async () => {
@@ -134,120 +139,82 @@ function Shop() {
         onClose={() => setFlashMessage('')}
       />
       <section className="shop_hero">
-        <img
-          className="shop_hero_image"
-          src={COMMON_SHOP_IMAGE}
-          alt={shop.shopName}
-        />
+        <div className="shop_hero_top">
+          <button
+            type="button"
+            className="shop_back_button"
+            onClick={() => navigate(-1)}
+            aria-label="Go back"
+          >
+            <span>←</span>
+            <span>Back</span>
+          </button>
 
-        <div className="shop_hero_overlay"></div>
+          <span className="shop_hero_id">{shop.shopId}</span>
+        </div>
 
-        <div className="shop_hero_content_wrapper">
-          <div className="shop_hero_top">
-            <button
-              type="button"
-              className="shop_back_button"
-              onClick={() => navigate(-1)}
-              aria-label="Go back"
+        <div className="shop_hero_content">
+          <div className="shop_status_row">
+            <span
+              className={
+                shop.isOpen
+                  ? 'shop_status_badge shop_status_open'
+                  : 'shop_status_badge shop_status_closed'
+              }
             >
-              ← Back
-            </button>
+              <span className="shop_status_dot" />
 
-            <span className="shop_hero_id">{shop.shopId}</span>
-
-            <button
-              type="button"
-              className="shop_share_button"
-              aria-label="Share shop"
-            >
-              ↗
-            </button>
+              {shop.isOpen ? 'Open Now' : 'Closed'}
+            </span>
           </div>
 
-          <div className="shop_hero_content">
-            <div className="shop_status_row">
-              <span
-                className={
-                  shop.isOpen
-                    ? 'shop_status_badge shop_status_open'
-                    : 'shop_status_badge shop_status_closed'
-                }
-              >
-                <span className="shop_status_dot" />
-                {shop.isOpen ? 'Open' : 'Closed'}
-              </span>
-            </div>
+          <h1>{shop.shopName}</h1>
 
-            <h1>{shop.shopName}</h1>
+          <div className="shop_rating">
+            <span className="shop_rating_star">★</span>
 
+            <span className="shop_rating_average">
+              {Number(shop.rating?.average || 0).toFixed(1)}
+            </span>
+
+            <span className="shop_rating_count">
+              {shop.rating?.count || 0}{' '}
+              {shop.rating?.count === 1 ? 'review' : 'reviews'}
+            </span>
+          </div>
+
+          {shop.description && (
             <p className="shop_hero_description">{shop.description}</p>
+          )}
 
-            <div className="shop_location">
-              <span className="rma_location_arrow_shop">
-                <svg
-                  width="22"
-                  height="22"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M12 21C12 21 19 14.5 19 9C19 5.134 15.866 2 12 2C8.134 2 5 5.134 5 9C5 14.5 12 21 12 21Z"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
+          <div className="shop_location">
+            <span className="rma_location_arrow_shop">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12 21C12 21 19 14.5 19 9C19 5.134 15.866 2 12 2C8.134 2 5 5.134 5 9C5 14.5 12 21 12 21Z"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
 
-                  <circle
-                    cx="12"
-                    cy="9"
-                    r="2.5"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  />
-                </svg>
-              </span>
+                <circle
+                  cx="12"
+                  cy="9"
+                  r="2.5"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                />
+              </svg>
+            </span>
 
-              <span>{shop.address}</span>
-            </div>
-          </div>
-
-          <div className="shop_delivery_card">
-            <div className="shop_delivery_main">
-              <span className="shop_delivery_icon">⚡</span>
-
-              <div>
-                <strong>
-                  {shop.delivery
-                    ? `Delivery in ${
-                        shop.deliverySettings?.estimatedDeliveryTime || 45
-                      } mins`
-                    : 'Pickup available'}
-                </strong>
-
-                <span>
-                  {shop.delivery
-                    ? 'Freshly prepared and delivered to you'
-                    : 'Order now and pick up from the shop'}
-                </span>
-              </div>
-            </div>
-
-            {shop.delivery && (
-              <div className="shop_delivery_details">
-                <span>
-                  Delivery charge ₹{shop.deliverySettings?.deliveryCharge || 0}
-                </span>
-
-                {shop.deliverySettings?.freeDeliveryAbove > 0 && (
-                  <span>
-                    Free delivery above ₹
-                    {shop.deliverySettings.freeDeliveryAbove}
-                  </span>
-                )}
-              </div>
-            )}
+            <span>{shop.address}</span>
           </div>
         </div>
       </section>
@@ -277,7 +244,7 @@ function Shop() {
 
       <section className="products">
         <div className="products_header">
-          <h2>Products</h2>
+          <h2>Available Products</h2>
 
           <span>{filteredProducts.length} items</span>
         </div>
@@ -290,7 +257,12 @@ function Shop() {
               <div className="product_card" key={product.productId}>
                 <div className="product_image">
                   {product.imageUrl ? (
-                    <img src={product.imageUrl} alt={product.name} />
+                    <img
+                      src={optimizeCloudinaryImage(product.imageUrl, 400)}
+                      alt={product.name}
+                      loading="lazy"
+                      decoding="async"
+                    />
                   ) : (
                     <div className="product_image_placeholder">RMA</div>
                   )}
@@ -323,8 +295,10 @@ function Shop() {
             <div className="floating_cart_image">
               {cartItems[0].imageUrl ? (
                 <img
-                  src={cartItems[0].imageUrl}
+                  src={optimizeCloudinaryImage(cartItems[0].imageUrl, 150)}
                   alt={cartItems[0].productName}
+                  loading="lazy"
+                  decoding="async"
                 />
               ) : (
                 <div className="floating_cart_image_placeholder">RMA</div>

@@ -132,33 +132,100 @@ const orderSchema = new mongoose.Schema(
       min: 0,
     },
 
-    // Delivery charge paid by customer
+    // Total delivery charge paid by customer
     deliveryCharge: {
       type: Number,
       required: true,
       min: 0,
     },
 
-    // RMA platform fee = 1% of product subtotal
+    // =========================
+    // RMA / OWNER / RIDER SPLIT
+    // =========================
+
+    // RMA product fee = 1.5% of product subtotal
     rmaFee: {
       type: Number,
       required: true,
       min: 0,
     },
 
-    // Amount belonging to the shop owner
-    // = subtotal - rmaFee
+    // Delivery amount given to rider = 88% of delivery charge
+    deliveryRiderAmount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+
+    // RMA delivery share = 6% of delivery charge
+    deliveryRmaAmount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+
+    // Owner delivery share = 6% of delivery charge
+    deliveryOwnerAmount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+
+    // Total RMA revenue
+    // = rmaFee + deliveryRmaAmount
+    rmaAmount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+
+    // Total amount belonging to shop owner
+    // = (subtotal - rmaFee) + deliveryOwnerAmount
     ownerAmount: {
       type: Number,
       required: true,
       min: 0,
     },
 
-    // Final amount paid/payable by customer
+    // Base customer amount before PayU charges
     // = subtotal + deliveryCharge
     totalPrice: {
       type: Number,
       required: true,
+      min: 0,
+    },
+
+    // =========================
+    // PAYU CHARGES
+    // =========================
+
+    // PayU fee = 2% of totalPrice
+    payuFee: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+
+    // GST = 18% of PayU fee
+    payuGst: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+
+    // Total PayU charges
+    // = payuFee + payuGst
+    payuCharges: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+
+    // Final amount actually payable by customer
+    // = totalPrice + payuCharges
+    customerPayableAmount: {
+      type: Number,
+      default: 0,
       min: 0,
     },
 
@@ -297,7 +364,7 @@ const orderSchema = new mongoose.Schema(
       default: 'NotRequired',
     },
 
-    // Total amount returned to customer
+    // Total amount actually returned to customer
     refundAmount: {
       type: Number,
       default: 0,

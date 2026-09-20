@@ -192,8 +192,31 @@ router.post('/create-order', async (req, res) => {
       });
     }
 
-    // Backend-calculated final customer payable amount.
-    const amount = Number(order.totalPrice).toFixed(2);
+    // -------------------------------------------------------
+    // FINAL CUSTOMER PAYABLE AMOUNT
+    // -------------------------------------------------------
+    // totalPrice = product subtotal + delivery charge
+    // PayU fee = 2% of totalPrice
+    // GST = 18% of PayU fee
+
+    const baseAmount = Number(order.totalPrice);
+
+    const payuFee = Number((baseAmount * 0.02).toFixed(2));
+
+    const payuGst = Number((payuFee * 0.18).toFixed(2));
+
+    const payuCharges = Number((payuFee + payuGst).toFixed(2));
+
+    const customerPayableAmount = Number((baseAmount + payuCharges).toFixed(2));
+
+    // Save PayU accounting values to the order.
+    order.payuFee = payuFee;
+    order.payuGst = payuGst;
+    order.payuCharges = payuCharges;
+    order.customerPayableAmount = customerPayableAmount;
+
+    // PayU must receive the FINAL amount charged to customer.
+    const amount = customerPayableAmount.toFixed(2);
 
     // Generate a unique PayU transaction ID.
     const txnid = `RMA-PAY-${order.orderId}-${Date.now()}`;
@@ -215,9 +238,16 @@ router.post('/create-order', async (req, res) => {
 
     await order.save();
 
-    console.log('PayU Test Payment Created:', {
+    console.log('PayU Payment Created:', {
       orderId: order.orderId,
       txnid,
+
+      baseAmount,
+      payuFee,
+      payuGst,
+      payuCharges,
+      customerPayableAmount,
+
       amount,
       paymentUrl: PAYU_PAYMENT_URL,
     });
@@ -228,6 +258,14 @@ router.post('/create-order', async (req, res) => {
       message: 'PayU payment created successfully',
 
       paymentUrl: PAYU_PAYMENT_URL,
+
+      pricing: {
+        baseAmount,
+        payuFee,
+        payuGst,
+        payuCharges,
+        customerPayableAmount,
+      },
 
       payment: {
         key: process.env.PAYU_MERCHANT_KEY,
@@ -312,7 +350,9 @@ router.post('/payu/success', async (req, res) => {
     // Extra protection:
     // make sure PayU returned the same amount that our
     // backend originally calculated.
-    const expectedAmount = Number(order.totalPrice).toFixed(2);
+    const expectedAmount = Number(
+      order.customerPayableAmount || order.totalPrice,
+    ).toFixed(2);
 
     const returnedAmount = Number(amount).toFixed(2);
 

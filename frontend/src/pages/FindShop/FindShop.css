@@ -232,22 +232,127 @@
   margin-bottom: var(--rma-space-8);
 }
 
+/* ==========================================
+   SECTION HEADER
+========================================== */
+
+.find_shop_nearby .find_shop_section_header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  margin-bottom: 16px;
+}
+
+.find_shop_nearby .find_shop_section_eyebrow {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: var(--rma-primary);
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.find_shop_nearby .find_shop_section_header h2 {
+  margin: 0 0 4px;
+
+  color: var(--rma-text);
+
+  font-size: 22px;
+  font-weight: 700;
+
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+}
+
+.find_shop_nearby .find_shop_section_header p {
+  margin: 0;
+
+  color: var(--rma-text-secondary);
+
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.find_shop_distance {
+  flex-shrink: 0;
+
+  padding: 6px 10px;
+
+  border-radius: 999px;
+
+  background: rgba(22, 128, 58, 0.08);
+
+  color: var(--rma-primary);
+
+  font-size: 9px;
+  font-weight: 800;
+
+  white-space: nowrap;
+}
+
+/* ==========================================
+   EMPTY LOCATION STATE
+========================================== */
+
 .find_shop_nearby_placeholder {
-  padding: var(--rma-space-8) var(--rma-space-5);
+  position: relative;
+
+  min-height: 250px;
+
+  padding: 38px 24px;
+
+  box-sizing: border-box;
 
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 
   text-align: center;
 
-  background: var(--rma-card);
+  overflow: hidden;
+
+  background:
+    radial-gradient(circle at 50% 0%, rgba(22, 128, 58, 0.07), transparent 55%),
+    var(--rma-card);
 
   border: 1px solid var(--rma-border);
-  border-radius: var(--rma-radius-xl);
+
+  border-radius: 20px;
+
+  box-shadow: var(--rma-shadow-sm);
+}
+
+.find_shop_nearby_placeholder::before {
+  content: '';
+
+  position: absolute;
+
+  width: 180px;
+  height: 180px;
+
+  top: -100px;
+  right: -70px;
+
+  border-radius: 50%;
+
+  background: rgba(22, 128, 58, 0.035);
+
+  pointer-events: none;
 }
 
 .find_shop_placeholder_icon {
+  position: relative;
+  z-index: 1;
+
   width: 58px;
   height: 58px;
 
@@ -255,51 +360,62 @@
   align-items: center;
   justify-content: center;
 
-  margin-bottom: var(--rma-space-4);
+  margin-bottom: 16px;
 
-  border-radius: 50%;
+  border-radius: 18px;
 
-  background: rgba(22, 128, 58, 0.1);
+  background: rgba(22, 128, 58, 0.09);
 
   color: var(--rma-primary);
 }
 
 .find_shop_nearby_placeholder h3 {
-  margin: 0 0 var(--rma-space-2);
+  position: relative;
+  z-index: 1;
+
+  margin: 0 0 7px;
 
   color: var(--rma-text);
 
-  font-size: var(--rma-font-md);
-  font-weight: var(--rma-weight-bold);
+  font-size: 15px;
+  font-weight: 800;
 }
 
 .find_shop_nearby_placeholder p {
-  max-width: 380px;
+  position: relative;
+  z-index: 1;
 
-  margin: 0 0 var(--rma-space-5);
+  max-width: 370px;
+
+  margin: 0 0 20px;
 
   color: var(--rma-text-secondary);
 
-  font-size: var(--rma-font-sm);
+  font-size: 11px;
   line-height: 1.6;
 }
 
 .find_shop_nearby_placeholder button {
-  min-height: 44px;
+  position: relative;
+  z-index: 1;
 
-  padding: 0 var(--rma-space-5);
+  min-height: 43px;
+
+  padding: 0 18px;
 
   border: none;
-  border-radius: var(--rma-radius-md);
+  border-radius: 11px;
 
   background: var(--rma-primary);
   color: var(--rma-text-white);
 
   font-family: inherit;
-  font-size: var(--rma-font-sm);
-  font-weight: var(--rma-weight-semibold);
+  font-size: 11px;
+  font-weight: 800;
 
   cursor: pointer;
+
+  box-shadow: 0 6px 16px rgba(22, 128, 58, 0.16);
 
   transition:
     background var(--rma-transition-normal),
@@ -309,11 +425,311 @@
 
 .find_shop_nearby_placeholder button:hover {
   background: var(--rma-primary-dark);
-  box-shadow: var(--rma-shadow-sm);
+
+  box-shadow: 0 9px 22px rgba(22, 128, 58, 0.2);
 }
 
 .find_shop_nearby_placeholder button:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
+}
+
+/* ==========================================
+   NEARBY SHOP LIST
+========================================== */
+
+.find_shop_nearby_list {
+  width: 100%;
+
+  display: flex;
+
+  gap: 12px;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  padding: 4px 2px 14px;
+
+  box-sizing: border-box;
+
+  scroll-snap-type: x mandatory;
+
+  -webkit-overflow-scrolling: touch;
+
+  scrollbar-width: none;
+}
+
+.find_shop_nearby_list::-webkit-scrollbar {
+  display: none;
+}
+
+/* ==========================================
+   SHOP CARD
+========================================== */
+
+.find_shop_nearby_card {
+  width: 270px;
+  min-width: 270px;
+
+  min-height: 250px;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 17px;
+
+  box-sizing: border-box;
+
+  border: 1px solid var(--rma-border);
+
+  border-radius: 19px;
+
+  background: var(--rma-card);
+
+  text-align: left;
+
+  cursor: pointer;
+
+  scroll-snap-align: start;
+
+  box-shadow: 0 5px 18px rgba(20, 35, 25, 0.045);
+
+  transition:
+    transform var(--rma-transition-fast),
+    border-color var(--rma-transition-normal),
+    box-shadow var(--rma-transition-normal);
+}
+
+.find_shop_nearby_card:hover {
+  border-color: rgba(22, 128, 58, 0.25);
+
+  box-shadow: 0 12px 28px rgba(20, 35, 25, 0.09);
+
+  transform: translateY(-3px);
+}
+
+.find_shop_nearby_card:active {
+  transform: scale(0.985);
+}
+
+/* ==========================================
+   CARD TOP
+========================================== */
+
+.find_shop_nearby_card_top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 20px;
+}
+
+.find_shop_nearby_icon {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 14px;
+  color: var(--rma-primary);
+}
+
+.find_shop_nearby_icon span {
+  font-size: 14px;
+  font-weight: 900;
+
+  letter-spacing: 0.8px;
+}
+
+/* ==========================================
+   SHOP STATUS
+========================================== */
+
+.find_shop_nearby_status {
+  padding: 5px 9px;
+
+  border-radius: 999px;
+
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.find_shop_nearby_status_open {
+  color: var(--rma-primary);
+}
+
+.find_shop_nearby_status_closed {
+  background: rgba(180, 35, 24, 0.08);
+
+  color: #b42318;
+}
+
+/* ==========================================
+   CARD CONTENT
+========================================== */
+
+.find_shop_nearby_card_content {
+  flex: 1;
+
+  min-width: 0;
+}
+
+.find_shop_nearby_card_content h3 {
+  margin: 0 0 6px;
+
+  color: var(--rma-text);
+
+  font-size: 16px;
+  font-weight: 800;
+
+  line-height: 1.25;
+
+  overflow-wrap: anywhere;
+}
+
+.find_shop_nearby_card_content p {
+  min-height: 34px;
+
+  margin: 0 0 15px;
+
+  color: black;
+
+  font-size: 10px;
+
+  line-height: 1.5;
+
+  overflow-wrap: anywhere;
+}
+
+.find_shop_nearby_meta {
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  color: var(--rma-text-muted);
+
+  font-size: 9px;
+  font-weight: 750;
+}
+
+.find_shop_nearby_meta span:nth-child(2) {
+  opacity: 0.5;
+}
+
+/* ==========================================
+   CARD FOOTER
+========================================== */
+
+.find_shop_nearby_card_footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+
+  margin-top: 17px;
+  padding-top: 13px;
+
+  border-top: 1px solid var(--rma-border);
+
+  font-size: 9px;
+  font-weight: 750;
+}
+
+.find_shop_nearby_card_footer span:first-child {
+  color: var(--rma-primary);
+}
+
+.find_shop_nearby_card_footer span:last-child {
+  color: var(--rma-primary);
+
+  transition: transform var(--rma-transition-fast);
+}
+
+.find_shop_nearby_card:hover .find_shop_nearby_card_footer span:last-child {
+  transform: translateX(3px);
+}
+
+/* ==========================================
+   NEARBY MOBILE
+========================================== */
+
+@media (max-width: 600px) {
+  .find_shop_nearby {
+    margin-bottom: var(--rma-space-7);
+  }
+
+  .find_shop_nearby .find_shop_section_header {
+    margin-bottom: 14px;
+  }
+
+  .find_shop_nearby .find_shop_section_header h2 {
+    font-size: 19px;
+  }
+
+  .find_shop_nearby .find_shop_section_header p {
+    font-size: 10px;
+  }
+
+  .find_shop_distance {
+    padding: 5px 8px;
+
+    font-size: 8px;
+  }
+
+  .find_shop_nearby_list {
+    gap: 10px;
+
+    padding-bottom: 12px;
+  }
+
+  .find_shop_nearby_card {
+    width: 82%;
+    min-width: 82%;
+
+    min-height: 240px;
+
+    padding: 15px;
+  }
+
+  .find_shop_nearby_card_top {
+    margin-bottom: 17px;
+  }
+
+  .find_shop_nearby_icon {
+    width: 45px;
+    height: 45px;
+  }
+}
+
+/* ==========================================
+   SMALL PHONES
+========================================== */
+
+@media (max-width: 380px) {
+  .find_shop_nearby .find_shop_section_header {
+    gap: 8px;
+  }
+
+  .find_shop_nearby .find_shop_section_header h2 {
+    font-size: 18px;
+  }
+
+  .find_shop_distance {
+    font-size: 8px;
+    padding: 5px 7px;
+  }
+
+  .find_shop_nearby_card {
+    width: 88%;
+    min-width: 88%;
+  }
+
+  .find_shop_nearby_placeholder {
+    padding: 34px 18px;
+  }
 }
 
 /* ==========================================
@@ -429,17 +845,20 @@
 
 .find_shop_nearby_list {
   width: 100%;
+
   display: flex;
-  gap: var(--rma-space-4);
+
+  gap: 12px;
 
   overflow-x: auto;
   overflow-y: hidden;
 
-  padding: 4px 2px 12px;
+  padding: 4px 2px 14px;
 
   box-sizing: border-box;
 
   scroll-snap-type: x mandatory;
+
   -webkit-overflow-scrolling: touch;
 
   scrollbar-width: none;
@@ -449,19 +868,26 @@
   display: none;
 }
 
+/* ==========================================
+   SHOP CARD
+========================================== */
+
 .find_shop_nearby_card {
   width: 270px;
   min-width: 270px;
 
+  min-height: 270px;
+
   display: flex;
   flex-direction: column;
 
-  padding: var(--rma-space-5);
+  padding: 17px;
 
   box-sizing: border-box;
 
   border: 1px solid var(--rma-border);
-  border-radius: var(--rma-radius-xl);
+
+  border-radius: 19px;
 
   background: var(--rma-card);
 
@@ -471,7 +897,7 @@
 
   scroll-snap-align: start;
 
-  box-shadow: var(--rma-shadow-sm);
+  box-shadow: 0 5px 18px rgba(20, 35, 25, 0.045);
 
   transition:
     transform var(--rma-transition-fast),
@@ -480,21 +906,28 @@
 }
 
 .find_shop_nearby_card:hover {
-  border-color: var(--rma-border-dark);
-  box-shadow: var(--rma-shadow-md);
-  transform: translateY(-2px);
+  border-color: rgba(22, 128, 58, 0.22);
+
+  box-shadow: 0 12px 28px rgba(20, 35, 25, 0.09);
+
+  transform: translateY(-3px);
 }
 
 .find_shop_nearby_card:active {
-  transform: scale(0.98);
+  transform: scale(0.985);
 }
+
+/* ==========================================
+   CARD TOP
+========================================== */
 
 .find_shop_nearby_card_top {
   display: flex;
+
   align-items: center;
   justify-content: space-between;
 
-  margin-bottom: var(--rma-space-5);
+  margin-bottom: 22px;
 }
 
 .find_shop_nearby_icon {
@@ -505,40 +938,53 @@
   align-items: center;
   justify-content: center;
 
-  border-radius: var(--rma-radius-md);
-
-  background: rgba(22, 128, 58, 0.1);
-
+  border-radius: 14px;
   color: var(--rma-primary);
 }
 
 .find_shop_nearby_icon span {
-  font-size: 11px;
-  font-weight: var(--rma-weight-bold);
-  letter-spacing: 0.5px;
+  font-size: 14px;
+
+  font-weight: var(--rma-weight-semibold);
+
+  letter-spacing: 0.7px;
 }
 
+/* ==========================================
+   SHOP STATUS
+========================================== */
+
 .find_shop_nearby_status {
-  padding: 5px 8px;
+  padding: 5px 9px;
 
   border-radius: 999px;
 
-  font-size: 10px;
+  font-size: 9px;
+
   font-weight: var(--rma-weight-semibold);
+
+  line-height: 1;
 }
 
 .find_shop_nearby_status_open {
-  background: rgba(22, 128, 58, 0.1);
   color: var(--rma-primary);
+  font-size: 13px;
 }
 
 .find_shop_nearby_status_closed {
   background: rgba(180, 35, 24, 0.08);
+
   color: #b42318;
 }
 
+/* ==========================================
+   SHOP CONTENT
+========================================== */
+
 .find_shop_nearby_card_content {
   flex: 1;
+
+  min-width: 0;
 }
 
 .find_shop_nearby_card_content h3 {
@@ -546,20 +992,21 @@
 
   color: var(--rma-text);
 
-  font-size: var(--rma-font-md);
-  font-weight: var(--rma-weight-bold);
+  font-size: 17px;
 
-  line-height: 1.3;
+  font-weight: var(--rma-weight-semibold);
+
+  line-height: 1.25;
 
   overflow-wrap: anywhere;
 }
 
 .find_shop_nearby_card_content p {
-  min-height: 42px;
+  min-height: 0;
 
-  margin: 0 0 var(--rma-space-4);
+  margin: 0 0 17px;
 
-  color: var(--rma-text-secondary);
+  color: black;
 
   font-size: var(--rma-font-xs);
 
@@ -568,39 +1015,197 @@
   overflow-wrap: anywhere;
 }
 
-.find_shop_nearby_meta {
+/* ==========================================
+   SHOP DETAILS
+========================================== */
+
+.find_shop_nearby_details {
   display: flex;
+
   align-items: center;
+
+  flex-wrap: wrap;
+
   gap: 7px;
 
-  color: var(--rma-text-muted);
+  margin-bottom: 15px;
+}
 
-  font-size: var(--rma-font-xs);
+.find_shop_nearby_detail {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  padding: 6px 9px;
+
+  border-radius: 9px;
+
+  background: rgba(20, 35, 25, 0.035);
+
+  color: black;
+
+  font-size: 9px;
+
+  font-weight: var(--rma-weight-semibold);
+
+  white-space: nowrap;
+}
+
+.find_shop_nearby_detail_icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--rma-primary);
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* ==========================================
+   DELIVERY AVAILABLE
+========================================== */
+
+.find_shop_nearby_delivery {
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  margin-top: 2px;
+
+  color: var(--rma-primary);
+
+  font-size: 9px;
+
   font-weight: var(--rma-weight-semibold);
 }
 
+.find_shop_nearby_delivery_dot {
+  width: 6px;
+  height: 6px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: var(--rma-primary);
+
+  box-shadow: 0 0 0 4px rgba(22, 128, 58, 0.08);
+}
+
+/* ==========================================
+   CARD FOOTER
+========================================== */
+
 .find_shop_nearby_card_footer {
   display: flex;
+
   align-items: center;
   justify-content: space-between;
 
-  gap: var(--rma-space-3);
+  gap: 10px;
 
-  margin-top: var(--rma-space-5);
-  padding-top: var(--rma-space-4);
+  margin-top: 20px;
+
+  padding-top: 13px;
 
   border-top: 1px solid var(--rma-border);
 
-  font-size: 10px;
+  font-size: 9px;
+
   font-weight: var(--rma-weight-semibold);
 }
 
 .find_shop_nearby_card_footer span:first-child {
-  color: var(--rma-text-muted);
+  color: var(--rma-primary);
+
+  letter-spacing: 0.2px;
 }
 
 .find_shop_nearby_card_footer span:last-child {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+
   color: var(--rma-primary);
+
+  transition: transform var(--rma-transition-fast);
+}
+
+.find_shop_nearby_card:hover .find_shop_nearby_card_footer span:last-child {
+  transform: translateX(3px);
+}
+
+.find_shop_nearby_arrow {
+  font-size: 12px;
+
+  line-height: 1;
+}
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media (max-width: 600px) {
+  .find_shop_nearby_list {
+    gap: 10px;
+
+    padding-bottom: 12px;
+  }
+
+  .find_shop_nearby_card {
+    width: 82%;
+
+    min-width: 82%;
+
+    min-height: 265px;
+
+    padding: 15px;
+  }
+
+  .find_shop_nearby_card_top {
+    margin-bottom: 20px;
+  }
+
+  .find_shop_nearby_icon {
+    width: 45px;
+    height: 45px;
+  }
+
+  .find_shop_nearby_card_content h3 {
+    font-size: 16px;
+  }
+
+  .find_shop_nearby_details {
+    gap: 6px;
+  }
+
+  .find_shop_nearby_detail {
+    padding: 6px 8px;
+    height: 30px;
+  }
+}
+
+/* ==========================================
+   SMALL PHONES
+========================================== */
+
+@media (max-width: 380px) {
+  .find_shop_nearby_card {
+    width: 88%;
+
+    min-width: 88%;
+
+    min-height: 260px;
+  }
+
+  .find_shop_nearby_card_content h3 {
+    font-size: 15px;
+  }
 }
 
 /* ==========================================

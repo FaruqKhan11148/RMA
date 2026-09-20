@@ -105,12 +105,9 @@ function AppLayout() {
   useEffect(() => {
     const checkCustomerLogin = async () => {
       try {
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/customers/me',
-          {
-            credentials: 'include',
-          },
-        );
+        const response = await fetch('http://localhost:5000/api/customers/me', {
+          credentials: 'include',
+        });
 
         if (response.ok) {
           setCustomerLoggedIn(true);

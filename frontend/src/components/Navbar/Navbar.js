@@ -71,10 +71,8 @@ function Navbar() {
 
       if (currentScrollY <= 10) {
         setIsVisible(true);
-      } else if (currentScrollY > lastScrollY) {
-        setIsVisible(false);
       } else {
-        setIsVisible(true);
+        setIsVisible(currentScrollY <= lastScrollY);
       }
 
       lastScrollY = currentScrollY;

@@ -378,9 +378,14 @@ function DeliveryStatus() {
           </p>
 
           <p>
-            <strong>Total:</strong>
+            <strong>Total Paid:</strong>
 
-            <span>₹{Number(order.totalPrice).toFixed(2)}</span>
+            <span>
+              ₹
+              {Number(order.customerPayableAmount || order.totalPrice).toFixed(
+                2,
+              )}
+            </span>
           </p>
         </section>
 
@@ -574,9 +579,12 @@ function DeliveryStatus() {
         </p>
 
         <p>
-          <strong>Total:</strong>
+          <strong>Total Paid:</strong>
 
-          <span>₹{Number(order.totalPrice).toFixed(2)}</span>
+          <span>
+            ₹
+            {Number(order.customerPayableAmount || order.totalPrice).toFixed(2)}
+          </span>
         </p>
       </section>
 

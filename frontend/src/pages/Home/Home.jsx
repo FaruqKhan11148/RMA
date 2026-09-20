@@ -6,6 +6,18 @@ import { useLanguage } from '../../context/LanguageContext';
 import { QrCode } from 'lucide-react';
 
 const RMA_LOCATION_KEY = 'rma_user_location';
+
+const optimizeCloudinaryImage = (url, width = 800) => {
+  if (!url || !url.includes('res.cloudinary.com')) {
+    return url;
+  }
+
+  return url.replace(
+    '/image/upload/',
+    `/image/upload/f_auto,q_auto,w_${width},dpr_auto/`,
+  );
+};
+
 const COMMON_SHOP_IMAGE =
   'https://res.cloudinary.com/dsznfqgu3/image/upload/v1789550262/Gemini_Generated_Image_2u7tlf2u7tlf2u7t.png';
 
@@ -61,7 +73,12 @@ function NearbyShopImageSlider({ shop }) {
               width: `${100 / availableProducts.length}%`,
             }}
           >
-            <img src={product.imageUrl} alt={product.name} />
+            <img
+              src={optimizeCloudinaryImage(product.imageUrl, 600)}
+              alt={product.name}
+              loading="lazy"
+              decoding="async"
+            />
           </div>
         ))}
       </div>
@@ -145,6 +162,7 @@ function Home() {
       location.state?.returnPath === '/'
     ) {
       setShowLocationSheet(true);
+      fetchSavedAddresses();
 
       navigate('/', {
         replace: true,
@@ -491,7 +509,13 @@ function Home() {
         <div className="hero_image_track">
           {meatImages.map((image, index) => (
             <div className="hero_image" key={image}>
-              <img src={image} alt={`Fresh meat ${index + 1}`} />
+              <img
+                src={optimizeCloudinaryImage(image, 1200)}
+                alt={`Fresh meat ${index + 1}`}
+                loading={index === 0 ? 'eager' : 'lazy'}
+                fetchPriority={index === 0 ? 'high' : 'low'}
+                decoding="async"
+              />
             </div>
           ))}
         </div>
@@ -677,7 +701,10 @@ function Home() {
                         gap: '8px',
                         verticalAlign: 'middle',
                       }}
-                      onClick={handleLocationClick}
+                      onClick={() => {
+                        setShowLocationSheet(true);
+                        fetchSavedAddresses();
+                      }}
                     >
                       Change Location
                     </button>
@@ -781,8 +808,10 @@ function Home() {
                     >
                       <div className="popular_product_image">
                         <img
-                          src={product.imageUrl || null}
+                          src={optimizeCloudinaryImage(product.imageUrl, 500)}
                           alt={product.name}
+                          loading="lazy"
+                          decoding="async"
                         />
                         <span className="popular_product_tag">POPULAR</span>
                       </div>
@@ -818,28 +847,40 @@ function Home() {
           </section>
         )}
 
-        <section className="rma_promo">
-          <div className="rma_promo_overlay">
-            <div className="rma_promo_content">
-              <span className="rma_promo_eyebrow">
-                FRESH. LOCAL. CONVENIENT.
-              </span>
+        <section className="home_explore_end">
+          <div className="home_explore_end_content">
+            <span className="home_explore_end_eyebrow">KEEP EXPLORING</span>
 
-              <h2>Fresh meat from shops you trust.</h2>
+            <h2>Looking for something fresh?</h2>
 
-              <p>
-                Order fresh meat and seafood from local shops and get it
-                delivered to your doorstep.
-              </p>
+            <p>Discover more meat and seafood shops near you.</p>
 
+            <div className="home_explore_end_actions">
               <button
-                className="rma_promo_button"
+                type="button"
+                className="home_explore_end_primary"
                 onClick={() => navigate('/find-shop')}
               >
-                Explore More Shops
+                Find More Shops
                 <span>→</span>
               </button>
+
+              <button
+                type="button"
+                className="home_explore_end_secondary"
+                onClick={() => navigate('/scan-qr')}
+              >
+                Scan Shop QR
+              </button>
             </div>
+          </div>
+
+          <div className="home_explore_end_visual" aria-hidden="true">
+            <div className="home_explore_end_circle home_explore_end_circle_one" />
+            <div className="home_explore_end_circle home_explore_end_circle_two" />
+            <span>🥩</span>
+            <span>🍗</span>
+            <span>🐟</span>
           </div>
         </section>
       </div>

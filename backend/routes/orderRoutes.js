@@ -46,7 +46,9 @@ async function initiatePayURefund(order) {
 
   const hash = crypto.createHash('sha512').update(hashString).digest('hex');
 
-  const refundAmount = Number(order.totalPrice).toFixed(2);
+  const refundAmount = Number(
+    order.customerPayableAmount || order.totalPrice,
+  ).toFixed(2);
 
   const backendUrl = process.env.BACKEND_URL || 'http://localhost:5000';
 
@@ -494,24 +496,59 @@ router.post('/', async (req, res) => {
     }
 
     // ==========================================
-    // RMA PLATFORM FEE
+    // RMA PRODUCT FEE
     // ==========================================
 
-    // RMA gets 1% of PRODUCT SUBTOTAL only.
-    const rmaFee = Number((subtotal * 0.01).toFixed(2));
+    // RMA gets 1.5% of PRODUCT SUBTOTAL only.
+    const rmaFee = Number((subtotal * 0.015).toFixed(2));
 
     // ==========================================
-    // OWNER AMOUNT
+    // DELIVERY SPLIT
     // ==========================================
 
-    // Owner receives 99% of product subtotal.
-    const ownerAmount = Number((subtotal - rmaFee).toFixed(2));
+    // Delivery charge is split:
+    // 88% -> Rider
+    // 6%  -> RMA
+    // 6%  -> Shop Owner
+
+    const deliveryRiderAmount = Number((deliveryCharge * 0.88).toFixed(2));
+
+    const deliveryRmaAmount = Number((deliveryCharge * 0.06).toFixed(2));
+
+    // Calculate owner share as the remaining amount.
+    // This guarantees all three shares add up exactly
+    // to the original delivery charge even after rounding.
+    const deliveryOwnerAmount = Number(
+      (deliveryCharge - deliveryRiderAmount - deliveryRmaAmount).toFixed(2),
+    );
 
     // ==========================================
-    // CUSTOMER TOTAL
+    // TOTAL RMA AMOUNT
     // ==========================================
 
-    // Customer pays product subtotal + delivery.
+    // RMA earns:
+    // 1.5% product fee
+    // +
+    // 6% delivery share
+    const rmaAmount = Number((rmaFee + deliveryRmaAmount).toFixed(2));
+
+    // ==========================================
+    // TOTAL OWNER AMOUNT
+    // ==========================================
+
+    // Owner earns:
+    // Product subtotal - RMA product fee
+    // +
+    // 6% delivery share
+    const ownerAmount = Number(
+      (subtotal - rmaFee + deliveryOwnerAmount).toFixed(2),
+    );
+
+    // ==========================================
+    // BASE CUSTOMER TOTAL
+    // ==========================================
+
+    // This is the amount before PayU charges.
     const totalPrice = Number((subtotal + deliveryCharge).toFixed(2));
 
     // ==========================================
@@ -554,8 +591,14 @@ router.post('/', async (req, res) => {
       subtotal,
       deliveryDistance,
       deliveryCharge,
+
       rmaFee,
+      deliveryRiderAmount,
+      deliveryRmaAmount,
+      deliveryOwnerAmount,
+      rmaAmount,
       ownerAmount,
+
       totalPrice,
 
       paymentMethod,
@@ -580,8 +623,16 @@ router.post('/', async (req, res) => {
       subtotal,
       deliveryDistance,
       deliveryCharge,
+
+      // RMA / Rider / Owner split
       rmaFee,
+      deliveryRiderAmount,
+      deliveryRmaAmount,
+      deliveryOwnerAmount,
+      rmaAmount,
       ownerAmount,
+
+      // Base customer amount before PayU charges
       totalPrice,
 
       paymentMethod,
@@ -696,7 +747,9 @@ router.patch('/:orderId/status', async (req, res) => {
         try {
           // Mark refund as processing before calling PayU.
           order.refundStatus = 'Processing';
-          order.refundAmount = Number(order.totalPrice.toFixed(2));
+          order.refundAmount = Number(
+            (order.customerPayableAmount || order.totalPrice).toFixed(2),
+          );
           order.refundInitiatedAt = new Date();
 
           await order.save();
@@ -755,7 +808,9 @@ router.patch('/:orderId/status', async (req, res) => {
           // Keep payment as Paid because the customer
           // has NOT been confirmed as refunded.
           order.refundStatus = 'Failed';
-          order.refundAmount = Number(order.totalPrice.toFixed(2));
+          order.refundAmount = Number(
+            (order.customerPayableAmount || order.totalPrice).toFixed(2),
+          );
 
           // Do not mark the payment as Refunded here.
           order.paymentStatus = 'Paid';

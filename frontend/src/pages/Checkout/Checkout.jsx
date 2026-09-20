@@ -37,7 +37,14 @@ function Checkout() {
   const [deliveryDistance, setDeliveryDistance] = useState(null);
   const [deliveryCharge, setDeliveryCharge] = useState(0);
   const [deliveryLoading, setDeliveryLoading] = useState(false);
-  const [payuConvenienceCharge, setPayuConvenienceCharge] = useState(0);
+
+  const [payuPricing, setPayuPricing] = useState({
+    baseAmount: 0,
+    payuFee: 0,
+    payuGst: 0,
+    payuCharges: 0,
+    customerPayableAmount: 0,
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -165,6 +172,26 @@ function Checkout() {
   }, [deliveryLocation, orderType, cartItems]);
 
   useEffect(() => {
+    const baseAmount = Number(totalPrice) + Number(deliveryCharge);
+
+    const payuFee = Number((baseAmount * 0.02).toFixed(2));
+
+    const payuGst = Number((payuFee * 0.18).toFixed(2));
+
+    const payuCharges = Number((payuFee + payuGst).toFixed(2));
+
+    const customerPayableAmount = Number((baseAmount + payuCharges).toFixed(2));
+
+    setPayuPricing({
+      baseAmount,
+      payuFee,
+      payuGst,
+      payuCharges,
+      customerPayableAmount,
+    });
+  }, [totalPrice, deliveryCharge]);
+
+  useEffect(() => {
     if (!location.state?.openLocationSheet) {
       return;
     }
@@ -198,17 +225,6 @@ function Checkout() {
     });
   }, [location.state, navigate]);
 
-  useEffect(() => {
-    const baseAmount = totalPrice + deliveryCharge;
-
-    const payuFee = baseAmount * 0.02;
-    const gst = payuFee * 0.18;
-
-    const totalPayuCharge = Number((payuFee + gst).toFixed(2));
-
-    setPayuConvenienceCharge(totalPayuCharge);
-  }, [totalPrice, deliveryCharge]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -241,27 +257,112 @@ function Checkout() {
         deliveryLocation,
       };
 
-      console.log('Sending Order:', orderData);
+      console.log('Creating RMA order:', orderData);
+
+      // ==========================================
+      // STEP 1: CREATE RMA ORDER
+      // ==========================================
 
       const order = await createOrder(orderData);
 
-      console.log('BACKEND CALCULATED ORDER:', {
+      console.log('RMA ORDER CREATED:', order);
+
+      if (!order?.orderId) {
+        throw new Error('Order was created but no order ID was returned.');
+      }
+
+      console.log('Backend calculated order:', {
+        orderId: order.orderId,
         subtotal: order.subtotal,
         deliveryDistance: order.deliveryDistance,
         deliveryCharge: order.deliveryCharge,
         rmaFee: order.rmaFee,
-        ownerAmount: order.ownerAmount,
         totalPrice: order.totalPrice,
       });
 
-      console.log('Order Created:', order);
+      // ==========================================
+      // STEP 2: CREATE PAYU PAYMENT
+      // ==========================================
 
-      navigate(`/payment/${order.orderId}`);
+      console.log('Creating PayU payment...');
+
+      const payuResponse = await fetch(
+        'https://rma-backend-bo4a.onrender.com/api/payments/create-order',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            orderId: order.orderId,
+          }),
+        },
+      );
+
+      const payuData = await payuResponse.json();
+
+      console.log('PayU response:', payuData);
+
+      if (!payuResponse.ok) {
+        throw new Error(payuData.message || 'Unable to create PayU payment.');
+      }
+
+      if (!payuData.paymentUrl || !payuData.payment) {
+        throw new Error('PayU payment details are missing.');
+      }
+
+      if (!payuData.pricing) {
+        throw new Error('PayU pricing details are missing.');
+      }
+
+      console.log('Final backend pricing:', payuData.pricing);
+      console.log('PayU payment created successfully.');
+      console.log('PayU amount:', payuData.payment.amount);
+      console.log('PayU transaction ID:', payuData.payment.txnid);
+
+      // ==========================================
+      // STEP 3: SEND CUSTOMER DIRECTLY TO PAYU
+      // ==========================================
+
+      const form = document.createElement('form');
+
+      form.method = 'POST';
+      form.action = payuData.paymentUrl;
+      form.style.display = 'none';
+
+      const paymentFields = {
+        key: payuData.payment.key,
+        txnid: payuData.payment.txnid,
+        amount: payuData.payment.amount,
+        productinfo: payuData.payment.productinfo,
+        firstname: payuData.payment.firstname,
+        email: payuData.payment.email,
+        phone: payuData.payment.phone,
+        surl: payuData.payment.surl,
+        furl: payuData.payment.furl,
+        hash: payuData.payment.hash,
+      };
+
+      Object.entries(paymentFields).forEach(([name, value]) => {
+        const input = document.createElement('input');
+
+        input.type = 'hidden';
+        input.name = name;
+        input.value = String(value ?? '');
+
+        form.appendChild(input);
+      });
+
+      document.body.appendChild(form);
+
+      form.submit();
     } catch (error) {
-      console.error('Create order failed:', error);
+      console.error('Payment process failed:', error);
 
-      setError(error.message || 'Unable to create order');
-    } finally {
+      setError(
+        error.message || 'Something went wrong while processing your payment.',
+      );
+
       setLoading(false);
     }
   };
@@ -330,46 +431,6 @@ function Checkout() {
       <div className="checkout_layout">
         <div className="checkout_main">
           {/* ======================================
-              ORDER TYPE
-          ====================================== */}
-
-          {hasDelivery && (
-            <section className="checkout_card checkout_order_type">
-              <div className="checkout_card_header">
-                <div>
-                  <span className="checkout_step">01</span>
-
-                  <div>
-                    <h2>Delivery</h2>
-
-                    <p>Your order will be delivered to your doorstep.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="order_type_options">
-                <div className="order_type_option selected">
-                  <div className="order_type_icon">
-                    <span>⌖</span>
-                  </div>
-
-                  <div className="order_type_content">
-                    <strong>Delivery</strong>
-
-                    <span>Delivered to your doorstep</span>
-
-                    <small>
-                      {shop.deliverySettings?.estimatedDeliveryTime || 45} mins
-                    </small>
-                  </div>
-
-                  <span className="order_type_check">✓</span>
-                </div>
-              </div>
-            </section>
-          )}
-
-          {/* ======================================
               DELIVERY LOCATION
           ====================================== */}
 
@@ -377,7 +438,7 @@ function Checkout() {
             <section className="checkout_card checkout_location_card">
               <div className="checkout_card_header">
                 <div>
-                  <span className="checkout_step">02</span>
+                  <span className="checkout_step">01</span>
 
                   <div>
                     <h2>Delivery Location</h2>
@@ -464,7 +525,7 @@ function Checkout() {
           <section className="checkout_card checkout_customer_card">
             <div className="checkout_card_header">
               <div>
-                <span className="checkout_step">03</span>
+                <span className="checkout_step">02</span>
 
                 <div>
                   <h2>Your Details</h2>
@@ -509,8 +570,9 @@ function Checkout() {
 
               {orderType === 'delivery' && (
                 <div className="checkout_form_group">
-                  <label htmlFor="checkout-address">Delivery Address</label>
-
+                  <label htmlFor="checkout-address">
+                    Detailed Delivery Address
+                  </label>
                   <textarea
                     id="checkout-address"
                     name="address"
@@ -519,46 +581,6 @@ function Checkout() {
                     onChange={handleChange}
                     required
                   />
-                </div>
-              )}
-
-              {/* ==================================
-                  PAYMENT METHOD
-              ================================== */}
-
-              <div className="checkout_payment">
-                <div className="checkout_payment_header">
-                  <div>
-                    <span className="checkout_step">04</span>
-
-                    <div>
-                      <h2>Payment</h2>
-
-                      <p>Pay securely online through PayU.</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="payment_options">
-                  <div className="payment_option selected">
-                    <div className="payment_option_icon">↗</div>
-
-                    <div className="payment_option_content">
-                      <strong>Online Payment</strong>
-
-                      <span>Pay securely online through PayU</span>
-                    </div>
-
-                    <span className="payment_check">✓</span>
-                  </div>
-                </div>
-              </div>
-
-              {error && (
-                <div className="checkout_error">
-                  <span>!</span>
-
-                  <p>{error}</p>
                 </div>
               )}
             </form>
@@ -573,27 +595,9 @@ function Checkout() {
           <section className="checkout_summary_card">
             <div className="checkout_summary_header">
               <div>
-                <span>YOUR ORDER</span>
-
                 <h2>Order Summary</h2>
               </div>
-
-              <span className="checkout_summary_count">
-                {cartItems.reduce((total, item) => total + item.quantity, 0)}{' '}
-                items
-              </span>
             </div>
-
-            <div className="checkout_summary_shop">
-              <div className="checkout_summary_shop_icon">R</div>
-
-              <div>
-                <span>SHOP</span>
-
-                <strong>{shop.shopName}</strong>
-              </div>
-            </div>
-
             <div className="checkout_summary_items">
               {cartItems.map((item) => (
                 <div className="summary_item" key={item.product.productId}>
@@ -626,20 +630,13 @@ function Checkout() {
 
             <div className="summary_row summary_delivery_row">
               <div className="summary_delivery_label">
-                <span>Delivery</span>
-
-                {orderType === 'delivery' && (
-                  <small>
-                    ₹18 + ₹8/km
-                    {deliveryDistance !== null && ` • ${deliveryDistance} km`}
-                  </small>
-                )}
+                <span>Delivery Charge</span>
               </div>
 
               <strong>
                 {orderType === 'delivery'
                   ? deliveryLoading
-                    ? 'Calculating...'
+                    ? 'calculating...'
                     : `₹${deliveryCharge.toFixed(2)}`
                   : 'Free'}
               </strong>
@@ -650,12 +647,10 @@ function Checkout() {
             {paymentMethod === 'ONLINE' && (
               <div className="summary_row summary_payu_row">
                 <div className="summary_payu_label">
-                  <span>PayU Convenience Charge</span>
-
-                  <small>2% + 18% GST</small>
+                  <span>Convenience Charge</span>
                 </div>
 
-                <strong>₹{payuConvenienceCharge.toFixed(2)}</strong>
+                <strong>₹{payuPricing.payuCharges.toFixed(2)}</strong>
               </div>
             )}
 
@@ -669,11 +664,7 @@ function Checkout() {
               <strong>
                 {deliveryLoading
                   ? 'Calculating...'
-                  : `₹${(
-                      totalPrice +
-                      deliveryCharge +
-                      payuConvenienceCharge
-                    ).toFixed(2)}`}
+                  : `₹${payuPricing.customerPayableAmount.toFixed(2)}`}
               </strong>
             </div>
           </section>
@@ -872,7 +863,31 @@ function Checkout() {
                     onClick={() => handleSavedAddressSelect(savedAddress)}
                   >
                     <div className="location_sheet_saved_icon">
-                      <span>⌖</span>
+                      <span>
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M3 10.5L12 3L21 10.5V21H3V10.5Z"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+
+                          <path
+                            d="M9 21V14H15V21"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </span>
                     </div>
 
                     <div className="location_sheet_saved_content">

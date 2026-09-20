@@ -472,6 +472,7 @@ function FindShop() {
                     className="find_shop_nearby_card"
                     onClick={() => navigate(`/shop/${shop.shopId}`)}
                   >
+                    {/* TOP */}
                     <div className="find_shop_nearby_card_top">
                       <div className="find_shop_nearby_icon">
                         <span>RMA</span>
@@ -488,24 +489,93 @@ function FindShop() {
                       </span>
                     </div>
 
+                    {/* SHOP INFO */}
                     <div className="find_shop_nearby_card_content">
                       <h3>{shop.shopName}</h3>
 
                       <p>{shop.description || 'Fresh meat and seafood'}</p>
 
-                      <div className="find_shop_nearby_meta">
-                        <span>{shop.distance} km</span>
+                      {/* SHOP DETAILS */}
+                      <div className="find_shop_nearby_details">
+                        <span className="find_shop_nearby_detail">
+                          <span className="find_shop_nearby_detail_icon">
+                            <svg
+                              width="22"
+                              height="22"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M12 21C12 21 19 14.5 19 9C19 5.134 15.866 2 12 2C8.134 2 5 5.134 5 9C5 14.5 12 21 12 21Z"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
 
-                        <span>•</span>
+                              <circle
+                                cx="12"
+                                cy="9"
+                                r="2.5"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                              />
+                            </svg>
+                          </span>
+                          {shop.distance} km
+                        </span>
 
-                        <span>{shop.delivery ? 'Delivery' : 'Pickup'}</span>
+                        {shop.delivery && (
+                          <span className="find_shop_nearby_detail">
+                            <span className="find_shop_nearby_detail_icon">
+                              <svg
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M6 8H18L19 21H5L6 8Z"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+
+                                <path
+                                  d="M9 8V6C9 4.343 10.343 3 12 3C13.657 3 15 4.343 15 6V8"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
+                            </span>
+                            Delivery
+                          </span>
+                        )}
                       </div>
+
+                      {/* DELIVERY INFO */}
+                      {shop.delivery && (
+                        <div className="find_shop_nearby_delivery">
+                          <span className="find_shop_nearby_delivery_dot" />
+
+                          <span>Delivery available</span>
+                        </div>
+                      )}
                     </div>
 
+                    {/* FOOTER */}
                     <div className="find_shop_nearby_card_footer">
                       <span>{shop.shopId}</span>
 
-                      <span>View Shop →</span>
+                      <span>
+                        View Shop
+                        <span className="find_shop_nearby_arrow">→</span>
+                      </span>
                     </div>
                   </button>
                 ))}
@@ -775,11 +845,124 @@ function FindShop() {
                       onClick={() => handleSavedAddressSelect(savedAddress)}
                     >
                       <div className="location_sheet_saved_address_icon">
-                        {savedAddress.label === 'Home' && <span>⌂</span>}
+                        {savedAddress.label === 'Home' && (
+                          <span>
+                            <svg
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M3 10.5L12 3L21 10.5V21H3V10.5Z"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
 
-                        {savedAddress.label === 'Work' && <span>▣</span>}
+                              <path
+                                d="M9 21V14H15V21"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </span>
+                        )}
 
-                        {savedAddress.label === 'Other' && <span>●</span>}
+                        {savedAddress.label === 'Work' && (
+                          <span>
+                            <svg
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M4 21V6H20V21"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+
+                              <path
+                                d="M8 6V3H16V6"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+
+                              <path
+                                d="M4 10H20"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                              />
+
+                              <path
+                                d="M9 14H11"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                              />
+
+                              <path
+                                d="M13 14H15"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                              />
+
+                              <path
+                                d="M9 18H11"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                              />
+
+                              <path
+                                d="M13 18H15"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                              />
+                            </svg>
+                          </span>
+                        )}
+
+                        {savedAddress.label === 'Other' && (
+                          <span>
+                            <svg
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M12 21C12 21 19 14.5 19 9C19 5.134 15.866 2 12 2C8.134 2 5 5.134 5 9C5 14.5 12 21 12 21Z"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+
+                              <circle
+                                cx="12"
+                                cy="9"
+                                r="2.5"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                              />
+                            </svg>
+                          </span>
+                        )}
                       </div>
 
                       <div className="location_sheet_saved_address_content">
