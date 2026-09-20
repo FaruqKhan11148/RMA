@@ -31,10 +31,9 @@ function Checkout() {
   });
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [, setError] = useState('');
   const [flashMessage, setFlashMessage] = useState('');
 
-  const [deliveryDistance, setDeliveryDistance] = useState(null);
   const [deliveryCharge, setDeliveryCharge] = useState(0);
   const [deliveryLoading, setDeliveryLoading] = useState(false);
 
@@ -113,7 +112,6 @@ function Checkout() {
 
   useEffect(() => {
     if (orderType !== 'delivery' || !deliveryLocation) {
-      setDeliveryDistance(null);
       setDeliveryCharge(0);
       setDeliveryLoading(false);
       return;
@@ -155,12 +153,10 @@ function Checkout() {
           );
         }
 
-        setDeliveryDistance(data.deliveryDistance);
         setDeliveryCharge(data.deliveryCharge);
       } catch (error) {
         console.error('Delivery charge calculation failed:', error);
 
-        setDeliveryDistance(null);
         setDeliveryCharge(0);
         setError(error.message || 'Unable to calculate delivery charge');
       } finally {
@@ -274,7 +270,6 @@ function Checkout() {
       console.log('Backend calculated order:', {
         orderId: order.orderId,
         subtotal: order.subtotal,
-        deliveryDistance: order.deliveryDistance,
         deliveryCharge: order.deliveryCharge,
         rmaFee: order.rmaFee,
         totalPrice: order.totalPrice,
@@ -385,8 +380,6 @@ function Checkout() {
   }
 
   const shop = cartItems[0];
-
-  const hasDelivery = shop.shopDelivery;
 
   return (
     <main className="checkout">
