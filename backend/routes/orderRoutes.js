@@ -1098,7 +1098,7 @@ router.post('/:orderId/reject-delivery', async (req, res) => {
 router.patch('/:orderId/status', async (req, res) => {
   try {
     const { orderId } = req.params;
-    const { status } = req.body;
+    const { status, rejectionReason, rejectionDescription } = req.body;
 
     const allowedStatuses = [
       'Pending',
@@ -1166,6 +1166,11 @@ router.patch('/:orderId/status', async (req, res) => {
     // ==========================================
 
     if (status === 'Rejected' && order.status !== 'Rejected') {
+      if (!rejectionReason || !rejectionReason.trim()) {
+        return res.status(400).json({
+          message: 'Rejection reason is required',
+        });
+      }
       // Prevent rejection of an order that has already
       // moved beyond the Pending stage.
       if (order.status !== 'Pending') {
@@ -1175,6 +1180,9 @@ router.patch('/:orderId/status', async (req, res) => {
       }
 
       order.rejectedAt = new Date();
+
+      order.rejectionReason = rejectionReason.trim();
+      order.rejectionDescription = rejectionDescription?.trim() || null;
 
       // ==========================================
       // ONLINE PAYMENT REFUND
@@ -1187,6 +1195,10 @@ router.patch('/:orderId/status', async (req, res) => {
           order.refundAmount = Number(
             (order.customerPayableAmount || order.totalPrice).toFixed(2),
           );
+
+          order.refundType = 'FULL';
+          order.refundReason = rejectionReason.trim();
+
           order.refundInitiatedAt = new Date();
 
           await order.save();
@@ -1214,26 +1226,26 @@ router.patch('/:orderId/status', async (req, res) => {
           // CUSTOMER REJECTION NOTIFICATION
           // ==========================================
 
-          if (order.customerId) {
-            try {
-              await createAndSendNotification({
-                recipientType: 'customer',
-                recipientId: order.customerId,
-                type: 'ORDER_REJECTED',
-                title: 'Order Rejected',
-                message: `Your order ${order.orderId} has been rejected by the shop.`,
-                orderId: order.orderId,
-                data: {
-                  screen: 'orders',
-                },
-              });
-            } catch (notificationError) {
-              console.error(
-                'Customer rejection notification failed:',
-                notificationError,
-              );
-            }
-          }
+          // if (order.customerId) {
+          //   try {
+          //     await createAndSendNotification({
+          //       recipientType: 'customer',
+          //       recipientId: order.customerId,
+          //       type: 'ORDER_REJECTED',
+          //       title: 'Order Rejected',
+          //       message: `Your order ${order.orderId} has been rejected by the shop.`,
+          //       orderId: order.orderId,
+          //       data: {
+          //         screen: 'orders',
+          //       },
+          //     });
+          //   } catch (notificationError) {
+          //     console.error(
+          //       'Customer rejection notification failed:',
+          //       notificationError,
+          //     );
+          //   }
+          // }
 
           await order.populate('ownerId', 'ownerName shopName phone');
 
@@ -1311,7 +1323,9 @@ router.patch('/:orderId/status', async (req, res) => {
           Rejected: {
             type: 'ORDER_REJECTED',
             title: 'Order Rejected',
-            message: `Your order ${order.orderId} has been rejected by the shop.`,
+            message:
+              `Your order ${order.orderId} has been rejected by the shop. ` +
+              `Reason: ${order.rejectionReason}.`,
             data: {
               screen: 'order-status',
             },

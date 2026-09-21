@@ -15,6 +15,12 @@ function OwnerDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  const [showRejectModal, setShowRejectModal] = useState(false);
+  const [selectedRejectOrder, setSelectedRejectOrder] = useState(null);
+  const [rejectionReason, setRejectionReason] = useState('');
+  const [rejectionDescription, setRejectionDescription] = useState('');
+  const [rejectingOrder, setRejectingOrder] = useState(false);
+
   const [shopOwner, setShopOwner] = useState(() => {
     const ownerData = localStorage.getItem('rma_owner');
 
@@ -204,6 +210,67 @@ function OwnerDashboard() {
     );
   }
 
+  const openRejectModal = (order) => {
+    setSelectedRejectOrder(order);
+    setRejectionReason('');
+    setRejectionDescription('');
+    setShowRejectModal(true);
+  };
+
+  const handleRejectOrder = async () => {
+    if (!selectedRejectOrder) {
+      return;
+    }
+
+    if (!rejectionReason) {
+      alert('Please select a rejection reason.');
+      return;
+    }
+
+    try {
+      setRejectingOrder(true);
+
+      const response = await fetch(
+        `https://rma-backend-bo4a.onrender.com/api/orders/${selectedRejectOrder.orderId}/status`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            status: 'Rejected',
+            rejectionReason,
+            rejectionDescription: rejectionDescription.trim() || null,
+          }),
+        },
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.message || 'Failed to reject order');
+        return;
+      }
+
+      setOrders((currentOrders) =>
+        currentOrders.map((order) =>
+          order.orderId === selectedRejectOrder.orderId ? data.order : order,
+        ),
+      );
+
+      setShowRejectModal(false);
+      setSelectedRejectOrder(null);
+      setRejectionReason('');
+      setRejectionDescription('');
+    } catch (error) {
+      console.error('Reject order failed:', error);
+
+      alert('Unable to connect to server');
+    } finally {
+      setRejectingOrder(false);
+    }
+  };
+
   const updateOrderStatus = async (orderId, status) => {
     try {
       const response = await fetch(
@@ -369,7 +436,7 @@ function OwnerDashboard() {
                 <div className="owner_order_actions">
                   <button
                     className="reject_button"
-                    onClick={() => updateOrderStatus(order.orderId, 'Rejected')}
+                    onClick={() => openRejectModal(order)}
                   >
                     Reject
                   </button>
@@ -451,6 +518,108 @@ function OwnerDashboard() {
           )}
         </div>
       </section>
+      {showRejectModal && selectedRejectOrder && (
+        <div className="owner_reject_modal_overlay">
+          <div className="owner_reject_modal">
+            <div className="owner_reject_modal_header">
+              <div>
+                <h2>Reject Order</h2>
+
+                <p>Order #{selectedRejectOrder.orderId}</p>
+              </div>
+
+              <button
+                type="button"
+                className="owner_reject_modal_close"
+                onClick={() => {
+                  if (rejectingOrder) return;
+
+                  setShowRejectModal(false);
+                  setSelectedRejectOrder(null);
+                  setRejectionReason('');
+                  setRejectionDescription('');
+                }}
+              >
+                ×
+              </button>
+            </div>
+
+            <p className="owner_reject_modal_text">
+              Please select a reason for rejecting this order.
+            </p>
+
+            <label
+              htmlFor="owner_rejection_reason"
+              className="owner_reject_modal_label"
+            >
+              Rejection Reason
+            </label>
+
+            <select
+              id="owner_rejection_reason"
+              className="owner_reject_modal_select"
+              value={rejectionReason}
+              onChange={(event) => setRejectionReason(event.target.value)}
+              disabled={rejectingOrder}
+            >
+              <option value="">Select a reason</option>
+              <option value="Item unavailable">Item unavailable</option>
+              <option value="Insufficient stock">Insufficient stock</option>
+              <option value="Shop too busy">Shop too busy</option>
+              <option value="Unable to prepare order">
+                Unable to prepare order
+              </option>
+              <option value="Delivery unavailable">Delivery unavailable</option>
+              <option value="Shop closing soon">Shop closing soon</option>
+              <option value="Other">Other</option>
+            </select>
+
+            <label
+              htmlFor="owner_rejection_description"
+              className="owner_reject_modal_label"
+            >
+              Additional Details
+            </label>
+
+            <textarea
+              id="owner_rejection_description"
+              className="owner_reject_modal_textarea"
+              value={rejectionDescription}
+              onChange={(event) => setRejectionDescription(event.target.value)}
+              placeholder="Add more details if needed..."
+              rows={4}
+              disabled={rejectingOrder}
+            />
+
+            <div className="owner_reject_modal_actions">
+              <button
+                type="button"
+                className="owner_reject_modal_cancel"
+                onClick={() => {
+                  if (rejectingOrder) return;
+
+                  setShowRejectModal(false);
+                  setSelectedRejectOrder(null);
+                  setRejectionReason('');
+                  setRejectionDescription('');
+                }}
+                disabled={rejectingOrder}
+              >
+                Keep Order
+              </button>
+
+              <button
+                type="button"
+                className="owner_reject_modal_confirm"
+                onClick={handleRejectOrder}
+                disabled={rejectingOrder}
+              >
+                {rejectingOrder ? 'Rejecting...' : 'Reject Order'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

@@ -405,9 +405,7 @@ function DeliveryStatus() {
   const isDeliveryRejection =
     order.refundType === 'DELIVERY_REJECTION' ||
     Boolean(order.customerRejectedAt);
-
-  const isShopRejection = !isCustomerCancellation && !isDeliveryRejection;
-
+    
   const refundAmount = Number(order.refundAmount || 0);
   const totalPaid = Number(
     order.customerPayableAmount || order.totalPrice || 0,

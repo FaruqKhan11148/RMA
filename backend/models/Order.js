@@ -277,6 +277,18 @@ const orderSchema = new mongoose.Schema(
       default: null,
     },
 
+    rejectionReason: {
+      type: String,
+      default: null,
+      trim: true,
+    },
+
+    rejectionDescription: {
+      type: String,
+      default: null,
+      trim: true,
+    },
+
     // =========================
     // CANCELLATION
     // =========================
