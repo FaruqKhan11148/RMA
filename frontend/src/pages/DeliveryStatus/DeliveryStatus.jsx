@@ -411,7 +411,7 @@ function DeliveryStatus() {
     order.customerPayableAmount || order.totalPrice || 0,
   );
 
-  const deliveryCharge = Number(order.deliveryCharge || 0);
+  // const deliveryCharge = Number(order.deliveryCharge || 0);
   const nonRefundedDeliveryCharge = Number(
     Math.max(0, totalPaid - refundAmount).toFixed(2),
   );
