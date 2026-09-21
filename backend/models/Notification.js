@@ -23,6 +23,7 @@ const notificationSchema = new mongoose.Schema(
         'ORDER_OUT_FOR_DELIVERY',
         'ORDER_COMPLETED',
         'ORDER_REJECTED',
+        'ORDER_CANCELLED',
         'DELIVERY_ASSIGNED',
       ],
       required: true,

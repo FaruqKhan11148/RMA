@@ -3,6 +3,7 @@ const { getMessaging } = require('firebase-admin/messaging');
 const Notification = require('../models/Notification');
 const Customer = require('../models/Customer');
 const Owner = require('../models/Owner');
+const DeliveryPerson = require('../models/DeliveryPerson');
 
 require('../config/firebaseAdmin');
 
@@ -80,6 +81,13 @@ const getRecipientTokens = async ({ recipientType, recipientId }) => {
     return owner?.fcmTokens || [];
   }
 
+  if (recipientType === 'delivery') {
+    const deliveryPerson =
+      await DeliveryPerson.findById(recipientId).select('fcmTokens');
+
+    return deliveryPerson?.fcmTokens || [];
+  }
+
   return [];
 };
 
@@ -109,6 +117,15 @@ const removeInvalidTokens = async ({
 
   if (recipientType === 'owner') {
     await Owner.findByIdAndUpdate(recipientId, {
+      $pull: {
+        fcmTokens: {
+          $in: invalidTokens,
+        },
+      },
+    });
+  }
+  if (recipientType === 'delivery') {
+    await DeliveryPerson.findByIdAndUpdate(recipientId, {
       $pull: {
         fcmTokens: {
           $in: invalidTokens,

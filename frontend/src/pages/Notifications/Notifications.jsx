@@ -17,9 +17,45 @@ function Notifications() {
         setLoading(true);
         setError('');
 
-        const response = await fetch(`${API_URL}api/customers/notifications`, {
+        const ownerToken = localStorage.getItem('rma_owner_token');
+        const ownerData = localStorage.getItem('rma_owner');
+
+        const deliveryToken = sessionStorage.getItem('delivery_token');
+        const deliveryData = sessionStorage.getItem('delivery_person');
+
+        let endpoint = '';
+        let fetchOptions = {
           credentials: 'include',
-        });
+        };
+
+        // OWNER
+        if (ownerToken && ownerData) {
+          endpoint = `${API_URL}api/orders/notifications/owner`;
+
+          fetchOptions = {
+            ...fetchOptions,
+            headers: {
+              Authorization: `Bearer ${ownerToken}`,
+            },
+          };
+        }
+        // DELIVERY PARTNER
+        else if (deliveryToken && deliveryData) {
+          endpoint = `${API_URL}api/orders/notifications/delivery`;
+
+          fetchOptions = {
+            ...fetchOptions,
+            headers: {
+              Authorization: `Bearer ${deliveryToken}`,
+            },
+          };
+        }
+        // CUSTOMER
+        else {
+          endpoint = `${API_URL}api/orders/notifications/customer`;
+        }
+
+        const response = await fetch(endpoint, fetchOptions);
 
         const data = await response.json();
 
@@ -30,7 +66,7 @@ function Notifications() {
         setNotifications(data.notifications || []);
         setUnreadCount(data.unreadCount || 0);
       } catch (fetchError) {
-        console.error('Fetch customer notifications failed:', fetchError);
+        console.error('Fetch notifications failed:', fetchError);
 
         setError(fetchError.message || 'Unable to load messages');
       } finally {
@@ -44,42 +80,82 @@ function Notifications() {
   const handleNotificationClick = async (notification) => {
     setSelectedNotification(notification);
 
-    if (!notification.isRead) {
-      try {
-        const response = await fetch(
-          `${API_URL}api/customers/notifications/${notification._id}/read`,
-          {
-            method: 'PATCH',
-            credentials: 'include',
+    if (notification.isRead) {
+      return;
+    }
+
+    try {
+      const ownerToken = localStorage.getItem('rma_owner_token');
+      const ownerData = localStorage.getItem('rma_owner');
+
+      const deliveryToken = sessionStorage.getItem('delivery_token');
+      const deliveryData = sessionStorage.getItem('delivery_person');
+
+      let endpoint = '';
+      let fetchOptions = {
+        method: 'PATCH',
+        credentials: 'include',
+      };
+
+      // OWNER
+      if (ownerToken && ownerData) {
+        endpoint = `${API_URL}api/orders/notifications/owner/${notification._id}/read`;
+
+        fetchOptions = {
+          ...fetchOptions,
+          headers: {
+            Authorization: `Bearer ${ownerToken}`,
           },
-        );
-
-        if (!response.ok) {
-          console.error('Failed to mark notification as read');
-          return;
-        }
-
-        setNotifications((currentNotifications) =>
-          currentNotifications.map((item) =>
-            item._id === notification._id ? { ...item, isRead: true } : item,
-          ),
-        );
-
-        setUnreadCount((currentCount) => Math.max(currentCount - 1, 0));
-      } catch (error) {
-        console.error('Mark notification as read failed:', error);
+        };
       }
+      // DELIVERY PARTNER
+      else if (deliveryToken && deliveryData) {
+        endpoint = `${API_URL}api/orders/notifications/delivery/${notification._id}/read`;
+
+        fetchOptions = {
+          ...fetchOptions,
+          headers: {
+            Authorization: `Bearer ${deliveryToken}`,
+          },
+        };
+      }
+      // CUSTOMER
+      else {
+        endpoint = `${API_URL}api/orders/notifications/customer/${notification._id}/read`;
+      }
+
+      const response = await fetch(endpoint, fetchOptions);
+
+      if (!response.ok) {
+        const data = await response.json();
+
+        console.error(
+          'Failed to mark notification as read:',
+          data.message || 'Unknown error',
+        );
+
+        return;
+      }
+
+      setNotifications((currentNotifications) =>
+        currentNotifications.map((item) =>
+          item._id === notification._id ? { ...item, isRead: true } : item,
+        ),
+      );
+
+      setUnreadCount((currentCount) => Math.max(currentCount - 1, 0));
+    } catch (error) {
+      console.error('Mark notification as read failed:', error);
     }
   };
 
   const getNotificationStatus = (type) => {
     const statusMap = {
       ORDER_ACCEPTED: 'Accepted',
-      ORDER_PREPARING: 'Preparing',
-      ORDER_READY: 'Ready',
       ORDER_OUT_FOR_DELIVERY: 'Out for Delivery',
       ORDER_COMPLETED: 'Completed',
       ORDER_REJECTED: 'Rejected',
+      ORDER_CANCELLED: 'Cancelled',
       NEW_ORDER: 'New Order',
       DELIVERY_ASSIGNED: 'Delivery Assigned',
     };

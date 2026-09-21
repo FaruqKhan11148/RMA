@@ -2,6 +2,10 @@ import './DeliveryOrders.css';
 
 import { useEffect, useState } from 'react';
 import OrderLocationMap from '../../../components/map/OrderLocationMap';
+import {
+  requestDeliveryNotificationPermission,
+  listenForDeliveryNotifications,
+} from '../../../firebase/deliveryNotifications';
 
 function DeliveryOrders() {
   const [shopId, setShopId] = useState('');
@@ -124,6 +128,30 @@ function DeliveryOrders() {
       navigator.geolocation.clearWatch(watchId);
     };
   }, [loginStep]);
+
+  useEffect(() => {
+    const deliveryToken = sessionStorage.getItem('delivery_token');
+
+    if (!deliveryToken) {
+      return undefined;
+    }
+
+    let unsubscribe;
+
+    const setupNotifications = async () => {
+      await requestDeliveryNotificationPermission(deliveryToken);
+
+      unsubscribe = await listenForDeliveryNotifications();
+    };
+
+    setupNotifications();
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, []);
 
   // REQUEST DELIVERY LOGIN OTP
   const handleRequestOtp = async () => {

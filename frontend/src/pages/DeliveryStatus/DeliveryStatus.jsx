@@ -405,7 +405,12 @@ function DeliveryStatus() {
   const isDeliveryRejection =
     order.refundType === 'DELIVERY_REJECTION' ||
     Boolean(order.customerRejectedAt);
-    
+
+  const isShopRejection =
+    order.status === 'Rejected' &&
+    !isCustomerCancellation &&
+    !isDeliveryRejection;
+
   const refundAmount = Number(order.refundAmount || 0);
   const totalPaid = Number(
     order.customerPayableAmount || order.totalPrice || 0,
@@ -455,6 +460,20 @@ function DeliveryStatus() {
                 ? 'You rejected the delivery because of an issue with the order.'
                 : 'Sorry, the shop has rejected this order.'}
           </p>
+
+          {isShopRejection && order.rejectionReason && (
+            <div className="shop_rejection_details">
+              <p>
+                <strong>Reason:</strong> {order.rejectionReason}
+              </p>
+
+              {order.rejectionDescription && (
+                <p>
+                  <strong>Details:</strong> {order.rejectionDescription}
+                </p>
+              )}
+            </div>
+          )}
         </section>
 
         {/* REFUND PROCESSING */}

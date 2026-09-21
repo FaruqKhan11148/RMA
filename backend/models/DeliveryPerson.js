@@ -16,6 +16,11 @@ const deliveryPersonSchema = new mongoose.Schema(
       trim: true,
     },
 
+    fcmTokens: {
+      type: [String],
+      default: [],
+    },
+
     deliveryPersonId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'DeliveryPerson',

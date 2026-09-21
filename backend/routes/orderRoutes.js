@@ -5,6 +5,13 @@ const crypto = require('crypto');
 const Order = require('../models/Order');
 const Owner = require('../models/Owner');
 const Customer = require('../models/Customer');
+const DeliveryPerson = require('../models/DeliveryPerson');
+
+const Notification = require('../models/Notification');
+
+const customerAuth = require('../middleware/customerAuth');
+const ownerAuth = require('../middleware/ownerAuth');
+const deliveryAuth = require('../middleware/deliveryAuth');
 
 const {
   createAndSendNotification,
@@ -342,6 +349,231 @@ router.get('/guest/:guestId', async (req, res) => {
   }
 });
 
+// ==========================================
+// GET CUSTOMER NOTIFICATIONS
+// ==========================================
+router.get('/notifications/customer', customerAuth, async (req, res) => {
+  try {
+    const notifications = await Notification.find({
+      recipientType: 'customer',
+      recipientId: req.customer._id,
+    })
+      .sort({ createdAt: -1 })
+      .limit(100);
+
+    const unreadCount = await Notification.countDocuments({
+      recipientType: 'customer',
+      recipientId: req.customer._id,
+      isRead: false,
+    });
+
+    return res.status(200).json({
+      notifications,
+      unreadCount,
+    });
+  } catch (error) {
+    console.error('Get customer notifications failed:', error);
+
+    return res.status(500).json({
+      message: 'Unable to fetch customer notifications',
+    });
+  }
+});
+
+// ==========================================
+// GET OWNER NOTIFICATIONS
+// ==========================================
+router.get('/notifications/owner', ownerAuth, async (req, res) => {
+  try {
+    const notifications = await Notification.find({
+      recipientType: 'owner',
+      recipientId: req.owner._id,
+    })
+      .sort({ createdAt: -1 })
+      .limit(100);
+
+    const unreadCount = await Notification.countDocuments({
+      recipientType: 'owner',
+      recipientId: req.owner._id,
+      isRead: false,
+    });
+
+    return res.status(200).json({
+      notifications,
+      unreadCount,
+    });
+  } catch (error) {
+    console.error('Get owner notifications failed:', error);
+
+    return res.status(500).json({
+      message: 'Unable to fetch owner notifications',
+    });
+  }
+});
+
+// ==========================================
+// GET DELIVERY NOTIFICATIONS
+// ==========================================
+router.get('/notifications/delivery', deliveryAuth, async (req, res) => {
+  try {
+    const notifications = await Notification.find({
+      recipientType: 'delivery',
+      recipientId: req.deliveryPerson._id,
+    })
+      .sort({ createdAt: -1 })
+      .limit(100);
+
+    const unreadCount = await Notification.countDocuments({
+      recipientType: 'delivery',
+      recipientId: req.deliveryPerson._id,
+      isRead: false,
+    });
+
+    return res.status(200).json({
+      notifications,
+      unreadCount,
+    });
+  } catch (error) {
+    console.error('Get delivery notifications failed:', error);
+
+    return res.status(500).json({
+      message: 'Unable to fetch delivery notifications',
+    });
+  }
+});
+
+// ==========================================
+// MARK CUSTOMER NOTIFICATION AS READ
+// ==========================================
+router.patch(
+  '/notifications/customer/:notificationId/read',
+  customerAuth,
+  async (req, res) => {
+    try {
+      const notification = await Notification.findOneAndUpdate(
+        {
+          _id: req.params.notificationId,
+          recipientType: 'customer',
+          recipientId: req.customer._id,
+        },
+        {
+          $set: {
+            isRead: true,
+          },
+        },
+        {
+          new: true,
+        },
+      );
+
+      if (!notification) {
+        return res.status(404).json({
+          message: 'Notification not found',
+        });
+      }
+
+      return res.status(200).json({
+        message: 'Notification marked as read',
+        notification,
+      });
+    } catch (error) {
+      console.error('Mark customer notification as read failed:', error);
+
+      return res.status(500).json({
+        message: 'Unable to mark notification as read',
+      });
+    }
+  },
+);
+
+// ==========================================
+// MARK OWNER NOTIFICATION AS READ
+// ==========================================
+router.patch(
+  '/notifications/owner/:notificationId/read',
+  ownerAuth,
+  async (req, res) => {
+    try {
+      const notification = await Notification.findOneAndUpdate(
+        {
+          _id: req.params.notificationId,
+          recipientType: 'owner',
+          recipientId: req.owner._id,
+        },
+        {
+          $set: {
+            isRead: true,
+          },
+        },
+        {
+          new: true,
+        },
+      );
+
+      if (!notification) {
+        return res.status(404).json({
+          message: 'Notification not found',
+        });
+      }
+
+      return res.status(200).json({
+        message: 'Notification marked as read',
+        notification,
+      });
+    } catch (error) {
+      console.error('Mark owner notification as read failed:', error);
+
+      return res.status(500).json({
+        message: 'Unable to mark notification as read',
+      });
+    }
+  },
+);
+
+// ==========================================
+// MARK DELIVERY NOTIFICATION AS READ
+// ==========================================
+router.patch(
+  '/notifications/delivery/:notificationId/read',
+  deliveryAuth,
+  async (req, res) => {
+    try {
+      const notification = await Notification.findOneAndUpdate(
+        {
+          _id: req.params.notificationId,
+          recipientType: 'delivery',
+          recipientId: req.deliveryPerson._id,
+        },
+        {
+          $set: {
+            isRead: true,
+          },
+        },
+        {
+          new: true,
+        },
+      );
+
+      if (!notification) {
+        return res.status(404).json({
+          message: 'Notification not found',
+        });
+      }
+
+      return res.status(200).json({
+        message: 'Notification marked as read',
+        notification,
+      });
+    } catch (error) {
+      console.error('Mark delivery notification as read failed:', error);
+
+      return res.status(500).json({
+        message: 'Unable to mark notification as read',
+      });
+    }
+  },
+);
+
 // GET ONE ORDER BY ORDER ID
 router.get('/:orderId', async (req, res) => {
   try {
@@ -656,6 +888,33 @@ router.post('/', async (req, res) => {
       status: 'Pending',
     });
 
+    // ==========================================
+    // NOTIFY SHOP OWNER ABOUT NEW ORDER
+    // ==========================================
+    try {
+      await createAndSendNotification({
+        recipientType: 'owner',
+        recipientId: ownerId,
+        type: 'NEW_ORDER',
+        title: 'New Order Received',
+        message:
+          `You received a new order ${order.orderId} ` +
+          `from ${customer.name}.`,
+        orderId: order.orderId,
+        data: {
+          screen: 'owner-orders',
+          orderId: order.orderId,
+        },
+      });
+    } catch (notificationError) {
+      console.error('Owner new order notification failed:', notificationError);
+    }
+
+    res.status(201).json({
+      message: 'Order created successfully',
+      order,
+    });
+
     res.status(201).json({
       message: 'Order created successfully',
       order,
@@ -674,7 +933,6 @@ router.post('/', async (req, res) => {
 // ==========================================
 // CUSTOMER CANCEL ORDER
 // ==========================================
-
 router.post('/:orderId/cancel', async (req, res) => {
   try {
     const { orderId } = req.params;
@@ -1149,7 +1407,6 @@ router.patch('/:orderId/status', async (req, res) => {
     if (status === 'OutForDelivery' && order.status !== 'OutForDelivery') {
       order.outForDeliveryAt = new Date();
 
-      // Generate delivery OTP
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
       order.deliveryOtp = otp;
@@ -1287,6 +1544,35 @@ router.patch('/:orderId/status', async (req, res) => {
 
     await order.save();
 
+    if (status === 'OutForDelivery') {
+      try {
+        const deliveryPerson = await DeliveryPerson.findOne({
+          ownerId: order.ownerId,
+          isActive: true,
+        });
+
+        if (deliveryPerson) {
+          await createAndSendNotification({
+            recipientType: 'delivery',
+            recipientId: deliveryPerson._id,
+            type: 'DELIVERY_ASSIGNED',
+            title: 'New Delivery Assigned',
+            message: `Order ${order.orderId} has been assigned to you.`,
+            orderId: order.orderId,
+            data: {
+              screen: 'delivery-orders',
+              orderId: order.orderId,
+            },
+          });
+        }
+      } catch (notificationError) {
+        console.error(
+          'Delivery assignment notification failed:',
+          notificationError,
+        );
+      }
+    }
+
     // ==========================================
     // CUSTOMER ORDER STATUS NOTIFICATION
     // ==========================================
@@ -1320,6 +1606,7 @@ router.patch('/:orderId/status', async (req, res) => {
               screen: 'order-status',
             },
           },
+
           Rejected: {
             type: 'ORDER_REJECTED',
             title: 'Order Rejected',
