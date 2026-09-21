@@ -12,6 +12,7 @@ function RMADeliveryLogin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [generatedOtp, setGeneratedOtp] = useState('');
 
   const handleRequestOtp = async () => {
     if (!phone.trim()) {
@@ -49,10 +50,9 @@ function RMADeliveryLogin() {
         return;
       }
 
-      console.log('RMA delivery OTP:', data.otp);
-
+      setGeneratedOtp(data.otp || '');
       setSuccessMessage(
-        data.otp ? `Your OTP is: ${data.otp}` : 'OTP sent successfully',
+        data.otp ? 'OTP generated successfully' : 'OTP sent successfully',
       );
 
       setLoginStep('otp');
@@ -176,6 +176,13 @@ function RMADeliveryLogin() {
 
               <p>Enter the 6-digit OTP sent to your phone.</p>
             </div>
+
+            {generatedOtp && (
+              <div className="rma_delivery_otp_display">
+                <span>Your OTP</span>
+                <strong>{generatedOtp}</strong>
+              </div>
+            )}
 
             <label htmlFor="rma_delivery_otp">OTP</label>
 
