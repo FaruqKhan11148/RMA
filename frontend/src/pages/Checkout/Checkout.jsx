@@ -728,14 +728,53 @@ function Checkout() {
                 }
 
                 navigator.geolocation.getCurrentPosition(
-                  (position) => {
-                    setDeliveryLocation({
-                      latitude: position.coords.latitude,
-                      longitude: position.coords.longitude,
-                    });
+                  async (position) => {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
 
-                    setShowLocationSheet(false);
-                    setError('');
+                    try {
+                      const response = await fetch(
+                        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`,
+                      );
+
+                      if (!response.ok) {
+                        throw new Error('Unable to get address');
+                      }
+
+                      const data = await response.json();
+
+                      const address = data.display_name || 'Current location';
+
+                      setDeliveryLocation({
+                        latitude,
+                        longitude,
+                        address,
+                      });
+
+                      setCustomer((current) => ({
+                        ...current,
+                        address,
+                      }));
+
+                      setShowLocationSheet(false);
+                      setError('');
+                    } catch (error) {
+                      console.error('Reverse geocoding failed:', error);
+
+                      setDeliveryLocation({
+                        latitude,
+                        longitude,
+                        address: 'Current location',
+                      });
+
+                      setCustomer((current) => ({
+                        ...current,
+                        address: 'Current location',
+                      }));
+
+                      setShowLocationSheet(false);
+                      setError('');
+                    }
                   },
                   (error) => {
                     console.error('Current location failed:', error);

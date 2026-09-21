@@ -76,6 +76,11 @@ const ownerSchema = new mongoose.Schema(
       trim: true,
     },
 
+    authVersion: {
+      type: Number,
+      default: 0,
+    },
+
     phone: {
       type: String,
       required: true,

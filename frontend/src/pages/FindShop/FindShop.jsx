@@ -2,6 +2,7 @@ import './FindShop.css';
 
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import NearbyShopImageSlider from '../../components/NearbyShopImageSlider/NearbyShopImageSlider';
 
 const RMA_LOCATION_KEY = 'rma_user_location';
 
@@ -398,7 +399,7 @@ function FindShop() {
         <section className="find_shop_nearby">
           <div className="find_shop_section_header">
             <div>
-              <span className="find_shop_section_eyebrow">NEAR YOU</span>
+              <span className="find_shop_section_eyebrow">1. NEAR YOU</span>
 
               <h2>Nearby Shops</h2>
 
@@ -472,100 +473,45 @@ function FindShop() {
                     className="find_shop_nearby_card"
                     onClick={() => navigate(`/shop/${shop.shopId}`)}
                   >
-                    {/* TOP */}
-                    <div className="find_shop_nearby_card_top">
-                      <div className="find_shop_nearby_icon">
-                        <span>RMA</span>
-                      </div>
+                    {/* IMAGE SLIDER */}
+                    <NearbyShopImageSlider shop={shop} />
 
-                      <span
-                        className={
-                          shop.isOpen
-                            ? 'find_shop_nearby_status find_shop_nearby_status_open'
-                            : 'find_shop_nearby_status find_shop_nearby_status_closed'
-                        }
-                      >
-                        {shop.isOpen ? 'Open' : 'Closed'}
-                      </span>
-                    </div>
-
-                    {/* SHOP INFO */}
+                    {/* SHOP CONTENT */}
                     <div className="find_shop_nearby_card_content">
-                      <h3>{shop.shopName}</h3>
+                      <div className="find_shop_nearby_title_row">
+                        <h3>{shop.shopName}</h3>
 
-                      <p>{shop.description || 'Fresh meat and seafood'}</p>
-
-                      {/* SHOP DETAILS */}
-                      <div className="find_shop_nearby_details">
-                        <span className="find_shop_nearby_detail">
-                          <span className="find_shop_nearby_detail_icon">
-                            <svg
-                              width="22"
-                              height="22"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M12 21C12 21 19 14.5 19 9C19 5.134 15.866 2 12 2C8.134 2 5 5.134 5 9C5 14.5 12 21 12 21Z"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-
-                              <circle
-                                cx="12"
-                                cy="9"
-                                r="2.5"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                              />
-                            </svg>
+                        <span className="find_shop_nearby_rating">
+                          <span className="find_shop_nearby_rating_star">
+                            ★
                           </span>
-                          {shop.distance} km
+                          <span>4.5</span>
                         </span>
-
-                        {shop.delivery && (
-                          <span className="find_shop_nearby_detail">
-                            <span className="find_shop_nearby_detail_icon">
-                              <svg
-                                width="18"
-                                height="18"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M6 8H18L19 21H5L6 8Z"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-
-                                <path
-                                  d="M9 8V6C9 4.343 10.343 3 12 3C13.657 3 15 4.343 15 6V8"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                              </svg>
-                            </span>
-                            Delivery
-                          </span>
-                        )}
                       </div>
 
-                      {/* DELIVERY INFO */}
-                      {shop.delivery && (
-                        <div className="find_shop_nearby_delivery">
-                          <span className="find_shop_nearby_delivery_dot" />
+                      <p className="find_shop_nearby_description">
+                        {shop.description || 'Fresh meat and seafood'}
+                      </p>
 
-                          <span>Delivery available</span>
-                        </div>
-                      )}
+                      <div className="find_shop_nearby_meta">
+                        <span>{shop.distance} km</span>
+
+                        <span>•</span>
+
+                        <span>{shop.delivery ? 'Delivery' : 'Pickup'}</span>
+
+                        <span>•</span>
+
+                        <span
+                          className={
+                            shop.isOpen
+                              ? 'find_shop_nearby_status_open'
+                              : 'find_shop_nearby_status_closed'
+                          }
+                        >
+                          {shop.isOpen ? 'Open' : 'Closed'}
+                        </span>
+                      </div>
                     </div>
 
                     {/* FOOTER */}
@@ -590,7 +536,9 @@ function FindShop() {
         <section className="find_shop_search">
           <div className="find_shop_section_header">
             <div>
-              <span className="find_shop_section_eyebrow">KNOW YOUR SHOP?</span>
+              <span className="find_shop_section_eyebrow">
+                2. KNOW YOUR SHOP?
+              </span>
 
               <h2>Search by Shop ID</h2>
 
@@ -652,7 +600,7 @@ function FindShop() {
           <section className="find_shop_saved">
             <div className="find_shop_section_header">
               <div>
-                <span className="find_shop_section_eyebrow">YOUR SHOP</span>
+                <span className="find_shop_section_eyebrow">3. YOUR SHOP</span>
 
                 <h2>Saved Shop</h2>
               </div>

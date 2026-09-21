@@ -1,7 +1,19 @@
 import './Cart.css';
 
+import { useEffect, useState } from 'react';
 import { useCart } from '../../context/CartContext';
 import { useNavigate } from 'react-router-dom';
+
+const optimizeCloudinaryImage = (url, width = 400) => {
+  if (!url || !url.includes('res.cloudinary.com')) {
+    return url;
+  }
+
+  return url.replace(
+    '/image/upload/',
+    `/image/upload/f_auto,q_auto,w_${width},dpr_auto/`,
+  );
+};
 
 function Cart() {
   const navigate = useNavigate();
@@ -81,7 +93,10 @@ function Cart() {
           <div className="cart_item" key={item.product.productId}>
             <div className="cart_item_image">
               {item.product.imageUrl ? (
-                <img src={item.product.imageUrl} alt={item.product.name} />
+                <img
+                  src={optimizeCloudinaryImage(item.product.imageUrl, 400)}
+                  alt={item.product.name}
+                />
               ) : (
                 <div className="cart_item_image_placeholder">RMA</div>
               )}

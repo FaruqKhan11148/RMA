@@ -295,6 +295,28 @@ router.post('/request-otp', async (req, res) => {
   }
 });
 
+// LOGOUT DELIVERY PERSON
+router.post('/logout', deliveryAuth, async (req, res) => {
+  try {
+    const deliveryPerson = req.deliveryPerson;
+
+    deliveryPerson.loginToken = null;
+    deliveryPerson.loginTokenExpiresAt = null;
+
+    await deliveryPerson.save();
+
+    return res.status(200).json({
+      message: 'Delivery person logout successful',
+    });
+  } catch (error) {
+    console.error('Delivery logout failed:', error);
+
+    return res.status(500).json({
+      message: 'Unable to logout delivery person',
+    });
+  }
+});
+
 // VERIFY DELIVERY PERSON LOGIN OTP
 router.post('/verify-otp', async (req, res) => {
   try {

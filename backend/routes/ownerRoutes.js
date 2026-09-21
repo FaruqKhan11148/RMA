@@ -383,6 +383,7 @@ router.post('/login', async (req, res) => {
       {
         ownerId: owner._id.toString(),
         shopId: owner.shopId,
+        authVersion: owner.authVersion,
       },
       process.env.OWNER_JWT_SECRET,
       {
@@ -421,6 +422,33 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// OWNER LOGOUT
+router.post('/logout', ownerAuth, async (req, res) => {
+  try {
+    const owner = await Owner.findById(req.owner._id);
+
+    if (!owner) {
+      return res.status(404).json({
+        message: 'Owner account not found',
+      });
+    }
+
+    owner.authVersion += 1;
+
+    await owner.save();
+
+    return res.status(200).json({
+      message: 'Owner logout successful',
+    });
+  } catch (error) {
+    console.error('Owner logout failed:', error);
+
+    return res.status(500).json({
+      message: 'Unable to logout owner',
+    });
+  }
+});
+
 // ==========================================
 // SAVE OWNER FCM TOKEN
 // ==========================================
@@ -455,7 +483,7 @@ router.post('/notification-token', ownerAuth, async (req, res) => {
     });
   } catch (error) {
     console.error('Save owner FCM token failed:', error);
-    
+
     return res.status(500).json({
       message: 'Unable to save notification token',
     });

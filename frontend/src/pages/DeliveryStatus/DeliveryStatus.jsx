@@ -27,6 +27,15 @@ function DeliveryStatus() {
   const [reviewError, setReviewError] = useState('');
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
 
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showRejectModal, setShowRejectModal] = useState(false);
+
+  const [actionReason, setActionReason] = useState('');
+  const [actionDescription, setActionDescription] = useState('');
+
+  const [processingOrderAction, setProcessingOrderAction] = useState(false);
+  const [orderActionError, setOrderActionError] = useState('');
+
   // ==========================================
   // GET ORDER FROM BACKEND
   // ==========================================
@@ -85,6 +94,101 @@ function DeliveryStatus() {
   useEffect(() => {
     fetchOrder();
   }, [fetchOrder]);
+
+  const handleCancelOrder = async () => {
+    if (!order) return;
+
+    if (!actionReason.trim()) {
+      setOrderActionError('Please select a cancellation reason.');
+      return;
+    }
+
+    try {
+      setProcessingOrderAction(true);
+      setOrderActionError('');
+
+      const response = await fetch(
+        `https://rma-backend-bo4a.onrender.com/api/orders/${order.orderId}/cancel`,
+        {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            reason: actionReason.trim(),
+          }),
+        },
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setOrderActionError(data.message || 'Unable to cancel order');
+        return;
+      }
+
+      setShowCancelModal(false);
+      setActionReason('');
+      setActionDescription('');
+
+      setOrder(data.order);
+    } catch (error) {
+      console.error('Cancel order failed:', error);
+
+      setOrderActionError('Unable to connect to server. Please try again.');
+    } finally {
+      setProcessingOrderAction(false);
+    }
+  };
+
+  const handleRejectDelivery = async () => {
+    if (!order) return;
+
+    if (!actionReason.trim()) {
+      setOrderActionError('Please select a rejection reason.');
+      return;
+    }
+
+    try {
+      setProcessingOrderAction(true);
+      setOrderActionError('');
+
+      const response = await fetch(
+        `https://rma-backend-bo4a.onrender.com/api/orders/${order.orderId}/reject-delivery`,
+        {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            reason: actionReason.trim(),
+            description: actionDescription.trim(),
+          }),
+        },
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setOrderActionError(data.message || 'Unable to reject delivery');
+        return;
+      }
+
+      setShowRejectModal(false);
+      setActionReason('');
+      setActionDescription('');
+
+      setOrder(data.order);
+    } catch (error) {
+      console.error('Reject delivery failed:', error);
+
+      setOrderActionError('Unable to connect to server. Please try again.');
+    } finally {
+      setProcessingOrderAction(false);
+    }
+  };
 
   // ==========================================
   // REFRESH ORDER STATUS EVERY 5 SECONDS
@@ -236,7 +340,8 @@ function DeliveryStatus() {
     {
       status: 'OutForDelivery',
       title: 'Out for Delivery',
-      description: 'Your order is on the way to you.',
+      description:
+        'Your order is on the way. Please check your items carefully when they arrive before sharing the OTP.',
     },
     {
       status: 'Completed',
@@ -294,21 +399,64 @@ function DeliveryStatus() {
   // REJECTED ORDER
   // ==========================================
 
+  const isCustomerCancellation =
+    order.cancelledBy === 'CUSTOMER' && order.refundType === 'FULL';
+
+  const isDeliveryRejection =
+    order.refundType === 'DELIVERY_REJECTION' ||
+    Boolean(order.customerRejectedAt);
+
+  const isShopRejection = !isCustomerCancellation && !isDeliveryRejection;
+
+  const refundAmount = Number(order.refundAmount || 0);
+  const totalPaid = Number(
+    order.customerPayableAmount || order.totalPrice || 0,
+  );
+
+  const deliveryCharge = Number(order.deliveryCharge || 0);
+  const nonRefundedDeliveryCharge = Number(
+    Math.max(0, totalPaid - refundAmount).toFixed(2),
+  );
+
   if (order.status === 'Rejected') {
     return (
       <main className="delivery_status">
         <section className="delivery_status_header">
-          <h1>Order Rejected</h1>
+          <h1>
+            {isCustomerCancellation
+              ? 'Order Cancelled'
+              : isDeliveryRejection
+                ? 'Delivery Rejected'
+                : 'Order Rejected'}
+          </h1>
 
-          <p>Your order could not be accepted by the shop.</p>
+          <p>
+            {isCustomerCancellation
+              ? 'You cancelled this order.'
+              : isDeliveryRejection
+                ? 'You reported an issue with the delivery and rejected the order.'
+                : 'The shop has rejected this order.'}
+          </p>
         </section>
 
         <section className="order_status_card rejected_card">
           <div className="status_icon">×</div>
 
-          <h2>Order Rejected</h2>
+          <h2>
+            {isCustomerCancellation
+              ? 'Order Cancelled'
+              : isDeliveryRejection
+                ? 'Delivery Rejected'
+                : 'Order Rejected'}
+          </h2>
 
-          <p>{getStatusMessage()}</p>
+          <p>
+            {isCustomerCancellation
+              ? 'You cancelled this order before preparation started.'
+              : isDeliveryRejection
+                ? 'You rejected the delivery because of an issue with the order.'
+                : 'Sorry, the shop has rejected this order.'}
+          </p>
         </section>
 
         {/* REFUND PROCESSING */}
@@ -319,12 +467,24 @@ function DeliveryStatus() {
 
             <h2>Refund Initiated</h2>
 
-            <p>Your payment has been sent for a full refund.</p>
+            <p>
+              {order.refundType === 'DELIVERY_REJECTION'
+                ? 'Your eligible refund has been sent to the payment provider.'
+                : 'Your full payment has been sent to the payment provider for refund.'}
+            </p>
 
             <p>
               <strong>Refund Amount:</strong> ₹
               {Number(order.refundAmount).toFixed(2)}
             </p>
+
+            {order.refundType === 'DELIVERY_REJECTION' &&
+              nonRefundedDeliveryCharge > 0 && (
+                <p>
+                  <strong>Delivery Charge Not Refunded:</strong> ₹
+                  {nonRefundedDeliveryCharge.toFixed(2)}
+                </p>
+              )}
 
             {order.refundId && (
               <p>
@@ -348,14 +508,23 @@ function DeliveryStatus() {
             <h2>Refund Completed</h2>
 
             <p>
-              Your full payment has been refunded to your original payment
-              method.
+              {order.refundType === 'DELIVERY_REJECTION'
+                ? 'Your eligible refund has been credited to your original payment method.'
+                : 'Your full payment has been refunded to your original payment method.'}
             </p>
 
             <p>
               <strong>Refund Amount:</strong> ₹
               {Number(order.refundAmount).toFixed(2)}
             </p>
+
+            {order.refundType === 'DELIVERY_REJECTION' &&
+              nonRefundedDeliveryCharge > 0 && (
+                <p>
+                  <strong>Delivery Charge Not Refunded:</strong> ₹
+                  {nonRefundedDeliveryCharge.toFixed(2)}
+                </p>
+              )}
 
             {order.refundId && (
               <p>
@@ -580,7 +749,16 @@ function DeliveryStatus() {
         <section className="delivery_otp_card">
           <h2>Delivery OTP</h2>
 
-          <p>Give this OTP to the delivery person when your order arrives.</p>
+          {order.status === 'OutForDelivery' && !order.otpVerified && (
+            <div className="delivery_status_otp_warning">
+              <strong>Before sharing the OTP:</strong>
+              <span>
+                Please check the items, quantity, and quality of your order.
+                Once you share the OTP, the order will be marked as delivered
+                and delivery rejection will no longer be available.
+              </span>
+            </div>
+          )}
 
           <div className="delivery_otp">{order.deliveryOtp}</div>
         </section>
@@ -624,6 +802,36 @@ function DeliveryStatus() {
           </span>
         </p>
       </section>
+
+      {(order.status === 'Pending' || order.status === 'Accepted') && (
+        <button
+          type="button"
+          className="delivery_status_cancel_button"
+          onClick={() => {
+            setActionReason('');
+            setActionDescription('');
+            setOrderActionError('');
+            setShowCancelModal(true);
+          }}
+        >
+          Cancel Order
+        </button>
+      )}
+
+      {order.status === 'OutForDelivery' && !order.otpVerified && (
+        <button
+          type="button"
+          className="delivery_status_reject_button"
+          onClick={() => {
+            setActionReason('');
+            setActionDescription('');
+            setOrderActionError('');
+            setShowRejectModal(true);
+          }}
+        >
+          Report an Issue / Reject Delivery
+        </button>
+      )}
 
       <button
         type="button"
@@ -726,6 +934,205 @@ function DeliveryStatus() {
               </div>
             )}
           </section>
+        </div>
+      )}
+
+      {showRejectModal && (
+        <div className="delivery_status_modal_overlay">
+          <div className="delivery_status_modal">
+            <div className="delivery_status_modal_header">
+              <h3>Report an Issue</h3>
+
+              <button
+                type="button"
+                className="delivery_status_modal_close"
+                onClick={() => {
+                  if (processingOrderAction) return;
+
+                  setShowRejectModal(false);
+                  setActionReason('');
+                  setActionDescription('');
+                  setOrderActionError('');
+                }}
+              >
+                ×
+              </button>
+            </div>
+
+            <p className="delivery_status_modal_text">
+              Please check your order before sharing the OTP. If there is a
+              genuine issue, you can reject the delivery now.
+            </p>
+
+            <label
+              htmlFor="reject_reason"
+              className="delivery_status_modal_label"
+            >
+              Reason
+            </label>
+
+            <select
+              id="reject_reason"
+              className="delivery_status_modal_select"
+              value={actionReason}
+              onChange={(event) => {
+                setActionReason(event.target.value);
+                setOrderActionError('');
+              }}
+              disabled={processingOrderAction}
+            >
+              <option value="">Select a reason</option>
+
+              <option value="Wrong product">Wrong product</option>
+
+              <option value="Missing item">Missing item</option>
+
+              <option value="Less quantity">Less quantity</option>
+
+              <option value="Poor quality">Poor quality</option>
+
+              <option value="Damaged product">Damaged product</option>
+
+              <option value="Other">Other</option>
+            </select>
+
+            <label
+              htmlFor="reject_description"
+              className="delivery_status_modal_label"
+            >
+              Additional details
+            </label>
+
+            <textarea
+              id="reject_description"
+              className="delivery_status_modal_textarea"
+              value={actionDescription}
+              onChange={(event) => {
+                setActionDescription(event.target.value);
+                setOrderActionError('');
+              }}
+              placeholder="Describe the issue (optional)"
+              rows={4}
+              disabled={processingOrderAction}
+            />
+
+            {orderActionError && (
+              <p className="delivery_status_modal_error">{orderActionError}</p>
+            )}
+
+            <div className="delivery_status_modal_actions">
+              <button
+                type="button"
+                className="delivery_status_modal_secondary"
+                onClick={() => {
+                  if (processingOrderAction) return;
+
+                  setShowRejectModal(false);
+                  setActionReason('');
+                  setActionDescription('');
+                  setOrderActionError('');
+                }}
+                disabled={processingOrderAction}
+              >
+                Keep Order
+              </button>
+
+              <button
+                type="button"
+                className="delivery_status_modal_danger"
+                onClick={handleRejectDelivery}
+                disabled={processingOrderAction}
+              >
+                {processingOrderAction ? 'Processing...' : 'Reject Delivery'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showCancelModal && (
+        <div className="delivery_status_modal_overlay">
+          <div className="delivery_status_modal">
+            <div className="delivery_status_modal_header">
+              <h3>Cancel Order</h3>
+
+              <button
+                type="button"
+                className="delivery_status_modal_close"
+                onClick={() => {
+                  if (processingOrderAction) return;
+
+                  setShowCancelModal(false);
+                  setActionReason('');
+                  setActionDescription('');
+                  setOrderActionError('');
+                }}
+              >
+                ×
+              </button>
+            </div>
+
+            <p className="delivery_status_modal_text">
+              Are you sure you want to cancel this order?
+            </p>
+
+            <label
+              htmlFor="cancel_reason"
+              className="delivery_status_modal_label"
+            >
+              Reason
+            </label>
+
+            <select
+              id="cancel_reason"
+              className="delivery_status_modal_select"
+              value={actionReason}
+              onChange={(event) => {
+                setActionReason(event.target.value);
+                setOrderActionError('');
+              }}
+              disabled={processingOrderAction}
+            >
+              <option value="">Select a reason</option>
+              <option value="Changed my mind">Changed my mind</option>
+              <option value="Ordered by mistake">Ordered by mistake</option>
+              <option value="Taking too long">Taking too long</option>
+              <option value="No longer needed">No longer needed</option>
+              <option value="Other">Other</option>
+            </select>
+
+            {orderActionError && (
+              <p className="delivery_status_modal_error">{orderActionError}</p>
+            )}
+
+            <div className="delivery_status_modal_actions">
+              <button
+                type="button"
+                className="delivery_status_modal_secondary"
+                onClick={() => {
+                  if (processingOrderAction) return;
+
+                  setShowCancelModal(false);
+                  setActionReason('');
+                  setOrderActionError('');
+                }}
+                disabled={processingOrderAction}
+              >
+                Keep Order
+              </button>
+
+              <button
+                type="button"
+                className="delivery_status_modal_danger"
+                onClick={handleCancelOrder}
+                disabled={processingOrderAction}
+              >
+                {processingOrderAction
+                  ? 'Cancelling...'
+                  : 'Confirm Cancellation'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </main>

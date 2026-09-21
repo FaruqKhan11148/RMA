@@ -278,6 +278,48 @@ const orderSchema = new mongoose.Schema(
     },
 
     // =========================
+    // CANCELLATION
+    // =========================
+
+    cancelledAt: {
+      type: Date,
+      default: null,
+    },
+
+    cancelledBy: {
+      type: String,
+      enum: ['CUSTOMER', 'OWNER', 'SYSTEM'],
+      default: null,
+    },
+
+    cancellationReason: {
+      type: String,
+      default: null,
+      trim: true,
+    },
+
+    // =========================
+    // CUSTOMER DELIVERY REJECTION
+    // =========================
+
+    customerRejectedAt: {
+      type: Date,
+      default: null,
+    },
+
+    customerRejectionReason: {
+      type: String,
+      default: null,
+      trim: true,
+    },
+
+    customerRejectionDescription: {
+      type: String,
+      default: null,
+      trim: true,
+    },
+
+    // =========================
     // DELIVERY OTP
     // =========================
 
@@ -364,14 +406,28 @@ const orderSchema = new mongoose.Schema(
       default: 'NotRequired',
     },
 
-    // Total amount actually returned to customer
+    // Actual amount requested from PayU for refund.
     refundAmount: {
       type: Number,
       default: 0,
       min: 0,
     },
 
-    // PayU refund transaction/reference ID
+    // What triggered the refund.
+    refundType: {
+      type: String,
+      enum: ['FULL', 'DELIVERY_REJECTION', 'PARTIAL'],
+      default: null,
+    },
+
+    // Why the refund was requested.
+    refundReason: {
+      type: String,
+      default: null,
+      trim: true,
+    },
+
+    // PayU refund transaction/reference ID.
     refundId: {
       type: String,
       default: null,

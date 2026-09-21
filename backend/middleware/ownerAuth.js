@@ -23,6 +23,12 @@ const ownerAuth = async (req, res, next) => {
       });
     }
 
+    if (decoded.authVersion !== owner.authVersion) {
+      return res.status(401).json({
+        message: 'Owner session has been logged out',
+      });
+    }
+
     req.owner = owner;
 
     next();

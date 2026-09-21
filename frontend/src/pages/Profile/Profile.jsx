@@ -4,13 +4,91 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
 
+function RoleSwitchSheet({
+  switchRole,
+  switchingRole,
+  currentRole,
+  onCancel,
+  onConfirm,
+}) {
+  if (!switchRole) {
+    return null;
+  }
+
+  const currentRoleName =
+    currentRole === 'customer'
+      ? 'Customer'
+      : currentRole === 'owner'
+        ? 'Owner'
+        : 'Delivery Partner';
+
+  const targetRoleName =
+    switchRole === 'customer'
+      ? 'Customer'
+      : switchRole === 'owner'
+        ? 'Owner'
+        : 'Delivery Partner';
+
+  return (
+    <div
+      className="profile_switch_overlay"
+      onClick={() => {
+        if (!switchingRole) {
+          onCancel();
+        }
+      }}
+    >
+      <section
+        className="profile_switch_sheet"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div className="profile_switch_handle" />
+
+        <div className="profile_switch_header">
+          <h2>Switch Account?</h2>
+
+          <p>
+            You are currently logged in as {currentRoleName}. Do you want to
+            switch to {targetRoleName}?
+          </p>
+        </div>
+
+        <div className="profile_switch_actions">
+          <button
+            type="button"
+            className="profile_switch_cancel"
+            onClick={onCancel}
+            disabled={switchingRole}
+          >
+            Cancel
+          </button>
+
+          <button
+            type="button"
+            className="profile_switch_confirm"
+            onClick={onConfirm}
+            disabled={switchingRole}
+          >
+            {switchingRole ? 'Switching...' : 'Switch'}
+          </button>
+        </div>
+      </section>
+    </div>
+  );
+}
+
 function Profile() {
   const navigate = useNavigate();
   const { t } = useLanguage();
 
   const [customer, setCustomer] = useState(null);
+  const [owner, setOwner] = useState(null);
+  const [deliveryPerson, setDeliveryPerson] = useState(null);
+
   const [loading, setLoading] = useState(true);
   const [loginSheetOpen, setLoginSheetOpen] = useState(false);
+  const [switchRole, setSwitchRole] = useState(null);
+  const [switchingRole, setSwitchingRole] = useState(false);
 
   useEffect(() => {
     const fetchCustomer = async () => {
@@ -38,7 +116,35 @@ function Profile() {
       }
     };
 
+    const checkOtherRoles = () => {
+      const storedOwner = localStorage.getItem('rma_owner');
+
+      if (storedOwner) {
+        try {
+          setOwner(JSON.parse(storedOwner));
+        } catch (error) {
+          console.error('Invalid owner session:', error);
+          localStorage.removeItem('rma_owner');
+          localStorage.removeItem('rma_owner_token');
+        }
+      }
+
+      const deliveryToken = sessionStorage.getItem('delivery_token');
+      const storedDeliveryPerson = sessionStorage.getItem('delivery_person');
+
+      if (deliveryToken && storedDeliveryPerson) {
+        try {
+          setDeliveryPerson(JSON.parse(storedDeliveryPerson));
+        } catch (error) {
+          console.error('Invalid delivery session:', error);
+          sessionStorage.removeItem('delivery_token');
+          sessionStorage.removeItem('delivery_person');
+        }
+      }
+    };
+
     fetchCustomer();
+    checkOtherRoles();
   }, []);
 
   const handleLogout = async () => {
@@ -60,6 +166,101 @@ function Profile() {
       navigate('/');
     } catch (error) {
       console.error('Customer logout failed:', error);
+    }
+  };
+
+  const handleRoleSwitch = async () => {
+    if (!switchRole) {
+      return;
+    }
+
+    try {
+      setSwitchingRole(true);
+
+      let response;
+
+      // CUSTOMER → another role
+      if (customer) {
+        response = await fetch(
+          'https://rma-backend-bo4a.onrender.com/api/customers/logout',
+          {
+            method: 'POST',
+            credentials: 'include',
+          },
+        );
+      }
+
+      // OWNER → another role
+      if (owner) {
+        const token = localStorage.getItem('rma_owner_token');
+
+        response = await fetch(
+          'https://rma-backend-bo4a.onrender.com/api/owners/logout',
+          {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+      }
+
+      // DELIVERY PARTNER → another role
+      if (deliveryPerson) {
+        const token = sessionStorage.getItem('delivery_token');
+
+        response = await fetch(
+          'https://rma-backend-bo4a.onrender.com/api/delivery/logout',
+          {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+      }
+
+      if (!response || !response.ok) {
+        throw new Error('Unable to switch account');
+      }
+
+      // Clear current role's frontend session
+      if (customer) {
+        setCustomer(null);
+      }
+
+      if (owner) {
+        localStorage.removeItem('rma_owner');
+        localStorage.removeItem('rma_owner_token');
+        setOwner(null);
+      }
+
+      if (deliveryPerson) {
+        sessionStorage.removeItem('delivery_token');
+        sessionStorage.removeItem('delivery_person');
+        setDeliveryPerson(null);
+      }
+
+      setSwitchRole(null);
+      setSwitchingRole(false);
+
+      // Navigate to selected role
+      if (switchRole === 'customer') {
+        navigate('/customer/login');
+        return;
+      }
+
+      if (switchRole === 'owner') {
+        navigate('/owner/login');
+        return;
+      }
+
+      if (switchRole === 'delivery') {
+        navigate('/delivery/orders');
+      }
+    } catch (error) {
+      console.error('Role switch failed:', error);
+      setSwitchingRole(false);
     }
   };
 
@@ -150,7 +351,7 @@ function Profile() {
 
           <button
             className="profile_item"
-            onClick={() => navigate('/owner/login')}
+            onClick={() => setSwitchRole('owner')}
           >
             <span>Owner Login</span>
             <span>›</span>
@@ -178,7 +379,7 @@ function Profile() {
 
           <button
             className="profile_item"
-            onClick={() => navigate('/delivery/orders')}
+            onClick={() => setSwitchRole('delivery')}
           >
             <span>Delivery Partner Login</span>
             <span>›</span>
@@ -216,6 +417,289 @@ function Profile() {
         <button className="logout_button" onClick={handleLogout}>
           Logout
         </button>
+
+        <RoleSwitchSheet
+          switchRole={switchRole}
+          switchingRole={switchingRole}
+          currentRole="customer"
+          onCancel={() => setSwitchRole(null)}
+          onConfirm={handleRoleSwitch}
+        />
+      </main>
+    );
+  }
+
+  // ============================
+  // LOGGED-IN OWNER
+  // ============================
+  if (owner) {
+    const firstLetter = owner.ownerName
+      ? owner.ownerName.charAt(0).toUpperCase()
+      : 'R';
+
+    return (
+      <main className="profile">
+        <section className="profile_header">
+          <div className="profile_avatar">{firstLetter}</div>
+
+          <h1>{owner.ownerName}</h1>
+
+          <p>{owner.shopName}</p>
+        </section>
+
+        <section className="profile_customer_card">
+          <div className="profile_customer_row">
+            <span>Shop ID</span>
+            <strong>{owner.shopId}</strong>
+          </div>
+
+          <div className="profile_customer_row">
+            <span>Mobile</span>
+            <strong>{owner.phone}</strong>
+          </div>
+
+          <div className="profile_customer_row">
+            <span>Email</span>
+            <strong>{owner.email}</strong>
+          </div>
+        </section>
+
+        <section className="profile_section">
+          <h2>My Shop</h2>
+
+          <button
+            className="profile_item"
+            onClick={() => navigate('/owner/dashboard')}
+          >
+            <span>Owner Dashboard</span>
+            <span>›</span>
+          </button>
+
+          <button
+            className="profile_item"
+            onClick={() => navigate('/owner/offers')}
+          >
+            <span>Offers & Rewards</span>
+            <span>›</span>
+          </button>
+        </section>
+
+        <section className="profile_section">
+          <h2>Preferences</h2>
+
+          <button
+            className="profile_item"
+            onClick={() => navigate('/profile/language')}
+          >
+            <span>Language</span>
+            <span>›</span>
+          </button>
+        </section>
+
+        <section className="profile_section">
+          <h2>Support</h2>
+
+          <button
+            className="profile_item"
+            onClick={() => navigate('/profile/help-support')}
+          >
+            <span>Help & Support</span>
+            <span>›</span>
+          </button>
+        </section>
+
+        <section className="profile_section">
+          <h2>Switch Account</h2>
+
+          <button
+            className="profile_item"
+            onClick={() => setSwitchRole('customer')}
+          >
+            <span>Customer Login</span>
+            <span>›</span>
+          </button>
+
+          <button
+            className="profile_item"
+            onClick={() => setSwitchRole('delivery')}
+          >
+            <span>Delivery Partner Login</span>
+            <span>›</span>
+          </button>
+        </section>
+
+        <button
+          className="logout_button"
+          onClick={async () => {
+            try {
+              const token = localStorage.getItem('rma_owner_token');
+
+              const response = await fetch(
+                'https://rma-backend-bo4a.onrender.com/api/owners/logout',
+                {
+                  method: 'POST',
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                },
+              );
+
+              if (!response.ok) {
+                throw new Error('Owner logout failed');
+              }
+
+              localStorage.removeItem('rma_owner');
+              localStorage.removeItem('rma_owner_token');
+
+              setOwner(null);
+
+              navigate('/');
+            } catch (error) {
+              console.error('Owner logout failed:', error);
+            }
+          }}
+        >
+          Logout
+        </button>
+        <RoleSwitchSheet
+          switchRole={switchRole}
+          switchingRole={switchingRole}
+          currentRole="owner"
+          onCancel={() => setSwitchRole(null)}
+          onConfirm={handleRoleSwitch}
+        />
+      </main>
+    );
+  }
+
+  // COMMON ROLE SWITCH SHEET
+  // ============================
+  // LOGGED-IN DELIVERY PARTNER
+  // ============================
+  if (deliveryPerson) {
+    const firstLetter = deliveryPerson.name
+      ? deliveryPerson.name.charAt(0).toUpperCase()
+      : 'D';
+
+    return (
+      <main className="profile">
+        <section className="profile_header">
+          <div className="profile_avatar">{firstLetter}</div>
+
+          <h1>{deliveryPerson.name}</h1>
+
+          <p>Delivery Partner</p>
+        </section>
+
+        <section className="profile_customer_card">
+          <div className="profile_customer_row">
+            <span>Shop ID</span>
+            <strong>{deliveryPerson.shopId}</strong>
+          </div>
+
+          <div className="profile_customer_row">
+            <span>Mobile</span>
+            <strong>{deliveryPerson.phone}</strong>
+          </div>
+        </section>
+
+        <section className="profile_section">
+          <h2>My Activity</h2>
+
+          <button
+            className="profile_item"
+            onClick={() => navigate('/delivery/orders')}
+          >
+            <span>Delivery Orders</span>
+            <span>›</span>
+          </button>
+        </section>
+
+        <section className="profile_section">
+          <h2>Preferences</h2>
+
+          <button
+            className="profile_item"
+            onClick={() => navigate('/profile/language')}
+          >
+            <span>Language</span>
+            <span>›</span>
+          </button>
+        </section>
+
+        <section className="profile_section">
+          <h2>Support</h2>
+
+          <button
+            className="profile_item"
+            onClick={() => navigate('/profile/help-support')}
+          >
+            <span>Help & Support</span>
+            <span>›</span>
+          </button>
+        </section>
+
+        <section className="profile_section">
+          <h2>Switch Account</h2>
+
+          <button
+            className="profile_item"
+            onClick={() => setSwitchRole('customer')}
+          >
+            <span>Customer Login</span>
+            <span>›</span>
+          </button>
+
+          <button
+            className="profile_item"
+            onClick={() => setSwitchRole('owner')}
+          >
+            <span>Owner Login</span>
+            <span>›</span>
+          </button>
+        </section>
+
+        <button
+          className="logout_button"
+          onClick={async () => {
+            try {
+              const token = sessionStorage.getItem('delivery_token');
+
+              const response = await fetch(
+                'https://rma-backend-bo4a.onrender.com/api/delivery/logout',
+                {
+                  method: 'POST',
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                },
+              );
+
+              if (!response.ok) {
+                throw new Error('Delivery partner logout failed');
+              }
+
+              sessionStorage.removeItem('delivery_token');
+              sessionStorage.removeItem('delivery_person');
+
+              setDeliveryPerson(null);
+
+              navigate('/');
+            } catch (error) {
+              console.error('Delivery partner logout failed:', error);
+            }
+          }}
+        >
+          Logout
+        </button>
+
+        <RoleSwitchSheet
+          switchRole={switchRole}
+          switchingRole={switchingRole}
+          currentRole="delivery"
+          onCancel={() => setSwitchRole(null)}
+          onConfirm={handleRoleSwitch}
+        />
       </main>
     );
   }

@@ -193,7 +193,7 @@
    TEXT
    ========================================================= */
 
-.nav_item span {
+.nav_item > span {
   display: block;
 
   max-width: 100%;
