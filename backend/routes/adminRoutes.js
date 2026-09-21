@@ -6,6 +6,7 @@ const Admin = require('../models/Admin');
 const Owner = require('../models/Owner');
 const Customer = require('../models/Customer');
 const Order = require('../models/Order');
+const DeliveryPerson = require('../models/DeliveryPerson');
 
 const adminAuth = require('../middleware/adminAuth');
 const router = express.Router();
@@ -109,6 +110,40 @@ router.get('/me', adminAuth, async (req, res) => {
 //     message: 'Admin routes are working',
 //   });
 // });
+
+/*
+  RMA DELIVERY PARTNERS
+  PENDING APPLICATIONS
+  ADMIN ONLY
+*/
+
+router.get('/delivery-partners/pending', adminAuth, async (req, res) => {
+  try {
+    const pendingPartners = await DeliveryPerson.find({
+      deliveryType: 'RMA',
+      isActive: false,
+    })
+      .select('name phone deliveryType isActive createdAt')
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      deliveryPartners: pendingPartners.map((partner) => ({
+        id: partner._id,
+        name: partner.name,
+        phone: partner.phone,
+        deliveryType: partner.deliveryType,
+        isActive: partner.isActive,
+        createdAt: partner.createdAt,
+      })),
+    });
+  } catch (error) {
+    console.error('Pending RMA delivery partners fetch error:', error);
+
+    return res.status(500).json({
+      message: 'Failed to fetch pending delivery partners',
+    });
+  }
+});
 
 router.get('/dashboard', adminAuth, async (req, res) => {
   try {

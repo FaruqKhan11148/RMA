@@ -1,0 +1,308 @@
+.admin_delivery_partners_page {
+  min-height: 100vh;
+  padding: 32px;
+  background: #f6f8f7;
+  box-sizing: border-box;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.admin_delivery_partners_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.admin_delivery_partners_header h1 {
+  margin: 0;
+  color: #17211b;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.admin_delivery_partners_header p {
+  margin: 7px 0 0;
+  color: #6d766f;
+  font-size: 14px;
+}
+
+.admin_delivery_partners_count {
+  padding: 9px 15px;
+  border-radius: 999px;
+  background: #e7f5eb;
+  color: #16803a;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* =========================
+   GRID
+========================= */
+
+.admin_delivery_partners_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 20px;
+}
+
+/* =========================
+   CARD
+========================= */
+
+.admin_delivery_partner_card {
+  background: #ffffff;
+  border: 1px solid #e4e9e5;
+  border-radius: 16px;
+  padding: 20px;
+  box-sizing: border-box;
+  box-shadow: 0 3px 12px rgba(20, 40, 25, 0.05);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.admin_delivery_partner_card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(20, 40, 25, 0.08);
+}
+
+/* =========================
+   CARD TOP
+========================= */
+
+.admin_partner_card_top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin_partner_avatar {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e8f5ec;
+  color: #16803a;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.admin_partner_identity {
+  min-width: 0;
+  flex: 1;
+}
+
+.admin_partner_identity h3 {
+  margin: 0;
+  color: #17211b;
+  font-size: 17px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin_partner_identity span {
+  display: block;
+  margin-top: 4px;
+  color: #7a837d;
+  font-size: 12px;
+}
+
+.admin_pending_badge {
+  padding: 6px 9px;
+  border-radius: 7px;
+  background: #fff4df;
+  color: #a96a00;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* =========================
+   DETAILS
+========================= */
+
+.admin_partner_details {
+  margin-top: 22px;
+  padding-top: 17px;
+  border-top: 1px solid #edf0ee;
+}
+
+.admin_partner_detail {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 8px 0;
+}
+
+.admin_detail_label {
+  color: #7b847e;
+  font-size: 13px;
+}
+
+.admin_detail_value {
+  color: #273129;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: right;
+}
+
+/* =========================
+   ACTIONS
+========================= */
+
+.admin_partner_actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.admin_partner_actions button {
+  height: 42px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease;
+}
+
+.admin_partner_actions button:active {
+  transform: scale(0.98);
+}
+
+.admin_reject_button {
+  flex: 1;
+  border: 1px solid #e0e4e1;
+  background: #ffffff;
+  color: #626b65;
+}
+
+.admin_reject_button:hover {
+  background: #f7f8f7;
+}
+
+.admin_approve_button {
+  flex: 1.4;
+  border: 1px solid #16803a;
+  background: #16803a;
+  color: #ffffff;
+}
+
+.admin_approve_button:hover {
+  background: #126b30;
+}
+
+/* =========================
+   EMPTY STATE
+========================= */
+
+.admin_empty_state {
+  max-width: 520px;
+  margin: 80px auto;
+  padding: 45px 25px;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid #e4e9e5;
+  border-radius: 18px;
+  box-shadow: 0 3px 15px rgba(20, 40, 25, 0.04);
+}
+
+.admin_empty_icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e8f5ec;
+  color: #16803a;
+  font-size: 25px;
+  font-weight: 700;
+}
+
+.admin_empty_state h2 {
+  margin: 0;
+  color: #17211b;
+  font-size: 20px;
+}
+
+.admin_empty_state p {
+  margin: 9px auto 0;
+  max-width: 380px;
+  color: #747d77;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 700px) {
+  .admin_delivery_partners_page {
+    padding: 20px 15px;
+  }
+
+  .admin_delivery_partners_header {
+    align-items: flex-start;
+    flex-direction: column;
+    margin-bottom: 22px;
+  }
+
+  .admin_delivery_partners_header h1 {
+    font-size: 25px;
+  }
+
+  .admin_delivery_partners_grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .admin_delivery_partner_card {
+    padding: 17px;
+    border-radius: 14px;
+  }
+
+  .admin_partner_avatar {
+    width: 43px;
+    height: 43px;
+    font-size: 17px;
+  }
+
+  .admin_partner_identity h3 {
+    font-size: 15px;
+  }
+
+  .admin_pending_badge {
+    font-size: 10px;
+    padding: 5px 7px;
+  }
+
+  .admin_partner_detail {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .admin_detail_value {
+    text-align: left;
+  }
+
+  .admin_partner_actions {
+    margin-top: 17px;
+  }
+}

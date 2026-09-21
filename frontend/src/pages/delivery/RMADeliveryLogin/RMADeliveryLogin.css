@@ -1,0 +1,388 @@
+/* =========================================
+   RMA DELIVERY LOGIN
+========================================= */
+
+.rma_delivery_login {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  box-sizing: border-box;
+  background: #f5f7f6;
+}
+
+/* =========================================
+   LOGIN CARD
+========================================= */
+
+.rma_delivery_login_card {
+  width: 100%;
+  max-width: 430px;
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 28px 24px 30px;
+  box-sizing: border-box;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+}
+
+/* =========================================
+   BACK BUTTON
+========================================= */
+
+.rma_delivery_back {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin-bottom: 30px;
+
+  color: #16803a;
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  transition: color 0.2s ease;
+}
+
+.rma_delivery_back:hover {
+  color: #10662e;
+}
+
+/* =========================================
+   HEADER
+========================================= */
+
+.rma_delivery_login_header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.rma_delivery_icon {
+  width: 68px;
+  height: 68px;
+  margin: 0 auto 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 20px;
+
+  background: #eaf7ef;
+  color: #16803a;
+
+  font-size: 28px;
+  font-weight: 800;
+
+  box-shadow: inset 0 0 0 1px rgba(22, 128, 58, 0.08);
+}
+
+.rma_delivery_login_header h1 {
+  margin: 0;
+
+  color: #18231c;
+
+  font-size: 25px;
+  line-height: 1.25;
+  font-weight: 750;
+}
+
+.rma_delivery_login_header p {
+  margin: 9px 0 0;
+
+  color: #68736c;
+
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* =========================================
+   LABEL
+========================================= */
+
+.rma_delivery_login_card > label {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: #26332b;
+
+  font-size: 14px;
+  font-weight: 650;
+}
+
+/* =========================================
+   INPUT
+========================================= */
+
+.rma_delivery_login_card input {
+  width: 100%;
+  height: 50px;
+
+  padding: 0 15px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #d8dedb;
+  border-radius: 12px;
+
+  background: #ffffff;
+
+  color: #18231c;
+
+  font-size: 16px;
+  font-weight: 500;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.rma_delivery_login_card input::placeholder {
+  color: #9aa39e;
+}
+
+.rma_delivery_login_card input:focus {
+  border-color: #16803a;
+
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.1);
+}
+
+.rma_delivery_login_card input:hover {
+  border-color: #b8c2bc;
+}
+
+/* =========================================
+   PRIMARY BUTTON
+========================================= */
+
+.rma_delivery_primary_button {
+  width: 100%;
+  height: 50px;
+
+  margin-top: 18px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: #16803a;
+  color: #ffffff;
+
+  font-size: 15px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
+}
+
+.rma_delivery_primary_button:hover:not(:disabled) {
+  background: #126b30;
+  box-shadow: 0 6px 18px rgba(22, 128, 58, 0.2);
+}
+
+.rma_delivery_primary_button:active:not(:disabled) {
+  transform: scale(0.985);
+}
+
+.rma_delivery_primary_button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* =========================================
+   SECONDARY BUTTON
+========================================= */
+
+.rma_delivery_secondary_button {
+  width: 100%;
+  height: 48px;
+
+  margin-top: 12px;
+
+  border: 1px solid #d8dedb;
+  border-radius: 12px;
+
+  background: #ffffff;
+  color: #16803a;
+
+  font-size: 14px;
+  font-weight: 650;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.rma_delivery_secondary_button:hover {
+  background: #f4faf6;
+  border-color: #16803a;
+}
+
+/* =========================================
+   SUCCESS MESSAGE
+========================================= */
+
+.rma_delivery_success {
+  margin: 18px 0 0;
+  padding: 12px 14px;
+
+  border: 1px solid #bfe3ca;
+  border-radius: 10px;
+
+  background: #effaf2;
+  color: #176b32;
+
+  font-size: 13px;
+  line-height: 1.45;
+  font-weight: 600;
+
+  text-align: center;
+}
+
+/* =========================================
+   ERROR MESSAGE
+========================================= */
+
+.rma_delivery_error {
+  margin: 18px 0 0;
+  padding: 12px 14px;
+
+  border: 1px solid #f0c5c5;
+  border-radius: 10px;
+
+  background: #fff3f3;
+  color: #b42323;
+
+  font-size: 13px;
+  line-height: 1.45;
+  font-weight: 600;
+
+  text-align: center;
+}
+
+/* =========================================
+   TABLET / DESKTOP
+========================================= */
+
+@media (min-width: 768px) {
+  .rma_delivery_login {
+    padding: 40px 24px;
+  }
+
+  .rma_delivery_login_card {
+    padding: 34px 32px 36px;
+  }
+
+  .rma_delivery_login_header h1 {
+    font-size: 27px;
+  }
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 480px) {
+  .rma_delivery_login {
+    align-items: flex-start;
+    padding: 16px 12px;
+    padding-top: 20px;
+  }
+
+  .rma_delivery_login_card {
+    max-width: none;
+    padding: 22px 18px 24px;
+    border-radius: 18px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+  }
+
+  .rma_delivery_back {
+    margin-bottom: 24px;
+    font-size: 14px;
+  }
+
+  .rma_delivery_login_header {
+    margin-bottom: 26px;
+  }
+
+  .rma_delivery_icon {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 15px;
+
+    border-radius: 18px;
+
+    font-size: 25px;
+  }
+
+  .rma_delivery_login_header h1 {
+    font-size: 22px;
+  }
+
+  .rma_delivery_login_header p {
+    font-size: 13px;
+  }
+
+  .rma_delivery_login_card input {
+    height: 48px;
+    font-size: 16px;
+  }
+
+  .rma_delivery_primary_button {
+    height: 48px;
+    font-size: 14px;
+  }
+
+  .rma_delivery_secondary_button {
+    height: 46px;
+  }
+}
+
+.rma_delivery_register_prompt {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid #e8e8e8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.rma_delivery_register_prompt span {
+  font-size: 13px;
+  color: #777;
+}
+
+.rma_delivery_register_prompt button {
+  border: none;
+  background: transparent;
+  padding: 0;
+  color: #16803a;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.rma_delivery_register_prompt button:hover {
+  text-decoration: underline;
+}
+
+.rma_delivery_register_prompt button:active {
+  opacity: 0.7;
+}

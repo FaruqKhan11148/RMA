@@ -1356,7 +1356,13 @@ router.post('/:orderId/reject-delivery', async (req, res) => {
 router.patch('/:orderId/status', async (req, res) => {
   try {
     const { orderId } = req.params;
-    const { status, rejectionReason, rejectionDescription } = req.body;
+    const {
+      status,
+      rejectionReason,
+      rejectionDescription,
+      deliveryAssignmentType,
+      deliveryPersonId,
+    } = req.body;
 
     const allowedStatuses = [
       'Pending',
@@ -1386,6 +1392,50 @@ router.patch('/:orderId/status', async (req, res) => {
       return res.status(400).json({
         message: `Order is already ${status}`,
       });
+    }
+
+    // ==========================================
+    // DELIVERY ASSIGNMENT VALIDATION
+    // ==========================================
+
+    if (status === 'OutForDelivery') {
+      if (!['SHOP', 'RMA'].includes(deliveryAssignmentType)) {
+        return res.status(400).json({
+          message: 'Delivery assignment type is required',
+        });
+      }
+
+      if (!deliveryPersonId) {
+        return res.status(400).json({
+          message: 'Delivery person is required',
+        });
+      }
+
+      const selectedDeliveryPerson = await DeliveryPerson.findOne({
+        _id: deliveryPersonId,
+        deliveryType: deliveryAssignmentType,
+        isActive: true,
+      });
+
+      if (!selectedDeliveryPerson) {
+        return res.status(400).json({
+          message: 'Selected delivery person is not available',
+        });
+      }
+
+      // SHOP rider must belong to this shop
+      if (
+        deliveryAssignmentType === 'SHOP' &&
+        String(selectedDeliveryPerson.ownerId) !== String(order.ownerId)
+      ) {
+        return res.status(400).json({
+          message: 'Selected delivery person does not belong to this shop',
+        });
+      }
+
+      // Save assignment
+      order.deliveryAssignmentType = deliveryAssignmentType;
+      order.deliveryPersonId = selectedDeliveryPerson._id;
     }
 
     // ==========================================
@@ -1546,15 +1596,10 @@ router.patch('/:orderId/status', async (req, res) => {
 
     if (status === 'OutForDelivery') {
       try {
-        const deliveryPerson = await DeliveryPerson.findOne({
-          ownerId: order.ownerId,
-          isActive: true,
-        });
-
-        if (deliveryPerson) {
+        if (order.deliveryPersonId) {
           await createAndSendNotification({
             recipientType: 'delivery',
-            recipientId: deliveryPerson._id,
+            recipientId: order.deliveryPersonId,
             type: 'DELIVERY_ASSIGNED',
             title: 'New Delivery Assigned',
             message: `Order ${order.orderId} has been assigned to you.`,

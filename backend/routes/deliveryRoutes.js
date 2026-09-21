@@ -6,6 +6,7 @@ const Owner = require('../models/Owner');
 const Order = require('../models/Order');
 const deliveryAuth = require('../middleware/deliveryAuth');
 const ownerAuth = require('../middleware/ownerAuth');
+const adminAuth = require('../middleware/adminAuth');
 
 const router = express.Router();
 
@@ -90,6 +91,206 @@ router.post('/register', ownerAuth, async (req, res) => {
   }
 });
 
+// RMA delivery partner registration
+router.post('/rma/register', async (req, res) => {
+  try {
+    const { name, phone } = req.body;
+
+    if (!name || !phone) {
+      return res.status(400).json({
+        message: 'Name and phone are required',
+      });
+    }
+
+    const existingDeliveryPerson = await DeliveryPerson.findOne({
+      phone: phone.trim(),
+    });
+
+    if (existingDeliveryPerson) {
+      return res.status(409).json({
+        message: 'A delivery partner with this phone number already exists',
+      });
+    }
+
+    const deliveryPerson = await DeliveryPerson.create({
+      deliveryType: 'RMA',
+      ownerId: null,
+      shopId: null,
+      name: name.trim(),
+      phone: phone.trim(),
+      isActive: false,
+    });
+
+    return res.status(201).json({
+      message: 'RMA delivery partner application submitted successfully',
+      deliveryPerson: {
+        id: deliveryPerson._id,
+        name: deliveryPerson.name,
+        phone: deliveryPerson.phone,
+        deliveryType: deliveryPerson.deliveryType,
+        isActive: deliveryPerson.isActive,
+      },
+    });
+  } catch (error) {
+    console.error('RMA delivery partner registration error:', error);
+
+    return res.status(500).json({
+      message: 'Server error',
+    });
+  }
+});
+
+/*
+  RMA DELIVERY PARTNER APPROVAL
+  ADMIN ONLY
+*/
+router.patch('/rma/:deliveryPersonId/approve', adminAuth, async (req, res) => {
+  try {
+    const { deliveryPersonId } = req.params;
+
+    const deliveryPerson = await DeliveryPerson.findOne({
+      _id: deliveryPersonId,
+      deliveryType: 'RMA',
+    });
+
+    if (!deliveryPerson) {
+      return res.status(404).json({
+        message: 'RMA delivery partner not found',
+      });
+    }
+
+    deliveryPerson.isActive = true;
+    await deliveryPerson.save();
+
+    return res.status(200).json({
+      message: 'RMA delivery partner approved successfully',
+      deliveryPerson: {
+        id: deliveryPerson._id,
+        name: deliveryPerson.name,
+        phone: deliveryPerson.phone,
+        deliveryType: deliveryPerson.deliveryType,
+        isActive: deliveryPerson.isActive,
+      },
+    });
+  } catch (error) {
+    console.error('RMA delivery partner approval error:', error);
+
+    return res.status(500).json({
+      message: 'Server error',
+    });
+  }
+});
+
+router.post('/rma/request-otp', async (req, res) => {
+  try {
+    const { phone } = req.body;
+
+    if (!phone) {
+      return res.status(400).json({
+        message: 'Phone number is required',
+      });
+    }
+
+    const deliveryPerson = await DeliveryPerson.findOne({
+      phone: phone.trim(),
+      deliveryType: 'RMA',
+      isActive: true,
+    });
+
+    if (!deliveryPerson) {
+      return res.status(404).json({
+        message: 'RMA delivery partner not found or not approved',
+      });
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    deliveryPerson.otp = otp;
+    deliveryPerson.otpExpiresAt = new Date(Date.now() + 5 * 60 * 1000);
+
+    await deliveryPerson.save();
+
+    console.log(`RMA delivery OTP for ${deliveryPerson.phone}: ${otp}`);
+
+    return res.status(200).json({
+      message: 'OTP sent successfully',
+    });
+  } catch (error) {
+    console.error('RMA delivery OTP request error:', error);
+
+    return res.status(500).json({
+      message: 'Server error',
+    });
+  }
+});
+
+router.post('/rma/verify-otp', async (req, res) => {
+  try {
+    const { phone, otp } = req.body;
+
+    if (!phone || !otp) {
+      return res.status(400).json({
+        message: 'Phone number and OTP are required',
+      });
+    }
+
+    const deliveryPerson = await DeliveryPerson.findOne({
+      phone: phone.trim(),
+      deliveryType: 'RMA',
+      isActive: true,
+    });
+
+    if (!deliveryPerson) {
+      return res.status(404).json({
+        message: 'RMA delivery partner not found or not approved',
+      });
+    }
+
+    if (
+      !deliveryPerson.otp ||
+      deliveryPerson.otp !== otp ||
+      !deliveryPerson.otpExpiresAt ||
+      deliveryPerson.otpExpiresAt < new Date()
+    ) {
+      return res.status(400).json({
+        message: 'Invalid or expired OTP',
+      });
+    }
+
+    const crypto = require('crypto');
+
+    const loginToken = crypto.randomBytes(32).toString('hex');
+
+    deliveryPerson.loginToken = loginToken;
+    deliveryPerson.loginTokenExpiresAt = new Date(
+      Date.now() + 7 * 24 * 60 * 60 * 1000,
+    );
+
+    deliveryPerson.otp = null;
+    deliveryPerson.otpExpiresAt = null;
+
+    await deliveryPerson.save();
+
+    return res.status(200).json({
+      message: 'Login successful',
+      token: loginToken,
+      deliveryPerson: {
+        id: deliveryPerson._id,
+        name: deliveryPerson.name,
+        phone: deliveryPerson.phone,
+        deliveryType: deliveryPerson.deliveryType,
+        isActive: deliveryPerson.isActive,
+      },
+    });
+  } catch (error) {
+    console.error('RMA delivery OTP verification error:', error);
+
+    return res.status(500).json({
+      message: 'Server error',
+    });
+  }
+});
+
 router.post('/notification-token', deliveryAuth, async (req, res) => {
   try {
     const { token } = req.body;
@@ -118,6 +319,172 @@ router.post('/notification-token', deliveryAuth, async (req, res) => {
     });
   }
 });
+
+// GET AVAILABLE DELIVERY PARTNERS FOR AN OWNER'S ORDER
+router.get(
+  '/owner/available-partners/:orderId',
+  ownerAuth,
+  async (req, res) => {
+    try {
+      const { orderId } = req.params;
+
+      const owner = req.owner;
+
+      // FIND THE ORDER
+      const order = await Order.findOne({
+        orderId,
+        ownerId: owner._id,
+        orderType: 'delivery',
+        status: 'Ready',
+      }).populate('ownerId', 'ownerName shopName phone shopId location');
+
+      if (!order) {
+        return res.status(404).json({
+          message: 'Ready delivery order not found',
+        });
+      }
+
+      // GET SHOP LOCATION
+      const shopLocation = order.ownerId?.location;
+
+      if (
+        !shopLocation ||
+        shopLocation.latitude == null ||
+        shopLocation.longitude == null
+      ) {
+        return res.status(400).json({
+          message: 'Shop location is not available',
+        });
+      }
+
+      const shopLatitude = Number(shopLocation.latitude);
+      const shopLongitude = Number(shopLocation.longitude);
+
+      // --------------------------------------------------
+      // SHOP DELIVERY PARTNERS
+      // --------------------------------------------------
+
+      const shopPartners = await DeliveryPerson.find({
+        deliveryType: 'SHOP',
+        ownerId: owner._id,
+        isActive: true,
+      }).select('name phone shopId deliveryType isActive currentLocation');
+
+      // --------------------------------------------------
+      // RMA DELIVERY PARTNERS
+      // --------------------------------------------------
+
+      const rmaPartners = await DeliveryPerson.find({
+        deliveryType: 'RMA',
+        isActive: true,
+        'currentLocation.latitude': { $ne: null },
+        'currentLocation.longitude': { $ne: null },
+        'currentLocation.updatedAt': {
+          $gte: new Date(Date.now() - 10 * 60 * 1000),
+        },
+      }).select('name phone deliveryType isActive currentLocation');
+
+      // --------------------------------------------------
+      // HAVERSINE DISTANCE FUNCTION
+      // --------------------------------------------------
+
+      const calculateDistanceKm = (
+        latitude1,
+        longitude1,
+        latitude2,
+        longitude2,
+      ) => {
+        const earthRadiusKm = 6371;
+
+        const lat1 = (latitude1 * Math.PI) / 180;
+        const lat2 = (latitude2 * Math.PI) / 180;
+
+        const deltaLat = ((latitude2 - latitude1) * Math.PI) / 180;
+
+        const deltaLongitude = ((longitude2 - longitude1) * Math.PI) / 180;
+
+        const a =
+          Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+          Math.cos(lat1) *
+            Math.cos(lat2) *
+            Math.sin(deltaLongitude / 2) *
+            Math.sin(deltaLongitude / 2);
+
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return earthRadiusKm * c;
+      };
+
+      // --------------------------------------------------
+      // CALCULATE RMA RIDER DISTANCE FROM SHOP
+      // --------------------------------------------------
+
+      const nearbyRmaPartners = rmaPartners
+        .map((partner) => {
+          const latitude = Number(partner.currentLocation?.latitude);
+
+          const longitude = Number(partner.currentLocation?.longitude);
+
+          const distance = calculateDistanceKm(
+            shopLatitude,
+            shopLongitude,
+            latitude,
+            longitude,
+          );
+
+          return {
+            id: partner._id,
+            name: partner.name,
+            phone: partner.phone,
+            deliveryType: partner.deliveryType,
+            isActive: partner.isActive,
+            distance: Number(distance.toFixed(2)),
+          };
+        })
+        // Only riders within 5 KM
+        .filter((partner) => partner.distance <= 5)
+        // Nearest rider first
+        .sort((a, b) => a.distance - b.distance)
+        // Maximum 5 riders
+        .slice(0, 5);
+
+      // --------------------------------------------------
+      // RESPONSE
+      // --------------------------------------------------
+
+      return res.status(200).json({
+        order: {
+          orderId: order.orderId,
+        },
+
+        shop: {
+          shopId: order.ownerId.shopId,
+          shopName: order.ownerId.shopName,
+          location: {
+            latitude: shopLatitude,
+            longitude: shopLongitude,
+          },
+        },
+
+        shopPartners: shopPartners.map((partner) => ({
+          id: partner._id,
+          name: partner.name,
+          phone: partner.phone,
+          deliveryType: partner.deliveryType,
+          isActive: partner.isActive,
+        })),
+
+        rmaPartners: nearbyRmaPartners,
+      });
+    } catch (error) {
+      console.error('Get available delivery partners failed:', error);
+
+      return res.status(500).json({
+        message: 'Server error',
+      });
+    }
+  },
+);
 
 // GET DELIVERY PERSON FOR LOGGED-IN OWNER
 router.get('/person', ownerAuth, async (req, res) => {
@@ -444,7 +811,7 @@ router.get('/orders', deliveryAuth, async (req, res) => {
     const deliveryPerson = req.deliveryPerson;
 
     const orders = await Order.find({
-      ownerId: deliveryPerson.ownerId,
+      deliveryPersonId: deliveryPerson._id,
       status: 'OutForDelivery',
       orderType: 'delivery',
     })
@@ -476,7 +843,7 @@ router.get('/dashboard', deliveryAuth, async (req, res) => {
     endOfToday.setHours(23, 59, 59, 999);
 
     const baseQuery = {
-      ownerId: deliveryPerson.ownerId,
+      deliveryPersonId: deliveryPerson._id,
       orderType: 'delivery',
     };
 
@@ -549,7 +916,7 @@ router.get('/route/:orderId', deliveryAuth, async (req, res) => {
 
     const order = await Order.findOne({
       orderId,
-      ownerId: deliveryPerson.ownerId,
+      deliveryPersonId: deliveryPerson._id,
       status: 'OutForDelivery',
       orderType: 'delivery',
     }).populate('ownerId', 'ownerName shopName phone shopId location');

@@ -167,6 +167,13 @@ function AdminDashboard() {
           >
             Finance
           </button>
+
+          <button
+            className="admin-nav-item"
+            onClick={() => navigate('/admin/delivery-partners')}
+          >
+            Delivery Partners
+          </button>
         </nav>
 
         <div className="admin-sidebar-bottom">

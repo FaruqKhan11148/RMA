@@ -543,16 +543,6 @@
     transform 0.15s ease;
 }
 
-.scan_qr_back {
-  width: 30%;
-
-  border: 1px solid #dbe3dd;
-
-  background: #ffffff;
-
-  color: #3d4942;
-}
-
 .scan_qr_back:hover {
   background: #f5f8f6;
 }
@@ -567,6 +557,7 @@
   color: #ffffff;
 
   box-shadow: 0 6px 14px rgba(22, 128, 58, 0.18);
+  margin-left: 50px;
 }
 
 .scan_qr_manual:hover {
@@ -792,7 +783,7 @@
   }
 }
 
-.scanner_back_button{
+.scanner_back_button {
   background-color: #090d0b00;
   border: none;
 }

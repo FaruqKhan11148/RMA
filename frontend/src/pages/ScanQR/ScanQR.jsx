@@ -393,17 +393,6 @@ function ScanQR() {
         ========================================= */}
 
         <div className="scan_qr_actions">
-          <button
-            type="button"
-            className="scan_qr_back"
-            onClick={() => {
-              stopScanner();
-              navigate('/');
-            }}
-          >
-            Back
-          </button>
-
           {!scanning ? (
             <button
               type="button"

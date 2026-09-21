@@ -82,6 +82,26 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
 
+    // =========================
+    // DELIVERY ASSIGNMENT
+    // =========================
+
+    // Who is handling this delivery?
+    // SHOP = shop owner's delivery person
+    // RMA = RMA delivery partner
+    deliveryAssignmentType: {
+      type: String,
+      enum: ['SHOP', 'RMA'],
+      default: null,
+    },
+
+    // Specific delivery person assigned to this order
+    deliveryPersonId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'DeliveryPerson',
+      default: null,
+    },
+
     deliveryLocation: {
       latitude: {
         type: Number,

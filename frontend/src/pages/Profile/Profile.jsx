@@ -77,6 +77,67 @@ function RoleSwitchSheet({
   );
 }
 
+function DeliveryLoginTypeSheet({ isOpen, onClose, onRmaLogin, onShopLogin }) {
+  if (!isOpen) {
+    return null;
+  }
+
+  return (
+    <div className="profile_login_overlay" onClick={onClose}>
+      <section
+        className="profile_login_sheet"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div className="profile_login_sheet_handle" />
+
+        <div className="profile_login_sheet_header">
+          <h2>Delivery Partner Login</h2>
+
+          <p>Choose your delivery partner type</p>
+        </div>
+
+        <div className="profile_login_options">
+          <button
+            type="button"
+            className="profile_login_option"
+            onClick={onRmaLogin}
+          >
+            <div>
+              <strong>RMA Delivery Partner</strong>
+
+              <span>Login to your RMA delivery partner account</span>
+            </div>
+
+            <span>›</span>
+          </button>
+
+          <button
+            type="button"
+            className="profile_login_option"
+            onClick={onShopLogin}
+          >
+            <div>
+              <strong>Particular Shop Delivery Partner</strong>
+
+              <span>Login to a specific shop's delivery account</span>
+            </div>
+
+            <span>›</span>
+          </button>
+        </div>
+
+        <button
+          type="button"
+          className="profile_login_cancel"
+          onClick={onClose}
+        >
+          Cancel
+        </button>
+      </section>
+    </div>
+  );
+}
+
 function Profile() {
   const navigate = useNavigate();
   const { t } = useLanguage();
@@ -89,6 +150,62 @@ function Profile() {
   const [loginSheetOpen, setLoginSheetOpen] = useState(false);
   const [switchRole, setSwitchRole] = useState(null);
   const [switchingRole, setSwitchingRole] = useState(false);
+  const [deliveryLoginTypeSheetOpen, setDeliveryLoginTypeSheetOpen] =
+    useState(false);
+
+  const handleDeliveryRmaLogin = async () => {
+    if (customer) {
+      try {
+        await fetch(
+          'https://rma-backend-bo4a.onrender.com/api/customers/logout',
+          {
+            method: 'POST',
+            credentials: 'include',
+          },
+        );
+      } catch (error) {
+        console.error('Customer logout failed:', error);
+      }
+
+      setCustomer(null);
+    }
+
+    if (owner) {
+      localStorage.removeItem('rma_owner');
+      localStorage.removeItem('rma_owner_token');
+      setOwner(null);
+    }
+
+    setDeliveryLoginTypeSheetOpen(false);
+    navigate('/delivery/rma-login');
+  };
+
+  const handleShopDeliveryLogin = async () => {
+    if (customer) {
+      try {
+        await fetch(
+          'https://rma-backend-bo4a.onrender.com/api/customers/logout',
+          {
+            method: 'POST',
+            credentials: 'include',
+          },
+        );
+      } catch (error) {
+        console.error('Customer logout failed:', error);
+      }
+
+      setCustomer(null);
+    }
+
+    if (owner) {
+      localStorage.removeItem('rma_owner');
+      localStorage.removeItem('rma_owner_token');
+      setOwner(null);
+    }
+
+    setDeliveryLoginTypeSheetOpen(false);
+    navigate('/delivery/orders');
+  };
 
   useEffect(() => {
     const fetchCustomer = async () => {
@@ -379,7 +496,7 @@ function Profile() {
 
           <button
             className="profile_item"
-            onClick={() => setSwitchRole('delivery')}
+            onClick={() => setDeliveryLoginTypeSheetOpen(true)}
           >
             <span>Delivery Partner Login</span>
             <span>›</span>
@@ -395,7 +512,7 @@ function Profile() {
 
           <button
             className="profile_item"
-            onClick={() => navigate('/delivery-partner/dashboard')}
+            onClick={() => navigate('/delivery/orders')}
           >
             <span>Delivery Partner Dashboard</span>
             <span>›</span>
@@ -424,6 +541,13 @@ function Profile() {
           currentRole="customer"
           onCancel={() => setSwitchRole(null)}
           onConfirm={handleRoleSwitch}
+        />
+
+        <DeliveryLoginTypeSheet
+          isOpen={deliveryLoginTypeSheetOpen}
+          onClose={() => setDeliveryLoginTypeSheetOpen(false)}
+          onRmaLogin={handleDeliveryRmaLogin}
+          onShopLogin={handleShopDeliveryLogin}
         />
       </main>
     );
@@ -521,7 +645,7 @@ function Profile() {
 
           <button
             className="profile_item"
-            onClick={() => setSwitchRole('delivery')}
+            onClick={() => setDeliveryLoginTypeSheetOpen(true)}
           >
             <span>Delivery Partner Login</span>
             <span>›</span>
@@ -835,7 +959,10 @@ function Profile() {
               <button
                 type="button"
                 className="profile_login_option"
-                onClick={() => navigate('/delivery/orders')}
+                onClick={() => {
+                  setLoginSheetOpen(false);
+                  setDeliveryLoginTypeSheetOpen(true);
+                }}
               >
                 <div>
                   <strong>Delivery Partner</strong>
@@ -851,6 +978,108 @@ function Profile() {
               type="button"
               className="profile_login_cancel"
               onClick={() => setLoginSheetOpen(false)}
+            >
+              Cancel
+            </button>
+          </section>
+          <DeliveryLoginTypeSheet
+            isOpen={deliveryLoginTypeSheetOpen}
+            onClose={() => setDeliveryLoginTypeSheetOpen(false)}
+            onRmaLogin={handleDeliveryRmaLogin}
+            onShopLogin={handleShopDeliveryLogin}
+          />
+        </div>
+      )}
+
+      {deliveryLoginTypeSheetOpen && (
+        <div
+          className="profile_login_overlay"
+          onClick={() => setDeliveryLoginTypeSheetOpen(false)}
+        >
+          <section
+            className="profile_login_sheet"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="profile_login_sheet_handle" />
+
+            <div className="profile_login_sheet_header">
+              <h2>Delivery Partner Login</h2>
+
+              <p>Choose your delivery partner type</p>
+            </div>
+
+            <div className="profile_login_options">
+              <button
+                type="button"
+                className="profile_login_option"
+                onClick={async () => {
+                  if (customer) {
+                    try {
+                      await fetch(
+                        'https://rma-backend-bo4a.onrender.com/api/customers/logout',
+                        {
+                          method: 'POST',
+                          credentials: 'include',
+                        },
+                      );
+                    } catch (error) {
+                      console.error('Customer logout failed:', error);
+                    }
+
+                    setCustomer(null);
+                  }
+
+                  setDeliveryLoginTypeSheetOpen(false);
+                  navigate('/delivery/rma-login');
+                }}
+              >
+                <div>
+                  <strong>RMA Delivery Partner</strong>
+
+                  <span>Login to your RMA delivery partner account</span>
+                </div>
+
+                <span>›</span>
+              </button>
+
+              <button
+                type="button"
+                className="profile_login_option"
+                onClick={async () => {
+                  if (customer) {
+                    try {
+                      await fetch(
+                        'https://rma-backend-bo4a.onrender.com/api/customers/logout',
+                        {
+                          method: 'POST',
+                          credentials: 'include',
+                        },
+                      );
+                    } catch (error) {
+                      console.error('Customer logout failed:', error);
+                    }
+
+                    setCustomer(null);
+                  }
+
+                  setDeliveryLoginTypeSheetOpen(false);
+                  navigate('/delivery/orders');
+                }}
+              >
+                <div>
+                  <strong>Particular Shop Delivery Partner</strong>
+
+                  <span>Login to a specific shop's delivery account</span>
+                </div>
+
+                <span>›</span>
+              </button>
+            </div>
+
+            <button
+              type="button"
+              className="profile_login_cancel"
+              onClick={() => setDeliveryLoginTypeSheetOpen(false)}
             >
               Cancel
             </button>

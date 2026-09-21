@@ -840,3 +840,301 @@
   position: relative;
   z-index: 0;
 }
+
+/* DELIVERY ASSIGNMENT MODAL */
+
+.delivery_assignment_overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(0, 0, 0, 0.45);
+
+  box-sizing: border-box;
+}
+
+.delivery_assignment_modal {
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+
+  overflow-y: auto;
+
+  background: #ffffff;
+
+  border-radius: 20px;
+
+  padding: 24px;
+
+  box-sizing: border-box;
+
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.delivery_assignment_header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  margin-bottom: 24px;
+}
+
+.delivery_assignment_header h2 {
+  margin: 0;
+
+  font-size: 22px;
+  color: #222;
+}
+
+.delivery_assignment_header p {
+  margin: 6px 0 0;
+
+  font-size: 14px;
+  color: #777;
+}
+
+.delivery_assignment_close {
+  width: 36px;
+  height: 36px;
+
+  border: none;
+  border-radius: 50%;
+
+  background: #f2f2f2;
+
+  font-size: 24px;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.delivery_assignment_type h3,
+.delivery_partner_list_header h3 {
+  margin: 0;
+
+  font-size: 16px;
+  color: #222;
+}
+
+.delivery_type_options {
+  display: flex;
+  flex-direction: column;
+
+  gap: 10px;
+
+  margin-top: 12px;
+}
+
+.delivery_type_option {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 14px;
+
+  border: 1px solid #e1e1e1;
+  border-radius: 14px;
+
+  background: #fff;
+
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.delivery_type_option.active {
+  border-color: #16803a;
+  background: #f1f9f3;
+}
+
+.delivery_radio {
+  font-size: 20px;
+  color: #16803a;
+}
+
+.delivery_type_option strong {
+  display: block;
+
+  font-size: 15px;
+  color: #222;
+}
+
+.delivery_type_option small {
+  display: block;
+
+  margin-top: 3px;
+
+  font-size: 12px;
+  color: #777;
+}
+
+.delivery_partner_list {
+  margin-top: 24px;
+}
+
+.delivery_partner_list_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 12px;
+}
+
+.delivery_partner_list_header > span {
+  font-size: 12px;
+  color: #777;
+}
+
+.delivery_partner_card {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  margin-bottom: 10px;
+
+  padding: 14px;
+
+  border: 1px solid #e1e1e1;
+  border-radius: 14px;
+
+  background: #fff;
+
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.delivery_partner_card:hover {
+  border-color: #16803a;
+}
+
+.delivery_partner_card.selected {
+  border-color: #16803a;
+  background: #f1f9f3;
+}
+
+.delivery_partner_radio {
+  font-size: 20px;
+  color: #16803a;
+}
+
+.delivery_partner_details {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.delivery_partner_details strong {
+  font-size: 15px;
+  color: #222;
+}
+
+.delivery_partner_details span {
+  font-size: 13px;
+  color: #777;
+}
+
+.delivery_partner_details .delivery_partner_distance {
+  color: #16803a;
+  font-weight: 600;
+}
+
+.delivery_partner_loading,
+.delivery_partner_empty {
+  padding: 24px 12px;
+
+  text-align: center;
+
+  border-radius: 14px;
+
+  background: #f7f7f7;
+}
+
+.delivery_partner_empty strong {
+  display: block;
+
+  color: #333;
+}
+
+.delivery_partner_empty p {
+  margin: 7px 0 0;
+
+  font-size: 13px;
+  color: #777;
+}
+
+.delivery_assignment_actions {
+  display: flex;
+
+  gap: 10px;
+
+  margin-top: 24px;
+}
+
+.delivery_cancel_button,
+.delivery_assign_button {
+  flex: 1;
+
+  min-height: 46px;
+
+  border: none;
+  border-radius: 12px;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.delivery_cancel_button {
+  background: #eeeeee;
+  color: #333;
+}
+
+.delivery_assign_button {
+  background: #16803a;
+  color: #fff;
+}
+
+.delivery_assign_button:disabled {
+  background: #a8c8b1;
+  cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+  .delivery_assignment_overlay {
+    align-items: flex-end;
+    margin-bottom: 50px;
+    padding: 0;
+  }
+
+  .delivery_assignment_modal {
+    max-width: none;
+    max-height: 92vh;
+
+    border-radius: 22px 22px 0 0;
+
+    padding: 22px 16px 20px;
+  }
+
+  .delivery_assignment_header h2 {
+    font-size: 20px;
+  }
+}

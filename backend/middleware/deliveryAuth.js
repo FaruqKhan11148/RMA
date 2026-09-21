@@ -35,6 +35,11 @@ const deliveryAuth = async (req, res, next) => {
     // Attach delivery person to request
     req.deliveryPerson = deliveryPerson;
 
+    // Delivery type:
+    // SHOP = shop-owned delivery person
+    // RMA = RMA-employed/external delivery partner
+    req.deliveryType = deliveryPerson.deliveryType;
+
     next();
   } catch (error) {
     console.error('Delivery authentication failed:', error);

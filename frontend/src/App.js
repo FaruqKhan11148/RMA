@@ -11,6 +11,8 @@ import {
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import OwnerProtectedRoute from './pages/Owner/OwnerProtectedRoute/OwnerProtectedRoute';
 import ScrollToTop from './components/ScrollToTop/ScrollToTop';
+import DeliveryPartnerRegister from './pages/DeliveryPartner/DeliveryPartnerRegister/DeliveryPartnerRegister';
+import RMADeliveryLogin from './pages/delivery/RMADeliveryLogin/RMADeliveryLogin';
 
 import Navbar from './components/Navbar/Navbar';
 import SiteFooter from './components/SiteFooter/SiteFooter';
@@ -83,6 +85,8 @@ import AdminShopDetails from './pages/Admin/Shops/AdminShopDetails';
 import AdminOrderDetails from './pages/Admin/AdminOrders/AdminOrderDetails';
 import AdminDailyOrders from './pages/Admin/AdminOrders/AdminDailyOrders';
 import AdminMonthlyFinance from './pages/Admin/AdminFinance/AdminMonthlyFinance';
+
+import DeliveryPartners from './pages/Admin/DeliveryPartners/DeliveryPartners';
 
 // Customer
 import CustomerLogin from './pages/Customer/CustomerLogin/CustomerLogin';
@@ -341,6 +345,12 @@ function AppLayout() {
           {/* ==================== DELIVERY ROUTES ==================== */}
 
           <Route path="/delivery/orders" element={<DeliveryOrders />} />
+          <Route
+            path="/delivery-partner/register"
+            element={<DeliveryPartnerRegister />}
+          />
+
+          <Route path="/delivery/rma-login" element={<RMADeliveryLogin />} />
 
           {/* ==================== PAYMENT ==================== */}
 
@@ -378,6 +388,10 @@ function AppLayout() {
           <Route
             path="/admin/finance/monthly"
             element={<AdminMonthlyFinance />}
+          />
+          <Route
+            path="/admin/delivery-partners"
+            element={<DeliveryPartners />}
           />
 
           {/* ==================== CUSTOMER AUTH ==================== */}

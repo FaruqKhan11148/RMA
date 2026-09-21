@@ -2,17 +2,22 @@ const mongoose = require('mongoose');
 
 const deliveryPersonSchema = new mongoose.Schema(
   {
+    deliveryType: {
+      type: String,
+      enum: ['SHOP', 'RMA'],
+      default: 'SHOP',
+      required: true,
+    },
+
     ownerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Owner',
-      required: true,
-      unique: true,
+      default: null,
     },
 
     shopId: {
       type: String,
-      required: true,
-      unique: true,
+      default: null,
       trim: true,
     },
 
