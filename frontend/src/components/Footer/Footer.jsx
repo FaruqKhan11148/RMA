@@ -1,7 +1,7 @@
 import './Footer.css';
 
 import { useEffect, useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Home, Store, ShoppingCart, ClipboardList, Bell } from 'lucide-react';
 
 import { useLanguage } from '../../context/LanguageContext';
@@ -11,6 +11,7 @@ function Footer() {
   const { t } = useLanguage();
   const { totalItems } = useCart();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [unreadCount, setUnreadCount] = useState(0);
 
@@ -90,9 +91,31 @@ function Footer() {
         <span>{t.bottomNav.orders}</span>
       </NavLink>
 
-      <NavLink
-        to="/notifications"
-        className={({ isActive }) => `nav_item ${isActive ? 'active' : ''}`}
+      <button
+        type="button"
+        className={`nav_item ${
+          location.pathname === '/notifications' ? 'active' : ''
+        }`}
+        onClick={async () => {
+          try {
+            const response = await fetch(
+              'https://rma-backend-bo4a.onrender.com/api/customers/me',
+              {
+                credentials: 'include',
+              },
+            );
+
+            if (!response.ok) {
+              navigate('/customer/login');
+              return;
+            }
+
+            navigate('/notifications');
+          } catch (error) {
+            console.error('Customer authentication check failed:', error);
+            navigate('/customer/login');
+          }
+        }}
       >
         <div className="nav_icon_wrapper">
           <Bell className="nav_icon" />
@@ -105,7 +128,7 @@ function Footer() {
         </div>
 
         <span>Messages</span>
-      </NavLink>
+      </button>
     </nav>
   );
 }

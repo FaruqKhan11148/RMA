@@ -20,10 +20,6 @@ const {
 const router = express.Router();
 
 // ==========================================
-// CALCULATE DISTANCE BETWEEN TWO LOCATIONS
-// ==========================================
-
-// ==========================================
 // PAYU REFUND
 // ==========================================
 
@@ -909,11 +905,6 @@ router.post('/', async (req, res) => {
     } catch (notificationError) {
       console.error('Owner new order notification failed:', notificationError);
     }
-
-    res.status(201).json({
-      message: 'Order created successfully',
-      order,
-    });
 
     res.status(201).json({
       message: 'Order created successfully',

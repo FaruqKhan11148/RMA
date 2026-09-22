@@ -727,6 +727,8 @@ function Checkout() {
                   return;
                 }
 
+                setError('');
+
                 navigator.geolocation.getCurrentPosition(
                   async (position) => {
                     const latitude = position.coords.latitude;
@@ -743,7 +745,35 @@ function Checkout() {
 
                       const data = await response.json();
 
-                      const address = data.display_name || 'Current location';
+                      const addressData = data.address || {};
+
+                      const locality =
+                        addressData.neighbourhood ||
+                        addressData.suburb ||
+                        addressData.quarter ||
+                        addressData.residential ||
+                        addressData.village ||
+                        addressData.hamlet ||
+                        '';
+
+                      const area =
+                        addressData.city_district ||
+                        addressData.town ||
+                        addressData.municipality ||
+                        '';
+
+                      const city = addressData.city || addressData.county || '';
+
+                      const locationParts = [locality, area, city].filter(
+                        Boolean,
+                      );
+
+                      const uniqueParts = [...new Set(locationParts)];
+
+                      const address =
+                        uniqueParts.length > 0
+                          ? uniqueParts.join(', ')
+                          : data.display_name || 'Current location';
 
                       setDeliveryLocation({
                         latitude,
@@ -777,19 +807,22 @@ function Checkout() {
                     }
                   },
                   (error) => {
-                    console.error('Current location failed:', error);
+                    console.error('Current location failed:', {
+                      code: error.code,
+                      message: error.message,
+                    });
 
                     if (error.code === 1) {
                       setFlashMessage(
-                        'Location permission is required. Please allow location access and try again.',
+                        'Location permission is blocked. Please allow location access in your browser settings.',
                       );
                     } else if (error.code === 2) {
                       setFlashMessage(
-                        'Unable to determine your current location. Please try again.',
+                        'Unable to detect your location. Please try again.',
                       );
                     } else if (error.code === 3) {
                       setFlashMessage(
-                        'Location request timed out. Please try again.',
+                        'Location is taking too long. Please try again.',
                       );
                     } else {
                       setFlashMessage(
@@ -798,9 +831,9 @@ function Checkout() {
                     }
                   },
                   {
-                    enableHighAccuracy: true,
-                    timeout: 10000,
-                    maximumAge: 0,
+                    enableHighAccuracy: false,
+                    timeout: 20000,
+                    maximumAge: 300000,
                   },
                 );
               }}
