@@ -8,7 +8,7 @@ import {
   listenForCustomerNotifications,
 } from './firebase/notifications';
 
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import OwnerProtectedRoute from './pages/Owner/OwnerProtectedRoute/OwnerProtectedRoute';
 import ScrollToTop from './components/ScrollToTop/ScrollToTop';
 import DeliveryPartnerRegister from './pages/DeliveryPartner/DeliveryPartnerRegister/DeliveryPartnerRegister';
@@ -104,17 +104,16 @@ import Terms from './pages/Terms/Terms';
 import ShopPromotion from './pages/Owner/OwnerSettings/ShopPromotion/ShopPromotion';
 
 function AppLayout() {
+  const location = useLocation();
   const [customerLoggedIn, setCustomerLoggedIn] = useState(false);
+  const [profileRole, setProfileRole] = useState(null);
 
   useEffect(() => {
     const checkCustomerLogin = async () => {
       try {
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/customers/me',
-          {
-            credentials: 'include',
-          },
-        );
+        const response = await fetch('http://localhost:5000/api/customers/me', {
+          credentials: 'include',
+        });
 
         if (response.ok) {
           setCustomerLoggedIn(true);
@@ -197,6 +196,14 @@ function AppLayout() {
     };
   }, [customerLoggedIn]);
 
+  const hideCustomerFooter =
+    location.pathname.startsWith('/owner/') ||
+    location.pathname.startsWith('/admin/') ||
+    location.pathname.startsWith('/delivery/') ||
+    location.pathname.startsWith('/delivery-partner/') ||
+    (location.pathname === '/profile' &&
+      (profileRole === 'owner' || profileRole === 'delivery'));
+
   return (
     <>
       <ScrollToTop />
@@ -226,7 +233,10 @@ function AppLayout() {
 
           <Route path="/orders" element={<Orders />} />
           <Route path="/notifications" element={<Notifications />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route
+            path="/profile"
+            element={<Profile onRoleChange={setProfileRole} />}
+          />
 
           {/* ==================== OWNER PUBLIC ROUTES ==================== */}
 
@@ -427,7 +437,7 @@ function AppLayout() {
 
       <SiteFooter />
 
-      <Footer />
+      {!hideCustomerFooter && <Footer />}
     </>
   );
 }

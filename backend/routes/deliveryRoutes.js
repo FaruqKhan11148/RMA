@@ -119,6 +119,7 @@ router.post('/rma/register', async (req, res) => {
       name: name.trim(),
       phone: phone.trim(),
       isActive: false,
+      applicationStatus: 'PENDING',
     });
 
     return res.status(201).json({
@@ -129,51 +130,11 @@ router.post('/rma/register', async (req, res) => {
         phone: deliveryPerson.phone,
         deliveryType: deliveryPerson.deliveryType,
         isActive: deliveryPerson.isActive,
+        applicationStatus: deliveryPerson.applicationStatus,
       },
     });
   } catch (error) {
     console.error('RMA delivery partner registration error:', error);
-
-    return res.status(500).json({
-      message: 'Server error',
-    });
-  }
-});
-
-/*
-  RMA DELIVERY PARTNER APPROVAL
-  ADMIN ONLY
-*/
-router.patch('/rma/:deliveryPersonId/approve', adminAuth, async (req, res) => {
-  try {
-    const { deliveryPersonId } = req.params;
-
-    const deliveryPerson = await DeliveryPerson.findOne({
-      _id: deliveryPersonId,
-      deliveryType: 'RMA',
-    });
-
-    if (!deliveryPerson) {
-      return res.status(404).json({
-        message: 'RMA delivery partner not found',
-      });
-    }
-
-    deliveryPerson.isActive = true;
-    await deliveryPerson.save();
-
-    return res.status(200).json({
-      message: 'RMA delivery partner approved successfully',
-      deliveryPerson: {
-        id: deliveryPerson._id,
-        name: deliveryPerson.name,
-        phone: deliveryPerson.phone,
-        deliveryType: deliveryPerson.deliveryType,
-        isActive: deliveryPerson.isActive,
-      },
-    });
-  } catch (error) {
-    console.error('RMA delivery partner approval error:', error);
 
     return res.status(500).json({
       message: 'Server error',

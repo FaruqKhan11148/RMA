@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import './DeliveryPartners.css';
 
-const API_URL = 'http://localhost:5000';
+const API_URL = 'https://rma-backend-bo4a.onrender.com/';
 
 function DeliveryPartners() {
   const [partners, setPartners] = useState([]);
@@ -10,8 +10,10 @@ function DeliveryPartners() {
 
   const approvePartner = async (partnerId) => {
     try {
+      setError('');
+
       const response = await fetch(
-        `${API_URL}/api/delivery/rma/${partnerId}/approve`,
+        `${API_URL}api/admin/rma/${partnerId}/approve`,
         {
           method: 'PATCH',
           credentials: 'include',
@@ -24,13 +26,45 @@ function DeliveryPartners() {
         throw new Error(data.message || 'Failed to approve delivery partner');
       }
 
-      // Remove approved partner from pending list
       setPartners((currentPartners) =>
         currentPartners.filter((partner) => partner.id !== partnerId),
       );
     } catch (error) {
       console.error('Failed to approve delivery partner:', error);
-      setError(error.message);
+      setError(error.message || 'Failed to approve delivery partner');
+    }
+  };
+
+  const rejectPartner = async (partnerId) => {
+    try {
+      setError('');
+
+      const response = await fetch(
+        `${API_URL}api/admin/rma/${partnerId}/reject`,
+        {
+          method: 'PATCH',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            rejectionReason: 'Application did not meet our criteria',
+          }),
+        },
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to reject delivery partner');
+      }
+
+      setPartners((currentPartners) =>
+        currentPartners.filter((partner) => partner.id !== partnerId),
+      );
+    } catch (error) {
+      console.error('Failed to reject delivery partner:', error);
+      setError(error.message || 'Failed to reject delivery partner');
     }
   };
 
@@ -41,7 +75,7 @@ function DeliveryPartners() {
         setError('');
 
         const response = await fetch(
-          `${API_URL}/api/admin/delivery-partners/pending`,
+          `${API_URL}api/admin/delivery-partners/pending`,
           {
             method: 'GET',
             credentials: 'include',
@@ -128,7 +162,11 @@ function DeliveryPartners() {
               </div>
 
               <div className="admin_partner_actions">
-                <button type="button" className="admin_reject_button">
+                <button
+                  type="button"
+                  className="admin_reject_button"
+                  onClick={() => rejectPartner(partner.id)}
+                >
                   Reject
                 </button>
 

@@ -180,7 +180,7 @@ function RMADeliveryLogin() {
             {generatedOtp && (
               <div className="rma_delivery_otp_display">
                 <span>Your OTP</span>
-                <strong>{generatedOtp}</strong>
+                <strong style={{ color: 'black' }}>{generatedOtp}</strong>
               </div>
             )}
 

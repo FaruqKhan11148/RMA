@@ -138,7 +138,7 @@ function DeliveryLoginTypeSheet({ isOpen, onClose, onRmaLogin, onShopLogin }) {
   );
 }
 
-function Profile() {
+function Profile({ onRoleChange }) {
   const navigate = useNavigate();
   const { t } = useLanguage();
 
@@ -263,6 +263,18 @@ function Profile() {
     fetchCustomer();
     checkOtherRoles();
   }, []);
+
+  useEffect(() => {
+    if (owner) {
+      onRoleChange?.('owner');
+    } else if (deliveryPerson) {
+      onRoleChange?.('delivery');
+    } else if (customer) {
+      onRoleChange?.('customer');
+    } else if (!loading) {
+      onRoleChange?.('guest');
+    }
+  }, [customer, owner, deliveryPerson, loading, onRoleChange]);
 
   const handleLogout = async () => {
     try {
@@ -395,7 +407,7 @@ function Profile() {
   // ============================
   // LOGGED-IN CUSTOMER
   // ============================
-  if (customer) {
+  if (customer && !owner && !deliveryPerson) {
     const firstLetter = customer.name
       ? customer.name.charAt(0).toUpperCase()
       : 'R';
@@ -692,6 +704,12 @@ function Profile() {
           onCancel={() => setSwitchRole(null)}
           onConfirm={handleRoleSwitch}
         />
+        <DeliveryLoginTypeSheet
+          isOpen={deliveryLoginTypeSheetOpen}
+          onClose={() => setDeliveryLoginTypeSheetOpen(false)}
+          onRmaLogin={handleDeliveryRmaLogin}
+          onShopLogin={handleShopDeliveryLogin}
+        />
       </main>
     );
   }
@@ -847,9 +865,11 @@ function Profile() {
           onClick={() => setLoginSheetOpen(true)}
         >
           <div className="profile_auth_content">
-            <strong>Login</strong>
+            <strong>Login to RMA</strong>
 
-            <span>Access your orders and saved details</span>
+            <span style={{ fontWeight: '600', color: 'white' }}>
+              Customer, Shop Owner or Delivery Partner
+            </span>
           </div>
 
           <span className="profile_arrow">›</span>

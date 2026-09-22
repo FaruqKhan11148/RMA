@@ -391,7 +391,6 @@ function Checkout() {
       {/* ========================================
           HEADER
       ======================================== */}
-
       <section className="checkout_header">
         <div className="checkout_header_content">
           <span className="checkout_eyebrow">FINAL STEP</span>

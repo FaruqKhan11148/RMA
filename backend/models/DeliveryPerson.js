@@ -50,6 +50,23 @@ const deliveryPersonSchema = new mongoose.Schema(
       default: true,
     },
 
+    applicationStatus: {
+      type: String,
+      enum: ['PENDING', 'APPROVED', 'REJECTED'],
+      default: 'APPROVED',
+    },
+
+    rejectionReason: {
+      type: String,
+      default: null,
+      trim: true,
+    },
+
+    reviewedAt: {
+      type: Date,
+      default: null,
+    },
+
     currentLocation: {
       latitude: {
         type: Number,
