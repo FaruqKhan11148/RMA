@@ -147,7 +147,7 @@ function MapPicker({ onLocationSelect }) {
         setLoadingAddress(false);
       }
     },
-    [onLocationSelect],
+    [],
   );
 
   // =========================
