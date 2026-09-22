@@ -29,11 +29,14 @@ function OpenClosed() {
           setLoading(true);
         }
 
-        const response = await fetch('http://localhost:5000/api/owners/me', {
-          hhttps://rma-backend-bo4a.onrender.com/
-            Authorization: `Bearer ${token}`,
+        const response = await fetch(
+          'https://rma-backend-bo4a.onrender.com/api/owners/me',
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           },
-        });
+        );
 
         const data = await response.json();
 
@@ -77,10 +80,10 @@ function OpenClosed() {
 
     try {
       const response = await fetch(
-        'http://localhost:5000/api/owners/settings/open-closed',
+        'https://rma-backend-bo4a.onrender.com/api/owners/settings/open-closed',
         {
           method: 'PATCH',
-         https://rma-backend-bo4a.onrender.com/
+          headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
