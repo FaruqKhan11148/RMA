@@ -7,6 +7,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useCart } from '../../context/CartContext';
 import { useOrder } from '../../context/OrderContext';
+import MapPicker from '../../components/map/MapPicker';
 
 function Checkout() {
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ function Checkout() {
   const [showLocationSheet, setShowLocationSheet] = useState(false);
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [loadingAddresses, setLoadingAddresses] = useState(false);
+  const [showMapPicker, setShowMapPicker] = useState(false);
 
   const [customer, setCustomer] = useState({
     name: '',
@@ -65,12 +67,12 @@ function Checkout() {
         },
       );
 
-      const data = await response.json();
-
       if (response.status === 401) {
         setSavedAddresses([]);
         return;
       }
+
+      const data = await response.json();
 
       if (!response.ok) {
         throw new Error(data.message || 'Failed to fetch saved addresses');
@@ -79,7 +81,6 @@ function Checkout() {
       setSavedAddresses(data.addresses || []);
     } catch (error) {
       console.error('Fetch saved addresses error:', error);
-
       setSavedAddresses([]);
     } finally {
       setLoadingAddresses(false);
@@ -701,271 +702,206 @@ function Checkout() {
           onClick={() => setShowLocationSheet(false)}
         >
           <div
-            className="location_sheet"
+            className={`location_sheet ${
+              showMapPicker ? 'location_sheet_map_mode' : ''
+            }`}
             onClick={(event) => event.stopPropagation()}
           >
             <div className="location_sheet_handle" />
 
-            <div className="location_sheet_header">
-              <h3>Choose delivery address</h3>
+            {!showMapPicker ? (
+              <>
+                <div className="location_sheet_header">
+                  <h3>Choose delivery address</h3>
 
-              <button
-                type="button"
-                className="location_sheet_close"
-                onClick={() => setShowLocationSheet(false)}
-              >
-                ×
-              </button>
-            </div>
-
-            <button
-              type="button"
-              className="location_sheet_current"
-              onClick={() => {
-                if (!navigator.geolocation) {
-                  setError('Location access is not supported on this device.');
-                  return;
-                }
-
-                setError('');
-
-                navigator.geolocation.getCurrentPosition(
-                  async (position) => {
-                    const latitude = position.coords.latitude;
-                    const longitude = position.coords.longitude;
-
-                    try {
-                      const response = await fetch(
-                        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`,
-                      );
-
-                      if (!response.ok) {
-                        throw new Error('Unable to get address');
-                      }
-
-                      const data = await response.json();
-
-                      const addressData = data.address || {};
-
-                      const locality =
-                        addressData.neighbourhood ||
-                        addressData.suburb ||
-                        addressData.quarter ||
-                        addressData.residential ||
-                        addressData.village ||
-                        addressData.hamlet ||
-                        '';
-
-                      const area =
-                        addressData.city_district ||
-                        addressData.town ||
-                        addressData.municipality ||
-                        '';
-
-                      const city = addressData.city || addressData.county || '';
-
-                      const locationParts = [locality, area, city].filter(
-                        Boolean,
-                      );
-
-                      const uniqueParts = [...new Set(locationParts)];
-
-                      const address =
-                        uniqueParts.length > 0
-                          ? uniqueParts.join(', ')
-                          : data.display_name || 'Current location';
-
-                      setDeliveryLocation({
-                        latitude,
-                        longitude,
-                        address,
-                      });
-
-                      setCustomer((current) => ({
-                        ...current,
-                        address,
-                      }));
-
-                      setShowLocationSheet(false);
-                      setError('');
-                    } catch (error) {
-                      console.error('Reverse geocoding failed:', error);
-
-                      setDeliveryLocation({
-                        latitude,
-                        longitude,
-                        address: 'Current location',
-                      });
-
-                      setCustomer((current) => ({
-                        ...current,
-                        address: 'Current location',
-                      }));
-
-                      setShowLocationSheet(false);
-                      setError('');
-                    }
-                  },
-                  (error) => {
-                    console.error('Current location failed:', {
-                      code: error.code,
-                      message: error.message,
-                    });
-
-                    if (error.code === 1) {
-                      setFlashMessage(
-                        'Location permission is blocked. Please allow location access in your browser settings.',
-                      );
-                    } else if (error.code === 2) {
-                      setFlashMessage(
-                        'Unable to detect your location. Please try again.',
-                      );
-                    } else if (error.code === 3) {
-                      setFlashMessage(
-                        'Location is taking too long. Please try again.',
-                      );
-                    } else {
-                      setFlashMessage(
-                        'Unable to get your current location. Please try again.',
-                      );
-                    }
-                  },
-                  {
-                    enableHighAccuracy: false,
-                    timeout: 20000,
-                    maximumAge: 300000,
-                  },
-                );
-              }}
-            >
-              <div className="location_sheet_option_icon">
-                <svg
-                  width="22"
-                  height="22"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M12 2V6"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                  <path
-                    d="M12 18V22"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                  <path
-                    d="M2 12H6"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                  <path
-                    d="M18 12H22"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                  <circle
-                    cx="12"
-                    cy="12"
-                    r="5"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  />
-                </svg>
-              </div>
-
-              <div>
-                <strong>Use current location</strong>
-                <span>Use your device's current location</span>
-              </div>
-
-              <span className="location_sheet_arrow">›</span>
-            </button>
-
-            <button
-              type="button"
-              className="location_sheet_add"
-              onClick={() => {
-                navigate('/profile/saved-addresses/add', {
-                  state: {
-                    returnToLocationSheet: true,
-                    returnPath: '/checkout',
-                  },
-                });
-              }}
-            >
-              <div className="location_sheet_option_icon">
-                <span>+</span>
-              </div>
-
-              <div>
-                <strong>Add Address</strong>
-                <span>Add a new delivery address</span>
-              </div>
-
-              <span className="location_sheet_arrow">›</span>
-            </button>
-
-            <div className="location_sheet_saved">
-              <h4>Saved addresses</h4>
-
-              {loadingAddresses ? (
-                <p className="location_sheet_empty">Loading addresses...</p>
-              ) : savedAddresses.length === 0 ? (
-                <p className="location_sheet_empty">No saved addresses yet.</p>
-              ) : (
-                savedAddresses.map((savedAddress) => (
                   <button
                     type="button"
-                    key={savedAddress._id}
-                    className="location_sheet_saved_item"
-                    onClick={() => handleSavedAddressSelect(savedAddress)}
+                    className="location_sheet_close"
+                    onClick={() => setShowLocationSheet(false)}
                   >
-                    <div className="location_sheet_saved_icon">
-                      <span>
-                        <svg
-                          width="20"
-                          height="20"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M3 10.5L12 3L21 10.5V21H3V10.5Z"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-
-                          <path
-                            d="M9 21V14H15V21"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </span>
-                    </div>
-
-                    <div className="location_sheet_saved_content">
-                      <strong>{savedAddress.label}</strong>
-
-                      <span>{savedAddress.address}</span>
-                    </div>
-
-                    <span className="location_sheet_arrow">›</span>
+                    ×
                   </button>
-                ))
-              )}
-            </div>
+                </div>
+
+                <button
+                  type="button"
+                  className="location_sheet_current"
+                  onClick={() => {
+                    setShowMapPicker(true);
+                  }}
+                >
+                  <div className="location_sheet_option_icon">
+                    <svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M12 2V6"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      />
+                      <path
+                        d="M12 18V22"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      />
+                      <path
+                        d="M2 12H6"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      />
+                      <path
+                        d="M18 12H22"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      />
+                      <circle
+                        cx="12"
+                        cy="12"
+                        r="5"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      />
+                    </svg>
+                  </div>
+
+                  <div>
+                    <strong>Use current location</strong>
+                    <span>Use your device's current location</span>
+                  </div>
+
+                  <span className="location_sheet_arrow">›</span>
+                </button>
+
+                <button
+                  type="button"
+                  className="location_sheet_add"
+                  onClick={() => {
+                    navigate('/profile/saved-addresses/add', {
+                      state: {
+                        returnToLocationSheet: true,
+                        returnPath: '/checkout',
+                      },
+                    });
+                  }}
+                >
+                  <div className="location_sheet_option_icon">
+                    <span>+</span>
+                  </div>
+
+                  <div>
+                    <strong>Add Address</strong>
+                    <span>Add a new delivery address</span>
+                  </div>
+
+                  <span className="location_sheet_arrow">›</span>
+                </button>
+
+                <div className="location_sheet_saved">
+                  <h4>Saved addresses</h4>
+
+                  {loadingAddresses ? (
+                    <p className="location_sheet_empty">Loading addresses...</p>
+                  ) : savedAddresses.length === 0 ? (
+                    <p className="location_sheet_empty">
+                      No saved addresses yet.
+                    </p>
+                  ) : (
+                    savedAddresses.map((savedAddress) => (
+                      <button
+                        type="button"
+                        key={savedAddress._id}
+                        className="location_sheet_saved_item"
+                        onClick={() => handleSavedAddressSelect(savedAddress)}
+                      >
+                        <div className="location_sheet_saved_icon">
+                          <span>
+                            <svg
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M3 10.5L12 3L21 10.5V21H3V10.5Z"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+
+                              <path
+                                d="M9 21V14H15V21"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </span>
+                        </div>
+
+                        <div className="location_sheet_saved_content">
+                          <strong>{savedAddress.label}</strong>
+                          <span>{savedAddress.address}</span>
+                        </div>
+
+                        <span className="location_sheet_arrow">›</span>
+                      </button>
+                    ))
+                  )}
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="location_sheet_header">
+                  <button
+                    type="button"
+                    className="location_sheet_back"
+                    onClick={() => setShowMapPicker(false)}
+                  >
+                    ‹
+                  </button>
+
+                  <h3>Choose delivery location</h3>
+
+                  <button
+                    type="button"
+                    className="location_sheet_close"
+                    onClick={() => {
+                      setShowMapPicker(false);
+                      setShowLocationSheet(false);
+                    }}
+                  >
+                    ×
+                  </button>
+                </div>
+
+                <MapPicker
+                  onLocationSelect={(selectedLocation) => {
+                    console.log('Confirmed map location:', selectedLocation);
+
+                    setDeliveryLocation(selectedLocation);
+
+                    setCustomer((current) => ({
+                      ...current,
+                      address: selectedLocation.address || '',
+                    }));
+
+                    setShowMapPicker(false);
+                    setShowLocationSheet(false);
+                  }}
+                />
+              </>
+            )}
           </div>
         </div>
       )}

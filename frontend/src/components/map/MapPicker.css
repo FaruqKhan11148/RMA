@@ -186,6 +186,66 @@
     box-shadow var(--rma-transition-normal);
 }
 
+/* =========================
+   CONFIRM LOCATION
+========================= */
+
+.confirm_location_button {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+
+  min-height: 50px;
+
+  margin-top: 12px;
+
+  padding: 13px 16px;
+
+  color: var(--rma-text-white);
+
+  background: var(--rma-primary);
+
+  border: 1px solid var(--rma-primary);
+
+  border-radius: var(--rma-radius-md);
+
+  font-family: inherit;
+
+  font-size: var(--rma-font-md);
+
+  font-weight: var(--rma-weight-bold);
+
+  cursor: pointer;
+
+  transition:
+    background var(--rma-transition-normal),
+    transform var(--rma-transition-fast),
+    box-shadow var(--rma-transition-normal);
+}
+
+.confirm_location_button:hover {
+  background: var(--rma-primary-dark);
+
+  box-shadow: var(--rma-shadow-sm);
+}
+
+.confirm_location_button:active {
+  transform: scale(0.98);
+}
+
+.confirm_location_button:disabled {
+  opacity: 0.55;
+
+  cursor: not-allowed;
+
+  transform: none;
+
+  box-shadow: none;
+}
+
 .current_location_button:hover {
   background: var(--rma-primary-dark);
 
@@ -362,6 +422,12 @@
     font-size: var(--rma-font-xs);
   }
 
+  .confirm_location_button {
+    min-height: 48px;
+
+    font-size: var(--rma-font-sm);
+  }
+
   .map {
     height: 330px;
   }
@@ -422,4 +488,3 @@
     transition: none;
   }
 }
-  

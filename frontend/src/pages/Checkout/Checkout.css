@@ -1424,3 +1424,145 @@
     margin: 0 auto;
   }
 }
+
+/* =========================================
+   MAP PICKER POPUP
+========================================= */
+
+.map_picker_overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.map_picker_modal {
+  position: relative;
+
+  width: min(900px, 100%);
+  max-height: 92vh;
+
+  overflow-y: auto;
+
+  background: var(--rma-background);
+  border-radius: var(--rma-radius-lg);
+  box-shadow: var(--rma-shadow-lg);
+}
+
+.map_picker_close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+
+  z-index: 10000;
+
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  border-radius: 50%;
+
+  background: rgba(0, 0, 0, 0.65);
+  color: #ffffff;
+
+  font-size: 28px;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.map_picker_close:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+@media (max-width: 600px) {
+  .map_picker_overlay {
+    padding: 0;
+    align-items: stretch;
+  }
+
+  .map_picker_modal {
+    width: 100%;
+    max-height: 100vh;
+    height: 100vh;
+
+    border-radius: 0;
+  }
+
+  .map_picker_close {
+    top: 10px;
+    right: 10px;
+  }
+}
+
+/* Map mode inside location sheet */
+.location_sheet_map_mode {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.location_sheet_map_mode .map_picker {
+  margin-top: 0;
+  padding: 16px;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.location_sheet_map_mode .map {
+  height: 320px;
+}
+
+.location_sheet_back {
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+  border: none;
+  background: transparent;
+
+  color: var(--rma-text);
+  font-size: 30px;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.location_sheet_map_mode .location_sheet_header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.location_sheet_map_mode .location_sheet_header h3 {
+  flex: 1;
+}
+
+@media (max-width: 480px) {
+  .location_sheet_map_mode {
+    max-height: 92vh;
+  }
+
+  .location_sheet_map_mode .map_picker {
+    padding: 12px;
+  }
+
+  .location_sheet_map_mode .map {
+    height: 300px;
+  }
+}

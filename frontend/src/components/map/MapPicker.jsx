@@ -93,6 +93,8 @@ function MapPicker({ onLocationSelect }) {
 
   const [error, setError] = useState('');
 
+  const [selectedLocation, setSelectedLocation] = useState(null);
+
   // =========================
   // Reverse geocoding
   // =========================
@@ -124,27 +126,23 @@ function MapPicker({ onLocationSelect }) {
 
         setAccuracy(locationAccuracy);
 
-        if (onLocationSelect) {
-          onLocationSelect({
-            latitude,
-            longitude,
-            address: displayName,
-            accuracy: locationAccuracy,
-          });
-        }
+        setSelectedLocation({
+          latitude,
+          longitude,
+          address: displayName,
+          accuracy: locationAccuracy,
+        });
       } catch (err) {
         console.error('Reverse geocoding error:', err);
 
         setAddress('Unable to get address for this location.');
 
-        if (onLocationSelect) {
-          onLocationSelect({
-            latitude,
-            longitude,
-            address: '',
-            accuracy: locationAccuracy,
-          });
-        }
+        setSelectedLocation({
+          latitude,
+          longitude,
+          address: '',
+          accuracy: locationAccuracy,
+        });
       } finally {
         setLoadingAddress(false);
       }
@@ -375,6 +373,21 @@ function MapPicker({ onLocationSelect }) {
           )}
         </div>
       )}
+
+      <button
+        type="button"
+        className="confirm_location_button"
+        disabled={loadingAddress}
+        onClick={() => {
+          if (!selectedLocation) return;
+
+          if (onLocationSelect) {
+            onLocationSelect(selectedLocation);
+          }
+        }}
+      >
+        {loadingAddress ? 'Getting address...' : 'Confirm this location'}
+      </button>
     </section>
   );
 }
