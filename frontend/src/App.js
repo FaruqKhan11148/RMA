@@ -74,7 +74,7 @@ import ShopName from './pages/Owner/OwnerSettings/Shop/ShopName';
 import Description from './pages/Owner/OwnerSettings/Shop/Description';
 import Address from './pages/Owner/OwnerSettings/Shop/Address';
 
-import DeliveryOrders from './pages/delivery/DeliveryOrders/DeliveryOrders';
+// import DeliveryOrders from './pages/delivery/DeliveryOrders/DeliveryOrders';
 import ScanQR from './pages/ScanQR/ScanQR';
 
 import OwnerEarnings from './pages/Owner/OwnerEarnings/OwnerEarnings';
