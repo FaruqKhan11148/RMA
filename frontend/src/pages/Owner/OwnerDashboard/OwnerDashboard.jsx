@@ -2,6 +2,7 @@ import './OwnerDashboard.css';
 
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Settings } from 'lucide-react';
 
 import {
   requestOwnerNotificationPermission,
@@ -186,12 +187,6 @@ function OwnerDashboard() {
     return null;
   }
 
-  const handleLogout = () => {
-    localStorage.removeItem('rma_owner');
-
-    navigate('/owner/login');
-  };
-
   if (loading) {
     return (
       <main className="owner_dashboard">
@@ -350,14 +345,13 @@ function OwnerDashboard() {
 
         <div className="owner_header_actions">
           <button
+            type="button"
             className="owner_settings_button"
             onClick={() => navigate('/owner/settings/account')}
+            aria-label="Settings"
+            title="Settings"
           >
-            Settings
-          </button>
-
-          <button className="owner_logout_button" onClick={handleLogout}>
-            Logout
+            <Settings size={20} />
           </button>
         </div>
       </section>
