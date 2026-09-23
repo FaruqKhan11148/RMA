@@ -26,7 +26,7 @@ function Orders() {
         console.log('[Orders] Checking customer login...');
 
         const meResponse = await fetch(
-          'http://localhost:5000/api/customers/me',
+          'https://rma-backend-bo4a.onrender.com/api/customers/me',
           {
             credentials: 'include',
           },
@@ -40,7 +40,7 @@ function Orders() {
           console.log('[Orders] Calling /api/customers/orders');
 
           const ordersResponse = await fetch(
-            'http://localhost:5000/api/customers/orders',
+            'https://rma-backend-bo4a.onrender.com/api/customers/orders',
             {
               credentials: 'include',
             },
@@ -221,7 +221,7 @@ function Orders() {
             </div>
 
             <div className="order_sheet_status">
-              <span>Status</span>
+              <span>Status : </span>
 
               <strong>{selectedOrder.status}</strong>
             </div>
