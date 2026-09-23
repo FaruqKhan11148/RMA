@@ -869,6 +869,104 @@ router.get('/dashboard', deliveryAuth, async (req, res) => {
   }
 });
 
+// GET DELIVERY PARTNER EARNINGS
+router.get('/earnings', deliveryAuth, async (req, res) => {
+  try {
+    const deliveryPerson = req.deliveryPerson;
+
+    const now = new Date();
+
+    // -------------------------------
+    // START OF TODAY
+    // -------------------------------
+    const startOfToday = new Date(now);
+    startOfToday.setHours(0, 0, 0, 0);
+
+    // -------------------------------
+    // START OF THIS WEEK
+    // Monday = first day of week
+    // -------------------------------
+    const startOfWeek = new Date(now);
+    const day = startOfWeek.getDay();
+
+    const daysFromMonday = day === 0 ? 6 : day - 1;
+
+    startOfWeek.setDate(startOfWeek.getDate() - daysFromMonday);
+
+    startOfWeek.setHours(0, 0, 0, 0);
+
+    // -------------------------------
+    // COMPLETED ORDERS
+    // -------------------------------
+    const completedOrders = await Order.find({
+      deliveryPersonId: deliveryPerson._id,
+      orderType: 'delivery',
+      status: 'Completed',
+    })
+      .select(
+        'orderId deliveryRiderAmount deliveryCharge completedAt createdAt',
+      )
+      .sort({ completedAt: -1 });
+
+    // -------------------------------
+    // TOTAL EARNINGS
+    // -------------------------------
+    const totalEarnings = completedOrders.reduce(
+      (total, order) => total + Number(order.deliveryRiderAmount || 0),
+      0,
+    );
+
+    // -------------------------------
+    // TODAY'S EARNINGS
+    // -------------------------------
+    const todayOrders = completedOrders.filter(
+      (order) =>
+        order.completedAt && new Date(order.completedAt) >= startOfToday,
+    );
+
+    const todayEarnings = todayOrders.reduce(
+      (total, order) => total + Number(order.deliveryRiderAmount || 0),
+      0,
+    );
+
+    // -------------------------------
+    // THIS WEEK'S EARNINGS
+    // -------------------------------
+    const weekOrders = completedOrders.filter(
+      (order) =>
+        order.completedAt && new Date(order.completedAt) >= startOfWeek,
+    );
+
+    const weekEarnings = weekOrders.reduce(
+      (total, order) => total + Number(order.deliveryRiderAmount || 0),
+      0,
+    );
+
+    // -------------------------------
+    // RECENT EARNINGS
+    // -------------------------------
+    const recentEarnings = completedOrders.slice(0, 20).map((order) => ({
+      orderId: order.orderId,
+      amount: Number(Number(order.deliveryRiderAmount || 0).toFixed(2)),
+      deliveryCharge: Number(Number(order.deliveryCharge || 0).toFixed(2)),
+      completedAt: order.completedAt,
+    }));
+
+    return res.status(200).json({
+      totalEarnings: Number(totalEarnings.toFixed(2)),
+      todayEarnings: Number(todayEarnings.toFixed(2)),
+      weekEarnings: Number(weekEarnings.toFixed(2)),
+      recentEarnings,
+    });
+  } catch (error) {
+    console.error('Get delivery earnings failed:', error);
+
+    return res.status(500).json({
+      message: 'Server error',
+    });
+  }
+});
+
 // GET ROAD ROUTE FOR A DELIVERY ORDER
 router.get('/route/:orderId', deliveryAuth, async (req, res) => {
   try {

@@ -1,0 +1,611 @@
+.delivery_dashboard {
+  min-height: 100vh;
+  padding: 20px 16px 90px;
+  background: #f7f8f7;
+}
+
+/* ==========================================
+   HEADER
+   ========================================== */
+
+.delivery_dashboard_header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.delivery_dashboard_greeting {
+  display: block;
+  margin-bottom: 4px;
+  color: #777;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.delivery_dashboard_header h1 {
+  margin: 0;
+  color: #171717;
+  font-size: 26px;
+  font-weight: 750;
+  line-height: 1.2;
+}
+
+.delivery_dashboard_header p {
+  margin: 6px 0 0;
+  color: #888;
+  font-size: 12px;
+}
+
+/* ==========================================
+   ONLINE / OFFLINE BADGE
+   ========================================== */
+
+.delivery_online_badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 7px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.delivery_online_badge span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.delivery_online_badge.online {
+  background: #eaf7ee;
+  color: #16803a;
+}
+
+.delivery_online_badge.online span {
+  background: #16803a;
+}
+
+.delivery_online_badge.offline {
+  background: #f0f0f0;
+  color: #777;
+}
+
+.delivery_online_badge.offline span {
+  background: #999;
+}
+
+/* ==========================================
+   ONLINE STATUS CARD
+   ========================================== */
+
+.delivery_status_card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px;
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 17px;
+}
+
+.delivery_status_icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: #edf7f0;
+  color: #16803a;
+}
+
+.delivery_status_content {
+  flex: 1;
+  min-width: 0;
+}
+
+.delivery_status_content strong {
+  display: block;
+  color: #202020;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.delivery_status_content span {
+  display: block;
+  margin-top: 3px;
+  color: #888;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+/* ==========================================
+   TOGGLE
+   ========================================== */
+
+.delivery_toggle {
+  position: relative;
+  width: 45px;
+  height: 25px;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: #d7d7d7;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.delivery_toggle span {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.18);
+  transition: transform 0.2s ease;
+}
+
+.delivery_toggle.active {
+  background: #16803a;
+}
+
+.delivery_toggle.active span {
+  transform: translateX(20px);
+}
+
+/* ==========================================
+   SUMMARY GRID
+   ========================================== */
+
+.delivery_summary_grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.delivery_summary_card {
+  min-width: 0;
+  padding: 14px 12px;
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 15px;
+}
+
+.delivery_summary_icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+}
+
+.delivery_summary_icon.earnings {
+  background: #edf7f0;
+  color: #16803a;
+}
+
+.delivery_summary_icon.deliveries {
+  background: #eef4fb;
+  color: #3d6f9e;
+}
+
+.delivery_summary_icon.completed {
+  background: #edf8f3;
+  color: #21865a;
+}
+
+.delivery_summary_card span {
+  display: block;
+  overflow: hidden;
+  color: #777;
+  font-size: 10px;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.delivery_summary_card strong {
+  display: block;
+  margin-top: 4px;
+  overflow: hidden;
+  color: #202020;
+  font-size: 18px;
+  font-weight: 750;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ==========================================
+   SECTIONS
+   ========================================== */
+
+.delivery_section {
+  margin-top: 24px;
+}
+
+.delivery_section_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.delivery_section_header h2 {
+  margin: 0;
+  color: #202020;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.delivery_section_header span {
+  display: block;
+  margin-top: 3px;
+  color: #888;
+  font-size: 11px;
+}
+
+/* ==========================================
+   REQUEST COUNT
+   ========================================== */
+
+.delivery_request_count {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  min-width: 25px;
+  height: 25px;
+  margin-top: 0 !important;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: #16803a;
+  color: #ffffff !important;
+  font-size: 11px !important;
+  font-weight: 700;
+}
+
+/* ==========================================
+   EMPTY CARD
+   ========================================== */
+
+.delivery_empty_card {
+  padding: 24px 18px;
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 16px;
+  text-align: center;
+}
+
+.delivery_empty_card.compact {
+  padding: 20px 16px;
+}
+
+.delivery_empty_icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 11px;
+  border-radius: 14px;
+  background: #f0f4f1;
+  color: #16803a;
+}
+
+.delivery_empty_card strong {
+  display: block;
+  color: #222;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.delivery_empty_card p {
+  margin: 6px auto 0;
+  max-width: 280px;
+  color: #777;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* ==========================================
+   ACTIVE DELIVERY
+   ========================================== */
+
+.delivery_active_card {
+  padding: 16px;
+  background: #ffffff;
+  border: 1px solid #dceee2;
+  border-radius: 17px;
+  box-shadow: 0 5px 16px rgba(22, 128, 58, 0.06);
+}
+
+.delivery_active_top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.delivery_active_top > div {
+  min-width: 0;
+}
+
+.delivery_active_top > div span {
+  display: block;
+  margin: 0;
+  color: #888;
+  font-size: 10px;
+}
+
+.delivery_active_top > div strong {
+  display: block;
+  margin-top: 3px;
+  overflow: hidden;
+  color: #202020;
+  font-size: 14px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.delivery_active_status {
+  display: inline-flex !important;
+  align-items: center;
+  flex-shrink: 0;
+  margin: 0 !important;
+  padding: 6px 8px;
+  border-radius: 999px;
+  background: #edf7f0;
+  color: #16803a !important;
+  font-size: 10px !important;
+  font-weight: 650;
+}
+
+.delivery_active_details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #eeeeee;
+}
+
+.delivery_active_details > div {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.delivery_active_details svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: #16803a;
+}
+
+.delivery_active_details span {
+  margin: 0;
+  color: #555;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.delivery_active_button {
+  width: 100%;
+  margin-top: 15px;
+  padding: 11px 14px;
+  border: none;
+  border-radius: 11px;
+  background: #16803a;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 650;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease;
+}
+
+.delivery_active_button:active {
+  transform: scale(0.98);
+}
+
+.delivery_active_button:hover {
+  background: #126b30;
+}
+
+/* ==========================================
+   DELIVERY REQUEST CARD
+   ========================================== */
+
+.delivery_request_card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 16px;
+}
+
+.delivery_request_icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 43px;
+  height: 43px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: #fff6e8;
+  color: #b77718;
+}
+
+.delivery_request_card > div:last-child {
+  min-width: 0;
+}
+
+.delivery_request_card strong {
+  display: block;
+  color: #222;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.delivery_request_card p {
+  margin: 4px 0 0;
+  color: #777;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+/* ==========================================
+   DELIVERY AREA
+   ========================================== */
+
+.delivery_area_card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 16px;
+}
+
+.delivery_area_icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 43px;
+  height: 43px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: #edf4fb;
+  color: #3b6f9f;
+}
+
+.delivery_area_card > div:last-child {
+  min-width: 0;
+}
+
+.delivery_area_card strong {
+  display: block;
+  color: #222;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.delivery_area_card p {
+  margin: 5px 0 0;
+  color: #777;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* ==========================================
+   TABLET / LARGER MOBILE
+   ========================================== */
+
+@media (min-width: 500px) {
+  .delivery_dashboard {
+    max-width: 600px;
+    margin: 0 auto;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .delivery_summary_grid {
+    gap: 12px;
+  }
+
+  .delivery_summary_card {
+    padding: 16px;
+  }
+}
+
+/* ==========================================
+   SMALL PHONES
+   ========================================== */
+
+@media (max-width: 380px) {
+  .delivery_dashboard {
+    padding: 18px 14px 90px;
+  }
+
+  .delivery_dashboard_header h1 {
+    font-size: 24px;
+  }
+
+  .delivery_online_badge {
+    padding: 6px 8px;
+    font-size: 10px;
+  }
+
+  .delivery_status_card {
+    padding: 13px;
+  }
+
+  .delivery_status_icon {
+    width: 39px;
+    height: 39px;
+  }
+
+  .delivery_status_content strong {
+    font-size: 12px;
+  }
+
+  .delivery_status_content span {
+    font-size: 10px;
+  }
+
+  .delivery_toggle {
+    width: 42px;
+    height: 24px;
+  }
+
+  .delivery_toggle span {
+    width: 18px;
+    height: 18px;
+  }
+
+  .delivery_toggle.active span {
+    transform: translateX(18px);
+  }
+
+  .delivery_summary_grid {
+    gap: 8px;
+  }
+
+  .delivery_summary_card {
+    padding: 12px 10px;
+  }
+
+  .delivery_summary_icon {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 8px;
+  }
+
+  .delivery_summary_card span {
+    font-size: 9px;
+  }
+
+  .delivery_summary_card strong {
+    font-size: 16px;
+  }
+
+  .delivery_active_card,
+  .delivery_request_card,
+  .delivery_area_card {
+    padding: 14px;
+  }
+}

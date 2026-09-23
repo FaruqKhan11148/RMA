@@ -421,11 +421,11 @@ function Home() {
         {/* Sliding image track */}
 
         <div className="hero_image_track">
-          {meatImages.map((image, index) => (
-            <div className="hero_image" key={image}>
+          {[...meatImages, meatImages[0]].map((image, index) => (
+            <div className="hero_image" key={`${image}-${index}`}>
               <img
                 src={optimizeCloudinaryImage(image, 1200)}
-                alt={`Fresh meat ${index + 1}`}
+                alt={`Fresh meat ${(index % meatImages.length) + 1}`}
                 loading={index === 0 ? 'eager' : 'lazy'}
                 fetchPriority={index === 0 ? 'high' : 'low'}
                 decoding="async"

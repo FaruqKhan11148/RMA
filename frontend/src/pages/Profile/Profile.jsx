@@ -204,7 +204,7 @@ function Profile({ onRoleChange }) {
     }
 
     setDeliveryLoginTypeSheetOpen(false);
-    navigate('/delivery/orders');
+    navigate('/delivery/orders-delivery');
   };
 
   useEffect(() => {
@@ -385,7 +385,7 @@ function Profile({ onRoleChange }) {
       }
 
       if (switchRole === 'delivery') {
-        navigate('/delivery/orders');
+        navigate('/delivery/orders-delivery');
       }
     } catch (error) {
       console.error('Role switch failed:', error);
@@ -524,7 +524,7 @@ function Profile({ onRoleChange }) {
 
           <button
             className="profile_item"
-            onClick={() => navigate('/delivery/orders')}
+            onClick={() => navigate('/delivery/orders-delivery')}
           >
             <span>Delivery Partner Dashboard</span>
             <span>›</span>
@@ -718,10 +718,15 @@ function Profile({ onRoleChange }) {
   // ============================
   // LOGGED-IN DELIVERY PARTNER
   // ============================
+  // ============================
+  // LOGGED-IN DELIVERY PARTNER
+  // ============================
   if (deliveryPerson) {
     const firstLetter = deliveryPerson.name
       ? deliveryPerson.name.charAt(0).toUpperCase()
       : 'D';
+
+    const isShopDeliveryPartner = deliveryPerson.deliveryType === 'SHOP';
 
     return (
       <main className="profile">
@@ -734,25 +739,58 @@ function Profile({ onRoleChange }) {
         </section>
 
         <section className="profile_customer_card">
-          <div className="profile_customer_row">
-            <span>Shop ID</span>
-            <strong>{deliveryPerson.shopId}</strong>
-          </div>
+          {isShopDeliveryPartner && deliveryPerson.shopId && (
+            <div className="profile_customer_row">
+              <span>Shop ID</span>
+
+              <strong>{deliveryPerson.shopId}</strong>
+            </div>
+          )}
 
           <div className="profile_customer_row">
             <span>Mobile</span>
+
             <strong>{deliveryPerson.phone}</strong>
+          </div>
+
+          <div className="profile_customer_row">
+            <span>Partner Type</span>
+
+            <strong>
+              {isShopDeliveryPartner
+                ? 'Shop Delivery Partner'
+                : 'RMA Delivery Partner'}
+            </strong>
           </div>
         </section>
 
         <section className="profile_section">
-          <h2>My Activity</h2>
+          <h2>Delivery</h2>
 
           <button
             className="profile_item"
-            onClick={() => navigate('/delivery/orders')}
+            onClick={() => navigate('/delivery/dashboard')}
+          >
+            <span>Delivery Dashboard</span>
+
+            <span>›</span>
+          </button>
+
+          <button
+            className="profile_item"
+            onClick={() => navigate('/delivery/orders-delivery')}
           >
             <span>Delivery Orders</span>
+
+            <span>›</span>
+          </button>
+
+          <button
+            className="profile_item"
+            onClick={() => navigate('/delivery/earnings')}
+          >
+            <span>Earnings</span>
+
             <span>›</span>
           </button>
         </section>
@@ -765,6 +803,7 @@ function Profile({ onRoleChange }) {
             onClick={() => navigate('/profile/language')}
           >
             <span>Language</span>
+
             <span>›</span>
           </button>
         </section>
@@ -777,6 +816,7 @@ function Profile({ onRoleChange }) {
             onClick={() => navigate('/profile/help-support')}
           >
             <span>Help & Support</span>
+
             <span>›</span>
           </button>
         </section>
@@ -789,6 +829,7 @@ function Profile({ onRoleChange }) {
             onClick={() => setSwitchRole('customer')}
           >
             <span>Customer Login</span>
+
             <span>›</span>
           </button>
 
@@ -797,6 +838,7 @@ function Profile({ onRoleChange }) {
             onClick={() => setSwitchRole('owner')}
           >
             <span>Owner Login</span>
+
             <span>›</span>
           </button>
         </section>
@@ -1083,7 +1125,7 @@ function Profile({ onRoleChange }) {
                   }
 
                   setDeliveryLoginTypeSheetOpen(false);
-                  navigate('/delivery/orders');
+                  navigate('/delivery/orders-delivery');
                 }}
               >
                 <div>

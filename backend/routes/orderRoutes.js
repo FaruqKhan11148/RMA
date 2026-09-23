@@ -287,6 +287,90 @@ router.get('/owner/:ownerId/daily-reward', async (req, res) => {
   }
 });
 
+router.get('/owner/:ownerId/earnings', async (req, res) => {
+  try {
+    const { ownerId } = req.params;
+
+    const owner = await Owner.findById(ownerId);
+
+    if (!owner) {
+      return res.status(404).json({
+        message: 'Owner not found',
+      });
+    }
+
+    const orders = await Order.find({
+      ownerId,
+      paymentStatus: 'Paid',
+      settlementStatus: {
+        $in: ['Pending', 'Processing', 'Settled'],
+      },
+    }).sort({ createdAt: -1 });
+
+    let totalEarnings = 0;
+    let pendingEarnings = 0;
+    let processingEarnings = 0;
+    let settledEarnings = 0;
+
+    let pendingOrders = 0;
+    let processingOrders = 0;
+    let settledOrders = 0;
+
+    orders.forEach((order) => {
+      const amount = Number(order.ownerAmount || 0);
+
+      if (order.settlementStatus === 'Pending') {
+        pendingEarnings += amount;
+        pendingOrders += 1;
+      }
+
+      if (order.settlementStatus === 'Processing') {
+        processingEarnings += amount;
+        processingOrders += 1;
+      }
+
+      if (order.settlementStatus === 'Settled') {
+        settledEarnings += amount;
+        settledOrders += 1;
+      }
+
+      totalEarnings += amount;
+    });
+
+    return res.status(200).json({
+      earnings: {
+        totalEarnings: Number(totalEarnings.toFixed(2)),
+        pendingEarnings: Number(pendingEarnings.toFixed(2)),
+        processingEarnings: Number(processingEarnings.toFixed(2)),
+        settledEarnings: Number(settledEarnings.toFixed(2)),
+      },
+
+      orders: {
+        total: orders.length,
+        pending: pendingOrders,
+        processing: processingOrders,
+        settled: settledOrders,
+      },
+
+      recentOrders: orders.slice(0, 20).map((order) => ({
+        orderId: order.orderId,
+        orderDate: order.createdAt,
+        totalPrice: order.totalPrice,
+        ownerAmount: order.ownerAmount,
+        settlementStatus: order.settlementStatus,
+        settledAt: order.settledAt,
+        orderStatus: order.status,
+      })),
+    });
+  } catch (error) {
+    console.error('Get owner earnings failed:', error.message);
+
+    return res.status(500).json({
+      message: 'Failed to fetch owner earnings',
+    });
+  }
+});
+
 // GET ORDERS FOR ONE OWNER
 router.get('/owner/:ownerId', async (req, res) => {
   try {
@@ -1435,6 +1519,17 @@ router.patch('/:orderId/status', async (req, res) => {
 
     if (status === 'Accepted' && order.status !== 'Accepted') {
       order.acceptedAt = new Date();
+
+      // ==========================================
+      // START OWNER SETTLEMENT
+      // ==========================================
+
+      if (
+        order.paymentStatus === 'Paid' &&
+        order.settlementStatus === 'NotRequired'
+      ) {
+        order.settlementStatus = 'Pending';
+      }
     }
 
     if (status === 'Preparing' && order.status !== 'Preparing') {
@@ -1457,6 +1552,22 @@ router.patch('/:orderId/status', async (req, res) => {
 
     if (status === 'Completed' && order.status !== 'Completed') {
       order.completedAt = new Date();
+
+      // ==========================================
+      // OWNER SETTLEMENT
+      // ==========================================
+
+      if (
+        order.paymentStatus === 'Paid' &&
+        order.settlementStatus === 'Pending'
+      ) {
+        order.settlementStatus = 'Processing';
+
+        await order.save();
+
+        order.settlementStatus = 'Settled';
+        order.settledAt = new Date();
+      }
     }
 
     // ==========================================
@@ -1694,17 +1805,13 @@ router.patch('/:orderId/status', async (req, res) => {
   }
 });
 
-// VERIFY DELIVERY OTP
-router.post('/:orderId/verify-otp', async (req, res) => {
+// ==========================================
+// SETTLE OWNER ORDER
+// ==========================================
+
+router.patch('/:orderId/settle', async (req, res) => {
   try {
     const { orderId } = req.params;
-    const { otp } = req.body;
-
-    if (!otp) {
-      return res.status(400).json({
-        message: 'Delivery OTP is required',
-      });
-    }
 
     const order = await Order.findOne({ orderId });
 
@@ -1714,17 +1821,107 @@ router.post('/:orderId/verify-otp', async (req, res) => {
       });
     }
 
-    // OTP verification is only allowed for delivery orders
-    if (order.orderType !== 'delivery') {
+    // ==========================================
+    // PAYMENT VALIDATION
+    // ==========================================
+
+    if (order.paymentStatus !== 'Paid') {
       return res.status(400).json({
-        message: 'OTP verification is only required for delivery orders',
+        message: 'Order payment is not completed',
       });
     }
 
-    // OTP can only be verified when order is out for delivery
-    if (order.status !== 'OutForDelivery') {
+    // ==========================================
+    // ORDER COMPLETION VALIDATION
+    // ==========================================
+
+    if (order.status !== 'Completed') {
       return res.status(400).json({
-        message: 'Order is not out for delivery',
+        message: 'Order must be completed before settlement',
+      });
+    }
+
+    // ==========================================
+    // SETTLEMENT STATUS VALIDATION
+    // ==========================================
+
+    if (order.settlementStatus === 'NotRequired') {
+      return res.status(400).json({
+        message: 'Order is not eligible for settlement',
+      });
+    }
+
+    if (order.settlementStatus === 'Settled') {
+      return res.status(400).json({
+        message: 'Order is already settled',
+      });
+    }
+
+    if (order.settlementStatus !== 'Pending') {
+      return res.status(400).json({
+        message: `Order cannot be settled from ${order.settlementStatus} status`,
+      });
+    }
+
+    // ==========================================
+    // START SETTLEMENT
+    // ==========================================
+
+    order.settlementStatus = 'Processing';
+
+    await order.save();
+
+    // ==========================================
+    // COMPLETE SETTLEMENT
+    // ==========================================
+
+    order.settlementStatus = 'Settled';
+    order.settledAt = new Date();
+
+    await order.save();
+
+    return res.status(200).json({
+      message: 'Order settled successfully',
+      order: {
+        orderId: order.orderId,
+        ownerId: order.ownerId,
+        ownerAmount: order.ownerAmount,
+        settlementStatus: order.settlementStatus,
+        settledAt: order.settledAt,
+      },
+    });
+  } catch (error) {
+    console.error('Order settlement failed:', error.message);
+
+    return res.status(500).json({
+      message: 'Server error',
+    });
+  }
+});
+
+// VERIFY DELIVERY OTP
+router.post('/:orderId/verify-otp', deliveryAuth, async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { otp } = req.body;
+    const deliveryPerson = req.deliveryPerson;
+
+    if (!otp) {
+      return res.status(400).json({
+        message: 'Delivery OTP is required',
+      });
+    }
+
+    const order = await Order.findOne({
+      orderId,
+      deliveryPersonId: deliveryPerson._id,
+      orderType: 'delivery',
+      status: 'OutForDelivery',
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        message: 'Order not found',
       });
     }
 
@@ -1736,10 +1933,21 @@ router.post('/:orderId/verify-otp', async (req, res) => {
     }
 
     // OTP is correct
-    // OTP is correct
     order.otpVerified = true;
     order.status = 'Completed';
     order.completedAt = new Date();
+
+    // ==========================================
+    // OWNER SETTLEMENT
+    // ==========================================
+
+    if (
+      order.paymentStatus === 'Paid' &&
+      order.settlementStatus === 'Pending'
+    ) {
+      order.settlementStatus = 'Settled';
+      order.settledAt = new Date();
+    }
 
     await order.save();
 

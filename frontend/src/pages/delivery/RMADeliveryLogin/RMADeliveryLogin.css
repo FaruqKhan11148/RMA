@@ -362,6 +362,8 @@
   gap: 6px;
   flex-wrap: wrap;
   text-align: center;
+  display: flex;
+  flex-direction: column;
 }
 
 .rma_delivery_register_prompt span {

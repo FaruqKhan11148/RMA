@@ -170,7 +170,7 @@ router.post('/create-order', async (req, res) => {
     // Customer information.
     const customerName = order.customer?.name?.trim();
 
-    const customerEmail = order.customer?.email?.trim() || '';
+    const customerEmail = 'customer@rma.app';
 
     const customerPhone = order.customer?.phone?.trim() || '';
 
@@ -179,12 +179,6 @@ router.post('/create-order', async (req, res) => {
         message: 'Customer name is required for PayU payment',
       });
     }
-
-    // if (!customerEmail) {
-    //   return res.status(400).json({
-    //     message: 'Customer email is required for PayU payment',
-    //   });
-    // }
 
     if (!customerPhone) {
       return res.status(400).json({

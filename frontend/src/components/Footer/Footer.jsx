@@ -91,12 +91,11 @@ function Footer() {
         <span>{t.bottomNav.orders}</span>
       </NavLink>
 
-      <button
-        type="button"
-        className={`nav_item ${
-          location.pathname === '/notifications' ? 'active' : ''
-        }`}
-        onClick={async () => {
+      <NavLink
+        to="/notifications"
+        end
+        className={({ isActive }) => `nav_item ${isActive ? 'active' : ''}`}
+        onClick={async (event) => {
           try {
             const response = await fetch(
               'https://rma-backend-bo4a.onrender.com/api/customers/me',
@@ -106,13 +105,12 @@ function Footer() {
             );
 
             if (!response.ok) {
+              event.preventDefault();
               navigate('/customer/login');
-              return;
             }
-
-            navigate('/notifications');
           } catch (error) {
             console.error('Customer authentication check failed:', error);
+            event.preventDefault();
             navigate('/customer/login');
           }
         }}
@@ -128,7 +126,7 @@ function Footer() {
         </div>
 
         <span>Messages</span>
-      </button>
+      </NavLink>
     </nav>
   );
 }

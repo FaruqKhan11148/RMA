@@ -1,0 +1,399 @@
+.delivery_history_page {
+  min-height: 100vh;
+  padding: 20px 16px 90px;
+  background: #f7f8f7;
+}
+
+.delivery_history_header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.delivery_history_header > div:first-child {
+  min-width: 0;
+}
+
+.delivery_history_header span {
+  display: block;
+  margin-bottom: 4px;
+  color: #777;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.delivery_history_header h1 {
+  margin: 0;
+  color: #171717;
+  font-size: 27px;
+  font-weight: 750;
+  line-height: 1.2;
+}
+
+.delivery_history_header p {
+  margin: 6px 0 0;
+  color: #888;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.delivery_history_count {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 62px;
+  height: 58px;
+
+  padding: 6px 9px;
+
+  background: #edf7f0;
+  border: 1px solid #dceee2;
+  border-radius: 14px;
+
+  flex-shrink: 0;
+}
+
+.delivery_history_count strong {
+  color: #16803a;
+  font-size: 20px;
+  font-weight: 750;
+  line-height: 1;
+}
+
+.delivery_history_count span {
+  margin: 4px 0 0;
+  color: #16803a;
+  font-size: 9px;
+  font-weight: 650;
+}
+
+/* -------------------------------- */
+/* HISTORY LIST */
+/* -------------------------------- */
+
+.delivery_history_list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.delivery_history_card {
+  overflow: hidden;
+
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 17px;
+
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.025);
+}
+
+/* -------------------------------- */
+/* TOP */
+/* -------------------------------- */
+
+.delivery_history_top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 10px;
+
+  padding: 15px 15px 13px;
+}
+
+.delivery_history_order {
+  display: flex;
+  align-items: center;
+
+  min-width: 0;
+  gap: 10px;
+}
+
+.delivery_history_status_icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 38px;
+  height: 38px;
+
+  flex-shrink: 0;
+
+  border-radius: 11px;
+
+  background: #edf7f0;
+  color: #16803a;
+}
+
+.delivery_history_order > div:last-child {
+  min-width: 0;
+}
+
+.delivery_history_order strong {
+  display: block;
+
+  overflow: hidden;
+
+  color: #222;
+  font-size: 13px;
+  font-weight: 700;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.delivery_history_order span {
+  display: block;
+
+  margin-top: 4px;
+
+  color: #888;
+  font-size: 10px;
+}
+
+.delivery_history_completed {
+  display: inline-flex !important;
+  align-items: center;
+
+  margin: 0 !important;
+  padding: 6px 8px;
+
+  flex-shrink: 0;
+
+  border-radius: 999px;
+
+  background: #edf7f0;
+  color: #16803a !important;
+
+  font-size: 9px !important;
+  font-weight: 650;
+}
+
+/* -------------------------------- */
+/* DETAILS */
+/* -------------------------------- */
+
+.delivery_history_details {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 10px;
+
+  padding: 13px 15px;
+
+  border-top: 1px solid #eeeeee;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.delivery_history_detail {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  min-width: 0;
+}
+
+.delivery_history_detail svg {
+  flex-shrink: 0;
+
+  color: #16803a;
+}
+
+.delivery_history_detail > div {
+  min-width: 0;
+}
+
+.delivery_history_detail span {
+  display: block;
+
+  color: #888;
+  font-size: 9px;
+}
+
+.delivery_history_detail strong {
+  display: block;
+
+  margin-top: 3px;
+
+  color: #333;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+/* -------------------------------- */
+/* CUSTOMER */
+/* -------------------------------- */
+
+.delivery_history_customer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  padding: 12px 15px;
+}
+
+.delivery_history_customer span {
+  color: #888;
+  font-size: 10px;
+}
+
+.delivery_history_customer strong {
+  overflow: hidden;
+
+  color: #333;
+  font-size: 11px;
+  font-weight: 650;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* -------------------------------- */
+/* EARNINGS */
+/* -------------------------------- */
+
+.delivery_history_bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  padding: 12px 15px;
+
+  background: #fafcfb;
+}
+
+.delivery_history_bottom span {
+  color: #777;
+  font-size: 10px;
+}
+
+.delivery_history_bottom > strong {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+
+  color: #16803a;
+  font-size: 14px;
+  font-weight: 750;
+}
+
+/* -------------------------------- */
+/* EMPTY / LOADING / ERROR */
+/* -------------------------------- */
+
+.delivery_history_empty {
+  padding: 28px 18px;
+
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 17px;
+
+  text-align: center;
+}
+
+.delivery_history_empty_icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 50px;
+  height: 50px;
+
+  margin: 0 auto 12px;
+
+  border-radius: 14px;
+
+  background: #edf7f0;
+  color: #16803a;
+}
+
+.delivery_history_empty strong {
+  display: block;
+
+  color: #222;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.delivery_history_empty p {
+  max-width: 280px;
+
+  margin: 6px auto 0;
+
+  color: #777;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* -------------------------------- */
+/* TABLET / LARGER MOBILE */
+/* -------------------------------- */
+
+@media (min-width: 500px) {
+  .delivery_history_page {
+    max-width: 600px;
+    margin: 0 auto;
+
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .delivery_history_card {
+    border-radius: 18px;
+  }
+}
+
+/* -------------------------------- */
+/* SMALL PHONES */
+/* -------------------------------- */
+
+@media (max-width: 380px) {
+  .delivery_history_page {
+    padding: 18px 14px 88px;
+  }
+
+  .delivery_history_header h1 {
+    font-size: 24px;
+  }
+
+  .delivery_history_count {
+    min-width: 57px;
+    height: 54px;
+  }
+
+  .delivery_history_count strong {
+    font-size: 18px;
+  }
+
+  .delivery_history_top {
+    padding: 14px;
+  }
+
+  .delivery_history_status_icon {
+    width: 35px;
+    height: 35px;
+  }
+
+  .delivery_history_order strong {
+    font-size: 12px;
+  }
+
+  .delivery_history_details {
+    padding: 12px 14px;
+  }
+
+  .delivery_history_customer,
+  .delivery_history_bottom {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+}

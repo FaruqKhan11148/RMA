@@ -102,7 +102,7 @@ function RMADeliveryLogin() {
         JSON.stringify(data.deliveryPerson),
       );
 
-      navigate('/delivery/orders');
+      navigate('/delivery/orders-delivery');
     } catch (error) {
       console.error('RMA delivery OTP verification failed:', error);
       setError('Unable to connect to server');
@@ -164,6 +164,12 @@ function RMADeliveryLogin() {
                 onClick={() => navigate('/delivery-partner/register')}
               >
                 Register Now
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate('/delivery/orders-delivery')}
+              >
+                Particular Shop
               </button>
             </div>
           </>

@@ -1,0 +1,453 @@
+.owner_earnings_page {
+  min-height: 100vh;
+  padding: 20px 16px 100px;
+  background: #f7f9f8;
+  box-sizing: border-box;
+}
+
+/* ================================
+   HEADER
+================================ */
+
+.owner_earnings_header {
+  margin-bottom: 18px;
+}
+
+.owner_earnings_header h1 {
+  margin: 0;
+  color: #17201b;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.owner_earnings_header p {
+  margin: 6px 0 0;
+  color: #6b756f;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ================================
+   TOTAL EARNINGS
+================================ */
+
+.owner_earnings_total {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px;
+  margin-bottom: 14px;
+  border-radius: 18px;
+  background: #16803a;
+  box-shadow: 0 8px 24px rgba(22, 128, 58, 0.16);
+}
+
+.owner_earnings_total_icon {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+}
+
+.owner_earnings_total div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.owner_earnings_total span {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.owner_earnings_total strong {
+  color: #ffffff;
+  font-size: 27px;
+  font-weight: 750;
+  line-height: 1.15;
+}
+
+/* ================================
+   EARNING CARDS
+================================ */
+
+.owner_earnings_cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.owner_earning_card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 15px;
+  border: 1px solid #e4e9e6;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 3px 12px rgba(20, 35, 25, 0.04);
+}
+
+.owner_earning_card_icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
+
+.owner_earning_card_icon.pending {
+  background: #fff5dc;
+  color: #a66a00;
+}
+
+.owner_earning_card_icon.processing {
+  background: #eef3ff;
+  color: #4169b2;
+}
+
+.owner_earning_card_icon.settled {
+  background: #eaf7ee;
+  color: #16803a;
+}
+
+.owner_earning_card > div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.owner_earning_card span {
+  color: #737d77;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.owner_earning_card strong {
+  color: #17201b;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+/* ================================
+   RECENT ORDERS
+================================ */
+
+.owner_earnings_orders {
+  margin-top: 4px;
+}
+
+.owner_earnings_section_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.owner_earnings_section_header h2 {
+  margin: 0;
+  color: #17201b;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.owner_earnings_order_list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ================================
+   ORDER CARD
+================================ */
+
+.owner_earnings_order_card {
+  padding: 16px;
+  border: 1px solid #e4e9e6;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 3px 12px rgba(20, 35, 25, 0.04);
+}
+
+.owner_earnings_order_top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 13px;
+  border-bottom: 1px solid #edf0ee;
+}
+
+.owner_earnings_order_top > div {
+  min-width: 0;
+}
+
+.owner_earnings_order_top > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.owner_earnings_order_top span:first-child {
+  color: #7b847f;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.owner_earnings_order_top strong {
+  display: block;
+  max-width: 190px;
+  overflow: hidden;
+  color: #17201b;
+  font-size: 13px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ================================
+   SETTLEMENT BADGE
+================================ */
+
+.owner_settlement_badge {
+  flex-shrink: 0;
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
+}
+
+.owner_settlement_badge.pending {
+  background: #fff5dc;
+  color: #9a6500;
+}
+
+.owner_settlement_badge.processing {
+  background: #eef3ff;
+  color: #4169b2;
+}
+
+.owner_settlement_badge.settled {
+  background: #eaf7ee;
+  color: #16803a;
+}
+
+.owner_settlement_badge.failed {
+  background: #fdecec;
+  color: #c62828;
+}
+
+/* ================================
+   ORDER DETAILS
+================================ */
+
+.owner_earnings_order_details {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+}
+
+.owner_earnings_order_details > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.owner_earnings_order_details > div:last-child {
+  align-items: flex-end;
+}
+
+.owner_earnings_order_details span {
+  color: #7b847f;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.owner_earnings_order_details strong {
+  color: #17201b;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.owner_earnings_order_details > div:last-child strong {
+  color: #16803a;
+}
+
+/* ================================
+   ORDER BOTTOM
+================================ */
+
+.owner_earnings_order_bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid #edf0ee;
+}
+
+.owner_earnings_order_bottom span {
+  color: #6f7973;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.owner_earnings_order_bottom span:first-child {
+  color: #17201b;
+  font-weight: 600;
+}
+
+/* ================================
+   EMPTY STATE
+================================ */
+
+.owner_earnings_empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+  padding: 24px;
+  border: 1px dashed #d7dfda;
+  border-radius: 16px;
+  background: #ffffff;
+  color: #7b847f;
+  text-align: center;
+}
+
+.owner_earnings_empty svg {
+  margin-bottom: 8px;
+  color: #9aa49e;
+}
+
+.owner_earnings_empty p {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* ================================
+   LOADING
+================================ */
+
+.owner_earnings_loading {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #6f7973;
+}
+
+.owner_earnings_loading p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.owner_earnings_spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid #dce9df;
+  border-top-color: #16803a;
+  border-radius: 50%;
+  animation: ownerEarningsSpin 0.8s linear infinite;
+}
+
+@keyframes ownerEarningsSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ================================
+   ERROR
+================================ */
+
+.owner_earnings_error {
+  max-width: 420px;
+  margin: 80px auto;
+  padding: 24px;
+  border: 1px solid #f0d4d4;
+  border-radius: 16px;
+  background: #fffafa;
+  text-align: center;
+}
+
+.owner_earnings_error h2 {
+  margin: 0 0 8px;
+  color: #b3261e;
+  font-size: 18px;
+}
+
+.owner_earnings_error p {
+  margin: 0;
+  color: #756b6b;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* ================================
+   TABLET / DESKTOP
+================================ */
+
+@media (min-width: 600px) {
+  .owner_earnings_page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 110px;
+  }
+
+  .owner_earnings_cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .owner_earning_card {
+    padding: 16px;
+  }
+
+  .owner_earnings_total {
+    padding: 24px;
+  }
+
+  .owner_earnings_total strong {
+    font-size: 30px;
+  }
+}
+
+/* ================================
+   LARGE DESKTOP
+================================ */
+
+@media (min-width: 1000px) {
+  .owner_earnings_page {
+    padding-top: 32px;
+  }
+
+  .owner_earnings_order_card {
+    padding: 18px;
+  }
+}
+
+/* ================================
+   REDUCED MOTION
+================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .owner_earnings_spinner {
+    animation: none;
+  }
+}

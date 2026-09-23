@@ -56,7 +56,7 @@ self.addEventListener('notificationclick', (event) => {
   } else if (screen === 'order-status' && orderId) {
     targetPath = `/delivery-status/${orderId}`;
   } else if (screen === 'delivery-orders') {
-    targetPath = '/delivery/orders';
+    targetPath = '/delivery/orders-delivery';
   }
 
   const targetUrl = new URL(targetPath, self.location.origin).href;

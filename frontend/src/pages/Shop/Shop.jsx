@@ -271,9 +271,9 @@ function Shop() {
                 <div className="product_info">
                   <h3>{product.name}</h3>
 
-                  <p>{product.unit}</p>
-
-                  <strong>₹{product.price}</strong>
+                  <strong>
+                    ₹{product.price}/{product.unit}
+                  </strong>
                 </div>
 
                 <button

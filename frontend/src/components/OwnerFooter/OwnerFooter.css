@@ -1,8 +1,8 @@
 /* =========================================================
-   RMA — MOBILE BOTTOM NAVIGATION
+   RMA — OWNER MOBILE BOTTOM NAVIGATION
    ========================================================= */
 
-.bottom_nav {
+.owner_bottom_nav {
   position: fixed;
   right: 0;
   bottom: 0;
@@ -32,7 +32,7 @@
    NAV ITEM
    ========================================================= */
 
-.nav_item {
+.owner_nav_item {
   position: relative;
 
   display: flex;
@@ -78,7 +78,7 @@
    NAV ICON
    ========================================================= */
 
-.nav_icon {
+.owner_nav_icon {
   width: 21px;
   height: 21px;
 
@@ -87,70 +87,20 @@
   stroke-width: 2;
 }
 
-.nav_icon_wrapper {
-  position: relative;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 21px;
-  height: 21px;
-}
-
-/* =========================================================
-   CART BADGE
-   ========================================================= */
-
-.cart_badge {
-  position: absolute;
-
-  top: -10px;
-  right: -8px;
-
-  min-width: 15px;
-  height: 15px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 2px 5px;
-
-  border-radius: 999px;
-
-  background: #16803a;
-  color: #ffffff;
-
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 1;
-
-  box-sizing: border-box;
-}
-
-.nav_item.active .nav_icon {
-  stroke-width: 2.4;
-}
-
-.nav_item:focus {
-  outline: none;
-}
-
-.nav_item:focus-visible {
-  outline: 3px solid rgba(22, 128, 58, 0.2);
-  outline-offset: -2px;
-}
-
 /* =========================================================
    ACTIVE
    ========================================================= */
 
-.nav_item.active {
+.owner_nav_item.active {
+  background: #eaf7ee;
   color: #16803a;
 }
 
-.nav_item.active::before {
+.owner_nav_item.active .owner_nav_icon {
+  stroke-width: 2.4;
+}
+
+.owner_nav_item.active::before {
   position: absolute;
   top: -6px;
   left: 50%;
@@ -171,16 +121,20 @@
    HOVER
    ========================================================= */
 
-.nav_item:hover {
+.owner_nav_item:hover {
+  background: #f3f8f4;
   color: #16803a;
 }
 
+.owner_nav_item.active:hover {
+  background: #e4f4e9;
+}
 
 /* =========================================================
    PRESS EFFECT
    ========================================================= */
 
-.nav_item:active {
+.owner_nav_item:active {
   transform: scale(0.95);
 }
 
@@ -188,7 +142,7 @@
    TEXT
    ========================================================= */
 
-.nav_item > span {
+.owner_nav_item > span {
   display: block;
 
   max-width: 100%;
@@ -204,7 +158,11 @@
    FOCUS
    ========================================================= */
 
-.nav_item:focus-visible {
+.owner_nav_item:focus {
+  outline: none;
+}
+
+.owner_nav_item:focus-visible {
   outline: 3px solid rgba(22, 128, 58, 0.2);
   outline-offset: -2px;
 }
@@ -213,19 +171,13 @@
    DESKTOP
    ========================================================= */
 
-/*
-   Footer is primarily designed for mobile.
-   On larger screens it remains usable but doesn't become
-   unnecessarily large.
-*/
-
 @media (min-width: 768px) {
-  .bottom_nav {
+  .owner_bottom_nav {
     height: 60px;
     padding: 5px 12px;
   }
 
-  .nav_item {
+  .owner_nav_item {
     flex: 0 1 150px;
 
     font-size: 12px;
@@ -237,12 +189,12 @@
    ========================================================= */
 
 @media (max-width: 400px) {
-  .bottom_nav {
+  .owner_bottom_nav {
     height: 60px;
     padding: 5px 3px max(5px, env(safe-area-inset-bottom));
   }
 
-  .nav_item {
+  .owner_nav_item {
     min-height: 46px;
 
     padding: 5px 2px;
@@ -250,19 +202,17 @@
     border-radius: 10px;
 
     font-size: 10px;
+
+    gap: 2px;
   }
 
-  .nav_item.active::before {
+  .owner_nav_item.active::before {
     width: 18px;
   }
 
-  .nav_icon {
+  .owner_nav_icon {
     width: 20px;
     height: 20px;
-  }
-
-  .nav_item {
-    gap: 2px;
   }
 }
 
@@ -271,11 +221,11 @@
    ========================================================= */
 
 @media (max-width: 340px) {
-  .nav_item {
+  .owner_nav_item {
     font-size: 9px;
   }
 
-  .nav_icon {
+  .owner_nav_icon {
     width: 19px;
     height: 19px;
   }
@@ -286,24 +236,7 @@
    ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
-  .nav_item {
+  .owner_nav_item {
     transition: none;
   }
-}
-
-.notification_badge {
-  position: absolute;
-  top: -6px;
-  right: -8px;
-  min-width: 17px;
-  height: 17px;
-  padding: 0 4px;
-  border-radius: 50%;
-  background: #d32f2f;
-  color: #fff;
-  font-size: 10px;
-  font-weight: 700;
-  line-height: 17px;
-  text-align: center;
-  box-sizing: border-box;
 }

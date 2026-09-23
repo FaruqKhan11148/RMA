@@ -13,10 +13,16 @@ import OwnerProtectedRoute from './pages/Owner/OwnerProtectedRoute/OwnerProtecte
 import ScrollToTop from './components/ScrollToTop/ScrollToTop';
 import DeliveryPartnerRegister from './pages/DeliveryPartner/DeliveryPartnerRegister/DeliveryPartnerRegister';
 import RMADeliveryLogin from './pages/delivery/RMADeliveryLogin/RMADeliveryLogin';
+import DeliveryDashboard from './pages/DeliveryPartner/Dashboard/DeliveryDashboard';
+import DeliveryOrdersDelivery from './pages/DeliveryPartner/Orders/DeliveryOrders';
+import DeliveryEarnings from './pages/DeliveryPartner/Earnings/DeliveryEarnings';
+import DeliveryProfile from './pages/DeliveryPartner/Profile/DeliveryProfile';
+import DeliveryHistory from './pages/DeliveryPartner/History/DeliveryHistory';
 
 import Navbar from './components/Navbar/Navbar';
 import SiteFooter from './components/SiteFooter/SiteFooter';
 import Footer from './components/Footer/Footer';
+import OwnerFooter from './components/OwnerFooter/OwnerFooter';
 
 import Home from './pages/Home/Home';
 import FindShop from './pages/FindShop/FindShop';
@@ -44,6 +50,7 @@ import DeliveryAvailable from './pages/Owner/OwnerSettings/Delivery/DeliveryAvai
 import PickupAvailable from './pages/Owner/OwnerSettings/Delivery/PickupAvailable';
 import DeliverySettings from './pages/Owner/OwnerSettings/Delivery/DeliverySettings';
 import DeliveryPerson from './pages/Owner/OwnerSettings/Delivery/DeliveryPerson';
+import DeliveryFooter from './pages/DeliveryPartner/DeliveryFooter/DeliveryFooter';
 
 import PaymentDetails from './pages/Owner/OwnerSettings/Payment/PaymentDetails';
 
@@ -69,6 +76,9 @@ import Address from './pages/Owner/OwnerSettings/Shop/Address';
 
 import DeliveryOrders from './pages/delivery/DeliveryOrders/DeliveryOrders';
 import ScanQR from './pages/ScanQR/ScanQR';
+
+import OwnerEarnings from './pages/Owner/OwnerEarnings/OwnerEarnings';
+import OwnerShop from './pages/Owner/OwnerShop/OwnerShop';
 
 // ADMIN
 import AdminLogin from './pages/Admin/AdminLogin/AdminLogin';
@@ -111,9 +121,12 @@ function AppLayout() {
   useEffect(() => {
     const checkCustomerLogin = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/customers/me', {
-          credentials: 'include',
-        });
+        const response = await fetch(
+          'https://rma-backend-bo4a.onrender.com/api/customers/me',
+          {
+            credentials: 'include',
+          },
+        );
 
         if (response.ok) {
           setCustomerLoggedIn(true);
@@ -196,14 +209,43 @@ function AppLayout() {
     };
   }, [customerLoggedIn]);
 
-  const hideCustomerFooter =
-    location.pathname.startsWith('/owner/') ||
-    location.pathname.startsWith('/admin/') ||
-    location.pathname.startsWith('/delivery/') ||
-    location.pathname.startsWith('/delivery-partner/') ||
-    (location.pathname === '/profile' &&
-      (profileRole === 'owner' || profileRole === 'delivery'));
+  const isOwnerRoute =
+    location.pathname === '/owner/dashboard' ||
+    location.pathname === '/owner/orders' ||
+    location.pathname === '/owner/earnings' ||
+    location.pathname === '/owner/offers' ||
+    location.pathname.startsWith('/owner/settings/');
 
+  const isDeliveryRoute =
+    location.pathname.startsWith('/delivery/') ||
+    location.pathname.startsWith('/delivery-partner/');
+
+  const isAdminRoute = location.pathname.startsWith('/admin/');
+
+  const hasDeliverySession =
+    Boolean(sessionStorage.getItem('delivery_token')) &&
+    Boolean(sessionStorage.getItem('delivery_person'));
+
+  const showOwnerFooter =
+    !isAdminRoute &&
+    !isDeliveryRoute &&
+    !hasDeliverySession &&
+    (isOwnerRoute || profileRole === 'owner');
+
+  const showDeliveryFooter =
+    !isAdminRoute &&
+    (isDeliveryRoute ||
+      (hasDeliverySession &&
+        (location.pathname === '/profile' ||
+          location.pathname === '/notifications')));
+
+  const showCustomerFooter =
+    !isAdminRoute &&
+    !isDeliveryRoute &&
+    !hasDeliverySession &&
+    !isOwnerRoute &&
+    profileRole !== 'owner' &&
+    profileRole !== 'delivery';
   return (
     <>
       <ScrollToTop />
@@ -256,10 +298,10 @@ function AppLayout() {
 
           <Route element={<OwnerProtectedRoute />}>
             <Route path="/owner/dashboard" element={<OwnerDashboard />} />
-
             <Route path="/owner/orders" element={<OwnerOrders />} />
-
+            <Route path="/owner/earnings" element={<OwnerEarnings />} />
             <Route path="/owner/offers" element={<Offers />} />
+            <Route path="/owner/shop" element={<OwnerShop />} />
 
             {/* ---------- ACCOUNT SETTINGS ---------- */}
 
@@ -354,7 +396,6 @@ function AppLayout() {
 
           {/* ==================== DELIVERY ROUTES ==================== */}
 
-          <Route path="/delivery/orders" element={<DeliveryOrders />} />
           <Route
             path="/delivery-partner/register"
             element={<DeliveryPartnerRegister />}
@@ -362,6 +403,23 @@ function AppLayout() {
 
           <Route path="/delivery/rma-login" element={<RMADeliveryLogin />} />
 
+          <Route
+            path="/delivery-partner/login"
+            element={<DeliveryOrdersDelivery />}
+          />
+
+          <Route path="/delivery/dashboard" element={<DeliveryDashboard />} />
+
+          <Route
+            path="/delivery/orders-delivery"
+            element={<DeliveryOrdersDelivery />}
+          />
+
+          <Route path="/delivery/earnings" element={<DeliveryEarnings />} />
+
+          <Route path="/delivery/profile" element={<DeliveryProfile />} />
+
+          <Route path="/delivery/history" element={<DeliveryHistory />} />
           {/* ==================== PAYMENT ==================== */}
 
           <Route path="/payment/:orderId" element={<Payment />} />
@@ -437,7 +495,11 @@ function AppLayout() {
 
       <SiteFooter />
 
-      {!hideCustomerFooter && <Footer />}
+      {showOwnerFooter && <OwnerFooter />}
+
+      {showDeliveryFooter && <DeliveryFooter />}
+
+      {showCustomerFooter && <Footer />}
     </>
   );
 }
