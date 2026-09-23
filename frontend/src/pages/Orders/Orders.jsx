@@ -26,7 +26,7 @@ function Orders() {
         console.log('[Orders] Checking customer login...');
 
         const meResponse = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/customers/me',
+          'http://localhost:5000/api/customers/me',
           {
             credentials: 'include',
           },
@@ -40,7 +40,7 @@ function Orders() {
           console.log('[Orders] Calling /api/customers/orders');
 
           const ordersResponse = await fetch(
-            'https://rma-backend-bo4a.onrender.com/api/customers/orders',
+            'http://localhost:5000/api/customers/orders',
             {
               credentials: 'include',
             },
@@ -178,7 +178,12 @@ function Orders() {
 
                 <span>Delivery</span>
 
-                <strong>₹{Number(order.totalPrice || 0).toFixed(2)}</strong>
+                <strong>
+                  ₹
+                  {Number(
+                    order.customerPayableAmount ?? order.totalPrice ?? 0,
+                  ).toFixed(2)}
+                </strong>
               </div>
 
               <div className="order_card_hint">Tap to view order details</div>
@@ -257,11 +262,15 @@ function Orders() {
                 <span>Total</span>
 
                 <strong>
-                  ₹{Number(selectedOrder.totalPrice || 0).toFixed(2)}
+                  ₹
+                  {Number(
+                    selectedOrder.customerPayableAmount ??
+                      selectedOrder.totalPrice ??
+                      0,
+                  ).toFixed(2)}
                 </strong>
               </div>
             </div>
-
             <button
               type="button"
               className="order_sheet_button"
