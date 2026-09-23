@@ -2,7 +2,6 @@ import './OwnerOrders.css';
 
 import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import OrderLocationMap from '../../../components/map/OrderLocationMap';
 
 function OwnerOrders() {
@@ -12,6 +11,7 @@ function OwnerOrders() {
   const [activeFilter, setActiveFilter] = useState('All');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   const [showDeliveryModal, setShowDeliveryModal] = useState(false);
   const [selectedDeliveryOrder, setSelectedDeliveryOrder] = useState(null);
@@ -287,228 +287,554 @@ function OwnerOrders() {
 
   return (
     <main className="owner_orders">
-      {/* HEADER */}
-
-      <section className="owner_orders_header">
-        <button
-          className="owner_orders_back"
-          onClick={() => navigate('/owner/dashboard')}
-        >
-          ← Back
-        </button>
-
-        <div>
-          <h1>Manage Orders</h1>
-
-          <p>View and manage customer orders.</p>
-        </div>
-      </section>
-
-      {/* FILTERS */}
-
-      <section className="owner_order_filters">
-        <h2>Orders</h2>
-
-        <div className="owner_filter_buttons">
-          {filters.map((filter) => (
+      {selectedOrder ? (
+        /* =====================================================
+     ORDER DETAILS VIEW
+     ===================================================== */
+        <section className="owner_order_details">
+          <div className="owner_order_details_header">
             <button
-              key={filter}
-              className={
-                activeFilter === filter
-                  ? 'owner_filter_button active'
-                  : 'owner_filter_button'
-              }
-              onClick={() => setActiveFilter(filter)}
+              type="button"
+              className="owner_order_details_back"
+              onClick={() => setSelectedOrder(null)}
             >
-              {filter}
-
-              <span>{getCount(filter)}</span>
+              ← Back to Orders
             </button>
-          ))}
-        </div>
-      </section>
 
-      {/* ORDERS */}
-
-      <section className="owner_orders_list">
-        {filteredOrders.length === 0 ? (
-          <div className="owner_no_orders">
-            <h2>No {activeFilter.toLowerCase()} orders</h2>
-
-            <p>There are currently no orders in this category.</p>
+            <div>
+              <h1>Order Details</h1>
+              <p>#{selectedOrder.orderId}</p>
+            </div>
           </div>
-        ) : (
-          filteredOrders.map((order) => (
-            <div className="owner_order_card" key={order.orderId}>
-              {/* TOP */}
 
-              <div className="owner_order_top">
-                <strong>#{order.orderId}</strong>
+          {/* STATUS */}
 
-                <span
-                  className={`order_status ${order.status
-                    .toLowerCase()
-                    .replace(/([a-z])([A-Z])/g, '$1-$2')}`}
-                >
-                  {order.status}
-                </span>
+          <section className="owner_order_details_section">
+            <div className="owner_order_details_status_row">
+              <strong>Order Status</strong>
+
+              <span
+                className={`order_status ${selectedOrder.status
+                  .toLowerCase()
+                  .replace(/([a-z])([A-Z])/g, '$1-$2')}`}
+              >
+                {selectedOrder.status}
+              </span>
+            </div>
+          </section>
+
+          {/* CUSTOMER */}
+
+          <section className="owner_order_details_section">
+            <h2>Customer</h2>
+
+            <div className="owner_order_details_rows">
+              <div>
+                <span>Name</span>
+
+                <strong>{selectedOrder.customer?.name || 'N/A'}</strong>
               </div>
 
-              {/* CUSTOMER */}
+              <div>
+                <span>Mobile</span>
 
-              <div className="owner_order_info">
-                <h2>{order.customer.name}</h2>
+                <strong>{selectedOrder.customer?.phone || 'N/A'}</strong>
+              </div>
+            </div>
+          </section>
 
-                <p>Mobile: {order.customer.phone}</p>
+          {/* ORDER INFORMATION */}
 
-                {order.orderType === 'delivery' && (
-                  <>
-                    <p>Address: {order.customer.address}</p>
+          <section className="owner_order_details_section">
+            <h2>Order Information</h2>
 
-                    {order.deliveryLocation && (
-                      <OrderLocationMap
-                        latitude={order.deliveryLocation.latitude}
-                        longitude={order.deliveryLocation.longitude}
-                      />
-                    )}
-                  </>
-                )}
+            <div className="owner_order_details_rows">
+              <div>
+                <span>Order Type</span>
 
-                <p>
-                  Order Type:{' '}
-                  {order.orderType === 'delivery' ? 'Delivery' : 'Pickup'}
-                </p>
-
-                {/* ITEMS */}
-
-                <div className="owner_order_items">
-                  {order.items.map((item) => (
-                    <div className="owner_order_item" key={item.productId}>
-                      <span>
-                        {item.productName} × {item.quantity} {item.unit}
-                      </span>
-
-                      <strong>₹{item.price * item.quantity}</strong>
-                    </div>
-                  ))}
-                </div>
-
-                <strong className="owner_order_total">
-                  ₹{order.totalPrice}
+                <strong>
+                  {selectedOrder.orderType === 'delivery'
+                    ? 'Delivery'
+                    : 'Pickup'}
                 </strong>
-
-                {order.orderType === 'delivery' && (
-                  <p className="owner_order_distance">
-                    Distance: {Number(order.deliveryDistance).toFixed(4)} KM
-                  </p>
-                )}
               </div>
 
-              {/* ACTIONS */}
+              {selectedOrder.orderType === 'delivery' &&
+                selectedOrder.deliveryDistance != null && (
+                  <div>
+                    <span>Distance</span>
 
-              <div className="owner_order_actions">
-                {/* PENDING */}
-
-                {order.status === 'Pending' && (
-                  <>
-                    <button
-                      className="reject_order_button"
-                      onClick={() =>
-                        handleStatusChange(order.orderId, 'Rejected')
-                      }
-                    >
-                      Reject
-                    </button>
-
-                    <button
-                      className="accept_order_button"
-                      onClick={() =>
-                        handleStatusChange(order.orderId, 'Accepted')
-                      }
-                    >
-                      Accept
-                    </button>
-                  </>
-                )}
-
-                {/* ACCEPTED */}
-
-                {order.status === 'Accepted' && (
-                  <button
-                    className="accept_order_button"
-                    onClick={() =>
-                      handleStatusChange(order.orderId, 'Preparing')
-                    }
-                  >
-                    Start Preparing
-                  </button>
-                )}
-
-                {/* PREPARING */}
-
-                {order.status === 'Preparing' && (
-                  <button
-                    className="accept_order_button"
-                    onClick={() => handleStatusChange(order.orderId, 'Ready')}
-                  >
-                    Mark Ready
-                  </button>
-                )}
-
-                {/* READY */}
-
-                {order.status === 'Ready' && (
-                  <>
-                    {order.orderType === 'delivery' ? (
-                      <button
-                        className="accept_order_button"
-                        onClick={() => openDeliveryAssignment(order)}
-                      >
-                        Send for Delivery
-                      </button>
-                    ) : (
-                      <button
-                        className="accept_order_button"
-                        onClick={() =>
-                          handleStatusChange(order.orderId, 'Completed')
-                        }
-                      >
-                        Complete Order
-                      </button>
-                    )}
-                  </>
-                )}
-
-                {/* OUT FOR DELIVERY */}
-
-                {order.status === 'OutForDelivery' && (
-                  <div className="order_delivery_message">
-                    <strong>Out for delivery</strong>
-
-                    <p>Delivery partner has received this order.</p>
-
-                    <p>
-                      Order will be completed after delivery OTP verification.
-                    </p>
+                    <strong>
+                      {Number(selectedOrder.deliveryDistance).toFixed(2)} KM
+                    </strong>
                   </div>
                 )}
 
-                {/* COMPLETED */}
+              <div>
+                <span>Placed On</span>
 
-                {order.status === 'Completed' && (
-                  <p className="order_completed_message">✓ Order completed</p>
-                )}
-
-                {/* REJECTED */}
-
-                {order.status === 'Rejected' && (
-                  <p className="order_rejected_message">Order rejected</p>
-                )}
+                <strong>
+                  {selectedOrder.createdAt
+                    ? new Date(selectedOrder.createdAt).toLocaleString()
+                    : 'N/A'}
+                </strong>
               </div>
             </div>
-          ))
-        )}
-      </section>
+          </section>
+
+          {/* DELIVERY */}
+
+          {selectedOrder.orderType === 'delivery' && (
+            <section className="owner_order_details_section">
+              <h2>Delivery</h2>
+
+              <div className="owner_order_address">
+                <span>Delivery Address</span>
+
+                <strong>
+                  {selectedOrder.deliveryLocation?.address ||
+                    selectedOrder.customer?.address ||
+                    'Address not available'}
+                </strong>
+              </div>
+
+              {selectedOrder.deliveryLocation?.latitude != null &&
+                selectedOrder.deliveryLocation?.longitude != null && (
+                  <div className="owner_order_details_map">
+                    <OrderLocationMap
+                      latitude={selectedOrder.deliveryLocation.latitude}
+                      longitude={selectedOrder.deliveryLocation.longitude}
+                    />
+                  </div>
+                )}
+            </section>
+          )}
+
+          {/* ITEMS */}
+
+          <section className="owner_order_details_section">
+            <h2>Items</h2>
+
+            <div className="owner_order_details_items">
+              {selectedOrder.items?.map((item, index) => (
+                <div
+                  className="owner_order_details_item"
+                  key={`${item.productId || item.productName}-${index}`}
+                >
+                  <div>
+                    <strong>{item.productName}</strong>
+
+                    <span>
+                      {item.quantity} {item.unit}
+                    </span>
+                  </div>
+
+                  <strong>
+                    ₹
+                    {(
+                      Number(item.price || 0) * Number(item.quantity || 0)
+                    ).toFixed(2)}
+                  </strong>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* PRICE DETAILS */}
+
+          <section className="owner_order_details_section">
+            <h2>Price Details</h2>
+
+            <div className="owner_order_price_breakdown">
+              <div>
+                <span>Subtotal</span>
+
+                <strong>
+                  ₹{Number(selectedOrder.subtotal || 0).toFixed(2)}
+                </strong>
+              </div>
+
+              {selectedOrder.orderType === 'delivery' && (
+                <div>
+                  <span>Delivery Charge</span>
+
+                  <strong>
+                    ₹{Number(selectedOrder.deliveryCharge || 0).toFixed(2)}
+                  </strong>
+                </div>
+              )}
+
+              <div>
+                <span>RMA Fee</span>
+
+                <strong>₹{Number(selectedOrder.rmaFee || 0).toFixed(2)}</strong>
+              </div>
+
+              <div className="owner_order_price_total">
+                <span>Total</span>
+
+                <strong>
+                  ₹{Number(selectedOrder.totalPrice || 0).toFixed(2)}
+                </strong>
+              </div>
+            </div>
+          </section>
+
+          {/* PAYMENT */}
+
+          <section className="owner_order_details_section">
+            <h2>Payment</h2>
+
+            <div className="owner_order_details_rows">
+              <div>
+                <span>Payment Status</span>
+
+                <strong>{selectedOrder.paymentStatus || 'N/A'}</strong>
+              </div>
+
+              <div>
+                <span>Payment Method</span>
+
+                <strong>
+                  {selectedOrder.onlinePaymentMethod ||
+                    selectedOrder.paymentMethod ||
+                    'N/A'}
+                </strong>
+              </div>
+
+              {selectedOrder.paymentId && (
+                <div>
+                  <span>Payment ID</span>
+
+                  <strong>{selectedOrder.paymentId}</strong>
+                </div>
+              )}
+            </div>
+          </section>
+
+          {/* DELIVERY PARTNER */}
+
+          {selectedOrder.orderType === 'delivery' && (
+            <section className="owner_order_details_section">
+              <h2>Delivery Partner</h2>
+
+              {selectedOrder.deliveryPersonId ? (
+                <div className="owner_order_delivery_details">
+                  <div>
+                    <span>Partner Type</span>
+
+                    <strong>
+                      {selectedOrder.deliveryAssignmentType === 'RMA'
+                        ? 'RMA Delivery Partner'
+                        : 'Shop Delivery Partner'}
+                    </strong>
+                  </div>
+
+                  <div>
+                    <span>Partner ID</span>
+
+                    <strong>
+                      {typeof selectedOrder.deliveryPersonId === 'object'
+                        ? selectedOrder.deliveryPersonId._id
+                        : selectedOrder.deliveryPersonId}
+                    </strong>
+                  </div>
+
+                  {typeof selectedOrder.deliveryPersonId === 'object' &&
+                    selectedOrder.deliveryPersonId.name && (
+                      <div>
+                        <span>Name</span>
+
+                        <strong>{selectedOrder.deliveryPersonId.name}</strong>
+                      </div>
+                    )}
+
+                  {typeof selectedOrder.deliveryPersonId === 'object' &&
+                    selectedOrder.deliveryPersonId.phone && (
+                      <div>
+                        <span>Mobile</span>
+
+                        <strong>{selectedOrder.deliveryPersonId.phone}</strong>
+                      </div>
+                    )}
+                </div>
+              ) : (
+                <div className="owner_order_delivery_unassigned">
+                  No delivery partner assigned yet.
+                </div>
+              )}
+            </section>
+          )}
+
+          {/* TIMELINE */}
+
+          <section className="owner_order_details_section">
+            <h2>Order Timeline</h2>
+
+            <div className="owner_order_timeline">
+              <div>
+                <span>Order Created</span>
+
+                <strong>
+                  {selectedOrder.createdAt
+                    ? new Date(selectedOrder.createdAt).toLocaleString()
+                    : 'N/A'}
+                </strong>
+              </div>
+
+              {selectedOrder.completedAt && (
+                <div>
+                  <span>Completed</span>
+
+                  <strong>
+                    {new Date(selectedOrder.completedAt).toLocaleString()}
+                  </strong>
+                </div>
+              )}
+            </div>
+          </section>
+        </section>
+      ) : (
+        /* =====================================================
+     ORDERS LIST VIEW
+     ===================================================== */
+        <>
+          {/* HEADER */}
+
+          <section className="owner_orders_header">
+            <button
+              className="owner_orders_back"
+              onClick={() => navigate('/owner/dashboard')}
+            >
+              ← Back
+            </button>
+
+            <div>
+              <h1>Manage Orders</h1>
+
+              <p>View and manage customer orders.</p>
+            </div>
+          </section>
+
+          {/* FILTERS */}
+
+          <section className="owner_order_filters">
+            <h2>Orders</h2>
+
+            <div className="owner_filter_buttons">
+              {filters.map((filter) => (
+                <button
+                  key={filter}
+                  className={
+                    activeFilter === filter
+                      ? 'owner_filter_button active'
+                      : 'owner_filter_button'
+                  }
+                  onClick={() => setActiveFilter(filter)}
+                >
+                  {filter}
+
+                  <span>{getCount(filter)}</span>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          {/* ORDERS */}
+
+          <section className="owner_orders_list">
+            {filteredOrders.length === 0 ? (
+              <div className="owner_no_orders">
+                <h2>No {activeFilter.toLowerCase()} orders</h2>
+
+                <p>There are currently no orders in this category.</p>
+              </div>
+            ) : (
+              filteredOrders.map((order) => (
+                <div
+                  className="owner_order_card"
+                  key={order.orderId}
+                  onClick={() => setSelectedOrder(order)}
+                >
+                  {/* TOP */}
+
+                  <div className="owner_order_top">
+                    <strong>#{order.orderId}</strong>
+
+                    <span
+                      className={`order_status ${order.status
+                        .toLowerCase()
+                        .replace(/([a-z])([A-Z])/g, '$1-$2')}`}
+                    >
+                      {order.status}
+                    </span>
+                  </div>
+
+                  {/* CUSTOMER */}
+
+                  <div className="owner_order_customer">
+                    <h2>{order.customer.name}</h2>
+
+                    <p>{order.customer.phone}</p>
+                  </div>
+
+                  {/* SUMMARY */}
+
+                  <div className="owner_order_summary">
+                    <div>
+                      <span>Items</span>
+
+                      <strong>
+                        {order.items.reduce(
+                          (total, item) => total + Number(item.quantity || 0),
+                          0,
+                        )}
+                      </strong>
+                    </div>
+
+                    <div>
+                      <span>Total</span>
+
+                      <strong>
+                        ₹{Number(order.totalPrice || 0).toFixed(2)}
+                      </strong>
+                    </div>
+                  </div>
+
+                  {/* ORDER TYPE */}
+
+                  <div className="owner_order_meta">
+                    <span>
+                      {order.orderType === 'delivery' ? 'Delivery' : 'Pickup'}
+                    </span>
+
+                    {order.orderType === 'delivery' &&
+                      order.deliveryDistance != null && (
+                        <span>
+                          {Number(order.deliveryDistance).toFixed(2)} KM
+                        </span>
+                      )}
+                  </div>
+
+                  {/* DELIVERY PARTNER */}
+
+                  {order.orderType === 'delivery' &&
+                    order.deliveryAssignmentType && (
+                      <div className="owner_order_delivery_partner">
+                        <span>
+                          {order.deliveryAssignmentType === 'RMA'
+                            ? 'RMA Delivery Partner'
+                            : 'Shop Delivery Partner'}
+                        </span>
+
+                        {order.deliveryPersonId && <span>Assigned</span>}
+                      </div>
+                    )}
+
+                  {/* ACTIONS */}
+
+                  <div
+                    className="owner_order_card_footer"
+                    onClick={(event) => event.stopPropagation()}
+                  >
+                    {order.status === 'Pending' && (
+                      <>
+                        <button
+                          className="reject_order_button"
+                          onClick={() =>
+                            handleStatusChange(order.orderId, 'Rejected')
+                          }
+                        >
+                          Reject
+                        </button>
+
+                        <button
+                          className="accept_order_button"
+                          onClick={() =>
+                            handleStatusChange(order.orderId, 'Accepted')
+                          }
+                        >
+                          Accept
+                        </button>
+                      </>
+                    )}
+
+                    {order.status === 'Accepted' && (
+                      <button
+                        className="accept_order_button"
+                        onClick={() =>
+                          handleStatusChange(order.orderId, 'Preparing')
+                        }
+                      >
+                        Start Preparing
+                      </button>
+                    )}
+
+                    {order.status === 'Preparing' && (
+                      <button
+                        className="accept_order_button"
+                        onClick={() =>
+                          handleStatusChange(order.orderId, 'Ready')
+                        }
+                      >
+                        Mark Ready
+                      </button>
+                    )}
+
+                    {order.status === 'Ready' && (
+                      <>
+                        {order.orderType === 'delivery' ? (
+                          <button
+                            className="accept_order_button"
+                            onClick={() => openDeliveryAssignment(order)}
+                          >
+                            Send for Delivery
+                          </button>
+                        ) : (
+                          <button
+                            className="accept_order_button"
+                            onClick={() =>
+                              handleStatusChange(order.orderId, 'Completed')
+                            }
+                          >
+                            Complete Order
+                          </button>
+                        )}
+                      </>
+                    )}
+
+                    {order.status === 'OutForDelivery' && (
+                      <span className="order_delivery_message">
+                        Out for delivery
+                      </span>
+                    )}
+
+                    {order.status === 'Completed' && (
+                      <span className="order_completed_message">
+                        ✓ Completed
+                      </span>
+                    )}
+
+                    {order.status === 'Rejected' && (
+                      <span className="order_rejected_message">
+                        Order rejected
+                      </span>
+                    )}
+
+                    <button
+                      type="button"
+                      className="owner_order_view_button"
+                      onClick={() => setSelectedOrder(order)}
+                    >
+                      View Details →
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </section>
+        </>
+      )}
       {showDeliveryModal && (
         <div
           className="delivery_assignment_overlay"
