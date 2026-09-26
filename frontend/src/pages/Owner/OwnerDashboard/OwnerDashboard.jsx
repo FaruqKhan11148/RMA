@@ -2,7 +2,27 @@ import './OwnerDashboard.css';
 
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Settings } from 'lucide-react';
+
+import OwnerDashboardHeader from './components/OwnerDashboardHeader';
+import OwnerStats from './components/OwnerStats';
+import ManageOrdersCard from './components/ManageOrdersCard';
+import NewOrders from './components/NewOrders';
+import RecentOrders from './components/RecentOrders';
+import RejectOrderModal from './components/RejectOrderModal';
+
+import {
+  fetchOwnerOrders,
+  fetchOwnerProfile,
+  updateOrderStatusApi,
+  rejectOrderApi,
+} from './utils/ownerDashboardApi';
+
+import {
+  getTodayOrders,
+  getPendingOrders,
+  getCompletedOrders,
+  getTotalRevenue,
+} from './utils/ownerDashboardHelpers';
 
 import {
   requestOwnerNotificationPermission,
@@ -34,32 +54,23 @@ function OwnerDashboard() {
       return;
     }
 
-    const fetchOrders = async () => {
+    const loadOrders = async () => {
       try {
         setLoading(true);
         setError('');
 
-        const response = await fetch(
-          `https://rma-backend-bo4a.onrender.com/api/orders/owner/${shopOwner.id}`,
-        );
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          setError(data.message || 'Failed to load orders');
-          return;
-        }
+        const data = await fetchOwnerOrders(shopOwner.id);
 
         setOrders(data.orders);
       } catch (error) {
         console.error('Fetch owner orders failed:', error);
-        setError('Unable to connect to server');
+        setError(error.message || 'Unable to connect to server');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchOrders();
+    loadOrders();
   }, [shopOwner, navigate]);
 
   useEffect(() => {
@@ -76,23 +87,14 @@ function OwnerDashboard() {
 
     const fetchOwner = async () => {
       try {
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/owners/me',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
+        const owner = await fetchOwnerProfile(token);
 
-        const data = await response.json();
-
-        if (!response.ok) {
+        if (!owner) {
           return;
         }
 
-        setShopOwner(data.owner);
-        localStorage.setItem('rma_owner', JSON.stringify(data.owner));
+        setShopOwner(owner);
+        localStorage.setItem('rma_owner', JSON.stringify(owner));
       } catch (error) {
         console.error('Fetch owner status failed:', error);
       }
@@ -225,27 +227,11 @@ function OwnerDashboard() {
     try {
       setRejectingOrder(true);
 
-      const response = await fetch(
-        `https://rma-backend-bo4a.onrender.com/api/orders/${selectedRejectOrder.orderId}/status`,
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            status: 'Rejected',
-            rejectionReason,
-            rejectionDescription: rejectionDescription.trim() || null,
-          }),
-        },
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        alert(data.message || 'Failed to reject order');
-        return;
-      }
+      const data = await rejectOrderApi({
+        orderId: selectedRejectOrder.orderId,
+        rejectionReason,
+        rejectionDescription,
+      });
 
       setOrders((currentOrders) =>
         currentOrders.map((order) =>
@@ -260,7 +246,7 @@ function OwnerDashboard() {
     } catch (error) {
       console.error('Reject order failed:', error);
 
-      alert('Unable to connect to server');
+      alert(error.message || 'Unable to connect to server');
     } finally {
       setRejectingOrder(false);
     }
@@ -268,27 +254,8 @@ function OwnerDashboard() {
 
   const updateOrderStatus = async (orderId, status) => {
     try {
-      const response = await fetch(
-        `https://rma-backend-bo4a.onrender.com/api/orders/${orderId}/status`,
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            status,
-          }),
-        },
-      );
+      const data = await updateOrderStatusApi(orderId, status);
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        alert(data.message || 'Failed to update order');
-        return;
-      }
-
-      // Update dashboard immediately
       setOrders((currentOrders) =>
         currentOrders.map((order) =>
           order.orderId === orderId
@@ -304,315 +271,51 @@ function OwnerDashboard() {
     } catch (error) {
       console.error('Update order status failed:', error);
 
-      alert('Unable to connect to server');
+      alert(error.message || 'Unable to connect to server');
     }
   };
 
-  const todayOrders = orders.filter((order) => {
-    const orderDate = new Date(order.createdAt);
-    const today = new Date();
+  const todayOrders = getTodayOrders(orders);
 
-    return (
-      orderDate.getDate() === today.getDate() &&
-      orderDate.getMonth() === today.getMonth() &&
-      orderDate.getFullYear() === today.getFullYear()
-    );
-  });
+  const pendingOrders = getPendingOrders(todayOrders);
 
-  const pendingOrders = todayOrders.filter(
-    (order) => order.status === 'Pending',
-  );
+  const completedOrders = getCompletedOrders(todayOrders);
 
-  const completedOrders = todayOrders.filter(
-    (order) => order.status === 'Completed',
-  );
-
-  const totalRevenue = completedOrders.reduce(
-    (total, order) => total + order.totalPrice,
-    0,
-  );
+  const totalRevenue = getTotalRevenue(completedOrders);
 
   return (
     <main className="owner_dashboard">
-      {/* HEADER */}
+      <OwnerDashboardHeader shopOwner={shopOwner} navigate={navigate} />
 
-      <section className="owner_dashboard_header">
-        <div>
-          <p>Welcome back,</p>
-          <h1>{shopOwner.ownerName}</h1>
-          <span>{shopOwner.shopName}</span>
-        </div>
+      <OwnerStats
+        todayOrders={todayOrders}
+        pendingOrders={pendingOrders}
+        completedOrders={completedOrders}
+        totalRevenue={totalRevenue}
+      />
 
-        <div className="owner_header_actions">
-          <button
-            type="button"
-            className="owner_settings_button"
-            onClick={() => navigate('/owner/settings/account')}
-            aria-label="Settings"
-            title="Settings"
-          >
-            <Settings size={20} />
-          </button>
-        </div>
-      </section>
+      <ManageOrdersCard navigate={navigate} />
 
-      {/* TODAY'S SUMMARY */}
+      <NewOrders
+        pendingOrders={pendingOrders}
+        openRejectModal={openRejectModal}
+        updateOrderStatus={updateOrderStatus}
+      />
 
-      <section className="owner_stats">
-        <div className="owner_stat_card">
-          <span>Today's Orders</span>
-          <strong>{todayOrders.length}</strong>
-        </div>
-
-        <div className="owner_stat_card">
-          <span>Pending</span>
-          <strong>{pendingOrders.length}</strong>
-        </div>
-
-        <div className="owner_stat_card">
-          <span>Completed</span>
-          <strong>{completedOrders.length}</strong>
-        </div>
-
-        <div className="owner_stat_card">
-          <span>Today's Revenue</span>
-          <strong>₹{totalRevenue}</strong>
-        </div>
-      </section>
-
-      {/* MANAGE ALL ORDERS */}
-
-      <section className="manage_orders_section">
-        <button
-          className="manage_orders_card"
-          onClick={() => navigate('/owner/orders')}
-        >
-          <div className="manage_orders_icon">📦</div>
-
-          <div className="manage_orders_content">
-            <strong>Manage All Orders</strong>
-
-            <span>
-              View and update pending, accepted, preparing, ready and completed
-              orders.
-            </span>
-          </div>
-
-          <div className="manage_orders_arrow">→</div>
-        </button>
-      </section>
-
-      {/* NEW ORDERS */}
-
-      <section className="owner_orders_section">
-        <div className="owner_section_header">
-          <div>
-            <h2>New Orders</h2>
-
-            <span>
-              {pendingOrders.length === 0
-                ? 'No orders waiting'
-                : `${pendingOrders.length} order${
-                    pendingOrders.length > 1 ? 's' : ''
-                  } waiting for action`}
-            </span>
-          </div>
-        </div>
-
-        <div className="owner_orders">
-          {pendingOrders.length === 0 ? (
-            <div className="no_pending_orders">
-              <strong>No pending orders</strong>
-
-              <p>New customer orders will appear here.</p>
-            </div>
-          ) : (
-            pendingOrders.map((order) => (
-              <div className="owner_order_card" key={order.orderId}>
-                <div className="owner_order_top">
-                  <strong>#{order.orderId}</strong>
-
-                  <span className="pending_status">{order.status}</span>
-                </div>
-
-                <p>Customer: {order.customer.name}</p>
-
-                <div className="owner_order_items">
-                  {order.items.map((item) => (
-                    <p key={item.productId}>
-                      {item.productName} × {item.quantity}
-                    </p>
-                  ))}
-                </div>
-
-                <strong className="owner_order_total">
-                  ₹{order.totalPrice}
-                </strong>
-
-                <div className="owner_order_actions">
-                  <button
-                    className="reject_button"
-                    onClick={() => openRejectModal(order)}
-                  >
-                    Reject
-                  </button>
-
-                  <button
-                    className="accept_button"
-                    onClick={() => updateOrderStatus(order.orderId, 'Accepted')}
-                  >
-                    Accept
-                  </button>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-      </section>
-
-      {/* RECENT ORDERS */}
-
-      <section className="owner_orders_section">
-        <div className="owner_section_header">
-          <div>
-            <h2>Recent Orders</h2>
-
-            <span>Latest customer orders</span>
-          </div>
-        </div>
-
-        <div className="owner_orders">
-          {orders.length === 0 ? (
-            <p>No orders yet.</p>
-          ) : (
-            orders.slice(0, 5).map((order) => (
-              <div className="owner_order_card compact" key={order.orderId}>
-                <div className="owner_order_top">
-                  <strong>#{order.orderId}</strong>
-
-                  <span
-                    className={`order_status ${order.status.toLowerCase()}`}
-                  >
-                    {order.status}
-                  </span>
-                </div>
-
-                <p>{order.customer.name}</p>
-
-                <div className="compact_order_bottom">
-                  <span>
-                    {order.totalItems} item
-                    {order.totalItems > 1 ? 's' : ''}
-                  </span>
-
-                  <strong>₹{order.totalPrice}</strong>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-      </section>
+      <RecentOrders orders={orders} />
       {showRejectModal && selectedRejectOrder && (
-        <div className="owner_reject_modal_overlay">
-          <div className="owner_reject_modal">
-            <div className="owner_reject_modal_header">
-              <div>
-                <h2>Reject Order</h2>
-
-                <p>Order #{selectedRejectOrder.orderId}</p>
-              </div>
-
-              <button
-                type="button"
-                className="owner_reject_modal_close"
-                onClick={() => {
-                  if (rejectingOrder) return;
-
-                  setShowRejectModal(false);
-                  setSelectedRejectOrder(null);
-                  setRejectionReason('');
-                  setRejectionDescription('');
-                }}
-              >
-                ×
-              </button>
-            </div>
-
-            <p className="owner_reject_modal_text">
-              Please select a reason for rejecting this order.
-            </p>
-
-            <label
-              htmlFor="owner_rejection_reason"
-              className="owner_reject_modal_label"
-            >
-              Rejection Reason
-            </label>
-
-            <select
-              id="owner_rejection_reason"
-              className="owner_reject_modal_select"
-              value={rejectionReason}
-              onChange={(event) => setRejectionReason(event.target.value)}
-              disabled={rejectingOrder}
-            >
-              <option value="">Select a reason</option>
-              <option value="Item unavailable">Item unavailable</option>
-              <option value="Insufficient stock">Insufficient stock</option>
-              <option value="Shop too busy">Shop too busy</option>
-              <option value="Unable to prepare order">
-                Unable to prepare order
-              </option>
-              <option value="Delivery unavailable">Delivery unavailable</option>
-              <option value="Shop closing soon">Shop closing soon</option>
-              <option value="Other">Other</option>
-            </select>
-
-            <label
-              htmlFor="owner_rejection_description"
-              className="owner_reject_modal_label"
-            >
-              Additional Details
-            </label>
-
-            <textarea
-              id="owner_rejection_description"
-              className="owner_reject_modal_textarea"
-              value={rejectionDescription}
-              onChange={(event) => setRejectionDescription(event.target.value)}
-              placeholder="Add more details if needed..."
-              rows={4}
-              disabled={rejectingOrder}
-            />
-
-            <div className="owner_reject_modal_actions">
-              <button
-                type="button"
-                className="owner_reject_modal_cancel"
-                onClick={() => {
-                  if (rejectingOrder) return;
-
-                  setShowRejectModal(false);
-                  setSelectedRejectOrder(null);
-                  setRejectionReason('');
-                  setRejectionDescription('');
-                }}
-                disabled={rejectingOrder}
-              >
-                Keep Order
-              </button>
-
-              <button
-                type="button"
-                className="owner_reject_modal_confirm"
-                onClick={handleRejectOrder}
-                disabled={rejectingOrder}
-              >
-                {rejectingOrder ? 'Rejecting...' : 'Reject Order'}
-              </button>
-            </div>
-          </div>
-        </div>
+        <RejectOrderModal
+          showRejectModal={showRejectModal}
+          selectedRejectOrder={selectedRejectOrder}
+          rejectingOrder={rejectingOrder}
+          rejectionReason={rejectionReason}
+          rejectionDescription={rejectionDescription}
+          setShowRejectModal={setShowRejectModal}
+          setSelectedRejectOrder={setSelectedRejectOrder}
+          setRejectionReason={setRejectionReason}
+          setRejectionDescription={setRejectionDescription}
+          handleRejectOrder={handleRejectOrder}
+        />
       )}
     </main>
   );

@@ -3,6 +3,9 @@ import './PhoneNumber.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import PhoneNumberHeader from './components/PhoneNumber/PhoneNumberHeader';
+import PhoneNumberForm from './components/PhoneNumber/PhoneNumberForm';
+
 function PhoneNumber() {
   const navigate = useNavigate();
 
@@ -136,38 +139,16 @@ function PhoneNumber() {
           ← Account Settings
         </button>
 
-        <div className="owner_setting_header">
-          <h1>Phone Number</h1>
+        <PhoneNumberHeader />
 
-          <p>
-            Update the mobile number associated with your RMA owner account.
-          </p>
-        </div>
-
-        <form onSubmit={handleSubmit}>
-          <label className="owner_setting_label">
-            Mobile Number
-            <input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="Enter mobile number"
-              required
-            />
-          </label>
-
-          {error && <p className="owner_setting_error">{error}</p>}
-
-          {success && <p className="owner_setting_success">{success}</p>}
-
-          <button
-            type="submit"
-            className="owner_setting_save"
-            disabled={saving}
-          >
-            {saving ? 'Saving...' : 'Save Changes'}
-          </button>
-        </form>
+        <PhoneNumberForm
+          phone={phone}
+          setPhone={setPhone}
+          handleSubmit={handleSubmit}
+          error={error}
+          success={success}
+          saving={saving}
+        />
       </section>
     </main>
   );

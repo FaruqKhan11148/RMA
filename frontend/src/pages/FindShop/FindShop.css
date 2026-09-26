@@ -91,7 +91,7 @@
 
   box-shadow: var(--rma-shadow-sm);
 
-  margin-bottom: var(--rma-space-8);
+  margin-bottom: 50px;
 }
 
 .find_shop_location_icon {
@@ -1451,6 +1451,7 @@
 
   font-size: var(--rma-font-sm);
   line-height: 1.5;
+  margin-bottom: 30px;
 }
 
 .find_shop_error {
@@ -1557,6 +1558,7 @@
 
   .find_shop_nearby_placeholder {
     padding: var(--rma-space-7) var(--rma-space-4);
+    margin-bottom: 50px;
   }
 
   .find_shop_qr {
@@ -1590,6 +1592,7 @@
     gap: var(--rma-space-3);
     padding-left: 1px;
     padding-right: 1px;
+    margin-bottom: 30px;
   }
 
   .find_shop_nearby_card {

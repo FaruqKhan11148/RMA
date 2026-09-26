@@ -2,39 +2,22 @@ import './Privacy.css';
 
 import { useNavigate } from 'react-router-dom';
 
+import PrivacyHeader from './components/PrivacyHeader';
+import PrivacyIntro from './components/PrivacyIntro';
+import PrivacySection from './components/PrivacySection';
+import PrivacyContact from './components/PrivacyContact';
+
 function Privacy() {
   const navigate = useNavigate();
 
   return (
     <main className="privacy_page">
-      {/* HEADER */}
-      <div className="privacy_header">
-        <button className="privacy_back" onClick={() => navigate(-1)}>
-          ‹
-        </button>
-
-        <h1>Privacy Policy</h1>
-      </div>
+      <PrivacyHeader onBack={() => navigate(-1)} />
 
       <div className="privacy_container">
-        {/* INTRO */}
-        <section className="privacy_intro">
-          <span className="privacy_badge">RMA</span>
+        <PrivacyIntro />
 
-          <h2>Your privacy matters to us.</h2>
-
-          <p>
-            This Privacy Policy explains how RMA collects, uses, stores, and
-            protects information when you use our platform.
-          </p>
-
-          <span className="privacy_updated">Last updated: September 2026</span>
-        </section>
-
-        {/* 1 */}
-        <section className="privacy_section">
-          <h2>1. Information We Collect</h2>
-
+        <PrivacySection title="1. Information We Collect">
           <p>
             When you create an account or use RMA, we may collect information
             necessary to provide our services.
@@ -49,12 +32,9 @@ function Privacy() {
             <li>Order and transaction information</li>
             <li>Information you provide when contacting support</li>
           </ul>
-        </section>
+        </PrivacySection>
 
-        {/* 2 */}
-        <section className="privacy_section">
-          <h2>2. How We Use Your Information</h2>
-
+        <PrivacySection title="2. How We Use Your Information">
           <p>
             We use collected information to operate and improve RMA, including:
           </p>
@@ -68,12 +48,9 @@ function Privacy() {
             <li>Improving our services and user experience</li>
             <li>Preventing fraud and unauthorized activity</li>
           </ul>
-        </section>
+        </PrivacySection>
 
-        {/* 3 */}
-        <section className="privacy_section">
-          <h2>3. Location Information</h2>
-
+        <PrivacySection title="3. Location Information">
           <p>
             RMA may use your location when you choose to select or provide a
             delivery location. Location information may be used to help
@@ -84,12 +61,9 @@ function Privacy() {
             You can choose whether to provide location information through the
             features available in the application.
           </p>
-        </section>
+        </PrivacySection>
 
-        {/* 4 */}
-        <section className="privacy_section">
-          <h2>4. Orders and Payments</h2>
-
+        <PrivacySection title="4. Orders and Payments">
           <p>
             When you place an order, information related to the order may be
             shared with the relevant shop and delivery service where necessary
@@ -101,12 +75,9 @@ function Privacy() {
             providers. RMA does not need to store your complete payment-card
             credentials to process an order.
           </p>
-        </section>
+        </PrivacySection>
 
-        {/* 5 */}
-        <section className="privacy_section">
-          <h2>5. Information Sharing</h2>
-
+        <PrivacySection title="5. Information Sharing">
           <p>
             We may share information with parties necessary to provide RMA
             services, such as:
@@ -122,12 +93,9 @@ function Privacy() {
           <p>
             We do not intend to sell your personal information to third parties.
           </p>
-        </section>
+        </PrivacySection>
 
-        {/* 6 */}
-        <section className="privacy_section">
-          <h2>6. Data Security</h2>
-
+        <PrivacySection title="6. Data Security">
           <p>
             We take reasonable measures to protect information against
             unauthorized access, alteration, disclosure, or destruction.
@@ -136,12 +104,9 @@ function Privacy() {
           <p>
             However, no internet-based service can guarantee absolute security.
           </p>
-        </section>
+        </PrivacySection>
 
-        {/* 7 */}
-        <section className="privacy_section">
-          <h2>7. Account Information</h2>
-
+        <PrivacySection title="7. Account Information">
           <p>
             You are responsible for keeping your account information accurate
             and for protecting access to your account.
@@ -151,55 +116,34 @@ function Privacy() {
             If you believe your account has been accessed without authorization,
             contact RMA support.
           </p>
-        </section>
+        </PrivacySection>
 
-        {/* 8 */}
-        <section className="privacy_section">
-          <h2>8. Data Retention</h2>
-
+        <PrivacySection title="8. Data Retention">
           <p>
             We may retain account, order, transaction, and support information
             for as long as reasonably necessary to provide our services, comply
             with legal obligations, resolve disputes, and maintain business
             records.
           </p>
-        </section>
+        </PrivacySection>
 
-        {/* 9 */}
-        <section className="privacy_section">
-          <h2>9. Your Choices</h2>
-
+        <PrivacySection title="9. Your Choices">
           <p>
             Depending on the features available to you, you may be able to
             update your account information, manage saved addresses, or request
             assistance regarding your personal information.
           </p>
-        </section>
+        </PrivacySection>
 
-        {/* 10 */}
-        <section className="privacy_section">
-          <h2>10. Changes to This Policy</h2>
-
+        <PrivacySection title="10. Changes to This Policy">
           <p>
             RMA may update this Privacy Policy from time to time. When changes
             are made, the updated version will be published through the RMA
             platform.
           </p>
-        </section>
+        </PrivacySection>
 
-        {/* CONTACT */}
-        <section className="privacy_contact">
-          <h2>Questions about privacy?</h2>
-
-          <p>
-            If you have questions or concerns about this Privacy Policy, please
-            contact RMA through our support page.
-          </p>
-
-          <button onClick={() => navigate('/profile/help-support')}>
-            Contact RMA Support
-          </button>
-        </section>
+        <PrivacyContact onContact={() => navigate('/profile/help-support')} />
       </div>
     </main>
   );

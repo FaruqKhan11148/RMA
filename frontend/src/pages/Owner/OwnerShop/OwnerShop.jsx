@@ -2,16 +2,14 @@ import './OwnerShop.css';
 
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  CheckCircle2,
-  Copy,
-  MapPin,
-  Package,
-  ShoppingBag,
-  Star,
-  Truck,
-  XCircle,
-} from 'lucide-react';
+import { XCircle } from 'lucide-react';
+
+import OwnerShopHeader from './components/OwnerShopHeader';
+import OwnerShopOverview from './components/OwnerShopOverview';
+import OwnerShopCustomer from './components/OwnerShopCustomer';
+import OwnerShopServices from './components/OwnerShopServices';
+import OwnerShopAddress from './components/OwnerShopAddress';
+import OwnerShopProducts from './components/OwnerShopProducts';
 
 function OwnerShop() {
   const navigate = useNavigate();
@@ -142,277 +140,29 @@ function OwnerShop() {
 
   return (
     <main className="owner_shop_page">
-      {/* SHOP HEADER */}
+      <OwnerShopHeader
+        shopOwner={shopOwner}
+        copied={copied}
+        copyShopId={copyShopId}
+      />
 
-      <section className="owner_shop_header">
-        <div className="owner_shop_header_content">
-          <div className="owner_shop_status">
-            {shopOwner.isOpen ? (
-              <>
-                <span className="owner_shop_status_dot open" />
-                Open
-              </>
-            ) : (
-              <>
-                <span className="owner_shop_status_dot closed" />
-                Closed
-              </>
-            )}
-          </div>
+      <OwnerShopOverview
+        shopOwner={shopOwner}
+        availableProducts={availableProducts}
+        categories={categories}
+      />
 
-          <h1>{shopOwner.shopName}</h1>
+      <OwnerShopCustomer viewCustomerShop={viewCustomerShop} />
 
-          <div className="owner_shop_id_row">
-            <span>Shop ID: {shopOwner.shopId}</span>
+      <OwnerShopServices shopOwner={shopOwner} />
 
-            <button
-              type="button"
-              className="owner_shop_copy_button"
-              onClick={copyShopId}
-              aria-label="Copy shop ID"
-            >
-              <Copy size={15} />
-            </button>
+      <OwnerShopAddress shopOwner={shopOwner} />
 
-            {copied && <small>Copied</small>}
-          </div>
-
-          {shopOwner.description && (
-            <p className="owner_shop_description">{shopOwner.description}</p>
-          )}
-        </div>
-      </section>
-
-      {/* SHOP OVERVIEW */}
-
-      <section className="owner_shop_section">
-        <div className="owner_shop_section_header">
-          <div>
-            <h2>Shop Overview</h2>
-            <span>Your current shop information</span>
-          </div>
-        </div>
-
-        <div className="owner_shop_overview_grid">
-          <div className="owner_shop_overview_card">
-            <div className="owner_shop_overview_icon">
-              <Package size={19} />
-            </div>
-
-            <div>
-              <span>Products</span>
-              <strong>{shopOwner.products?.length || 0}</strong>
-            </div>
-          </div>
-
-          <div className="owner_shop_overview_card">
-            <div className="owner_shop_overview_icon available">
-              <CheckCircle2 size={19} />
-            </div>
-
-            <div>
-              <span>Available</span>
-              <strong>{availableProducts.length}</strong>
-            </div>
-          </div>
-
-          <div className="owner_shop_overview_card">
-            <div className="owner_shop_overview_icon">
-              <ShoppingBag size={19} />
-            </div>
-
-            <div>
-              <span>Categories</span>
-              <strong>{categories.length}</strong>
-            </div>
-          </div>
-
-          <div className="owner_shop_overview_card">
-            <div className="owner_shop_overview_icon rating">
-              <Star size={19} />
-            </div>
-
-            <div>
-              <span>Rating</span>
-              <strong>
-                {shopOwner.rating?.average
-                  ? Number(shopOwner.rating.average).toFixed(1)
-                  : '—'}
-              </strong>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CUSTOMER SHOP */}
-
-      <section className="owner_shop_customer_card">
-        <div className="owner_shop_customer_icon">
-          <ShoppingBag size={22} />
-        </div>
-
-        <div className="owner_shop_customer_content">
-          <strong>Customer Shop</strong>
-
-          <span>See how customers can find and view your shop.</span>
-        </div>
-
-        <button
-          type="button"
-          className="owner_shop_customer_button"
-          onClick={viewCustomerShop}
-        >
-          View
-        </button>
-      </section>
-
-      {/* SERVICES */}
-
-      <section className="owner_shop_section">
-        <div className="owner_shop_section_header">
-          <div>
-            <h2>Services</h2>
-            <span>What your shop currently offers</span>
-          </div>
-        </div>
-
-        <div className="owner_shop_services">
-          <div
-            className={`owner_shop_service ${
-              shopOwner.delivery ? 'enabled' : 'disabled'
-            }`}
-          >
-            <div className="owner_shop_service_icon">
-              <Truck size={20} />
-            </div>
-
-            <div>
-              <strong>Delivery</strong>
-
-              <span>
-                {shopOwner.delivery
-                  ? 'Available to customers'
-                  : 'Currently unavailable'}
-              </span>
-            </div>
-
-            <span className="owner_shop_service_status">
-              {shopOwner.delivery ? 'Available' : 'Off'}
-            </span>
-          </div>
-
-          <div
-            className={`owner_shop_service ${
-              shopOwner.pickup ? 'enabled' : 'disabled'
-            }`}
-          >
-            <div className="owner_shop_service_icon">
-              <ShoppingBag size={20} />
-            </div>
-
-            <div>
-              <strong>Pickup</strong>
-
-              <span>
-                {shopOwner.pickup
-                  ? 'Available to customers'
-                  : 'Currently unavailable'}
-              </span>
-            </div>
-
-            <span className="owner_shop_service_status">
-              {shopOwner.pickup ? 'Available' : 'Off'}
-            </span>
-          </div>
-        </div>
-      </section>
-
-      {/* ADDRESS */}
-
-      <section className="owner_shop_section">
-        <div className="owner_shop_section_header">
-          <div>
-            <h2>Shop Location</h2>
-            <span>Your registered shop address</span>
-          </div>
-        </div>
-
-        <div className="owner_shop_address_card">
-          <div className="owner_shop_address_icon">
-            <MapPin size={20} />
-          </div>
-
-          <div>
-            <strong>{shopOwner.shopName}</strong>
-
-            <p>{shopOwner.address}</p>
-
-            {shopOwner.location?.latitude && shopOwner.location?.longitude && (
-              <span>Location coordinates available</span>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* PRODUCTS PREVIEW */}
-
-      <section className="owner_shop_section">
-        <div className="owner_shop_section_header">
-          <div>
-            <h2>Products</h2>
-
-            <span>
-              {availableProducts.length === 0
-                ? 'No available products'
-                : `${availableProducts.length} available product${
-                    availableProducts.length > 1 ? 's' : ''
-                  }`}
-            </span>
-          </div>
-
-          <button
-            type="button"
-            className="owner_shop_section_action"
-            onClick={() => navigate('/owner/settings/products')}
-          >
-            Manage
-          </button>
-        </div>
-
-        {previewProducts.length === 0 ? (
-          <div className="owner_shop_empty">
-            <Package size={28} />
-
-            <strong>No available products</strong>
-
-            <p>Add products from your product settings.</p>
-          </div>
-        ) : (
-          <div className="owner_shop_products">
-            {previewProducts.map((product) => (
-              <div className="owner_shop_product_card" key={product.productId}>
-                {product.imageUrl ? (
-                  <img src={product.imageUrl} alt={product.name} />
-                ) : (
-                  <div className="owner_shop_product_placeholder">
-                    <Package size={22} />
-                  </div>
-                )}
-
-                <div className="owner_shop_product_content">
-                  <strong>{product.name}</strong>
-
-                  <span>
-                    {product.category} · {product.unit}
-                  </span>
-
-                  <b>₹{product.price}</b>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
+      <OwnerShopProducts
+        availableProducts={availableProducts}
+        previewProducts={previewProducts}
+        navigate={navigate}
+      />
     </main>
   );
 }

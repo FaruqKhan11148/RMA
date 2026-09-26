@@ -3,6 +3,14 @@ import './PaymentDetails.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import PaymentDetailsHeader from './components/PaymentDetailsHeader';
+import PaymentError from './components/PaymentError';
+import PaymentProviderCard from './components/PaymentProviderCard';
+import PaymentAccountSection from './components/PaymentAccountSection';
+import PaymentSettlementSection from './components/PaymentSettlementSection';
+import PaymentOnboardedInfo from './components/PaymentOnboardedInfo';
+import PaymentNextStep from './components/PaymentNextStep';
+
 function PaymentDetails() {
   const navigate = useNavigate();
 
@@ -107,151 +115,23 @@ function PaymentDetails() {
   return (
     <div className="owner_setting_page">
       <div className="owner_setting_card">
-        <button
-          type="button"
-          className="owner_setting_back"
-          onClick={() => navigate(-1)}
-        >
-          ← Payments Settings
-        </button>
+        <PaymentDetailsHeader navigate={navigate} />
 
-        <div className="owner_setting_header">
-          <p className="owner_setting_tag">PAYMENT SETTINGS</p>
+        <PaymentError error={error} />
 
-          <h1>Payment Details</h1>
+        <PaymentProviderCard provider={payment.provider} />
 
-          <p>
-            View your payment account, KYC and settlement onboarding status.
-          </p>
-        </div>
+        <PaymentAccountSection
+          payment={payment}
+          formatStatus={formatStatus}
+          getStatusClass={getStatusClass}
+        />
 
-        {error && <div className="owner_setting_error">{error}</div>}
+        <PaymentSettlementSection onboardingStatus={payment.onboardingStatus} />
 
-        {/* PAYMENT PROVIDER */}
+        <PaymentOnboardedInfo onboardedAt={payment.onboardedAt} />
 
-        <div className="payment_provider_card">
-          <div className="payment_provider_icon">₹</div>
-
-          <div className="payment_provider_content">
-            <span>Payment Provider</span>
-
-            <strong>{payment.provider}</strong>
-
-            <small>
-              Used for processing customer payments and shop settlements.
-            </small>
-          </div>
-        </div>
-
-        {/* ONBOARDING STATUS */}
-
-        <div className="payment_section">
-          <div className="payment_section_header">
-            <div>
-              <span className="payment_section_tag">ACCOUNT</span>
-
-              <h2>Payment Account</h2>
-            </div>
-
-            <span
-              className={`payment_status_badge ${getStatusClass(
-                payment.onboardingStatus,
-              )}`}
-            >
-              {formatStatus(payment.onboardingStatus)}
-            </span>
-          </div>
-
-          <div className="payment_detail_list">
-            <div className="payment_detail_row">
-              <span>Account ID</span>
-
-              <strong>{payment.accountId || 'Not connected'}</strong>
-            </div>
-
-            <div className="payment_detail_row">
-              <span>Onboarding Status</span>
-
-              <strong>{formatStatus(payment.onboardingStatus)}</strong>
-            </div>
-
-            <div className="payment_detail_row">
-              <span>KYC Status</span>
-
-              <strong className={getStatusClass(payment.kycStatus)}>
-                {formatStatus(payment.kycStatus)}
-              </strong>
-            </div>
-
-            <div className="payment_detail_row">
-              <span>Bank Status</span>
-
-              <strong className={getStatusClass(payment.bankStatus)}>
-                {formatStatus(payment.bankStatus)}
-              </strong>
-            </div>
-          </div>
-        </div>
-
-        {/* SETTLEMENT */}
-
-        <div className="payment_section">
-          <div className="payment_section_header">
-            <div>
-              <span className="payment_section_tag">SETTLEMENT</span>
-
-              <h2>Settlement Information</h2>
-            </div>
-          </div>
-
-          <div className="payment_settlement_card">
-            <div className="payment_settlement_icon">
-              {payment.onboardingStatus === 'VERIFIED' ? '✓' : '○'}
-            </div>
-
-            <div>
-              <strong>
-                {payment.onboardingStatus === 'VERIFIED'
-                  ? 'Settlement account is ready'
-                  : 'Settlement account not ready'}
-              </strong>
-
-              <p>
-                {payment.onboardingStatus === 'VERIFIED'
-                  ? 'Your shop can receive settlements through the connected payment account.'
-                  : 'Complete payment onboarding and verification before settlements can be enabled.'}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* ONBOARDED DATE */}
-
-        {payment.onboardedAt && (
-          <div className="payment_onboarded_info">
-            <span>Onboarded On</span>
-
-            <strong>{new Date(payment.onboardedAt).toLocaleString()}</strong>
-          </div>
-        )}
-
-        {/* FUTURE ONBOARDING */}
-
-        {payment.onboardingStatus !== 'VERIFIED' && (
-          <div className="payment_next_step">
-            <div className="payment_next_step_icon">!</div>
-
-            <div>
-              <strong>Payment onboarding required</strong>
-
-              <p>
-                Your payment account is not fully verified yet. Once Razorpay
-                onboarding is connected, this page will allow you to complete
-                the required verification steps.
-              </p>
-            </div>
-          </div>
-        )}
+        <PaymentNextStep onboardingStatus={payment.onboardingStatus} />
       </div>
     </div>
   );

@@ -1,10 +1,28 @@
 import './FindShop.css';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import NearbyShopImageSlider from '../../components/NearbyShopImageSlider/NearbyShopImageSlider';
 
-const RMA_LOCATION_KEY = 'rma_user_location';
+import FindShopHeader from './components/FindShopHeader';
+import FindShopLocation from './components/FindShopLocation';
+import NearbyShops from './components/NearbyShops';
+import ShopSearch from './components/ShopSearch';
+import ShopQrSection from './components/ShopQrSection';
+import SavedShop from './components/SavedShop';
+import LocationSheet from './components/LocationSheet';
+
+import {
+  fetchSavedShop,
+  fetchNearbyShops as fetchNearbyShopsApi,
+  fetchSavedAddresses,
+  checkCustomerLogin,
+} from './utils/findShopApi';
+
+import {
+  getSavedLocation,
+  saveLocation,
+  getLocationErrorMessage,
+} from './utils/findShopHelpers';
 
 function FindShop() {
   const navigate = useNavigate();
@@ -28,7 +46,7 @@ function FindShop() {
   const [customerLoggedIn, setCustomerLoggedIn] = useState(false);
 
   useEffect(() => {
-    const fetchSavedShop = async () => {
+    const loadSavedShop = async () => {
       const savedShopId = localStorage.getItem('rma_trusted_shop_id');
 
       if (!savedShopId) {
@@ -41,15 +59,7 @@ function FindShop() {
         setLoadingShop(true);
         setShopError('');
 
-        const response = await fetch(
-          `https://rma-backend-bo4a.onrender.com/api/owners/shop/${savedShopId}`,
-        );
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message || 'Failed to load shop');
-        }
+        const data = await fetchSavedShop(savedShopId);
 
         setShop(data.shop);
       } catch (error) {
@@ -62,7 +72,7 @@ function FindShop() {
       }
     };
 
-    fetchSavedShop();
+    loadSavedShop();
   }, []);
 
   const handleSavedShop = () => {
@@ -87,20 +97,12 @@ function FindShop() {
     navigate(`/shop/${enteredShopId}`);
   };
 
-  const fetchNearbyShops = async (latitude, longitude) => {
+  const fetchNearbyShops = useCallback(async (latitude, longitude) => {
     try {
       setLoadingNearbyShops(true);
       setNearbyShopsError('');
 
-      const response = await fetch(
-        `https://rma-backend-bo4a.onrender.com/api/owners/nearby?latitude=${latitude}&longitude=${longitude}`,
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to fetch nearby shops');
-      }
+      const data = await fetchNearbyShopsApi(latitude, longitude);
 
       setNearbyShops(data.shops || []);
     } catch (error) {
@@ -111,34 +113,29 @@ function FindShop() {
     } finally {
       setLoadingNearbyShops(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    const savedLocation = localStorage.getItem(RMA_LOCATION_KEY);
+    const savedLocation = getSavedLocation();
 
     if (!savedLocation) {
       return;
     }
 
-    try {
-      const parsedLocation = JSON.parse(savedLocation);
-
-      if (
-        Number.isFinite(parsedLocation.latitude) &&
-        Number.isFinite(parsedLocation.longitude)
-      ) {
-        fetchNearbyShops(parsedLocation.latitude, parsedLocation.longitude);
-      }
-
-      if (parsedLocation.locationName) {
-        setLocationName(parsedLocation.locationName);
-      }
-    } catch (error) {
-      console.error('Saved location parse error:', error);
-
-      localStorage.removeItem(RMA_LOCATION_KEY);
+    if (
+      Number.isFinite(Number(savedLocation.latitude)) &&
+      Number.isFinite(Number(savedLocation.longitude))
+    ) {
+      fetchNearbyShops(
+        Number(savedLocation.latitude),
+        Number(savedLocation.longitude),
+      );
     }
-  }, []);
+
+    if (savedLocation.locationName) {
+      setLocationName(savedLocation.locationName);
+    }
+  }, [fetchNearbyShops]);
 
   const handleLocationClick = () => {
     if (!navigator.geolocation) {
@@ -154,13 +151,10 @@ function FindShop() {
       const latitude = position.coords.latitude;
       const longitude = position.coords.longitude;
 
-      localStorage.setItem(
-        RMA_LOCATION_KEY,
-        JSON.stringify({
-          latitude,
-          longitude,
-        }),
-      );
+      saveLocation({
+        latitude,
+        longitude,
+      });
 
       await fetchNearbyShops(latitude, longitude);
     };
@@ -172,27 +166,7 @@ function FindShop() {
       });
 
       setLoadingNearbyShops(false);
-
-      if (error.code === 1) {
-        setNearbyShopsError(
-          'Location permission is blocked. Please allow location access in your browser settings.',
-        );
-        return;
-      }
-
-      if (error.code === 2) {
-        setNearbyShopsError(
-          'Unable to detect your location. Please try again.',
-        );
-        return;
-      }
-
-      if (error.code === 3) {
-        setNearbyShopsError('Location is taking too long. Please try again.');
-        return;
-      }
-
-      setNearbyShopsError('Unable to get your location. Please try again.');
+      setNearbyShopsError(getLocationErrorMessage(error.code));
     };
 
     navigator.geolocation.getCurrentPosition(handleSuccess, handleError, {
@@ -202,27 +176,11 @@ function FindShop() {
     });
   };
 
-  const fetchSavedAddresses = async () => {
+  const loadSavedAddresses = useCallback(async () => {
     try {
       setLoadingAddresses(true);
 
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/customers/addresses',
-        {
-          credentials: 'include',
-        },
-      );
-
-      const data = await response.json();
-
-      if (response.status === 401) {
-        setSavedAddresses([]);
-        return;
-      }
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to fetch saved addresses');
-      }
+      const data = await fetchSavedAddresses();
 
       setSavedAddresses(data.addresses || []);
     } catch (error) {
@@ -232,7 +190,7 @@ function FindShop() {
     } finally {
       setLoadingAddresses(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (!location.state?.openLocationSheet) {
@@ -248,14 +206,11 @@ function FindShop() {
       setLocationName(newlySavedAddress.address);
 
       if (Number.isFinite(latitude) && Number.isFinite(longitude)) {
-        localStorage.setItem(
-          RMA_LOCATION_KEY,
-          JSON.stringify({
-            latitude,
-            longitude,
-            locationName: newlySavedAddress.address,
-          }),
-        );
+        saveLocation({
+          latitude,
+          longitude,
+          locationName: newlySavedAddress.address,
+        });
 
         setNearbyShops([]);
         setNearbyShopsError('');
@@ -265,13 +220,13 @@ function FindShop() {
     }
 
     setShowLocationSheet(true);
-    fetchSavedAddresses();
+    loadSavedAddresses();
 
     navigate('/find-shop', {
       replace: true,
       state: {},
     });
-  }, [location.state, navigate]);
+  }, [location.state, navigate, fetchNearbyShops, loadSavedAddresses]);
 
   const handleSavedAddressSelect = async (savedAddress) => {
     if (
@@ -287,17 +242,13 @@ function FindShop() {
 
     setLocationName(savedAddress.address);
 
-    localStorage.setItem(
-      RMA_LOCATION_KEY,
-      JSON.stringify({
-        latitude,
-        longitude,
-        locationName: savedAddress.address,
-      }),
-    );
+    saveLocation({
+      latitude,
+      longitude,
+      locationName: savedAddress.address,
+    });
 
     setShowLocationSheet(false);
-
     setNearbyShops([]);
     setNearbyShopsError('');
 
@@ -305,20 +256,11 @@ function FindShop() {
   };
 
   useEffect(() => {
-    const checkCustomerLogin = async () => {
+    const loadCustomerLogin = async () => {
       try {
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/customers/me',
-          {
-            credentials: 'include',
-          },
-        );
+        const loggedIn = await checkCustomerLogin();
 
-        if (response.ok) {
-          setCustomerLoggedIn(true);
-        } else {
-          setCustomerLoggedIn(false);
-        }
+        setCustomerLoggedIn(loggedIn);
       } catch (error) {
         console.error('Customer login check failed:', error);
 
@@ -326,615 +268,73 @@ function FindShop() {
       }
     };
 
-    checkCustomerLogin();
+    loadCustomerLogin();
   }, []);
 
   return (
     <main className="find_shop">
       <div className="find_shop_content">
-        {/* ======================================
-            PAGE HEADER
-        ======================================= */}
+        <FindShopHeader />
 
-        <section className="find_shop_header">
-          <span className="find_shop_eyebrow">RMA SHOPS</span>
+        <FindShopLocation
+          locationName={locationName}
+          onChangeLocation={() => {
+            setShowLocationSheet(true);
+            loadSavedAddresses();
+          }}
+        />
 
-          <h1>Find a Shop</h1>
+        <NearbyShops
+          nearbyShops={nearbyShops}
+          loadingNearbyShops={loadingNearbyShops}
+          nearbyShopsError={nearbyShopsError}
+          onUseLocation={handleLocationClick}
+          onShopClick={(shopId) => navigate(`/shop/${shopId}`)}
+        />
 
-          <p>Discover fresh meat and seafood from local shops near you.</p>
-        </section>
+        <ShopSearch
+          shopId={shopId}
+          onShopIdChange={setShopId}
+          onSubmit={handleSubmit}
+        />
 
-        {/* ======================================
-            LOCATION
-        ======================================= */}
+        <ShopQrSection onScan={() => navigate('/scan-qr')} />
 
-        <section className="find_shop_location">
-          <div className="find_shop_location_icon">
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M12 21C12 21 19 14.5 19 9C19 5.134 15.866 2 12 2C8.134 2 5 5 5 9C5 14.5 12 21 12 21Z"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-
-              <circle
-                cx="12"
-                cy="9"
-                r="2.5"
-                stroke="currentColor"
-                strokeWidth="2"
-              />
-            </svg>
-          </div>
-
-          <div className="find_shop_location_content">
-            <span>DELIVERING TO</span>
-            <strong>{locationName || 'Your current location'}</strong>
-          </div>
-
-          <button
-            type="button"
-            className="find_shop_change_location"
-            onClick={() => {
-              setShowLocationSheet(true);
-              fetchSavedAddresses();
-            }}
-          >
-            Change
-          </button>
-        </section>
-
-        {/* ======================================
-            NEARBY SHOPS
-        ======================================= */}
-
-        <section className="find_shop_nearby">
-          <div className="find_shop_section_header">
-            <div>
-              <span className="find_shop_section_eyebrow">1. NEAR YOU</span>
-
-              <h2>Nearby Shops</h2>
-
-              <p>Fresh shops around your location</p>
-            </div>
-
-            <span className="find_shop_distance">Within 5 km</span>
-          </div>
-
-          {loadingNearbyShops && (
-            <div className="find_shop_message">Finding nearby shops...</div>
-          )}
-
-          {!loadingNearbyShops && nearbyShopsError && (
-            <div className="find_shop_message find_shop_error">
-              {nearbyShopsError}
-            </div>
-          )}
-
-          {!loadingNearbyShops &&
-            !nearbyShopsError &&
-            nearbyShops.length === 0 && (
-              <div className="find_shop_nearby_placeholder">
-                <div className="find_shop_placeholder_icon">
-                  <svg
-                    width="28"
-                    height="28"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M12 21C12 21 19 14.5 19 9C19 5.134 15.866 2 12 2C8.134 2 5 5 5 9C5 14.5 12 21 12 21Z"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-
-                    <circle
-                      cx="12"
-                      cy="9"
-                      r="2.5"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                    />
-                  </svg>
-                </div>
-
-                <h3>Find shops near you</h3>
-
-                <p>
-                  Allow location access to see meat and seafood shops around
-                  you.
-                </p>
-
-                <button type="button" onClick={handleLocationClick}>
-                  Use My Location
-                </button>
-              </div>
-            )}
-
-          {!loadingNearbyShops &&
-            !nearbyShopsError &&
-            nearbyShops.length > 0 && (
-              <div className="find_shop_nearby_list">
-                {nearbyShops.map((shop) => (
-                  <button
-                    key={shop.shopId}
-                    type="button"
-                    className="find_shop_nearby_card"
-                    onClick={() => navigate(`/shop/${shop.shopId}`)}
-                  >
-                    {/* IMAGE SLIDER */}
-                    <NearbyShopImageSlider shop={shop} />
-
-                    {/* SHOP CONTENT */}
-                    <div className="find_shop_nearby_card_content">
-                      <div className="find_shop_nearby_title_row">
-                        <h3>{shop.shopName}</h3>
-
-                        <span className="find_shop_nearby_rating">
-                          <span className="find_shop_nearby_rating_star">
-                            ★
-                          </span>
-                          <span>4.5</span>
-                        </span>
-                      </div>
-
-                      <p className="find_shop_nearby_description">
-                        {shop.description || 'Fresh meat and seafood'}
-                      </p>
-
-                      <div className="find_shop_nearby_meta">
-                        <span>{shop.distance} km</span>
-
-                        <span>•</span>
-
-                        <span>{shop.delivery ? 'Delivery' : 'Pickup'}</span>
-
-                        <span>•</span>
-
-                        <span
-                          className={
-                            shop.isOpen
-                              ? 'find_shop_nearby_status_open'
-                              : 'find_shop_nearby_status_closed'
-                          }
-                        >
-                          {shop.isOpen ? 'Open' : 'Closed'}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* FOOTER */}
-                    <div className="find_shop_nearby_card_footer">
-                      <span>{shop.shopId}</span>
-
-                      <span>
-                        View Shop
-                        <span className="find_shop_nearby_arrow">→</span>
-                      </span>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            )}
-        </section>
-
-        {/* ======================================
-            SEARCH BY SHOP ID
-        ======================================= */}
-
-        <section className="find_shop_search">
-          <div className="find_shop_section_header">
-            <div>
-              <span className="find_shop_section_eyebrow">
-                2. KNOW YOUR SHOP?
-              </span>
-
-              <h2>Search by Shop ID</h2>
-
-              <p>Enter the unique RMA Shop ID shared by your local shop.</p>
-            </div>
-          </div>
-
-          <form onSubmit={handleSubmit}>
-            <label htmlFor="shopId">RMA Shop ID</label>
-
-            <input
-              id="shopId"
-              type="text"
-              placeholder="Example: RMA-000001"
-              value={shopId}
-              onChange={(event) => setShopId(event.target.value)}
-              autoComplete="off"
-            />
-
-            <button type="submit">
-              Find Shop
-              <span>→</span>
-            </button>
-          </form>
-        </section>
-
-        {/* ======================================
-            QR SCAN
-        ======================================= */}
-
-        <section className="find_shop_qr">
-          <div className="find_shop_qr_icon">
-            <span>QR</span>
-          </div>
-
-          <div className="find_shop_qr_content">
-            <span className="find_shop_section_eyebrow">FASTEST WAY</span>
-
-            <h2>Scan Shop QR</h2>
-
-            <p>Scan the QR code provided by your local meat shop.</p>
-          </div>
-
-          <button
-            type="button"
-            className="find_shop_qr_button"
-            onClick={() => navigate('/scan-qr')}
-          >
-            Scan
-            <span>→</span>
-          </button>
-        </section>
-
-        {/* ======================================
-            SAVED SHOP
-        ======================================= */}
-
-        {(loadingShop || shopError || shop) && (
-          <section className="find_shop_saved">
-            <div className="find_shop_section_header">
-              <div>
-                <span className="find_shop_section_eyebrow">3. YOUR SHOP</span>
-
-                <h2>Saved Shop</h2>
-              </div>
-            </div>
-
-            {loadingShop && (
-              <div className="find_shop_message">
-                Loading your saved shop...
-              </div>
-            )}
-
-            {!loadingShop && shopError && (
-              <div className="find_shop_message find_shop_error">
-                {shopError}
-              </div>
-            )}
-
-            {!loadingShop && shop && (
-              <div className="find_shop_saved_card">
-                <div className="find_shop_saved_info">
-                  <h3>{shop.shopName}</h3>
-
-                  <p>{shop.description || 'Fresh meat and seafood'}</p>
-
-                  <span>{shop.shopId}</span>
-                </div>
-
-                <button type="button" onClick={handleSavedShop}>
-                  Order
-                  <span>→</span>
-                </button>
-              </div>
-            )}
-          </section>
-        )}
+        <SavedShop
+          loadingShop={loadingShop}
+          shopError={shopError}
+          shop={shop}
+          onOrder={handleSavedShop}
+        />
       </div>
 
       {showLocationSheet && (
-        <div
-          className="location_sheet_overlay"
-          onClick={() => setShowLocationSheet(false)}
-        >
-          <div
-            className="location_sheet"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="location_sheet_handle" />
+        <LocationSheet
+          savedAddresses={savedAddresses}
+          loadingAddresses={loadingAddresses}
+          onClose={() => setShowLocationSheet(false)}
+          onUseCurrentLocation={() => {
+            setShowLocationSheet(false);
+            handleLocationClick();
+          }}
+          onAddAddress={() => {
+            setShowLocationSheet(false);
 
-            <div className="location_sheet_header">
-              <h2>Select a location</h2>
+            if (customerLoggedIn) {
+              navigate('/profile/saved-addresses/add', {
+                state: {
+                  returnToLocationSheet: true,
+                  returnPath: '/find-shop',
+                },
+              });
 
-              <button
-                type="button"
-                onClick={() => setShowLocationSheet(false)}
-                aria-label="Close"
-              >
-                ×
-              </button>
-            </div>
+              return;
+            }
 
-            <div className="location_sheet_options">
-              <button
-                type="button"
-                className="location_sheet_option"
-                onClick={() => {
-                  setShowLocationSheet(false);
-                  handleLocationClick();
-                }}
-              >
-                <div className="location_sheet_option_icon">
-                  <svg
-                    width="22"
-                    height="22"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle
-                      cx="12"
-                      cy="12"
-                      r="8"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    />
-
-                    <circle
-                      cx="12"
-                      cy="12"
-                      r="3"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    />
-
-                    <path
-                      d="M12 2V5"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-
-                    <path
-                      d="M12 19V22"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-
-                    <path
-                      d="M2 12H5"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-
-                    <path
-                      d="M19 12H22"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </div>
-
-                <div className="location_sheet_option_content">
-                  <strong>Use current location</strong>
-                  <span>Use your device's current location</span>
-                </div>
-
-                <span className="location_sheet_arrow">›</span>
-              </button>
-
-              <button
-                type="button"
-                className="location_sheet_option"
-                onClick={() => {
-                  setShowLocationSheet(false);
-
-                  if (customerLoggedIn) {
-                    navigate('/profile/saved-addresses/add', {
-                      state: {
-                        returnToLocationSheet: true,
-                        returnPath: '/find-shop',
-                      },
-                    });
-                    return;
-                  }
-
-                  navigate(
-                    '/customer/login?redirect=/profile/saved-addresses/add',
-                  );
-                }}
-              >
-                <div className="location_sheet_option_icon">
-                  <span>+</span>
-                </div>
-
-                <div className="location_sheet_option_content">
-                  <strong>Add Address</strong>
-                  <span>Add a new delivery address</span>
-                </div>
-
-                <span className="location_sheet_arrow">›</span>
-              </button>
-            </div>
-
-            <div className="location_sheet_saved">
-              <span className="location_sheet_saved_title">
-                SAVED ADDRESSES
-              </span>
-
-              {loadingAddresses && (
-                <div className="location_sheet_empty">
-                  Loading saved addresses...
-                </div>
-              )}
-
-              {!loadingAddresses && savedAddresses.length === 0 && (
-                <div className="location_sheet_empty">
-                  No saved addresses yet.
-                </div>
-              )}
-
-              {!loadingAddresses && savedAddresses.length > 0 && (
-                <div className="location_sheet_saved_list">
-                  {savedAddresses.map((savedAddress) => (
-                    <button
-                      key={savedAddress._id}
-                      type="button"
-                      className="location_sheet_saved_address"
-                      onClick={() => handleSavedAddressSelect(savedAddress)}
-                    >
-                      <div className="location_sheet_saved_address_icon">
-                        {savedAddress.label === 'Home' && (
-                          <span>
-                            <svg
-                              width="20"
-                              height="20"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M3 10.5L12 3L21 10.5V21H3V10.5Z"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-
-                              <path
-                                d="M9 21V14H15V21"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </span>
-                        )}
-
-                        {savedAddress.label === 'Work' && (
-                          <span>
-                            <svg
-                              width="20"
-                              height="20"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M4 21V6H20V21"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-
-                              <path
-                                d="M8 6V3H16V6"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-
-                              <path
-                                d="M4 10H20"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                              />
-
-                              <path
-                                d="M9 14H11"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                              />
-
-                              <path
-                                d="M13 14H15"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                              />
-
-                              <path
-                                d="M9 18H11"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                              />
-
-                              <path
-                                d="M13 18H15"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                              />
-                            </svg>
-                          </span>
-                        )}
-
-                        {savedAddress.label === 'Other' && (
-                          <span>
-                            <svg
-                              width="20"
-                              height="20"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M12 21C12 21 19 14.5 19 9C19 5.134 15.866 2 12 2C8.134 2 5 5.134 5 9C5 14.5 12 21 12 21Z"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-
-                              <circle
-                                cx="12"
-                                cy="9"
-                                r="2.5"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                              />
-                            </svg>
-                          </span>
-                        )}
-                      </div>
-
-                      <div className="location_sheet_saved_address_content">
-                        <div className="location_sheet_saved_address_title">
-                          <strong>{savedAddress.label}</strong>
-
-                          {savedAddress.isDefault && (
-                            <span className="location_sheet_default">
-                              DEFAULT
-                            </span>
-                          )}
-                        </div>
-
-                        <p>{savedAddress.address}</p>
-                      </div>
-
-                      <span className="location_sheet_arrow">›</span>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
+            navigate('/customer/login?redirect=/profile/saved-addresses/add');
+          }}
+          onSelectAddress={handleSavedAddressSelect}
+        />
       )}
     </main>
   );

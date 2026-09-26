@@ -2,7 +2,21 @@ import './ScanQR.css';
 
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Html5Qrcode } from 'html5-qrcode';
+
+import { extractShopId, validateShopId } from './utils/qrHelpers';
+
+import ScanQRHeader from './components/ScanQRHeader';
+import QRScannerBox from './components/QRScannerBox';
+import ScanQRInfo from './components/ScanQRInfo';
+import ManualShopId from './components/ManualShopId';
+import ScanQRActions from './components/ScanQRActions';
+import GalleryQRUpload from './components/GalleryQRUpload';
+import {
+  startQRScanner,
+  stopQRScanner,
+  cleanupQRScanner,
+  scanQRFromGallery,
+} from './utils/qrScanner';
 
 function ScanQR() {
   const navigate = useNavigate();
@@ -15,229 +29,27 @@ function ScanQR() {
   const [showManual, setShowManual] = useState(false);
 
   /* =========================================
-     START QR SCANNER
-  ========================================= */
-
-  const startScanner = async () => {
-    setError('');
-
-    try {
-      // Ask browser for camera permission first.
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: {
-            ideal: 'environment',
-          },
-        },
-      });
-
-      // Permission was granted.
-      // Stop the temporary stream because Html5Qrcode
-      // will open the camera itself.
-      stream.getTracks().forEach((track) => track.stop());
-
-      const scanner = new Html5Qrcode('qr-reader');
-
-      scannerRef.current = scanner;
-
-      setScanning(true);
-
-      await scanner.start(
-        {
-          facingMode: 'environment',
-        },
-        {
-          fps: 10,
-          qrbox: {
-            width: 220,
-            height: 220,
-          },
-          aspectRatio: 1,
-        },
-        async (decodedText) => {
-          console.log('QR Scanned:', decodedText);
-
-          const shopId = extractShopId(decodedText);
-
-          await stopScanner();
-
-          if (!shopId) {
-            setError('Invalid RMA shop QR code.');
-            return;
-          }
-
-          // Save the scanned shop as the customer's trusted shop.
-          localStorage.setItem('rma_trusted_shop_id', shopId);
-
-          navigate(`/shop/${shopId}`);
-        },
-        () => {
-          // Normal scanning failure.
-          // Ignore frames where no QR code is detected.
-        },
-      );
-    } catch (err) {
-      console.error('QR camera error:', err);
-
-      setScanning(false);
-
-      if (err?.name === 'NotAllowedError') {
-        setError(
-          'Camera permission was denied. Please allow camera access in your browser settings and try again.',
-        );
-      } else if (err?.name === 'NotFoundError') {
-        setError('No camera was found on this device.');
-      } else if (err?.name === 'NotReadableError') {
-        setError('Your camera is currently being used by another application.');
-      } else if (err?.name === 'SecurityError') {
-        setError(
-          'Camera access is blocked because this page is not using a secure connection.',
-        );
-      } else {
-        setError(
-          'Unable to access your camera. Please check your browser camera permission and try again.',
-        );
-      }
-    }
-  };
-
-  /* =========================================
-     STOP QR SCANNER
-  ========================================= */
-
-  const stopScanner = async () => {
-    if (!scannerRef.current) return;
-
-    try {
-      const scanner = scannerRef.current;
-
-      if (scanner.isScanning) {
-        await scanner.stop();
-      }
-
-      await scanner.clear();
-    } catch (err) {
-      console.error('Error stopping scanner:', err);
-    }
-
-    scannerRef.current = null;
-    setScanning(false);
-  };
-
-  /* =========================================
-     EXTRACT SHOP ID
-  ========================================= */
-
-  const extractShopId = (value) => {
-    if (!value) return null;
-
-    const text = value.trim();
-
-    /*
-      Case 1:
-      QR contains only:
-
-      RMA-000005
-    */
-
-    if (/^RMA-\d+$/i.test(text)) {
-      return text.toUpperCase();
-    }
-
-    /*
-      Case 2:
-      QR contains:
-
-      https://rma-backend-bo4a.onrender.com/shop/RMA-000005
-
-      or
-
-      https://rma.com/shop/RMA-000005
-    */
-
-    try {
-      const url = new URL(text);
-
-      const parts = url.pathname.split('/').filter(Boolean);
-
-      const shopIndex = parts.findIndex(
-        (part) => part.toLowerCase() === 'shop',
-      );
-
-      if (shopIndex !== -1 && parts[shopIndex + 1]) {
-        const shopId = parts[shopIndex + 1];
-
-        if (/^RMA-\d+$/i.test(shopId)) {
-          return shopId.toUpperCase();
-        }
-      }
-    } catch (err) {
-      // Not a URL.
-    }
-
-    /*
-      Case 3:
-      Try finding RMA ID anywhere in the text.
-    */
-
-    const match = text.match(/RMA-\d+/i);
-
-    if (match) {
-      return match[0].toUpperCase();
-    }
-
-    return null;
-  };
-
-  /* =========================================
      MANUAL SHOP ID
   ========================================= */
 
   const handleManualShopId = () => {
     setError('');
 
-    const shopId = manualId.trim().toUpperCase();
+    const result = validateShopId(manualId);
 
-    if (!shopId) {
-      setError('Please enter a shop ID.');
+    if (!result.valid) {
+      setError(result.error);
       return;
     }
 
-    if (!/^RMA-\d+$/.test(shopId)) {
-      setError('Please enter a valid RMA shop ID, for example RMA-000005.');
-      return;
-    }
+    localStorage.setItem('rma_trusted_shop_id', result.shopId);
 
-    // Save the manually selected shop as the customer's trusted shop.
-    localStorage.setItem('rma_trusted_shop_id', shopId);
-
-    navigate(`/shop/${shopId}`);
+    navigate(`/shop/${result.shopId}`);
   };
-
-  /* =========================================
-     CLEANUP
-  ========================================= */
 
   useEffect(() => {
     return () => {
-      const scanner = scannerRef.current;
-
-      if (!scanner) {
-        return;
-      }
-
-      if (scanner.isScanning) {
-        scanner
-          .stop()
-          .catch(() => {})
-          .finally(() => {
-            scanner.clear().catch(() => {});
-          });
-      } else {
-        scanner.clear().catch(() => {});
-      }
-
-      scannerRef.current = null;
+      cleanupQRScanner(scannerRef);
     };
   }, []);
 
@@ -250,34 +62,14 @@ function ScanQR() {
       return;
     }
 
-    try {
-      const scanner = new Html5Qrcode('qr-gallery-reader');
+    await scanQRFromGallery({
+      file,
+      setError,
+      extractShopId,
+      navigate,
+    });
 
-      const decodedText = await scanner.scanFile(file, true);
-
-      console.log('QR Scanned From Gallery:', decodedText);
-
-      await scanner.clear();
-
-      const shopId = extractShopId(decodedText);
-
-      if (!shopId) {
-        setError('Invalid RMA shop QR code.');
-        return;
-      }
-
-      localStorage.setItem('rma_trusted_shop_id', shopId);
-
-      navigate(`/shop/${shopId}`);
-    } catch (err) {
-      console.error('Gallery QR scan error:', err);
-
-      setError(
-        'No valid QR code was found in this image. Please select a clear photo of an RMA shop QR code.',
-      );
-    } finally {
-      event.target.value = '';
-    }
+    event.target.value = '';
   };
 
   return (
@@ -292,128 +84,48 @@ function ScanQR() {
         >
           ← Back
         </button>
-        {/* =========================================
-            HEADER
-        ========================================= */}
 
-        <div className="scan_qr_header">
-          <div className="scan_qr_logo">RMA</div>
+        <ScanQRHeader />
 
-          <p className="scan_qr_label">SHOP ACCESS</p>
+        <QRScannerBox scanning={scanning} />
 
-          <h1>Scan Shop QR</h1>
+        <ScanQRInfo scanning={scanning} />
 
-          <p>
-            Scan the QR code provided by your meat or fish shop to start
-            ordering directly from that shop.
-          </p>
-        </div>
-
-        {/* =========================================
-            REAL QR SCANNER
-        ========================================= */}
-
-        <div className="qr_scanner_box">
-          {!scanning && (
-            <>
-              <div className="scanner_corner top_left"></div>
-              <div className="scanner_corner top_right"></div>
-              <div className="scanner_corner bottom_left"></div>
-              <div className="scanner_corner bottom_right"></div>
-
-              <div className="scanner_placeholder">
-                <span>QR</span>
-
-                <p>Camera scanner</p>
-              </div>
-            </>
-          )}
-
-          <div id="qr-reader" className="qr_reader" />
-
-          {scanning && (
-            <>
-              <div className="scanner_corner top_left"></div>
-              <div className="scanner_corner top_right"></div>
-              <div className="scanner_corner bottom_left"></div>
-              <div className="scanner_corner bottom_right"></div>
-
-              <div className="scanner_line"></div>
-            </>
-          )}
-        </div>
-
-        {/* =========================================
-            INFO
-        ========================================= */}
-
-        <div className="scan_qr_info">
-          <h2>{scanning ? 'Scanning for shop QR...' : 'Ready to scan'}</h2>
-
-          <p>
-            {scanning
-              ? 'Point your camera at the QR code provided by the shop.'
-              : 'Tap the button below to activate your camera.'}
-          </p>
-        </div>
-
-        {/* =========================================
-            ERROR
-        ========================================= */}
-
+        {/* ERROR */}
         {error && <div className="scan_qr_error">{error}</div>}
 
-        {/* =========================================
-            MANUAL SHOP ID
-        ========================================= */}
-
         {showManual && (
-          <div className="manual_shop_section">
-            <label htmlFor="manual-shop-id">Shop ID</label>
-
-            <div className="manual_shop_row">
-              <input
-                id="manual-shop-id"
-                type="text"
-                value={manualId}
-                onChange={(e) => setManualId(e.target.value)}
-                placeholder="RMA-000005"
-                autoComplete="off"
-              />
-
-              <button type="button" onClick={handleManualShopId}>
-                Open
-              </button>
-            </div>
-          </div>
+          <ManualShopId
+            manualId={manualId}
+            onManualIdChange={setManualId}
+            onSubmit={handleManualShopId}
+          />
         )}
 
-        {/* =========================================
-            ACTIONS
-        ========================================= */}
-
-        <div className="scan_qr_actions">
-          {!scanning ? (
-            <button
-              type="button"
-              className="scan_qr_manual"
-              onClick={() => {
-                setShowManual(false);
-                startScanner();
-              }}
-            >
-              Start Camera
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="scan_qr_manual scan_qr_stop"
-              onClick={stopScanner}
-            >
-              Stop Camera
-            </button>
-          )}
-        </div>
+        <ScanQRActions
+          scanning={scanning}
+          onStart={() => {
+            setShowManual(false);
+            startQRScanner({
+              scannerRef,
+              setError,
+              setScanning,
+              extractShopId,
+              stopScanner: () =>
+                stopQRScanner({
+                  scannerRef,
+                  setScanning,
+                }),
+              navigate,
+            });
+          }}
+          onStop={() =>
+            stopQRScanner({
+              scannerRef,
+              setScanning,
+            })
+          }
+        />
 
         {!scanning && (
           <button
@@ -428,19 +140,7 @@ function ScanQR() {
           </button>
         )}
 
-        {!scanning && (
-          <label htmlFor="qr-gallery-input" className="gallery_qr_button">
-            Upload From Gallery
-          </label>
-        )}
-
-        <input
-          id="qr-gallery-input"
-          type="file"
-          accept="image/*"
-          onChange={handleGalleryScan}
-          style={{ display: 'none' }}
-        />
+        <GalleryQRUpload scanning={scanning} onScan={handleGalleryScan} />
       </section>
     </main>
   );

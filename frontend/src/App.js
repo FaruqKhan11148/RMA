@@ -214,6 +214,7 @@ function AppLayout() {
     location.pathname === '/owner/orders' ||
     location.pathname === '/owner/earnings' ||
     location.pathname === '/owner/offers' ||
+    location.pathname === '/owner/shop' ||
     location.pathname.startsWith('/owner/settings/');
 
   const isDeliveryRoute =

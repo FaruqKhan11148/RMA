@@ -2,25 +2,28 @@ import './Home.css';
 
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useLanguage } from '../../context/LanguageContext';
-import { QrCode } from 'lucide-react';
-import NearbyShopImageSlider from '../../components/NearbyShopImageSlider/NearbyShopImageSlider';
 
-const RMA_LOCATION_KEY = 'rma_user_location';
+import HomeHero from './components/HomeHero';
+import HomeActions from './components/HomeActions';
+import NearbyShops from './components/NearbyShops';
+import PopularProducts from './components/PopularProducts';
+import HomeExploreEnd from './components/HomeExploreEnd';
+import HomeLocationSheet from './components/HomeLocationSheet';
 
-const optimizeCloudinaryImage = (url, width = 800) => {
-  if (!url || !url.includes('res.cloudinary.com')) {
-    return url;
-  }
+import {
+  fetchSavedAddresses as fetchSavedAddressesApi,
+  fetchNearbyShops as fetchNearbyShopsApi,
+  checkCustomerLogin as checkCustomerLoginApi,
+} from './utils/homeApi';
 
-  return url.replace(
-    '/image/upload/',
-    `/image/upload/f_auto,q_auto,w_${width},dpr_auto/`,
-  );
-};
+import {
+  RMA_LOCATION_KEY,
+  optimizeCloudinaryImage,
+  getPopularProducts,
+  meatImages,
+} from './utils/homeHelpers';
 
 function Home() {
-  const { t } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -85,58 +88,16 @@ function Home() {
     }
   }, [location.state, navigate]);
 
-  const fetchSavedAddresses = async () => {
-    try {
-      setLoadingAddresses(true);
-
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/customers/addresses',
-        {
-          credentials: 'include',
-        },
-      );
-
-      const data = await response.json();
-
-      if (response.status === 401) {
-        setSavedAddresses([]);
-        return;
-      }
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to fetch saved addresses');
-      }
-
-      setSavedAddresses(data.addresses || []);
-    } catch (error) {
-      console.error('Fetch saved addresses error:', error);
-
-      setSavedAddresses([]);
-    } finally {
-      setLoadingAddresses(false);
-    }
-  };
-
   useEffect(() => {
-    const checkCustomerLogin = async () => {
+    const checkCustomer = async () => {
       try {
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/customers/me',
-          {
-            credentials: 'include',
-          },
-        );
+        const customer = await checkCustomerLoginApi();
 
-        if (response.ok) {
-          const data = await response.json();
-
+        if (customer) {
           setCustomerLoggedIn(true);
 
           const fullName =
-            data.customer?.name ||
-            data.customer?.fullName ||
-            data.customer?.customerName ||
-            '';
+            customer.name || customer.fullName || customer.customerName || '';
 
           const firstName = fullName.trim().split(/\s+/)[0] || '';
 
@@ -153,35 +114,10 @@ function Home() {
       }
     };
 
-    checkCustomerLogin();
+    checkCustomer();
   }, []);
 
-  const popularProducts = nearbyShops
-    .flatMap((shop) =>
-      (shop.products || [])
-        .filter((product) => product.available)
-        .map((product) => ({
-          ...product,
-          shopId: shop.shopId,
-          shopName: shop.shopName,
-          shopDistance: shop.distance,
-        })),
-    )
-    .slice(0, 8);
-
-  // ==========================================
-  // RMA MEAT IMAGES
-  // Replace these with your Cloudinary URLs
-  // ==========================================
-
-  const meatImages = [
-    'https://res.cloudinary.com/dsznfqgu3/image/upload/v1788692760/HuNbApWSmQc9TvMcm31ZogyfUsbl1wA6KBdndBiI3vh39M_m0yUZ_1LGjXTrwgWIhIfew2gPb-PxXaVaTItYVcU6AUIulUU3xxDiVx0l7eYM8vlhvqM2tF91-JCYsZu8UgFgUhWezrFzcq94RvzhS9qW3mRmv40PHwwBH0puu9cuGlvFrSOSVkYJHL8pN_bl.jpg',
-    'https://res.cloudinary.com/dsznfqgu3/image/upload/v1788692760/rYKkTplP1CFqmXNxxpnxvf_Da5-LkcRD6slxlBH3-HBpeo4Fro5mFCDNo2aYtNYwgiqm3PWXyPeb9L2ZbpmpeCDTv6oWbTmQHL6HUMbPzjcZeJ946-zJyqc0zRhVk6DioJTJYGsDTiHbRCP0qxHiyB68uTO9_HBdzGXNfK9EjMS1xqsJVuas22DpDLVbkTsL.jpg',
-    'https://res.cloudinary.com/dsznfqgu3/image/upload/v1788692758/YXAoTCSnLmtzr1cckX1A5eVY1Jjq2McuzwVKDQEu9iZYeo3pUhak7P-ZI6LLTe82ZMh0j-7FwKo1Kx90mRJEdHyFKeh6cDEbpHII6zXFtWiH-m5Lon8EUPbVSaK9nCh7LuLOmtNMiNiqDfuJbp6NTI4JDs_yZiRtf0QVGZKrjwVN6xTVl2fepBv4FgMclLLx.jpg',
-    'https://res.cloudinary.com/dsznfqgu3/image/upload/v1788692746/6zXPm-qeheg-DOSWSfukVpbtMS7NiICY8PecMbFXQl8Bhlg4IQQc_w4UqTpFPSSI0GAuIyJVFB0eLEtavNeKLtfLNbfRWbhfLJFVzXRJgEZncrjGJPHd8qr7WH4_s8ZBvxbbosN4pQ7_OiFXFrnR5B9EedXDp2w1rsanRh2CPM_tZ37HIWlMdVGgWF8b-Qsa.jpg',
-    'https://res.cloudinary.com/dsznfqgu3/image/upload/v1788692737/HvH-wvV2Ns1JsiDwYYwiIYWBD_hqSX8kp1axRoAClbVhzgoWkE5TkikoHxnr2C0bQAw4aBUFLWycd27_90ebE8wSxKxrFrBI3SjSlEWRKqAxOQhgmSY4UWNMwVBfvq3JG4XYJmNwD3yDHiWKdGAJD3UzuZ2vrUT_oxr4PYw6Qc5cxr602P66rA5dFNzXo5SQ.jpg',
-    'https://res.cloudinary.com/dsznfqgu3/image/upload/v1788692757/7W8FjPyWPZUer7tM7Vf1Ntr-yvriGGEZoIxfsb6GHEhWFboo2qh240DsoFOT6lZaT8sTSjQzIrUApTLiMrLG1Qs4HIRh1KZIL183xoSxb8VAWP7P_MJCjRWEa-bWvByIcPOgdtuoNUk3WtA5Fr0FONPBkkyp1ER2nJT-MRk6KSOU4Jur_0KCl5dejm-Nptwz.jpg',
-  ];
+  const popularProducts = getPopularProducts(nearbyShops);
 
   const handleLocationClick = () => {
     if (!navigator.geolocation) {
@@ -291,7 +227,21 @@ function Home() {
     });
   };
 
-  // FETCH NEARBY SHOPS
+  const fetchSavedAddresses = async () => {
+    try {
+      setLoadingAddresses(true);
+
+      const addresses = await fetchSavedAddressesApi();
+
+      setSavedAddresses(addresses);
+    } catch (error) {
+      console.error('Fetch saved addresses error:', error);
+
+      setSavedAddresses([]);
+    } finally {
+      setLoadingAddresses(false);
+    }
+  };
 
   const fetchNearbyShops = async (latitude, longitude) => {
     try {
@@ -301,17 +251,9 @@ function Home() {
       // Clear shops from the previous location
       setNearbyShops([]);
 
-      const response = await fetch(
-        `https://rma-backend-bo4a.onrender.com/api/owners/nearby?latitude=${latitude}&longitude=${longitude}`,
-      );
+      const shops = await fetchNearbyShopsApi(latitude, longitude);
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to fetch nearby shops');
-      }
-
-      setNearbyShops(data.shops || []);
+      setNearbyShops(shops);
     } catch (error) {
       console.error('Fetch nearby shops error:', error);
 
@@ -346,118 +288,17 @@ function Home() {
 
   return (
     <main className="home">
-      {/* ======================================
-          HERO
-          Sliding meat images + text
-      ======================================= */}
-
-      <section className="home_hero">
-        <header className="rma_home_header">
-          <button
-            className="rma_location_button"
-            onClick={() => {
-              setShowLocationSheet(true);
-              fetchSavedAddresses();
-            }}
-          >
-            <span className="rma_location_arrow">
-              <svg
-                width="22"
-                height="22"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12 21C12 21 19 14.5 19 9C19 5.134 15.866 2 12 2C8.134 2 5 5.134 5 9C5 14.5 12 21 12 21Z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-
-                <circle
-                  cx="12"
-                  cy="9"
-                  r="2.5"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                />
-              </svg>
-            </span>
-
-            <span className="rma_location_content">
-              <span className="rma_location_label">DELIVERING TO</span>
-
-              <span className="rma_location_value">
-                {locationLoading
-                  ? 'Finding your location...'
-                  : 'Your current location'}
-              </span>
-
-              {locationName && (
-                <span className="rma_location_name">{locationName}</span>
-              )}
-            </span>
-            <span className="rma_location_chevron" aria-hidden="true">
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M6 9L12 15L18 9"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
-          </button>
-        </header>
-        {/* Sliding image track */}
-
-        <div className="hero_image_track">
-          {[...meatImages, meatImages[0]].map((image, index) => (
-            <div className="hero_image" key={`${image}-${index}`}>
-              <img
-                src={optimizeCloudinaryImage(image, 1200)}
-                alt={`Fresh meat ${(index % meatImages.length) + 1}`}
-                loading={index === 0 ? 'eager' : 'lazy'}
-                fetchPriority={index === 0 ? 'high' : 'low'}
-                decoding="async"
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* Image overlay */}
-
-        <div className="hero_overlay"></div>
-
-        {/* Text placed ABOVE the images */}
-
-        <div className="home_header">
-          <div className="hero_badge">FRESH • LOCAL • CONVENIENT</div>
-
-          <p className="home_greeting">
-            {customerName ? `Hello ${customerName}` : 'Hello!'}
-          </p>
-
-          <h1>{t.home.title}</h1>
-
-          <p>{t.home.description}</p>
-        </div>
-
-        <div className="hero_dots" aria-hidden="true">
-          {meatImages.map((image, index) => (
-            <span className="hero_dot" key={image}></span>
-          ))}
-        </div>
-      </section>
+      <HomeHero
+        meatImages={meatImages}
+        optimizeCloudinaryImage={optimizeCloudinaryImage}
+        customerName={customerName}
+        locationLoading={locationLoading}
+        locationName={locationName}
+        onLocationClick={() => {
+          setShowLocationSheet(true);
+          fetchSavedAddresses();
+        }}
+      />
 
       {/* ======================================
           CONTENT BELOW HERO
@@ -468,521 +309,51 @@ function Home() {
             ACTIONS
         ===================================== */}
 
-        <section className="home_actions">
-          {/* SCAN QR */}
+        <HomeActions
+          onScanQr={() => navigate('/scan-qr')}
+          onFindShop={() => navigate('/find-shop')}
+        />
 
-          <button className="qr_action" onClick={() => navigate('/scan-qr')}>
-            <div className="action_icon">
-              <QrCode className="qr_icon_pattern" />
-            </div>
+        <NearbyShops
+          userLocation={userLocation}
+          nearbyShops={nearbyShops}
+          loadingNearbyShops={loadingNearbyShops}
+          nearbyShopsError={nearbyShopsError}
+          onSeeAll={() => navigate('/find-shop')}
+          onLocationClick={handleLocationClick}
+          onChangeLocation={() => {
+            setShowLocationSheet(true);
+            fetchSavedAddresses();
+          }}
+          onShopClick={(shopId) => navigate(`/shop/${shopId}`)}
+        />
 
-            <div className="action_content">
-              <span className="action_badge">FASTEST WAY</span>
+        <PopularProducts
+          userLocation={userLocation}
+          nearbyShops={nearbyShops}
+          loadingNearbyShops={loadingNearbyShops}
+          nearbyShopsError={nearbyShopsError}
+          popularProducts={popularProducts}
+          optimizeCloudinaryImage={optimizeCloudinaryImage}
+          onExplore={() => navigate('/find-shop')}
+          onProductClick={(shopId) => navigate(`/shop/${shopId}`)}
+        />
 
-              <h2>{t.home.scanQr}</h2>
-
-              <p>{t.home.scanQrDescription}</p>
-            </div>
-
-            <span className="action_arrow">→</span>
-          </button>
-
-          {/* FIND SHOP */}
-
-          <button
-            className="find_action"
-            onClick={() => navigate('/find-shop')}
-          >
-            <div className="find_icon">
-              <span>⌕</span>
-            </div>
-
-            <div className="find_content">
-              <span className="find_badge">EXPLORE SHOPS</span>
-
-              <span className="find_title">{t.home.findShop}</span>
-
-              <span className="find_description">
-                Discover nearby meat and seafood shops
-              </span>
-            </div>
-
-            <span className="find_arrow">→</span>
-          </button>
-        </section>
-
-        <section className="nearby_shops">
-          <div className="nearby_shops_header">
-            <div>
-              <span className="nearby_shops_eyebrow">NEAR YOU</span>
-
-              <h2>Nearby Shops</h2>
-
-              <p>Fresh meat and seafood from shops around you</p>
-            </div>
-
-            <button
-              className="nearby_shops_see_all"
-              onClick={() => navigate('/find-shop')}
-            >
-              See all
-              <span>→</span>
-            </button>
-          </div>
-
-          {loadingNearbyShops && (
-            <div className="nearby_shops_loading">Loading nearby shops...</div>
-          )}
-
-          {!loadingNearbyShops && nearbyShopsError && (
-            <div className="nearby_shops_error">{nearbyShopsError}</div>
-          )}
-
-          {!loadingNearbyShops &&
-            !nearbyShopsError &&
-            nearbyShops.length === 0 && (
-              <div className="nearby_shops_empty">
-                {!userLocation ? (
-                  <>
-                    <h3>Select your location</h3>
-
-                    <p>
-                      Choose your location to discover nearby meat and seafood
-                      shops.
-                    </p>
-
-                    <button
-                      style={{
-                        marginRight: '10px',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        verticalAlign: 'middle',
-                      }}
-                      onClick={handleLocationClick}
-                    >
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M12 21C12 21 19 14.5 19 9C19 5.134 15.866 2 12 2C8.134 2 5 5.134 5 9C5 14.5 12 21 12 21Z"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <circle
-                          cx="12"
-                          cy="9"
-                          r="2.5"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                        />
-                      </svg>
-                      Select Your Location
-                    </button>
-
-                    <button
-                      style={{
-                        marginLeft: '10px',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        verticalAlign: 'middle',
-                      }}
-                      onClick={() => navigate('/find-shop')}
-                    >
-                      Explore Shops
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <h3>No nearby shops found</h3>
-
-                    <p>
-                      We couldn't find any shops within 5 km of your location.
-                    </p>
-
-                    <button
-                      style={{
-                        marginRight: '10px',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        verticalAlign: 'middle',
-                      }}
-                      onClick={() => {
-                        setShowLocationSheet(true);
-                        fetchSavedAddresses();
-                      }}
-                    >
-                      Change Location
-                    </button>
-
-                    <button
-                      style={{
-                        marginLeft: '10px',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        verticalAlign: 'middle',
-                      }}
-                      onClick={() => navigate('/find-shop')}
-                    >
-                      Explore Shops
-                    </button>
-                  </>
-                )}
-              </div>
-            )}
-
-          {!loadingNearbyShops &&
-            !nearbyShopsError &&
-            nearbyShops.length > 0 && (
-              <div className="nearby_shops_list">
-                {nearbyShops.map((shop) => (
-                  <button
-                    key={shop.shopId}
-                    className="nearby_shop_card"
-                    onClick={() => navigate(`/shop/${shop.shopId}`)}
-                  >
-                    <NearbyShopImageSlider shop={shop} />
-
-                    <div className="nearby_shop_content">
-                      <div className="nearby_shop_title_row">
-                        <h3>{shop.shopName}</h3>
-
-                        <span className="nearby_shop_rating">★ 4.5</span>
-                      </div>
-
-                      <p className="nearby_shop_description">
-                        {shop.description || 'Fresh meat and seafood'}
-                      </p>
-
-                      <div className="nearby_shop_meta">
-                        <span>{shop.distance} km</span>
-
-                        <span>•</span>
-
-                        <span>{shop.delivery ? 'Delivery' : 'Pickup'}</span>
-
-                        <span>•</span>
-
-                        <span
-                          className={
-                            shop.isOpen
-                              ? 'shop_status_open'
-                              : 'shop_status_closed'
-                          }
-                        >
-                          {shop.isOpen ? 'Open' : 'Closed'}
-                        </span>
-                      </div>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            )}
-        </section>
-        {userLocation && nearbyShops.length > 0 && (
-          <section className="popular_products">
-            <div className="popular_products_header">
-              <div>
-                <span className="popular_products_eyebrow">
-                  CUSTOMER FAVOURITES
-                </span>
-
-                <h2>Popular Near You</h2>
-
-                <p>Fresh picks from nearby shops</p>
-              </div>
-
-              <button
-                className="popular_products_see_all"
-                onClick={() => navigate('/find-shop')}
-              >
-                Explore
-                <span>→</span>
-              </button>
-            </div>
-
-            {!loadingNearbyShops &&
-              !nearbyShopsError &&
-              popularProducts.length > 0 && (
-                <div className="popular_products_list">
-                  {popularProducts.map((product, index) => (
-                    <button
-                      key={`${product.shopId}-${product._id || product.productId || index}`}
-                      className="popular_product_card"
-                      onClick={() => navigate(`/shop/${product.shopId}`)}
-                    >
-                      <div className="popular_product_image">
-                        <img
-                          src={optimizeCloudinaryImage(product.imageUrl, 500)}
-                          alt={product.name}
-                          loading="lazy"
-                          decoding="async"
-                        />
-                        <span className="popular_product_tag">POPULAR</span>
-                      </div>
-
-                      <div className="popular_product_content">
-                        <h3>{product.name}</h3>
-
-                        <p className="popular_product_shop">
-                          {product.shopName}
-                        </p>
-
-                        <div className="popular_product_bottom">
-                          <span className="popular_product_price">
-                            ₹{product.price}
-                            {product.unit && ` / ${product.unit}`}
-                          </span>
-
-                          <span className="popular_product_arrow">→</span>
-                        </div>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              )}
-
-            {!loadingNearbyShops &&
-              !nearbyShopsError &&
-              popularProducts.length === 0 && (
-                <div className="popular_products_empty">
-                  Popular products will appear here as shops add their products.
-                </div>
-              )}
-          </section>
-        )}
-
-        <section className="home_explore_end">
-          <div className="home_explore_end_content">
-            <span className="home_explore_end_eyebrow">KEEP EXPLORING</span>
-
-            <h2>Looking for something fresh?</h2>
-
-            <p>Discover more meat and seafood shops near you.</p>
-
-            <div className="home_explore_end_actions">
-              <button
-                type="button"
-                className="home_explore_end_primary"
-                onClick={() => navigate('/find-shop')}
-              >
-                Find More Shops
-                <span>→</span>
-              </button>
-
-              <button
-                type="button"
-                className="home_explore_end_secondary"
-                onClick={() => navigate('/scan-qr')}
-              >
-                Scan Shop QR
-              </button>
-            </div>
-          </div>
-
-          <div className="home_explore_end_visual" aria-hidden="true">
-            <div className="home_explore_end_circle home_explore_end_circle_one" />
-            <div className="home_explore_end_circle home_explore_end_circle_two" />
-            <span>🥩</span>
-            <span>🍗</span>
-            <span>🐟</span>
-          </div>
-        </section>
+        <HomeExploreEnd
+          onFindShops={() => navigate('/find-shop')}
+          onScanQr={() => navigate('/scan-qr')}
+        />
       </div>
-      {showLocationSheet && (
-        <div
-          className="location_sheet_overlay"
-          onClick={() => setShowLocationSheet(false)}
-        >
-          <div
-            className="location_sheet"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="location_sheet_handle" />
-
-            <div className="location_sheet_header">
-              <h2>Select a location</h2>
-
-              <button
-                type="button"
-                onClick={() => setShowLocationSheet(false)}
-                aria-label="Close"
-              >
-                ×
-              </button>
-            </div>
-
-            <div className="location_sheet_options">
-              <button
-                type="button"
-                className="location_sheet_option"
-                onClick={() => {
-                  setShowLocationSheet(false);
-                  handleLocationClick();
-                }}
-              >
-                <div className="location_sheet_option_icon">
-                  <svg
-                    width="22"
-                    height="22"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle
-                      cx="12"
-                      cy="12"
-                      r="8"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    />
-
-                    <circle
-                      cx="12"
-                      cy="12"
-                      r="3"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    />
-
-                    <path
-                      d="M12 2V5"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-
-                    <path
-                      d="M12 19V22"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-
-                    <path
-                      d="M2 12H5"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-
-                    <path
-                      d="M19 12H22"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </div>
-
-                <div className="location_sheet_option_content">
-                  <strong>Use current location</strong>
-                  <span>Use your device's current location</span>
-                </div>
-
-                <span className="location_sheet_arrow">›</span>
-              </button>
-
-              <button
-                type="button"
-                className="location_sheet_option"
-                onClick={() => {
-                  setShowLocationSheet(false);
-
-                  if (customerLoggedIn) {
-                    navigate('/profile/saved-addresses/add', {
-                      state: {
-                        returnToLocationSheet: true,
-                        returnPath: '/',
-                      },
-                    });
-                    return;
-                  }
-
-                  navigate(
-                    '/customer/login?redirect=/profile/saved-addresses/add',
-                  );
-                }}
-              >
-                <div className="location_sheet_option_icon">
-                  <span>+</span>
-                </div>
-
-                <div className="location_sheet_option_content">
-                  <strong>Add Address</strong>
-                  <span>Add a new delivery address</span>
-                </div>
-
-                <span className="location_sheet_arrow">›</span>
-              </button>
-            </div>
-
-            <div className="location_sheet_saved">
-              <span className="location_sheet_saved_title">
-                SAVED ADDRESSES
-              </span>
-
-              {loadingAddresses && (
-                <div className="location_sheet_empty">
-                  Loading saved addresses...
-                </div>
-              )}
-
-              {!loadingAddresses && savedAddresses.length === 0 && (
-                <div className="location_sheet_empty">
-                  No saved addresses yet.
-                </div>
-              )}
-
-              {!loadingAddresses && savedAddresses.length > 0 && (
-                <div className="location_sheet_saved_list">
-                  {savedAddresses.map((savedAddress) => (
-                    <button
-                      key={savedAddress._id}
-                      type="button"
-                      className="location_sheet_saved_address"
-                      onClick={() => handleSavedAddressSelect(savedAddress)}
-                    >
-                      <div className="location_sheet_saved_address_icon">
-                        {savedAddress.label === 'Home' && <span>⌂</span>}
-
-                        {savedAddress.label === 'Work' && <span>▣</span>}
-
-                        {savedAddress.label === 'Other' && <span>●</span>}
-                      </div>
-
-                      <div className="location_sheet_saved_address_content">
-                        <div className="location_sheet_saved_address_title">
-                          <strong>{savedAddress.label}</strong>
-
-                          {savedAddress.isDefault && (
-                            <span className="location_sheet_default">
-                              DEFAULT
-                            </span>
-                          )}
-                        </div>
-
-                        <p>{savedAddress.address}</p>
-                      </div>
-
-                      <span className="location_sheet_arrow">›</span>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      <HomeLocationSheet
+        showLocationSheet={showLocationSheet}
+        setShowLocationSheet={setShowLocationSheet}
+        handleLocationClick={handleLocationClick}
+        customerLoggedIn={customerLoggedIn}
+        navigate={navigate}
+        loadingAddresses={loadingAddresses}
+        savedAddresses={savedAddresses}
+        handleSavedAddressSelect={handleSavedAddressSelect}
+      />
     </main>
   );
 }

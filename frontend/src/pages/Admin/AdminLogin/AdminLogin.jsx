@@ -3,6 +3,13 @@ import './AdminLogin.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import AdminLoginHeader from './components/AdminLoginHeader';
+import AdminLoginForm from './components/AdminLoginForm';
+import AdminLoginSecurity from './components/AdminLoginSecurity';
+
+import { loginAdmin } from './utils/adminLoginApi';
+import { validateAdminLogin } from './utils/adminLoginHelpers';
+
 function AdminLogin() {
   const navigate = useNavigate();
 
@@ -12,45 +19,29 @@ function AdminLogin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+  const handleLogin = async (event) => {
+    event.preventDefault();
 
     setError('');
 
-    if (!username.trim() || !password) {
-      setError('Username and password are required.');
+    const validationError = validateAdminLogin(username, password);
+
+    if (validationError) {
+      setError(validationError);
       return;
     }
 
     try {
       setLoading(true);
 
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/admin/login',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-          body: JSON.stringify({
-            username: username.trim(),
-            password,
-          }),
-        },
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Admin login failed');
-      }
+      const data = await loginAdmin(username.trim(), password);
 
       console.log('Admin login successful:', data);
 
       navigate('/admin/dashboard');
     } catch (error) {
       console.error('Admin login error:', error);
+
       setError(error.message || 'Unable to login');
     } finally {
       setLoading(false);
@@ -60,57 +51,19 @@ function AdminLogin() {
   return (
     <div className="admin-login-page">
       <div className="admin-login-card">
-        <div className="admin-login-header">
-          <div className="admin-logo">RMA</div>
+        <AdminLoginHeader />
 
-          <h1>Admin Control Center</h1>
+        <AdminLoginForm
+          username={username}
+          password={password}
+          loading={loading}
+          error={error}
+          onUsernameChange={setUsername}
+          onPasswordChange={setPassword}
+          onSubmit={handleLogin}
+        />
 
-          <p>Secure administrator access</p>
-        </div>
-
-        <form onSubmit={handleLogin}>
-          <div className="admin-form-group">
-            <label htmlFor="admin-username">Username</label>
-
-            <input
-              id="admin-username"
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Enter admin username"
-              autoComplete="username"
-              disabled={loading}
-            />
-          </div>
-
-          <div className="admin-form-group">
-            <label htmlFor="admin-password">Password</label>
-
-            <input
-              id="admin-password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter admin password"
-              autoComplete="current-password"
-              disabled={loading}
-            />
-          </div>
-
-          {error && <div className="admin-login-error">{error}</div>}
-
-          <button
-            type="submit"
-            className="admin-login-button"
-            disabled={loading}
-          >
-            {loading ? 'Signing in...' : 'Sign in'}
-          </button>
-        </form>
-
-        <div className="admin-login-security">
-          Authorized administrator only
-        </div>
+        <AdminLoginSecurity />
       </div>
     </div>
   );

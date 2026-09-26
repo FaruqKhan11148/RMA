@@ -3,13 +3,15 @@ import './Email.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import EmailHeader from './components/Email/EmailHeader';
+import EmailForm from './components/Email/EmailForm';
+
 function Email() {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -41,7 +43,6 @@ function Email() {
         setEmail(data.owner.email);
       } catch (error) {
         console.error('Fetch owner details failed:', error);
-
         setError(error.message || 'Unable to load owner details.');
       } finally {
         setLoading(false);
@@ -116,11 +117,9 @@ function Email() {
       }
 
       setEmail(data.owner.email);
-
       setSuccess('Email address updated successfully.');
     } catch (error) {
       console.error('Update email failed:', error);
-
       setError(error.message || 'Unable to update email address.');
     } finally {
       setSaving(false);
@@ -146,39 +145,16 @@ function Email() {
           ← Account Settings
         </button>
 
-        <div className="owner_setting_header">
-          <h1>Email Address</h1>
+        <EmailHeader />
 
-          <p>
-            Update the email address associated with your RMA owner account.
-          </p>
-        </div>
-
-        <form onSubmit={handleSubmit}>
-          <label className="owner_setting_label">
-            Email Address
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter email address"
-              autoComplete="email"
-              required
-            />
-          </label>
-
-          {error && <p className="owner_setting_error">{error}</p>}
-
-          {success && <p className="owner_setting_success">{success}</p>}
-
-          <button
-            type="submit"
-            className="owner_setting_save"
-            disabled={saving}
-          >
-            {saving ? 'Saving...' : 'Save Changes'}
-          </button>
-        </form>
+        <EmailForm
+          email={email}
+          setEmail={setEmail}
+          handleSubmit={handleSubmit}
+          error={error}
+          success={success}
+          saving={saving}
+        />
       </section>
     </main>
   );

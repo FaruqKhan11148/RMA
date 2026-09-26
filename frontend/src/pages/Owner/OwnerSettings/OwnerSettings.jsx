@@ -2,6 +2,9 @@ import './OwnerSettings.css';
 
 import { useNavigate } from 'react-router-dom';
 
+import OwnerSettingsHeader from './components/OwnerSettingsHeader';
+import SettingsSection from './components/SettingsSection';
+
 function OwnerSettings() {
   const navigate = useNavigate();
 
@@ -150,45 +153,15 @@ function OwnerSettings() {
 
   return (
     <div className="owner-settings-page">
-      <div className="owner-settings-header">
-        <button
-          className="back-button"
-          onClick={() => navigate('/owner/dashboard')}
-        >
-          ← Dashboard
-        </button>
-
-        <div>
-          <h1>Settings</h1>
-          <p>Manage your account, shop, products, delivery and payments.</p>
-        </div>
-      </div>
+      <OwnerSettingsHeader navigate={navigate} />
 
       <div className="settings-sections">
         {sections.map((section) => (
-          <section className="settings-section" key={section.title}>
-            <div className="section-heading">
-              <h2>{section.title}</h2>
-              <p>{section.description}</p>
-            </div>
-
-            <div className="settings-options">
-              {section.items.map((item) => (
-                <button
-                  className="settings-option"
-                  key={item.path}
-                  onClick={() => navigate(item.path)}
-                >
-                  <div className="option-content">
-                    <h3>{item.title}</h3>
-                    <p>{item.description}</p>
-                  </div>
-
-                  <span className="option-arrow">›</span>
-                </button>
-              ))}
-            </div>
-          </section>
+          <SettingsSection
+            key={section.title}
+            section={section}
+            navigate={navigate}
+          />
         ))}
       </div>
     </div>

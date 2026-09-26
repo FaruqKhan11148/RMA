@@ -775,6 +775,65 @@ router.patch('/settings/email', ownerAuth, async (req, res) => {
   }
 });
 
+router.patch('/settings/owner-name', ownerAuth, async (req, res) => {
+  try {
+    const ownerName = req.body.ownerName?.trim();
+
+    if (!ownerName) {
+      return res.status(400).json({
+        message: 'Owner name is required',
+      });
+    }
+
+    if (ownerName.length < 2) {
+      return res.status(400).json({
+        message: 'Owner name must be at least 2 characters long',
+      });
+    }
+
+    if (ownerName === req.owner.ownerName) {
+      return res.status(400).json({
+        message: 'This is already your current owner name',
+      });
+    }
+
+    const updatedOwner = await Owner.findByIdAndUpdate(
+      req.owner._id,
+      {
+        ownerName,
+      },
+      {
+        new: true,
+        runValidators: true,
+      },
+    ).select('-password');
+
+    if (!updatedOwner) {
+      return res.status(404).json({
+        message: 'Owner account not found',
+      });
+    }
+
+    return res.status(200).json({
+      message: 'Owner name updated successfully',
+      owner: {
+        id: updatedOwner._id,
+        shopId: updatedOwner.shopId,
+        ownerName: updatedOwner.ownerName,
+        phone: updatedOwner.phone,
+        email: updatedOwner.email,
+        shopName: updatedOwner.shopName,
+      },
+    });
+  } catch (error) {
+    console.error('Update owner name failed:', error);
+
+    return res.status(500).json({
+      message: 'Failed to update owner name',
+    });
+  }
+});
+
 router.patch('/settings/password', ownerAuth, async (req, res) => {
   try {
     const { currentPassword, newPassword, confirmPassword } = req.body;

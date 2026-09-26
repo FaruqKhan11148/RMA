@@ -3,6 +3,9 @@ import './OwnerName.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import OwnerNameHeader from './components/OwnerName/OwnerNameHeader';
+import OwnerNameForm from './components/OwnerName/OwnerNameForm';
+
 function OwnerName() {
   const navigate = useNavigate();
 
@@ -136,35 +139,16 @@ function OwnerName() {
           ← Account Settings
         </button>
 
-        <div className="owner_setting_header">
-          <h1>Owner Name</h1>
-          <p>Update the name associated with your RMA owner account.</p>
-        </div>
+        <OwnerNameHeader />
 
-        <form onSubmit={handleSubmit}>
-          <label className="owner_setting_label">
-            Owner Name
-            <input
-              type="text"
-              value={ownerName}
-              onChange={(e) => setOwnerName(e.target.value)}
-              placeholder="Enter owner name"
-              required
-            />
-          </label>
-
-          {error && <p className="owner_setting_error">{error}</p>}
-
-          {success && <p className="owner_setting_success">{success}</p>}
-
-          <button
-            type="submit"
-            className="owner_setting_save"
-            disabled={saving}
-          >
-            {saving ? 'Saving...' : 'Save Changes'}
-          </button>
-        </form>
+        <OwnerNameForm
+          ownerName={ownerName}
+          setOwnerName={setOwnerName}
+          handleSubmit={handleSubmit}
+          error={error}
+          success={success}
+          saving={saving}
+        />
       </section>
     </main>
   );

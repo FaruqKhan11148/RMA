@@ -3,6 +3,12 @@ import './PickupAvailable.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import PickupAvailableHeader from './components/PickupAvailable/PickupAvailableHeader';
+import PickupStatusCard from './components/PickupAvailable/PickupStatusCard';
+import PickupStatusOptions from './components/PickupAvailable/PickupStatusOptions';
+import PickupStatusMessages from './components/PickupAvailable/PickupStatusMessages';
+import PickupStatusNote from './components/PickupAvailable/PickupStatusNote';
+
 function PickupAvailable() {
   const navigate = useNavigate();
 
@@ -106,115 +112,23 @@ function PickupAvailable() {
   return (
     <div className="owner_setting_page">
       <div className="owner_setting_card">
-        <button
-          type="button"
-          className="owner_setting_back"
-          onClick={() => navigate(-1)}
-        >
-          ← Delivery Settings
-        </button>
+        <PickupAvailableHeader navigate={navigate} />
 
-        <div className="owner_setting_header">
-          <p className="owner_setting_tag">DELIVERY SETTINGS</p>
+        <PickupStatusCard pickup={pickup} />
 
-          <h1>Pickup Available</h1>
+        <PickupStatusOptions
+          pickup={pickup}
+          handlePickupChange={handlePickupChange}
+          saving={saving}
+        />
 
-          <p>
-            Control whether customers can collect their orders directly from
-            your shop.
-          </p>
-        </div>
+        <PickupStatusMessages
+          saving={saving}
+          error={error}
+          successMessage={successMessage}
+        />
 
-        <div className="pickup_status_card">
-          <div
-            className={
-              pickup
-                ? 'pickup_status_icon available'
-                : 'pickup_status_icon unavailable'
-            }
-          >
-            {pickup ? '✓' : '×'}
-          </div>
-
-          <div className="pickup_status_content">
-            <span className="pickup_status_label">Current Pickup Status</span>
-
-            <strong
-              className={
-                pickup
-                  ? 'pickup_status_value available'
-                  : 'pickup_status_value unavailable'
-              }
-            >
-              {pickup ? 'AVAILABLE' : 'UNAVAILABLE'}
-            </strong>
-
-            <p>
-              {pickup
-                ? 'Customers can choose to pick up their orders from your shop.'
-                : 'Customers cannot currently choose shop pickup.'}
-            </p>
-          </div>
-        </div>
-
-        <div className="pickup_status_options">
-          <button
-            type="button"
-            className={
-              pickup
-                ? 'pickup_status_option active available_option'
-                : 'pickup_status_option available_option'
-            }
-            onClick={() => handlePickupChange(true)}
-            disabled={saving}
-          >
-            <span className="pickup_status_option_icon">✓</span>
-
-            <span>
-              <strong>Enable Pickup</strong>
-              <small>Allow customers to collect orders</small>
-            </span>
-          </button>
-
-          <button
-            type="button"
-            className={
-              !pickup
-                ? 'pickup_status_option active unavailable_option'
-                : 'pickup_status_option unavailable_option'
-            }
-            onClick={() => handlePickupChange(false)}
-            disabled={saving}
-          >
-            <span className="pickup_status_option_icon">×</span>
-
-            <span>
-              <strong>Disable Pickup</strong>
-              <small>Stop accepting pickup orders</small>
-            </span>
-          </button>
-        </div>
-
-        {saving && (
-          <div className="pickup_status_saving">
-            Updating pickup availability...
-          </div>
-        )}
-
-        {error && <div className="owner_setting_error">{error}</div>}
-
-        {successMessage && (
-          <div className="owner_setting_success">{successMessage}</div>
-        )}
-
-        <div className="pickup_status_note">
-          <strong>Important</strong>
-
-          <span>
-            Disabling pickup should only remove the pickup option for new
-            orders. Existing orders should continue normally.
-          </span>
-        </div>
+        <PickupStatusNote />
       </div>
     </div>
   );

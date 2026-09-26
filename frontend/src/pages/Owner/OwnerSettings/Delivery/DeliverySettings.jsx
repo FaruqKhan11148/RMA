@@ -3,6 +3,17 @@ import './DeliverySettings.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import DeliverySettingsHeader from './components/DeliverySettings/DeliverySettingsHeader';
+import DeliveryRadiusField from './components/DeliverySettings/DeliveryRadiusField';
+import MinimumOrderAmountField from './components/DeliverySettings/MinimumOrderAmountField';
+import DeliveryChargeField from './components/DeliverySettings/DeliveryChargeField';
+import FreeDeliveryField from './components/DeliverySettings/FreeDeliveryField';
+import EstimatedDeliveryTimeField from './components/DeliverySettings/EstimatedDeliveryTimeField';
+import DeliverySettingsMessages from './components/DeliverySettings/DeliverySettingsMessages';
+import OpeningTimeField from './components/DeliverySettings/OpeningTimeField';
+import ClosingTimeField from './components/DeliverySettings/ClosingTimeField';
+import ShopStatusField from './components/DeliverySettings/ShopStatusField';
+
 function DeliverySettings() {
   const navigate = useNavigate();
 
@@ -205,226 +216,61 @@ function DeliverySettings() {
   return (
     <div className="owner_setting_page">
       <div className="owner_setting_card">
-        <button
-          type="button"
-          className="owner_setting_back"
-          onClick={() => navigate(-1)}
-        >
-          ← Delivery Settings
-        </button>
-
-        <div className="owner_setting_header">
-          <p className="owner_setting_tag">DELIVERY SETTINGS</p>
-
-          <h1>Delivery Settings</h1>
-
-          <p>
-            Configure the delivery rules and estimated delivery information for
-            your shop.
-          </p>
-        </div>
+        <DeliverySettingsHeader navigate={navigate} />
 
         <form className="delivery_settings_form" onSubmit={handleSubmit}>
-          {/* DELIVERY RADIUS */}
+          <DeliveryRadiusField
+            settings={settings}
+            handleChange={handleChange}
+            saving={saving}
+          />
 
-          <div className="delivery_setting_group">
-            <label htmlFor="deliveryRadius">Delivery Radius</label>
+          <MinimumOrderAmountField
+            settings={settings}
+            handleChange={handleChange}
+            saving={saving}
+          />
 
-            <div className="delivery_input_wrapper">
-              <input
-                id="deliveryRadius"
-                type="number"
-                name="deliveryRadius"
-                value={settings.deliveryRadius}
-                onChange={handleChange}
-                min="0.1"
-                step="0.1"
-                placeholder="5"
-                disabled={saving}
-              />
+          <DeliveryChargeField
+            settings={settings}
+            handleChange={handleChange}
+            saving={saving}
+          />
 
-              <span>km</span>
-            </div>
+          <FreeDeliveryField
+            settings={settings}
+            handleChange={handleChange}
+            saving={saving}
+          />
 
-            <small>
-              Maximum distance from your shop where delivery orders can be
-              accepted.
-            </small>
-          </div>
+          <EstimatedDeliveryTimeField
+            settings={settings}
+            handleChange={handleChange}
+            saving={saving}
+          />
 
-          {/* MINIMUM ORDER */}
+          <DeliverySettingsMessages
+            error={error}
+            successMessage={successMessage}
+          />
 
-          <div className="delivery_setting_group">
-            <label htmlFor="minimumOrderAmount">Minimum Order Amount</label>
+          <OpeningTimeField
+            settings={settings}
+            handleChange={handleChange}
+            saving={saving}
+          />
 
-            <div className="delivery_input_wrapper">
-              <span>₹</span>
+          <ClosingTimeField
+            settings={settings}
+            handleChange={handleChange}
+            saving={saving}
+          />
 
-              <input
-                id="minimumOrderAmount"
-                type="number"
-                name="minimumOrderAmount"
-                value={settings.minimumOrderAmount}
-                onChange={handleChange}
-                min="0"
-                step="1"
-                placeholder="200"
-                disabled={saving}
-              />
-            </div>
-
-            <small>
-              Minimum product amount required before a customer can place a
-              delivery order.
-            </small>
-          </div>
-
-          {/* DELIVERY CHARGE */}
-
-          <div className="delivery_setting_group">
-            <label htmlFor="deliveryCharge">Delivery Charge</label>
-
-            <div className="delivery_input_wrapper">
-              <span>₹</span>
-
-              <input
-                id="deliveryCharge"
-                type="number"
-                name="deliveryCharge"
-                value={settings.deliveryCharge}
-                onChange={handleChange}
-                min="0"
-                step="1"
-                placeholder="20"
-                disabled={saving}
-              />
-            </div>
-
-            <small>
-              Default delivery charge applied to eligible delivery orders.
-            </small>
-          </div>
-
-          {/* FREE DELIVERY */}
-
-          <div className="delivery_setting_group">
-            <label htmlFor="freeDeliveryAbove">Free Delivery Above</label>
-
-            <div className="delivery_input_wrapper">
-              <span>₹</span>
-
-              <input
-                id="freeDeliveryAbove"
-                type="number"
-                name="freeDeliveryAbove"
-                value={settings.freeDeliveryAbove}
-                onChange={handleChange}
-                min="0"
-                step="1"
-                placeholder="500"
-                disabled={saving}
-              />
-            </div>
-
-            <small>
-              Orders above this amount can receive free delivery. Enter 0 to
-              disable free delivery.
-            </small>
-          </div>
-
-          {/* ESTIMATED TIME */}
-
-          <div className="delivery_setting_group">
-            <label htmlFor="estimatedDeliveryTime">
-              Estimated Delivery Time
-            </label>
-
-            <div className="delivery_input_wrapper">
-              <input
-                id="estimatedDeliveryTime"
-                type="number"
-                name="estimatedDeliveryTime"
-                value={settings.estimatedDeliveryTime}
-                onChange={handleChange}
-                min="1"
-                step="1"
-                placeholder="45"
-                disabled={saving}
-              />
-
-              <span>min</span>
-            </div>
-
-            <small>
-              Approximate time required to prepare and deliver an order.
-            </small>
-          </div>
-
-          {/* MESSAGES */}
-
-          {error && <div className="owner_setting_error">{error}</div>}
-
-          {successMessage && (
-            <div className="owner_setting_success">{successMessage}</div>
-          )}
-
-          <div className="delivery_setting_group">
-            <label htmlFor="openingTime">Opening Time</label>
-
-            <input
-              type="time"
-              id="openingTime"
-              name="openingTime"
-              value={settings.openingTime}
-              onChange={handleChange}
-              disabled={saving}
-            />
-
-            <small>
-              Time when your shop automatically opens for customers.
-            </small>
-          </div>
-
-          <div className="delivery_setting_group">
-            <label htmlFor="closingTime">Closing Time</label>
-
-            <input
-              type="time"
-              id="closingTime"
-              name="closingTime"
-              value={settings.closingTime}
-              onChange={handleChange}
-              disabled={saving}
-            />
-
-            <small>
-              Time when your shop automatically closes for customers.
-            </small>
-          </div>
-
-          <div className="delivery_setting_group">
-            <label htmlFor="shopStatusMode">Shop Status</label>
-
-            <select
-              id="shopStatusMode"
-              name="shopStatusMode"
-              value={settings.shopStatusMode}
-              onChange={handleChange}
-              disabled={saving}
-            >
-              <option value="auto">Automatic</option>
-              <option value="open">Always Open</option>
-              <option value="closed">Always Closed</option>
-            </select>
-
-            <small>
-              Automatic follows your opening and closing time. Always Open or
-              Always Closed keeps your shop in that status regardless of the
-              schedule.
-            </small>
-          </div>
-
-          {/* SAVE */}
+          <ShopStatusField
+            settings={settings}
+            handleChange={handleChange}
+            saving={saving}
+          />
 
           <button
             type="submit"

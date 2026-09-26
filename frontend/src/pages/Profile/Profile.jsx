@@ -4,139 +4,13 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
 
-function RoleSwitchSheet({
-  switchRole,
-  switchingRole,
-  currentRole,
-  onCancel,
-  onConfirm,
-}) {
-  if (!switchRole) {
-    return null;
-  }
-
-  const currentRoleName =
-    currentRole === 'customer'
-      ? 'Customer'
-      : currentRole === 'owner'
-        ? 'Owner'
-        : 'Delivery Partner';
-
-  const targetRoleName =
-    switchRole === 'customer'
-      ? 'Customer'
-      : switchRole === 'owner'
-        ? 'Owner'
-        : 'Delivery Partner';
-
-  return (
-    <div
-      className="profile_switch_overlay"
-      onClick={() => {
-        if (!switchingRole) {
-          onCancel();
-        }
-      }}
-    >
-      <section
-        className="profile_switch_sheet"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <div className="profile_switch_handle" />
-
-        <div className="profile_switch_header">
-          <h2>Switch Account?</h2>
-
-          <p>
-            You are currently logged in as {currentRoleName}. Do you want to
-            switch to {targetRoleName}?
-          </p>
-        </div>
-
-        <div className="profile_switch_actions">
-          <button
-            type="button"
-            className="profile_switch_cancel"
-            onClick={onCancel}
-            disabled={switchingRole}
-          >
-            Cancel
-          </button>
-
-          <button
-            type="button"
-            className="profile_switch_confirm"
-            onClick={onConfirm}
-            disabled={switchingRole}
-          >
-            {switchingRole ? 'Switching...' : 'Switch'}
-          </button>
-        </div>
-      </section>
-    </div>
-  );
-}
-
-function DeliveryLoginTypeSheet({ isOpen, onClose, onRmaLogin, onShopLogin }) {
-  if (!isOpen) {
-    return null;
-  }
-
-  return (
-    <div className="profile_login_overlay" onClick={onClose}>
-      <section
-        className="profile_login_sheet"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <div className="profile_login_sheet_handle" />
-
-        <div className="profile_login_sheet_header">
-          <h2>Delivery Partner Login</h2>
-
-          <p>Choose your delivery partner type</p>
-        </div>
-
-        <div className="profile_login_options">
-          <button
-            type="button"
-            className="profile_login_option"
-            onClick={onRmaLogin}
-          >
-            <div>
-              <strong>RMA Delivery Partner</strong>
-
-              <span>Login to your RMA delivery partner account</span>
-            </div>
-
-            <span>›</span>
-          </button>
-
-          <button
-            type="button"
-            className="profile_login_option"
-            onClick={onShopLogin}
-          >
-            <div>
-              <strong>Particular Shop Delivery Partner</strong>
-
-              <span>Login to a specific shop's delivery account</span>
-            </div>
-
-            <span>›</span>
-          </button>
-        </div>
-
-        <button
-          type="button"
-          className="profile_login_cancel"
-          onClick={onClose}
-        >
-          Cancel
-        </button>
-      </section>
-    </div>
-  );
-}
+import ProfileLoading from './components/ProfileLoading';
+import CustomerProfile from './components/CustomerProfile';
+import OwnerProfile from './components/OwnerProfile';
+import DeliveryProfile from './components/DeliveryProfile';
+import GuestProfile from './components/GuestProfile';
+import LoginSheet from './components/LoginSheet';
+import GuestDeliveryLoginSheet from './components/GuestDeliveryLoginSheet';
 
 function Profile({ onRoleChange }) {
   const navigate = useNavigate();
@@ -393,498 +267,120 @@ function Profile({ onRoleChange }) {
     }
   };
 
+  const handleOwnerLogout = async () => {
+    try {
+      const token = localStorage.getItem('rma_owner_token');
+
+      const response = await fetch(
+        'https://rma-backend-bo4a.onrender.com/api/owners/logout',
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error('Owner logout failed');
+      }
+
+      localStorage.removeItem('rma_owner');
+      localStorage.removeItem('rma_owner_token');
+
+      setOwner(null);
+
+      navigate('/');
+    } catch (error) {
+      console.error('Owner logout failed:', error);
+    }
+  };
+
+  const handleDeliveryLogout = async () => {
+    try {
+      const token = sessionStorage.getItem('delivery_token');
+
+      const response = await fetch(
+        'https://rma-backend-bo4a.onrender.com/api/delivery/logout',
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error('Delivery partner logout failed');
+      }
+
+      sessionStorage.removeItem('delivery_token');
+      sessionStorage.removeItem('delivery_person');
+
+      setDeliveryPerson(null);
+
+      navigate('/');
+    } catch (error) {
+      console.error('Delivery partner logout failed:', error);
+    }
+  };
+
   if (loading) {
-    return (
-      <main className="profile">
-        <section className="profile_loading">
-          <div className="profile_loading_spinner" />
-          <p>Loading your profile...</p>
-        </section>
-      </main>
-    );
+    return <ProfileLoading />;
   }
 
-  // ============================
-  // LOGGED-IN CUSTOMER
-  // ============================
+  // Logged in Customer
+
   if (customer && !owner && !deliveryPerson) {
-    const firstLetter = customer.name
-      ? customer.name.charAt(0).toUpperCase()
-      : 'R';
-
     return (
-      <main className="profile">
-        <section className="profile_header">
-          <div className="profile_avatar">{firstLetter}</div>
-
-          <h1>{customer.name}</h1>
-
-          <p>{customer.email}</p>
-        </section>
-
-        <section className="profile_customer_card">
-          <div className="profile_customer_row">
-            <span>Mobile</span>
-            <strong>{customer.phone}</strong>
-          </div>
-
-          <div className="profile_customer_row">
-            <span>Email</span>
-            <strong>{customer.email}</strong>
-          </div>
-        </section>
-
-        <section className="profile_section">
-          <h2>My Activity</h2>
-
-          <button className="profile_item" onClick={() => navigate('/orders')}>
-            <span>{t.bottomNav.orders}</span>
-            <span>›</span>
-          </button>
-        </section>
-
-        <section className="profile_section">
-          <h2>My Account</h2>
-
-          <button
-            className="profile_item"
-            onClick={() => navigate('/profile/personal-details')}
-          >
-            <span>Personal Details</span>
-            <span>›</span>
-          </button>
-
-          <button
-            className="profile_item"
-            onClick={() => navigate('/profile/saved-addresses')}
-          >
-            <span>Saved Addresses</span>
-            <span>›</span>
-          </button>
-        </section>
-
-        <section className="profile_section">
-          <h2>Preferences</h2>
-
-          <button
-            className="profile_item"
-            onClick={() => navigate('/profile/language')}
-          >
-            <span>Language</span>
-            <span>›</span>
-          </button>
-        </section>
-
-        <section className="profile_section">
-          <h2>Owner</h2>
-
-          <button
-            className="profile_item"
-            onClick={() => setSwitchRole('owner')}
-          >
-            <span>Owner Login</span>
-            <span>›</span>
-          </button>
-
-          <button
-            className="profile_item"
-            onClick={() => navigate('/owner/register/step-1')}
-          >
-            <span>Register Your Shop</span>
-            <span>›</span>
-          </button>
-
-          <button
-            className="profile_item"
-            onClick={() => navigate('/owner/dashboard')}
-          >
-            <span>Owner Dashboard</span>
-            <span>›</span>
-          </button>
-        </section>
-
-        <section className="profile_section">
-          <h2>Delivery Partner</h2>
-
-          <button
-            className="profile_item"
-            onClick={() => setDeliveryLoginTypeSheetOpen(true)}
-          >
-            <span>Delivery Partner Login</span>
-            <span>›</span>
-          </button>
-
-          <button
-            className="profile_item"
-            onClick={() => navigate('/delivery-partner/register')}
-          >
-            <span>Become a Delivery Partner</span>
-            <span>›</span>
-          </button>
-
-          <button
-            className="profile_item"
-            onClick={() => navigate('/delivery/orders-delivery')}
-          >
-            <span>Delivery Partner Dashboard</span>
-            <span>›</span>
-          </button>
-        </section>
-
-        <section className="profile_section">
-          <h2>Support</h2>
-
-          <button
-            className="profile_item"
-            onClick={() => navigate('/profile/help-support')}
-          >
-            <span>Help & Support</span>
-            <span>›</span>
-          </button>
-        </section>
-
-        <button className="logout_button" onClick={handleLogout}>
-          Logout
-        </button>
-
-        <RoleSwitchSheet
-          switchRole={switchRole}
-          switchingRole={switchingRole}
-          currentRole="customer"
-          onCancel={() => setSwitchRole(null)}
-          onConfirm={handleRoleSwitch}
-        />
-
-        <DeliveryLoginTypeSheet
-          isOpen={deliveryLoginTypeSheetOpen}
-          onClose={() => setDeliveryLoginTypeSheetOpen(false)}
-          onRmaLogin={handleDeliveryRmaLogin}
-          onShopLogin={handleShopDeliveryLogin}
-        />
-      </main>
+      <CustomerProfile
+        customer={customer}
+        t={t}
+        navigate={navigate}
+        setSwitchRole={setSwitchRole}
+        setDeliveryLoginTypeSheetOpen={setDeliveryLoginTypeSheetOpen}
+        handleLogout={handleLogout}
+        switchRole={switchRole}
+        switchingRole={switchingRole}
+        handleRoleSwitch={handleRoleSwitch}
+        deliveryLoginTypeSheetOpen={deliveryLoginTypeSheetOpen}
+        handleDeliveryRmaLogin={handleDeliveryRmaLogin}
+        handleShopDeliveryLogin={handleShopDeliveryLogin}
+      />
     );
   }
 
-  // ============================
   // LOGGED-IN OWNER
-  // ============================
   if (owner) {
-    const firstLetter = owner.ownerName
-      ? owner.ownerName.charAt(0).toUpperCase()
-      : 'R';
-
     return (
-      <main className="profile">
-        <section className="profile_header">
-          <div className="profile_avatar">{firstLetter}</div>
-
-          <h1>{owner.ownerName}</h1>
-
-          <p>{owner.shopName}</p>
-        </section>
-
-        <section className="profile_customer_card">
-          <div className="profile_customer_row">
-            <span>Shop ID</span>
-            <strong>{owner.shopId}</strong>
-          </div>
-
-          <div className="profile_customer_row">
-            <span>Mobile</span>
-            <strong>{owner.phone}</strong>
-          </div>
-
-          <div className="profile_customer_row">
-            <span>Email</span>
-            <strong>{owner.email}</strong>
-          </div>
-        </section>
-
-        <section className="profile_section">
-          <h2>My Shop</h2>
-
-          <button
-            className="profile_item"
-            onClick={() => navigate('/owner/dashboard')}
-          >
-            <span>Owner Dashboard</span>
-            <span>›</span>
-          </button>
-
-          <button
-            className="profile_item"
-            onClick={() => navigate('/owner/offers')}
-          >
-            <span>Offers & Rewards</span>
-            <span>›</span>
-          </button>
-        </section>
-
-        <section className="profile_section">
-          <h2>Preferences</h2>
-
-          <button
-            className="profile_item"
-            onClick={() => navigate('/profile/language')}
-          >
-            <span>Language</span>
-            <span>›</span>
-          </button>
-        </section>
-
-        <section className="profile_section">
-          <h2>Support</h2>
-
-          <button
-            className="profile_item"
-            onClick={() => navigate('/profile/help-support')}
-          >
-            <span>Help & Support</span>
-            <span>›</span>
-          </button>
-        </section>
-
-        <section className="profile_section">
-          <h2>Switch Account</h2>
-
-          <button
-            className="profile_item"
-            onClick={() => setSwitchRole('customer')}
-          >
-            <span>Customer Login</span>
-            <span>›</span>
-          </button>
-
-          <button
-            className="profile_item"
-            onClick={() => setDeliveryLoginTypeSheetOpen(true)}
-          >
-            <span>Delivery Partner Login</span>
-            <span>›</span>
-          </button>
-        </section>
-
-        <button
-          className="logout_button"
-          onClick={async () => {
-            try {
-              const token = localStorage.getItem('rma_owner_token');
-
-              const response = await fetch(
-                'https://rma-backend-bo4a.onrender.com/api/owners/logout',
-                {
-                  method: 'POST',
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                  },
-                },
-              );
-
-              if (!response.ok) {
-                throw new Error('Owner logout failed');
-              }
-
-              localStorage.removeItem('rma_owner');
-              localStorage.removeItem('rma_owner_token');
-
-              setOwner(null);
-
-              navigate('/');
-            } catch (error) {
-              console.error('Owner logout failed:', error);
-            }
-          }}
-        >
-          Logout
-        </button>
-        <RoleSwitchSheet
-          switchRole={switchRole}
-          switchingRole={switchingRole}
-          currentRole="owner"
-          onCancel={() => setSwitchRole(null)}
-          onConfirm={handleRoleSwitch}
-        />
-        <DeliveryLoginTypeSheet
-          isOpen={deliveryLoginTypeSheetOpen}
-          onClose={() => setDeliveryLoginTypeSheetOpen(false)}
-          onRmaLogin={handleDeliveryRmaLogin}
-          onShopLogin={handleShopDeliveryLogin}
-        />
-      </main>
+      <OwnerProfile
+        owner={owner}
+        navigate={navigate}
+        setSwitchRole={setSwitchRole}
+        setDeliveryLoginTypeSheetOpen={setDeliveryLoginTypeSheetOpen}
+        handleOwnerLogout={handleOwnerLogout}
+        switchRole={switchRole}
+        switchingRole={switchingRole}
+        handleRoleSwitch={handleRoleSwitch}
+        deliveryLoginTypeSheetOpen={deliveryLoginTypeSheetOpen}
+        handleDeliveryRmaLogin={handleDeliveryRmaLogin}
+        handleShopDeliveryLogin={handleShopDeliveryLogin}
+      />
     );
   }
 
-  // COMMON ROLE SWITCH SHEET
-  // ============================
   // LOGGED-IN DELIVERY PARTNER
-  // ============================
-  // ============================
-  // LOGGED-IN DELIVERY PARTNER
-  // ============================
   if (deliveryPerson) {
-    const firstLetter = deliveryPerson.name
-      ? deliveryPerson.name.charAt(0).toUpperCase()
-      : 'D';
-
-    const isShopDeliveryPartner = deliveryPerson.deliveryType === 'SHOP';
-
     return (
-      <main className="profile">
-        <section className="profile_header">
-          <div className="profile_avatar">{firstLetter}</div>
-
-          <h1>{deliveryPerson.name}</h1>
-
-          <p>Delivery Partner</p>
-        </section>
-
-        <section className="profile_customer_card">
-          {isShopDeliveryPartner && deliveryPerson.shopId && (
-            <div className="profile_customer_row">
-              <span>Shop ID</span>
-
-              <strong>{deliveryPerson.shopId}</strong>
-            </div>
-          )}
-
-          <div className="profile_customer_row">
-            <span>Mobile</span>
-
-            <strong>{deliveryPerson.phone}</strong>
-          </div>
-
-          <div className="profile_customer_row">
-            <span>Partner Type</span>
-
-            <strong>
-              {isShopDeliveryPartner
-                ? 'Shop Delivery Partner'
-                : 'RMA Delivery Partner'}
-            </strong>
-          </div>
-        </section>
-
-        <section className="profile_section">
-          <h2>Delivery</h2>
-
-          <button
-            className="profile_item"
-            onClick={() => navigate('/delivery/dashboard')}
-          >
-            <span>Delivery Dashboard</span>
-
-            <span>›</span>
-          </button>
-
-          <button
-            className="profile_item"
-            onClick={() => navigate('/delivery/orders-delivery')}
-          >
-            <span>Delivery Orders</span>
-
-            <span>›</span>
-          </button>
-
-          <button
-            className="profile_item"
-            onClick={() => navigate('/delivery/earnings')}
-          >
-            <span>Earnings</span>
-
-            <span>›</span>
-          </button>
-        </section>
-
-        <section className="profile_section">
-          <h2>Preferences</h2>
-
-          <button
-            className="profile_item"
-            onClick={() => navigate('/profile/language')}
-          >
-            <span>Language</span>
-
-            <span>›</span>
-          </button>
-        </section>
-
-        <section className="profile_section">
-          <h2>Support</h2>
-
-          <button
-            className="profile_item"
-            onClick={() => navigate('/profile/help-support')}
-          >
-            <span>Help & Support</span>
-
-            <span>›</span>
-          </button>
-        </section>
-
-        <section className="profile_section">
-          <h2>Switch Account</h2>
-
-          <button
-            className="profile_item"
-            onClick={() => setSwitchRole('customer')}
-          >
-            <span>Customer Login</span>
-
-            <span>›</span>
-          </button>
-
-          <button
-            className="profile_item"
-            onClick={() => setSwitchRole('owner')}
-          >
-            <span>Owner Login</span>
-
-            <span>›</span>
-          </button>
-        </section>
-
-        <button
-          className="logout_button"
-          onClick={async () => {
-            try {
-              const token = sessionStorage.getItem('delivery_token');
-
-              const response = await fetch(
-                'https://rma-backend-bo4a.onrender.com/api/delivery/logout',
-                {
-                  method: 'POST',
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                  },
-                },
-              );
-
-              if (!response.ok) {
-                throw new Error('Delivery partner logout failed');
-              }
-
-              sessionStorage.removeItem('delivery_token');
-              sessionStorage.removeItem('delivery_person');
-
-              setDeliveryPerson(null);
-
-              navigate('/');
-            } catch (error) {
-              console.error('Delivery partner logout failed:', error);
-            }
-          }}
-        >
-          Logout
-        </button>
-
-        <RoleSwitchSheet
-          switchRole={switchRole}
-          switchingRole={switchingRole}
-          currentRole="delivery"
-          onCancel={() => setSwitchRole(null)}
-          onConfirm={handleRoleSwitch}
-        />
-      </main>
+      <DeliveryProfile
+        deliveryPerson={deliveryPerson}
+        navigate={navigate}
+        setSwitchRole={setSwitchRole}
+        handleDeliveryLogout={handleDeliveryLogout}
+        switchRole={switchRole}
+        switchingRole={switchingRole}
+        handleRoleSwitch={handleRoleSwitch}
+      />
     );
   }
 
@@ -892,263 +388,32 @@ function Profile({ onRoleChange }) {
   // GUEST CUSTOMER
   // ============================
   return (
-    <main className="profile">
-      <section className="profile_header">
-        <div className="profile_avatar">R</div>
+    <>
+      <GuestProfile
+        t={t}
+        navigate={navigate}
+        setLoginSheetOpen={setLoginSheetOpen}
+      />
 
-        <h1>Your RMA Account</h1>
+      <LoginSheet
+        isOpen={loginSheetOpen}
+        onClose={() => setLoginSheetOpen(false)}
+        navigate={navigate}
+        setLoginSheetOpen={setLoginSheetOpen}
+        setDeliveryLoginTypeSheetOpen={setDeliveryLoginTypeSheetOpen}
+        deliveryLoginTypeSheetOpen={deliveryLoginTypeSheetOpen}
+        handleDeliveryRmaLogin={handleDeliveryRmaLogin}
+        handleShopDeliveryLogin={handleShopDeliveryLogin}
+      />
 
-        <p>Sign in to make ordering faster and easier.</p>
-      </section>
-
-      <section className="profile_auth">
-        <button
-          className="profile_auth_button login_button"
-          onClick={() => setLoginSheetOpen(true)}
-        >
-          <div className="profile_auth_content">
-            <strong>Login to RMA</strong>
-
-            <span style={{ fontWeight: '600', color: 'white' }}>
-              Customer, Shop Owner or Delivery Partner
-            </span>
-          </div>
-
-          <span className="profile_arrow">›</span>
-        </button>
-
-        <button
-          className="profile_auth_button signup_button"
-          onClick={() => navigate('/customer/signup')}
-        >
-          <div className="profile_auth_content">
-            <strong>Create Account</strong>
-
-            <span>Save your details and order faster</span>
-          </div>
-
-          <span className="profile_arrow">›</span>
-        </button>
-      </section>
-
-      <section className="profile_guest_card">
-        <div className="profile_guest_icon">✓</div>
-
-        <div>
-          <h2>Prefer not to sign in?</h2>
-
-          <p>
-            No problem. You can continue shopping and place orders as a guest.
-          </p>
-        </div>
-      </section>
-
-      <section className="profile_section">
-        <h2>My Activity</h2>
-
-        <button className="profile_item" onClick={() => navigate('/orders')}>
-          <span>{t.bottomNav.orders}</span>
-          <span>›</span>
-        </button>
-      </section>
-
-      <section className="profile_section">
-        <h2>Preferences</h2>
-
-        <button className="profile_item">
-          <span>Language</span>
-          <span>›</span>
-        </button>
-      </section>
-
-      <section className="profile_section">
-        <h2>Support</h2>
-
-        <button
-          className="profile_item"
-          onClick={() => navigate('/profile/help-support')}
-        >
-          <span>Help & Support</span>
-          <span>›</span>
-        </button>
-      </section>
-      {loginSheetOpen && (
-        <div
-          className="profile_login_overlay"
-          onClick={() => setLoginSheetOpen(false)}
-        >
-          <section
-            className="profile_login_sheet"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="profile_login_sheet_handle" />
-
-            <div className="profile_login_sheet_header">
-              <h2>Login to RMA</h2>
-
-              <p>Choose how you want to continue</p>
-            </div>
-
-            <div className="profile_login_options">
-              <button
-                type="button"
-                className="profile_login_option"
-                onClick={() => navigate('/customer/login')}
-              >
-                <div>
-                  <strong>Customer</strong>
-
-                  <span>Login to your customer account</span>
-                </div>
-
-                <span>›</span>
-              </button>
-
-              <button
-                type="button"
-                className="profile_login_option"
-                onClick={() => navigate('/owner/login')}
-              >
-                <div>
-                  <strong>Owner</strong>
-
-                  <span>Login to your shop account</span>
-                </div>
-
-                <span>›</span>
-              </button>
-
-              <button
-                type="button"
-                className="profile_login_option"
-                onClick={() => {
-                  setLoginSheetOpen(false);
-                  setDeliveryLoginTypeSheetOpen(true);
-                }}
-              >
-                <div>
-                  <strong>Delivery Partner</strong>
-
-                  <span>Login to your delivery account</span>
-                </div>
-
-                <span>›</span>
-              </button>
-            </div>
-
-            <button
-              type="button"
-              className="profile_login_cancel"
-              onClick={() => setLoginSheetOpen(false)}
-            >
-              Cancel
-            </button>
-          </section>
-          <DeliveryLoginTypeSheet
-            isOpen={deliveryLoginTypeSheetOpen}
-            onClose={() => setDeliveryLoginTypeSheetOpen(false)}
-            onRmaLogin={handleDeliveryRmaLogin}
-            onShopLogin={handleShopDeliveryLogin}
-          />
-        </div>
-      )}
-
-      {deliveryLoginTypeSheetOpen && (
-        <div
-          className="profile_login_overlay"
-          onClick={() => setDeliveryLoginTypeSheetOpen(false)}
-        >
-          <section
-            className="profile_login_sheet"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="profile_login_sheet_handle" />
-
-            <div className="profile_login_sheet_header">
-              <h2>Delivery Partner Login</h2>
-
-              <p>Choose your delivery partner type</p>
-            </div>
-
-            <div className="profile_login_options">
-              <button
-                type="button"
-                className="profile_login_option"
-                onClick={async () => {
-                  if (customer) {
-                    try {
-                      await fetch(
-                        'https://rma-backend-bo4a.onrender.com/api/customers/logout',
-                        {
-                          method: 'POST',
-                          credentials: 'include',
-                        },
-                      );
-                    } catch (error) {
-                      console.error('Customer logout failed:', error);
-                    }
-
-                    setCustomer(null);
-                  }
-
-                  setDeliveryLoginTypeSheetOpen(false);
-                  navigate('/delivery/rma-login');
-                }}
-              >
-                <div>
-                  <strong>RMA Delivery Partner</strong>
-
-                  <span>Login to your RMA delivery partner account</span>
-                </div>
-
-                <span>›</span>
-              </button>
-
-              <button
-                type="button"
-                className="profile_login_option"
-                onClick={async () => {
-                  if (customer) {
-                    try {
-                      await fetch(
-                        'https://rma-backend-bo4a.onrender.com/api/customers/logout',
-                        {
-                          method: 'POST',
-                          credentials: 'include',
-                        },
-                      );
-                    } catch (error) {
-                      console.error('Customer logout failed:', error);
-                    }
-
-                    setCustomer(null);
-                  }
-
-                  setDeliveryLoginTypeSheetOpen(false);
-                  navigate('/delivery/orders-delivery');
-                }}
-              >
-                <div>
-                  <strong>Particular Shop Delivery Partner</strong>
-
-                  <span>Login to a specific shop's delivery account</span>
-                </div>
-
-                <span>›</span>
-              </button>
-            </div>
-
-            <button
-              type="button"
-              className="profile_login_cancel"
-              onClick={() => setDeliveryLoginTypeSheetOpen(false)}
-            >
-              Cancel
-            </button>
-          </section>
-        </div>
-      )}
-    </main>
+      <GuestDeliveryLoginSheet
+        isOpen={deliveryLoginTypeSheetOpen}
+        customer={customer}
+        setCustomer={setCustomer}
+        setDeliveryLoginTypeSheetOpen={setDeliveryLoginTypeSheetOpen}
+        navigate={navigate}
+      />
+    </>
   );
 }
 

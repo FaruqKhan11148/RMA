@@ -3,6 +3,9 @@ import './ShopName.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import ShopNameHeader from './components/ShopName/ShopNameHeader';
+import ShopNameForm from './components/ShopName/ShopNameForm';
+
 function ShopName() {
   const navigate = useNavigate();
 
@@ -136,45 +139,16 @@ function ShopName() {
   return (
     <main className="owner_setting_page">
       <section className="owner_setting_card">
-        <button
-          type="button"
-          className="owner_setting_back"
-          onClick={() => navigate('/owner/settings/account')}
-        >
-          ← Shop Settings
-        </button>
+        <ShopNameHeader navigate={navigate} />
 
-        <div className="owner_setting_header">
-          <h1>Shop Name</h1>
-
-          <p>Update the name customers see when they visit your RMA shop.</p>
-        </div>
-
-        <form onSubmit={handleSubmit}>
-          <label className="owner_setting_label">
-            Shop Name
-            <input
-              type="text"
-              value={shopName}
-              onChange={(e) => setShopName(e.target.value)}
-              placeholder="Enter shop name"
-              maxLength={100}
-              required
-            />
-          </label>
-
-          {error && <p className="owner_setting_error">{error}</p>}
-
-          {success && <p className="owner_setting_success">{success}</p>}
-
-          <button
-            type="submit"
-            className="owner_setting_save"
-            disabled={saving}
-          >
-            {saving ? 'Saving...' : 'Save Changes'}
-          </button>
-        </form>
+        <ShopNameForm
+          shopName={shopName}
+          setShopName={setShopName}
+          error={error}
+          success={success}
+          saving={saving}
+          handleSubmit={handleSubmit}
+        />
       </section>
     </main>
   );

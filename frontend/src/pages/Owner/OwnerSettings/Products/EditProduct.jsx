@@ -3,6 +3,14 @@ import './EditProduct.css';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import EditProductHeader from './components/EditProduct/EditProductHeader';
+import EditProductMessages from './components/EditProduct/EditProductMessages';
+import EditProductPreview from './components/EditProduct/EditProductPreview';
+import EditProductCustomFields from './components/EditProduct/EditProductCustomFields';
+import EditProductPrice from './components/EditProduct/EditProductPrice';
+import EditProductAvailability from './components/EditProduct/EditProductAvailability';
+import EditProductActions from './components/EditProduct/EditProductActions';
+
 function EditProduct() {
   const navigate = useNavigate();
   const { productId } = useParams();
@@ -157,16 +165,6 @@ function EditProduct() {
         return;
       }
 
-      /*
-       * CUSTOM PRODUCT
-       *
-       * Custom products can edit:
-       * name
-       * category
-       * price
-       * unit
-       * image
-       */
       const response = await fetch(
         `https://rma-backend-bo4a.onrender.com/api/owners/products/${productId}`,
         {
@@ -286,240 +284,42 @@ function EditProduct() {
   return (
     <div className="edit-product-page">
       <div className="edit-product-container">
-        <button
-          type="button"
-          className="edit-product-back"
-          onClick={() => navigate('/owner/settings/products')}
-        >
-          ← Products
-        </button>
+        <EditProductHeader navigate={navigate} product={product} />
 
-        <div className="edit-product-header">
-          <div>
-            <h1>Edit Product</h1>
-
-            <p>
-              {product.isCustom
-                ? 'Update your custom product details.'
-                : 'Manage the selling price and availability.'}
-            </p>
-          </div>
-
-          <span
-            className={`edit-product-type ${
-              product.isCustom ? 'custom' : 'catalogue'
-            }`}
-          >
-            {product.isCustom ? 'Custom Product' : 'RMA Catalogue'}
-          </span>
-        </div>
-
-        {error && <div className="edit-product-message error">{error}</div>}
-
-        {successMessage && (
-          <div className="edit-product-message success">✓ {successMessage}</div>
-        )}
+        <EditProductMessages error={error} successMessage={successMessage} />
 
         <form className="edit-product-card" onSubmit={handleSubmit}>
-          {/* =================================================
-              PRODUCT PREVIEW
-          ================================================= */}
-
-          <div className="edit-product-preview">
-            <div className="edit-product-image">
-              {product.imageUrl ? (
-                <img src={product.imageUrl} alt={product.name} />
-              ) : (
-                <span>
-                  {product.category === 'Chicken'
-                    ? '🍗'
-                    : product.category === 'Mutton'
-                      ? '🥩'
-                      : product.category === 'Fish'
-                        ? '🐟'
-                        : product.category === 'Seafood'
-                          ? '🦐'
-                          : '🥩'}
-                </span>
-              )}
-            </div>
-
-            <div className="edit-product-preview-info">
-              <h2>{product.name}</h2>
-
-              <p>
-                {product.category} • {product.unit}
-              </p>
-
-              <span
-                className={`edit-product-status ${
-                  available ? 'available' : 'unavailable'
-                }`}
-              >
-                {available ? 'Available' : 'Unavailable'}
-              </span>
-            </div>
-          </div>
-
-          {/* =================================================
-              CUSTOM PRODUCT FIELDS
-          ================================================= */}
+          <EditProductPreview product={product} available={available} />
 
           {product.isCustom && (
-            <>
-              <div className="edit-product-divider" />
-
-              <div className="edit-product-section">
-                <div className="edit-product-section-title">
-                  Product Information
-                </div>
-
-                <div className="edit-product-field">
-                  <label htmlFor="name">Product Name</label>
-
-                  <input
-                    id="name"
-                    type="text"
-                    value={name}
-                    onChange={(event) => setName(event.target.value)}
-                    placeholder="Enter product name"
-                  />
-                </div>
-
-                <div className="edit-product-grid">
-                  <div className="edit-product-field">
-                    <label htmlFor="category">Category</label>
-
-                    <input
-                      id="category"
-                      type="text"
-                      value={category}
-                      onChange={(event) => setCategory(event.target.value)}
-                      placeholder="e.g. Chicken"
-                    />
-                  </div>
-
-                  <div className="edit-product-field">
-                    <label htmlFor="unit">Unit</label>
-
-                    <input
-                      id="unit"
-                      type="text"
-                      value={unit}
-                      onChange={(event) => setUnit(event.target.value)}
-                      placeholder="e.g. KG"
-                    />
-                  </div>
-                </div>
-
-                <div className="edit-product-field">
-                  <label htmlFor="imageUrl">Image URL</label>
-
-                  <input
-                    id="imageUrl"
-                    type="url"
-                    value={imageUrl}
-                    onChange={(event) => setImageUrl(event.target.value)}
-                    placeholder="https://example.com/image.jpg"
-                  />
-                </div>
-              </div>
-            </>
+            <EditProductCustomFields
+              name={name}
+              setName={setName}
+              category={category}
+              setCategory={setCategory}
+              unit={unit}
+              setUnit={setUnit}
+              imageUrl={imageUrl}
+              setImageUrl={setImageUrl}
+            />
           )}
 
-          {/* =================================================
-              PRICE
-          ================================================= */}
+          <EditProductPrice
+            product={product}
+            price={price}
+            setPrice={setPrice}
+          />
 
-          <div className="edit-product-divider" />
+          <EditProductAvailability
+            available={available}
+            handleAvailabilityChange={handleAvailabilityChange}
+          />
 
-          <div className="edit-product-section">
-            <div className="edit-product-section-title">Selling Price</div>
-
-            {!product.isCustom && (
-              <div className="edit-product-info-note">
-                RMA catalogue product details are controlled by RMA. Only the
-                selling price can be changed.
-              </div>
-            )}
-
-            <div className="edit-product-field">
-              <label htmlFor="price">Price</label>
-
-              <div className="edit-product-price-wrapper">
-                <span>₹</span>
-
-                <input
-                  id="price"
-                  type="number"
-                  min="1"
-                  step="0.01"
-                  value={price}
-                  onChange={(event) => setPrice(event.target.value)}
-                  placeholder="Enter price"
-                  required
-                />
-
-                <span>/ {product.unit}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* =================================================
-              AVAILABILITY
-          ================================================= */}
-
-          <div className="edit-product-divider" />
-
-          <div className="edit-product-availability">
-            <div>
-              <strong>Product Availability</strong>
-
-              <p>
-                {available
-                  ? 'Customers can currently order this product.'
-                  : 'Customers cannot currently order this product.'}
-              </p>
-            </div>
-
-            <button
-              type="button"
-              className={`edit-product-toggle ${available ? 'active' : ''}`}
-              onClick={() => handleAvailabilityChange(!available)}
-              aria-label="Toggle product availability"
-            >
-              <span />
-            </button>
-          </div>
-
-          {/* =================================================
-              ACTIONS
-          ================================================= */}
-
-          <div className="edit-product-divider" />
-
-          <div className="edit-product-actions">
-            <button
-              type="button"
-              className="edit-product-cancel"
-              onClick={() => navigate('/owner/settings/products')}
-              disabled={saving}
-            >
-              Cancel
-            </button>
-
-            <button
-              type="submit"
-              className="edit-product-submit"
-              disabled={saving}
-            >
-              {saving
-                ? 'Saving...'
-                : product.isCustom
-                  ? 'Save Changes'
-                  : 'Update Price'}
-            </button>
-          </div>
+          <EditProductActions
+            navigate={navigate}
+            saving={saving}
+            isCustom={product.isCustom}
+          />
         </form>
       </div>
     </div>

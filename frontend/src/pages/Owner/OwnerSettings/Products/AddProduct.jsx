@@ -5,6 +5,13 @@ import { useNavigate } from 'react-router-dom';
 
 import productCatalogue from '../../../../data/productCatalogue';
 
+import AddProductHeader from './components/AddProduct/AddProductHeader';
+import AddProductMessages from './components/AddProduct/AddProductMessages';
+import ProductTypeSelector from './components/AddProduct/ProductTypeSelector';
+import CatalogueProductForm from './components/AddProduct/CatalogueProductForm';
+import CustomProductForm from './components/AddProduct/CustomProductForm';
+import AddProductActions from './components/AddProduct/AddProductActions';
+
 function AddProduct() {
   const navigate = useNavigate();
 
@@ -282,297 +289,47 @@ function AddProduct() {
   return (
     <div className="add-product-page">
       <div className="add-product-container">
-        {/* HEADER */}
+        <AddProductHeader navigate={navigate} />
 
-        <div className="add-product-header">
-          <button
-            className="add-product-back"
-            onClick={() => navigate('/owner/settings/account')}
-          >
-            ← Products Settings
-          </button>
+        <AddProductMessages successMessage={successMessage} error={error} />
 
-          <h1>Add Product</h1>
-
-          <p>Add a product to your shop catalogue.</p>
-        </div>
-
-        {/* MESSAGES */}
-
-        {successMessage && (
-          <div className="add-product-success">{successMessage}</div>
-        )}
-
-        {error && <div className="add-product-error">{error}</div>}
-
-        {/* PRODUCT TYPE */}
-
-        <div className="product-type-selector">
-          <button
-            type="button"
-            className={
-              productType === 'catalogue' ? 'type-option active' : 'type-option'
-            }
-            onClick={() => {
-              setProductType('catalogue');
-              setError('');
-              setSuccessMessage('');
-            }}
-          >
-            <span className="type-option-title">RMA Catalogue</span>
-
-            <span className="type-option-description">
-              Add an official RMA product
-            </span>
-          </button>
-
-          <button
-            type="button"
-            className={
-              productType === 'custom' ? 'type-option active' : 'type-option'
-            }
-            onClick={() => {
-              setProductType('custom');
-              setError('');
-              setSuccessMessage('');
-            }}
-          >
-            <span className="type-option-title">Custom Product</span>
-
-            <span className="type-option-description">
-              Add your own product
-            </span>
-          </button>
-        </div>
-
-        {/* FORM */}
+        <ProductTypeSelector
+          productType={productType}
+          setProductType={setProductType}
+          setError={setError}
+          setSuccessMessage={setSuccessMessage}
+        />
 
         <form className="add-product-card" onSubmit={handleSubmit}>
           {productType === 'catalogue' ? (
-            <>
-              <div className="form-section">
-                <h2>RMA Catalogue Product</h2>
-
-                <p>
-                  Choose a product from the RMA catalogue and set your selling
-                  price.
-                </p>
-              </div>
-
-              {/* CATEGORY */}
-
-              <div className="form-group">
-                <label>Category</label>
-
-                <select
-                  value={selectedCategoryId}
-                  onChange={handleCategoryChange}
-                >
-                  <option value="">Select category</option>
-
-                  {productCatalogue.map((category) => (
-                    <option
-                      key={category.categoryId}
-                      value={category.categoryId}
-                    >
-                      {category.categoryName}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* PRODUCT */}
-
-              {selectedCategory && (
-                <div className="form-group">
-                  <label>Product</label>
-
-                  <select
-                    value={selectedProductId}
-                    onChange={handleCatalogueProductChange}
-                  >
-                    <option value="">Select product</option>
-
-                    {selectedCategory.products.map((product) => {
-                      const alreadyAdded = existingProducts.some(
-                        (existing) =>
-                          existing.catalogueProductId === product.productId,
-                      );
-
-                      return (
-                        <option
-                          key={product.productId}
-                          value={product.productId}
-                          disabled={alreadyAdded}
-                        >
-                          {product.name}
-                          {alreadyAdded ? ' — Already added' : ''}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </div>
-              )}
-
-              {/* PREVIEW */}
-
-              {selectedCatalogueProduct && (
-                <div className="catalogue-preview">
-                  <div className="catalogue-preview-image">
-                    {selectedCatalogueProduct.imageUrl ? (
-                      <img
-                        src={selectedCatalogueProduct.imageUrl}
-                        alt={selectedCatalogueProduct.name}
-                      />
-                    ) : (
-                      <span>🍗</span>
-                    )}
-                  </div>
-
-                  <div>
-                    <span className="preview-label">RMA Catalogue</span>
-
-                    <h3>{selectedCatalogueProduct.name}</h3>
-
-                    <p>Category: {selectedCategory.categoryName}</p>
-
-                    <p>Unit: {selectedCatalogueProduct.unit}</p>
-                  </div>
-                </div>
-              )}
-
-              {/* PRICE */}
-
-              {selectedCatalogueProduct && (
-                <div className="form-group">
-                  <label>Your Selling Price</label>
-
-                  <div className="price-input">
-                    <span>₹</span>
-
-                    <input
-                      type="number"
-                      min="1"
-                      step="0.01"
-                      placeholder="Enter price"
-                      value={price}
-                      onChange={(event) => setPrice(event.target.value)}
-                    />
-                  </div>
-                </div>
-              )}
-            </>
+            <CatalogueProductForm
+              productCatalogue={productCatalogue}
+              selectedCategoryId={selectedCategoryId}
+              selectedCategory={selectedCategory}
+              selectedProductId={selectedProductId}
+              selectedCatalogueProduct={selectedCatalogueProduct}
+              existingProducts={existingProducts}
+              price={price}
+              handleCategoryChange={handleCategoryChange}
+              handleCatalogueProductChange={handleCatalogueProductChange}
+              setPrice={setPrice}
+            />
           ) : (
-            <>
-              <div className="form-section">
-                <h2>Custom Product</h2>
-
-                <p>Create a product specific to your shop.</p>
-              </div>
-
-              {/* NAME */}
-
-              <div className="form-group">
-                <label>Product Name</label>
-
-                <input
-                  type="text"
-                  placeholder="e.g. Special Chicken Curry Cut"
-                  value={customProductName}
-                  onChange={(event) => setCustomProductName(event.target.value)}
-                />
-              </div>
-
-              {/* CATEGORY */}
-
-              <div className="form-group">
-                <label>Category</label>
-
-                <input
-                  type="text"
-                  placeholder="e.g. Chicken"
-                  value={customProductCategory}
-                  onChange={(event) =>
-                    setCustomProductCategory(event.target.value)
-                  }
-                />
-              </div>
-
-              {/* PRICE + UNIT */}
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Price</label>
-
-                  <div className="price-input">
-                    <span>₹</span>
-
-                    <input
-                      type="number"
-                      min="1"
-                      step="0.01"
-                      placeholder="300"
-                      value={customProductPrice}
-                      onChange={(event) =>
-                        setCustomProductPrice(event.target.value)
-                      }
-                    />
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label>Unit</label>
-
-                  <input
-                    type="text"
-                    placeholder="KG"
-                    value={customProductUnit}
-                    onChange={(event) =>
-                      setCustomProductUnit(event.target.value)
-                    }
-                  />
-                </div>
-              </div>
-
-              {/* IMAGE */}
-
-              <div className="form-group">
-                <label>
-                  Image URL
-                  <span className="optional">Optional</span>
-                </label>
-
-                <input
-                  type="url"
-                  placeholder="https://..."
-                  value={customProductImage}
-                  onChange={(event) =>
-                    setCustomProductImage(event.target.value)
-                  }
-                />
-              </div>
-            </>
+            <CustomProductForm
+              customProductName={customProductName}
+              setCustomProductName={setCustomProductName}
+              customProductCategory={customProductCategory}
+              setCustomProductCategory={setCustomProductCategory}
+              customProductPrice={customProductPrice}
+              setCustomProductPrice={setCustomProductPrice}
+              customProductUnit={customProductUnit}
+              setCustomProductUnit={setCustomProductUnit}
+              customProductImage={customProductImage}
+              setCustomProductImage={setCustomProductImage}
+            />
           )}
 
-          {/* ACTIONS */}
-
-          <div className="add-product-actions">
-            <button
-              type="button"
-              className="cancel-button"
-              onClick={() => navigate('/owner/settings/products')}
-            >
-              Cancel
-            </button>
-
-            <button
-              type="submit"
-              className="save-product-button"
-              disabled={saving}
-            >
-              {saving ? 'Adding...' : 'Add Product'}
-            </button>
-          </div>
+          <AddProductActions navigate={navigate} saving={saving} />
         </form>
       </div>
     </div>

@@ -3,6 +3,12 @@ import './OpenClosed.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import OpenClosedHeader from './components/OpenClosed/OpenClosedHeader';
+import ShopStatusCard from './components/OpenClosed/ShopStatusCard';
+import ShopStatusOptions from './components/OpenClosed/ShopStatusOptions';
+import OpenClosedMessages from './components/OpenClosed/OpenClosedMessages';
+import ShopStatusNote from './components/OpenClosed/ShopStatusNote';
+
 function OpenClosed() {
   const navigate = useNavigate();
 
@@ -124,106 +130,23 @@ function OpenClosed() {
   return (
     <div className="owner_setting_page">
       <div className="owner_setting_card">
-        <button
-          type="button"
-          className="owner_setting_back"
-          onClick={() => navigate(-1)}
-        >
-          ← Shop Settings
-        </button>
+        <OpenClosedHeader navigate={navigate} />
 
-        <div className="owner_setting_header">
-          <p className="owner_setting_tag">SHOP SETTINGS</p>
+        <ShopStatusCard isOpen={isOpen} />
 
-          <h1>Open / Closed</h1>
+        <ShopStatusOptions
+          isOpen={isOpen}
+          handleStatusChange={handleStatusChange}
+          saving={saving}
+        />
 
-          <p>Control whether customers can currently order from your shop.</p>
-        </div>
+        <OpenClosedMessages
+          saving={saving}
+          error={error}
+          successMessage={successMessage}
+        />
 
-        <div className="shop_status_card">
-          <div
-            className={
-              isOpen ? 'shop_status_icon open' : 'shop_status_icon closed'
-            }
-          >
-            {isOpen ? '✓' : '×'}
-          </div>
-
-          <div className="shop_status_content">
-            <span className="shop_status_label">Current Shop Status</span>
-
-            <strong
-              className={
-                isOpen ? 'shop_status_value open' : 'shop_status_value closed'
-              }
-            >
-              {isOpen ? 'OPEN' : 'CLOSED'}
-            </strong>
-
-            <p>
-              {isOpen
-                ? 'Customers can currently place orders from your shop.'
-                : 'Your shop is currently closed and customers should not place new orders.'}
-            </p>
-          </div>
-        </div>
-
-        <div className="shop_status_options">
-          <button
-            type="button"
-            className={
-              isOpen
-                ? 'shop_status_option active open_option'
-                : 'shop_status_option open_option'
-            }
-            onClick={() => handleStatusChange(true)}
-            disabled={saving}
-          >
-            <span className="shop_status_option_icon">✓</span>
-
-            <span>
-              <strong>Open Shop</strong>
-              <small>Allow customers to order</small>
-            </span>
-          </button>
-
-          <button
-            type="button"
-            className={
-              !isOpen
-                ? 'shop_status_option active closed_option'
-                : 'shop_status_option closed_option'
-            }
-            onClick={() => handleStatusChange(false)}
-            disabled={saving}
-          >
-            <span className="shop_status_option_icon">×</span>
-
-            <span>
-              <strong>Close Shop</strong>
-              <small>Stop accepting new orders</small>
-            </span>
-          </button>
-        </div>
-
-        {saving && (
-          <div className="shop_status_saving">Updating shop status...</div>
-        )}
-
-        {error && <div className="owner_setting_error">{error}</div>}
-
-        {successMessage && (
-          <div className="owner_setting_success">{successMessage}</div>
-        )}
-
-        <div className="shop_status_note">
-          <strong>Important</strong>
-
-          <span>
-            Closing your shop should only affect new orders. Existing orders
-            should continue through their normal delivery process.
-          </span>
-        </div>
+        <ShopStatusNote />
       </div>
     </div>
   );

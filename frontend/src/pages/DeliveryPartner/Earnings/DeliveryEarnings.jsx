@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react';
-import { IndianRupee, TrendingUp, CalendarDays } from 'lucide-react';
 
 import './DeliveryEarnings.css';
+
+import EarningsHeader from './components/EarningsHeader';
+import TotalEarnings from './components/TotalEarnings';
+import EarningsSummary from './components/EarningsSummary';
+import RecentEarnings from './components/RecentEarnings';
+
+import { fetchEarnings } from './utils/earningsApi';
 
 function DeliveryEarnings() {
   const [earnings, setEarnings] = useState({
@@ -15,7 +21,7 @@ function DeliveryEarnings() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchEarnings = async () => {
+    const loadEarnings = async () => {
       try {
         const token = sessionStorage.getItem('delivery_token');
 
@@ -25,20 +31,7 @@ function DeliveryEarnings() {
           return;
         }
 
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/delivery/earnings',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message || 'Failed to load earnings');
-        }
+        const data = await fetchEarnings(token);
 
         setEarnings({
           totalEarnings: data.totalEarnings || 0,
@@ -48,119 +41,42 @@ function DeliveryEarnings() {
         });
       } catch (err) {
         console.error('Fetch delivery earnings failed:', err);
+
         setError('Unable to load earnings');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchEarnings();
+    loadEarnings();
   }, []);
-
-  const formatAmount = (amount) => `₹${Number(amount || 0).toFixed(2)}`;
 
   return (
     <main className="delivery_earnings_page">
-      <header className="delivery_earnings_header">
-        <div>
-          <span>Delivery Partner</span>
-          <h1>Earnings</h1>
-        </div>
-      </header>
+      <EarningsHeader />
 
       {loading ? (
         <section className="delivery_earnings_empty">
           <strong>Loading earnings...</strong>
+
           <p>Please wait.</p>
         </section>
       ) : error ? (
         <section className="delivery_earnings_empty">
           <strong>{error}</strong>
+
           <p>Please try again later.</p>
         </section>
       ) : (
         <>
-          <section className="delivery_total_earnings">
-            <div className="delivery_total_earnings_icon">
-              <IndianRupee size={22} />
-            </div>
+          <TotalEarnings totalEarnings={earnings.totalEarnings} />
 
-            <span>Total Earnings</span>
+          <EarningsSummary
+            todayEarnings={earnings.todayEarnings}
+            weekEarnings={earnings.weekEarnings}
+          />
 
-            <strong>{formatAmount(earnings.totalEarnings)}</strong>
-
-            <p>Your earnings from completed deliveries.</p>
-          </section>
-
-          <section className="delivery_earnings_grid">
-            <div className="delivery_earning_card">
-              <div className="delivery_earning_icon">
-                <IndianRupee size={18} />
-              </div>
-
-              <span>Today</span>
-
-              <strong>{formatAmount(earnings.todayEarnings)}</strong>
-            </div>
-
-            <div className="delivery_earning_card">
-              <div className="delivery_earning_icon">
-                <TrendingUp size={18} />
-              </div>
-
-              <span>This Week</span>
-
-              <strong>{formatAmount(earnings.weekEarnings)}</strong>
-            </div>
-          </section>
-
-          <section className="delivery_earnings_section">
-            <div className="delivery_earnings_section_header">
-              <div>
-                <h2>Recent Earnings</h2>
-
-                <span>Completed delivery payments</span>
-              </div>
-
-              <CalendarDays size={20} />
-            </div>
-
-            {earnings.recentEarnings.length === 0 ? (
-              <div className="delivery_earnings_empty">
-                <strong>No earnings yet</strong>
-
-                <p>Complete your first delivery to see your earnings here.</p>
-              </div>
-            ) : (
-              <div className="delivery_recent_earnings">
-                {earnings.recentEarnings.map((earning) => (
-                  <div
-                    className="delivery_recent_earning"
-                    key={earning.orderId}
-                  >
-                    <div>
-                      <strong>{earning.orderId}</strong>
-
-                      <span>
-                        {earning.completedAt
-                          ? new Date(earning.completedAt).toLocaleDateString(
-                              'en-IN',
-                              {
-                                day: '2-digit',
-                                month: 'short',
-                                year: 'numeric',
-                              },
-                            )
-                          : '—'}
-                      </span>
-                    </div>
-
-                    <strong>{formatAmount(earning.amount)}</strong>
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
+          <RecentEarnings recentEarnings={earnings.recentEarnings} />
         </>
       )}
     </main>

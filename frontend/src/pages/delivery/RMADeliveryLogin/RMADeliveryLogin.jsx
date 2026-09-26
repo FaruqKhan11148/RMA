@@ -2,6 +2,13 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './RMADeliveryLogin.css';
 
+import DeliveryLoginHeader from './components/DeliveryLoginHeader';
+import PhoneLoginForm from './components/PhoneLoginForm';
+import OtpVerificationForm from './components/OtpVerificationForm';
+import DeliveryLoginMessages from './components/DeliveryLoginMessages';
+
+import { requestDeliveryOtp, verifyDeliveryOtp } from './utils/deliveryAuthApi';
+
 function RMADeliveryLogin() {
   const navigate = useNavigate();
 
@@ -30,27 +37,10 @@ function RMADeliveryLogin() {
       setError('');
       setSuccessMessage('');
 
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/delivery/rma/request-otp',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            phone: phone.trim(),
-          }),
-        },
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.message || 'Unable to send OTP');
-        return;
-      }
+      const data = await requestDeliveryOtp(phone.trim());
 
       setGeneratedOtp(data.otp || '');
+
       setSuccessMessage(
         data.otp ? 'OTP generated successfully' : 'OTP sent successfully',
       );
@@ -58,7 +48,7 @@ function RMADeliveryLogin() {
       setLoginStep('otp');
     } catch (error) {
       console.error('RMA delivery OTP request failed:', error);
-      setError('Unable to connect to server');
+      setError(error.message || 'Unable to connect to server');
     } finally {
       setLoading(false);
     }
@@ -74,26 +64,7 @@ function RMADeliveryLogin() {
       setLoading(true);
       setError('');
 
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/delivery/rma/verify-otp',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            phone: phone.trim(),
-            otp,
-          }),
-        },
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.message || 'Invalid OTP');
-        return;
-      }
+      const data = await verifyDeliveryOtp(phone.trim(), otp);
 
       sessionStorage.setItem('delivery_token', data.token);
 
@@ -105,10 +76,27 @@ function RMADeliveryLogin() {
       navigate('/delivery/orders-delivery');
     } catch (error) {
       console.error('RMA delivery OTP verification failed:', error);
-      setError('Unable to connect to server');
+      setError(error.message || 'Unable to connect to server');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handlePhoneChange = (event) => {
+    setPhone(event.target.value.replace(/\D/g, ''));
+    setError('');
+  };
+
+  const handleOtpChange = (event) => {
+    setOtp(event.target.value.replace(/\D/g, ''));
+    setError('');
+  };
+
+  const handleChangePhone = () => {
+    setOtp('');
+    setError('');
+    setSuccessMessage('');
+    setLoginStep('login');
   };
 
   return (
@@ -123,117 +111,26 @@ function RMADeliveryLogin() {
         </button>
 
         {loginStep === 'login' ? (
-          <>
-            <div className="rma_delivery_login_header">
-              <div className="rma_delivery_icon">R</div>
-
-              <h1>RMA Delivery Partner</h1>
-
-              <p>Login to access your RMA delivery orders.</p>
-            </div>
-
-            <label htmlFor="rma_delivery_phone">Phone Number</label>
-
-            <input
-              id="rma_delivery_phone"
-              type="tel"
-              inputMode="numeric"
-              placeholder="Enter phone number"
-              value={phone}
-              maxLength={10}
-              onChange={(event) => {
-                setPhone(event.target.value.replace(/\D/g, ''));
-                setError('');
-              }}
-            />
-
-            <button
-              type="button"
-              className="rma_delivery_primary_button"
-              onClick={handleRequestOtp}
-              disabled={loading}
-            >
-              {loading ? 'Sending OTP...' : 'Send OTP'}
-            </button>
-
-            <div className="rma_delivery_register_prompt">
-              <span>Not registered as an RMA delivery partner?</span>
-
-              <button
-                type="button"
-                onClick={() => navigate('/delivery-partner/register')}
-              >
-                Register Now
-              </button>
-              <button
-                type="button"
-                onClick={() => navigate('/delivery/orders-delivery')}
-              >
-                Particular Shop
-              </button>
-            </div>
-          </>
+          <PhoneLoginForm
+            phone={phone}
+            loading={loading}
+            onPhoneChange={handlePhoneChange}
+            onRequestOtp={handleRequestOtp}
+            onRegister={() => navigate('/delivery-partner/register')}
+            onParticularShop={() => navigate('/delivery/orders-delivery')}
+          />
         ) : (
-          <>
-            <div className="rma_delivery_login_header">
-              <div className="rma_delivery_icon">✓</div>
-
-              <h1>Verify OTP</h1>
-
-              <p>Enter the 6-digit OTP sent to your phone.</p>
-            </div>
-
-            {generatedOtp && (
-              <div className="rma_delivery_otp_display">
-                <span>Your OTP</span>
-                <strong style={{ color: 'black' }}>{generatedOtp}</strong>
-              </div>
-            )}
-
-            <label htmlFor="rma_delivery_otp">OTP</label>
-
-            <input
-              id="rma_delivery_otp"
-              type="text"
-              inputMode="numeric"
-              placeholder="Enter 6-digit OTP"
-              value={otp}
-              maxLength={6}
-              onChange={(event) => {
-                setOtp(event.target.value.replace(/\D/g, ''));
-                setError('');
-              }}
-            />
-
-            <button
-              type="button"
-              className="rma_delivery_primary_button"
-              onClick={handleVerifyOtp}
-              disabled={loading}
-            >
-              {loading ? 'Verifying...' : 'Verify OTP'}
-            </button>
-
-            <button
-              type="button"
-              className="rma_delivery_secondary_button"
-              onClick={() => {
-                setOtp('');
-                setError('');
-                setSuccessMessage('');
-                setLoginStep('login');
-              }}
-            >
-              Change Phone Number
-            </button>
-          </>
+          <OtpVerificationForm
+            otp={otp}
+            generatedOtp={generatedOtp}
+            loading={loading}
+            onOtpChange={handleOtpChange}
+            onVerifyOtp={handleVerifyOtp}
+            onChangePhone={handleChangePhone}
+          />
         )}
 
-        {successMessage && (
-          <p className="rma_delivery_success">{successMessage}</p>
-        )}
-
-        {error && <p className="rma_delivery_error">{error}</p>}
+        <DeliveryLoginMessages successMessage={successMessage} error={error} />
       </section>
     </main>
   );

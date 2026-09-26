@@ -2,9 +2,14 @@ import './ShopPromotion.css';
 
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { QRCodeSVG } from 'qrcode.react';
 import jsPDF from 'jspdf';
 import QRCode from 'qrcode';
+
+import ShopPromotionHeader from './components/ShopPromotionHeader';
+import ShopPromotionIntro from './components/ShopPromotionIntro';
+import ShopQRCode from './components/ShopQRCode';
+import ShopPromotionActions from './components/ShopPromotionActions';
+import ShopPromotionNote from './components/ShopPromotionNote';
 
 function ShopPromotion() {
   const navigate = useNavigate();
@@ -282,112 +287,25 @@ function ShopPromotion() {
 
   return (
     <div className="shop-promotion-page">
-      <div className="shop-promotion-header">
-        <button
-          className="shop-promotion-back"
-          onClick={() => navigate('/owner/settings/account')}
-        >
-          ← Settings
-        </button>
-
-        <div>
-          <h1>Shop QR & Poster</h1>
-
-          <p>Help customers discover and order from your shop.</p>
-        </div>
-      </div>
+      <ShopPromotionHeader navigate={navigate} />
 
       <div className="shop-promotion-container">
-        <section className="shop-promotion-intro">
-          <span className="shop-promotion-badge">YOUR RMA SHOP</span>
+        <ShopPromotionIntro />
 
-          <h2>Bring your shop online</h2>
+        <ShopQRCode
+          shopName={shopName}
+          shopId={shopId}
+          shopUrl={shopUrl}
+          qrRef={qrRef}
+        />
 
-          <p>
-            Display your RMA QR poster at your shop so customers can scan,
-            browse your products and place orders online.
-          </p>
-        </section>
+        <ShopPromotionActions
+          shopId={shopId}
+          handleDownloadQR={handleDownloadQR}
+          handleDownloadPoster={handleDownloadPoster}
+        />
 
-        <section className="shop-qr-card">
-          <div className="shop-qr-info">
-            <span className="shop-qr-label">SHOP QR CODE</span>
-
-            <h2>{shopName}</h2>
-
-            <p>Customers can scan this QR code to open your shop directly.</p>
-          </div>
-
-          <div className="shop-qr-box" ref={qrRef}>
-            {shopId ? (
-              <QRCodeSVG value={shopUrl} size={220} level="H" includeMargin />
-            ) : (
-              <div className="shop-qr-missing">Shop ID unavailable</div>
-            )}
-          </div>
-
-          <div className="shop-id-box">
-            <span>Shop ID</span>
-
-            <strong>{shopId || 'Unavailable'}</strong>
-          </div>
-        </section>
-
-        <section className="shop-promotion-actions">
-          <button
-            className="shop-action-button primary"
-            disabled={!shopId}
-            onClick={handleDownloadQR}
-          >
-            Download QR
-          </button>
-
-          <button
-            className="shop-action-button secondary"
-            disabled={!shopId}
-            onClick={handleDownloadPoster}
-          >
-            Download A4 Poster PDF
-          </button>
-        </section>
-
-        <section className="shop-promotion-note">
-          <h3>How this works</h3>
-
-          <div className="shop-promotion-steps">
-            <div className="promotion-step">
-              <span>1</span>
-
-              <div>
-                <strong>Download your poster</strong>
-
-                <p>Get a personalized A4 RMA poster for your shop.</p>
-              </div>
-            </div>
-
-            <div className="promotion-step">
-              <span>2</span>
-
-              <div>
-                <strong>Print & display it</strong>
-
-                <p>Put the poster where customers can easily see it.</p>
-              </div>
-            </div>
-
-            <div className="promotion-step">
-              <span>3</span>
-
-              <div>
-                <strong>Customers scan & order</strong>
-
-                <p>
-                  Customers open your shop directly and start ordering online.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
+        <ShopPromotionNote />
       </div>
     </div>
   );

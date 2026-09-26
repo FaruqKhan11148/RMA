@@ -3,6 +3,16 @@ import './PersonalDetails.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import PersonalDetailsHeader from './components/PersonalDetailsHeader';
+import PersonalDetailsLoading from './components/PersonalDetailsLoading';
+import PersonalDetailsField from './components/PersonalDetailsField';
+import PersonalDetailsSave from './components/PersonalDetailsSave';
+
+import {
+  fetchCustomerDetails,
+  updateCustomerDetails,
+} from './utils/personalDetailsApi';
+
 function PersonalDetails() {
   const navigate = useNavigate();
 
@@ -21,21 +31,12 @@ function PersonalDetails() {
   useEffect(() => {
     const fetchCustomer = async () => {
       try {
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/customers/me',
-          {
-            credentials: 'include',
-          },
-        );
+        const currentCustomer = await fetchCustomerDetails();
 
-        if (!response.ok) {
+        if (!currentCustomer) {
           navigate('/customer/login');
           return;
         }
-
-        const data = await response.json();
-
-        const currentCustomer = data.customer;
 
         setCustomer(currentCustomer);
 
@@ -67,30 +68,12 @@ function PersonalDetails() {
     setSaving(true);
 
     try {
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/customers/me',
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-          body: JSON.stringify({
-            name: name.trim(),
-          }),
-        },
-      );
+      const updatedCustomer = await updateCustomerDetails(name);
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to update profile');
-      }
-
-      setCustomer(data.customer);
-      setName(data.customer.name);
-      setPhone(data.customer.phone);
-      setEmail(data.customer.email);
+      setCustomer(updatedCustomer);
+      setName(updatedCustomer.name);
+      setPhone(updatedCustomer.phone);
+      setEmail(updatedCustomer.email);
 
       setSuccess('Details updated successfully.');
     } catch (error) {
@@ -102,14 +85,7 @@ function PersonalDetails() {
   };
 
   if (loading) {
-    return (
-      <main className="personal_details">
-        <section className="personal_details_loading">
-          <div className="personal_details_spinner" />
-          <p>Loading your details...</p>
-        </section>
-      </main>
-    );
+    return <PersonalDetailsLoading />;
   }
 
   if (!customer) {
@@ -118,52 +94,39 @@ function PersonalDetails() {
 
   return (
     <main className="personal_details">
-      <header className="personal_details_header">
-        <button
-          className="personal_details_back"
-          onClick={() => navigate('/profile')}
-        >
-          ←
-        </button>
-
-        <div>
-          <h1>Personal Details</h1>
-          <p>Manage your account information</p>
-        </div>
-      </header>
+      <PersonalDetailsHeader navigate={navigate} />
 
       <form className="personal_details_card" onSubmit={handleSave}>
         <div className="personal_details_avatar">
           {name ? name.charAt(0).toUpperCase() : 'R'}
         </div>
 
-        <div className="personal_details_field">
-          <label htmlFor="customer-name">Full Name</label>
+        <PersonalDetailsField
+          id="customer-name"
+          label="Full Name"
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Enter your name"
+        />
 
-          <input
-            id="customer-name"
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Enter your name"
-          />
-        </div>
+        <PersonalDetailsField
+          id="customer-phone"
+          label="Mobile Number"
+          type="tel"
+          value={phone}
+          readOnly
+          helperText="Phone number cannot be changed here."
+        />
 
-        <div className="personal_details_field">
-          <label htmlFor="customer-phone">Mobile Number</label>
-
-          <input id="customer-phone" type="tel" value={phone} readOnly />
-
-          <small>Phone number cannot be changed here.</small>
-        </div>
-
-        <div className="personal_details_field">
-          <label htmlFor="customer-email">Email</label>
-
-          <input id="customer-email" type="email" value={email} readOnly />
-
-          <small>Email cannot be changed here.</small>
-        </div>
+        <PersonalDetailsField
+          id="customer-email"
+          label="Email"
+          type="email"
+          value={email}
+          readOnly
+          helperText="Email cannot be changed here."
+        />
 
         {error && <div className="personal_details_message error">{error}</div>}
 
@@ -171,13 +134,7 @@ function PersonalDetails() {
           <div className="personal_details_message success">{success}</div>
         )}
 
-        <button
-          type="submit"
-          className="personal_details_save"
-          disabled={saving}
-        >
-          {saving ? 'Saving...' : 'Save Changes'}
-        </button>
+        <PersonalDetailsSave saving={saving} />
       </form>
     </main>
   );

@@ -3,6 +3,12 @@ import './ChangePrice.css';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import ChangePriceHeader from './components/ChangePrice/ChangePriceHeader';
+import ChangePriceMessages from './components/ChangePrice/ChangePriceMessages';
+import ChangePriceProduct from './components/ChangePrice/ChangePriceProduct';
+import ChangePriceField from './components/ChangePrice/ChangePriceField';
+import ChangePriceActions from './components/ChangePrice/ChangePriceActions';
+
 function ChangePrice() {
   const navigate = useNavigate();
   const { productId } = useParams();
@@ -131,105 +137,23 @@ function ChangePrice() {
   return (
     <div className="change-price-page">
       <div className="change-price-container">
-        <button
-          type="button"
-          className="change-price-back"
-          onClick={() => navigate('/owner/settings/products')}
-        >
-          ← Products Settings
-        </button>
+        <ChangePriceHeader navigate={navigate} />
 
-        <div className="change-price-header">
-          <h1>Change Price</h1>
-
-          <p>Update the selling price of this product.</p>
-        </div>
-
-        {error && <div className="change-price-message error">{error}</div>}
-
-        {successMessage && (
-          <div className="change-price-message success">✓ {successMessage}</div>
-        )}
+        <ChangePriceMessages error={error} successMessage={successMessage} />
 
         {product && (
           <form className="change-price-card" onSubmit={handleSubmit}>
-            <div className="change-price-product">
-              <div className="change-price-image">
-                {product.imageUrl ? (
-                  <img src={product.imageUrl} alt={product.name} />
-                ) : (
-                  <span>
-                    {product.category === 'Chicken'
-                      ? '🍗'
-                      : product.category === 'Mutton'
-                        ? '🥩'
-                        : product.category === 'Fish'
-                          ? '🐟'
-                          : product.category === 'Seafood'
-                            ? '🦐'
-                            : '🥩'}
-                  </span>
-                )}
-              </div>
-
-              <div className="change-price-product-info">
-                <h2>{product.name}</h2>
-
-                <p>
-                  {product.category} • {product.unit}
-                </p>
-
-                <div className="change-price-current">
-                  <span>Current Price</span>
-
-                  <strong>
-                    ₹{product.price} / {product.unit}
-                  </strong>
-                </div>
-              </div>
-            </div>
+            <ChangePriceProduct product={product} />
 
             <div className="change-price-divider" />
 
-            <div className="change-price-field">
-              <label htmlFor="price">New Selling Price</label>
+            <ChangePriceField
+              product={product}
+              price={price}
+              setPrice={setPrice}
+            />
 
-              <div className="change-price-input-wrapper">
-                <span>₹</span>
-
-                <input
-                  id="price"
-                  type="number"
-                  min="1"
-                  step="0.01"
-                  value={price}
-                  onChange={(event) => setPrice(event.target.value)}
-                  placeholder="Enter new price"
-                  required
-                />
-
-                <span>/ {product.unit}</span>
-              </div>
-            </div>
-
-            <div className="change-price-actions">
-              <button
-                type="button"
-                className="change-price-cancel"
-                onClick={() => navigate('/owner/settings/products')}
-                disabled={saving}
-              >
-                Cancel
-              </button>
-
-              <button
-                type="submit"
-                className="change-price-submit"
-                disabled={saving}
-              >
-                {saving ? 'Updating...' : 'Update Price'}
-              </button>
-            </div>
+            <ChangePriceActions navigate={navigate} saving={saving} />
           </form>
         )}
       </div>

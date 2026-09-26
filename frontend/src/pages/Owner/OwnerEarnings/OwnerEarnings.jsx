@@ -1,7 +1,13 @@
 import './OwnerEarnings.css';
 
 import { useEffect, useState } from 'react';
-import { IndianRupee, Clock3, CheckCircle2, Package } from 'lucide-react';
+
+import OwnerEarningsHeader from './components/OwnerEarningsHeader';
+import OwnerEarningsTotal from './components/OwnerEarningsTotal';
+import OwnerEarningsCards from './components/OwnerEarningsCards';
+import OwnerRecentOrders from './components/OwnerRecentOrders';
+
+import { fetchOwnerEarnings } from './utils/ownerEarningsApi';
 
 function OwnerEarnings() {
   const [earnings, setEarnings] = useState(null);
@@ -27,18 +33,7 @@ function OwnerEarnings() {
           throw new Error('Invalid owner session');
         }
 
-        const response = await fetch(
-          `https://rma-backend-bo4a.onrender.com/api/orders/owner/${owner.id}/earnings`,
-          {
-            credentials: 'include',
-          },
-        );
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message || 'Failed to fetch earnings');
-        }
+        const data = await fetchOwnerEarnings(owner.id);
 
         setEarnings(data.earnings);
         setRecentOrders(data.recentOrders || []);
@@ -77,127 +72,13 @@ function OwnerEarnings() {
 
   return (
     <main className="owner_earnings_page">
-      <section className="owner_earnings_header">
-        <h1>Earnings</h1>
-        <p>Track your shop earnings and settlements.</p>
-      </section>
+      <OwnerEarningsHeader />
 
-      <section className="owner_earnings_total">
-        <div className="owner_earnings_total_icon">
-          <IndianRupee size={22} />
-        </div>
+      <OwnerEarningsTotal earnings={earnings} />
 
-        <div>
-          <span>Total Earnings</span>
-          <strong>₹{Number(earnings?.totalEarnings || 0).toFixed(2)}</strong>
-        </div>
-      </section>
+      <OwnerEarningsCards earnings={earnings} />
 
-      <section className="owner_earnings_cards">
-        <div className="owner_earning_card">
-          <div className="owner_earning_card_icon pending">
-            <Clock3 size={20} />
-          </div>
-
-          <div>
-            <span>Pending</span>
-            <strong>
-              ₹{Number(earnings?.pendingEarnings || 0).toFixed(2)}
-            </strong>
-          </div>
-        </div>
-
-        <div className="owner_earning_card">
-          <div className="owner_earning_card_icon processing">
-            <Package size={20} />
-          </div>
-
-          <div>
-            <span>Processing</span>
-            <strong>
-              ₹{Number(earnings?.processingEarnings || 0).toFixed(2)}
-            </strong>
-          </div>
-        </div>
-
-        <div className="owner_earning_card">
-          <div className="owner_earning_card_icon settled">
-            <CheckCircle2 size={20} />
-          </div>
-
-          <div>
-            <span>Settled</span>
-            <strong>
-              ₹{Number(earnings?.settledEarnings || 0).toFixed(2)}
-            </strong>
-          </div>
-        </div>
-      </section>
-
-      <section className="owner_earnings_orders">
-        <div className="owner_earnings_section_header">
-          <h2>Recent Orders</h2>
-        </div>
-
-        {recentOrders.length === 0 ? (
-          <div className="owner_earnings_empty">
-            <Package size={30} />
-            <p>No earnings yet.</p>
-          </div>
-        ) : (
-          <div className="owner_earnings_order_list">
-            {recentOrders.map((order) => (
-              <article
-                className="owner_earnings_order_card"
-                key={order.orderId}
-              >
-                <div className="owner_earnings_order_top">
-                  <div>
-                    <span>Order ID</span>
-                    <strong>{order.orderId}</strong>
-                  </div>
-
-                  <span
-                    className={`owner_settlement_badge ${String(
-                      order.settlementStatus || '',
-                    ).toLowerCase()}`}
-                  >
-                    {order.settlementStatus}
-                  </span>
-                </div>
-
-                <div className="owner_earnings_order_details">
-                  <div>
-                    <span>Order Total</span>
-                    <strong>₹{Number(order.totalPrice || 0).toFixed(2)}</strong>
-                  </div>
-
-                  <div>
-                    <span>Your Earnings</span>
-                    <strong>
-                      ₹{Number(order.ownerAmount || 0).toFixed(2)}
-                    </strong>
-                  </div>
-                </div>
-
-                <div className="owner_earnings_order_bottom">
-                  <span>{order.orderStatus}</span>
-
-                  {order.settledAt ? (
-                    <span>
-                      Settled {new Date(order.settledAt).toLocaleDateString()}
-                    </span>
-                  ) : (
-                    <span>
-                      {new Date(order.orderDate).toLocaleDateString()}
-                    </span>
-                  )}
-                </div>
-              </article>
-            ))}
-          </div>
-        )}
-      </section>
+      <OwnerRecentOrders recentOrders={recentOrders} />
     </main>
   );
 }

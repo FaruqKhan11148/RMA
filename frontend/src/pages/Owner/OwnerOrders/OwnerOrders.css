@@ -1284,6 +1284,9 @@
 
 .owner_order_card_footer button {
   cursor: pointer;
+  height: 30px;
+  border-radius: 60px;
+  width: 180px;
 }
 
 .owner_order_card_footer .owner_order_view_button {
@@ -1737,4 +1740,191 @@
 .owner_order_card:active {
   outline: none;
   box-shadow: none;
+}
+
+/* ================================
+   REJECTION REASON MODAL
+================================ */
+
+.rejection_reason_overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.rejection_reason_modal {
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 24px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+}
+
+.rejection_reason_header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.rejection_reason_header h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.rejection_reason_header p {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.rejection_reason_close {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 50%;
+  background: #f3f4f6;
+  color: #374151;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.rejection_reason_close:hover {
+  background: #e5e7eb;
+}
+
+.rejection_reason_field {
+  margin-bottom: 20px;
+}
+
+.rejection_reason_field label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.rejection_reason_field select,
+.rejection_reason_field textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #1f2937;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.rejection_reason_field select {
+  height: 46px;
+  padding: 0 12px;
+}
+
+.rejection_reason_field textarea {
+  min-height: 100px;
+  padding: 12px;
+  resize: vertical;
+}
+
+.rejection_reason_field select:focus,
+.rejection_reason_field textarea:focus {
+  border-color: #16803a;
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.1);
+}
+
+.rejection_reason_field select:disabled,
+.rejection_reason_field textarea:disabled {
+  background: #f3f4f6;
+  cursor: not-allowed;
+}
+
+.rejection_reason_actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.rejection_cancel_button,
+.rejection_confirm_button {
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.rejection_cancel_button {
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #374151;
+}
+
+.rejection_cancel_button:hover {
+  background: #f9fafb;
+}
+
+.rejection_confirm_button {
+  border: none;
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.rejection_confirm_button:hover:not(:disabled) {
+  background: #b91c1c;
+}
+
+.rejection_cancel_button:disabled,
+.rejection_confirm_button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .rejection_reason_overlay {
+    padding: 16px;
+  }
+
+  .rejection_reason_modal {
+    padding: 20px;
+    border-radius: 14px;
+  }
+
+  .rejection_reason_header h2 {
+    font-size: 20px;
+  }
+
+  .rejection_reason_actions {
+    flex-direction: column-reverse;
+  }
+
+  .rejection_cancel_button,
+  .rejection_confirm_button {
+    width: 100%;
+  }
 }

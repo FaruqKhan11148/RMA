@@ -2,6 +2,11 @@ import './DeliveryPerson.css';
 
 import { useEffect, useState } from 'react';
 
+import DeliveryPersonHeader from './components/DeliveryPerson/DeliveryPersonHeader';
+import DeliveryPersonDetails from './components/DeliveryPerson/DeliveryPersonDetails';
+import DeliveryPersonEditForm from './components/DeliveryPerson/DeliveryPersonEditForm';
+import DeliveryPersonRegisterForm from './components/DeliveryPerson/DeliveryPersonRegisterForm';
+
 function DeliveryPerson() {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -39,7 +44,6 @@ function DeliveryPerson() {
         const data = await response.json();
 
         if (response.status === 404) {
-          // No delivery person yet.
           setDeliveryPerson(null);
           return;
         }
@@ -144,12 +148,10 @@ function DeliveryPerson() {
         'https://rma-backend-bo4a.onrender.com/api/delivery/person',
         {
           method: 'PATCH',
-
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
-
           body: JSON.stringify({
             name: editName.trim(),
             phone: editPhone.trim(),
@@ -217,12 +219,10 @@ function DeliveryPerson() {
         'https://rma-backend-bo4a.onrender.com/api/delivery/register',
         {
           method: 'POST',
-
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
-
           body: JSON.stringify({
             name: name.trim(),
             phone: phone.trim(),
@@ -251,6 +251,14 @@ function DeliveryPerson() {
     }
   };
 
+  const handleEdit = () => {
+    setEditName(deliveryPerson.name);
+    setEditPhone(deliveryPerson.phone);
+    setEditing(true);
+    setError('');
+    setSuccessMessage('');
+  };
+
   return (
     <main className="delivery_person_settings">
       <section className="delivery_person_card">
@@ -262,160 +270,44 @@ function DeliveryPerson() {
           </>
         ) : deliveryPerson ? (
           <>
-            <h1>Delivery Person</h1>
-
-            <p>Your shop already has a delivery person registered.</p>
+            <DeliveryPersonHeader registered={true} />
 
             <div className="delivery_person_result">
               {!editing ? (
-                <>
-                  <h2>Delivery Person Details</h2>
-
-                  <p>
-                    <strong>Name:</strong> {deliveryPerson.name}
-                  </p>
-
-                  <p>
-                    <strong>Phone:</strong> {deliveryPerson.phone}
-                  </p>
-
-                  <p>
-                    <strong>Shop ID:</strong> {deliveryPerson.shopId}
-                  </p>
-
-                  <p>
-                    <strong>Status:</strong>{' '}
-                    {deliveryPerson.isActive ? 'Active' : 'Inactive'}
-                  </p>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setEditName(deliveryPerson.name);
-                      setEditPhone(deliveryPerson.phone);
-                      setEditing(true);
-                      setError('');
-                      setSuccessMessage('');
-                    }}
-                  >
-                    Edit Details
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handleStatusChange}
-                    disabled={updatingStatus}
-                  >
-                    {updatingStatus
-                      ? 'Updating...'
-                      : deliveryPerson.isActive
-                        ? 'Deactivate Delivery Person'
-                        : 'Activate Delivery Person'}
-                  </button>
-                </>
+                <DeliveryPersonDetails
+                  deliveryPerson={deliveryPerson}
+                  onEdit={handleEdit}
+                  onStatusChange={handleStatusChange}
+                  updatingStatus={updatingStatus}
+                />
               ) : (
-                <>
-                  <h2>Edit Delivery Person</h2>
-
-                  <form onSubmit={handleUpdateDetails}>
-                    <div>
-                      <label>Delivery Person Name</label>
-
-                      <input
-                        type="text"
-                        value={editName}
-                        placeholder="Enter full name"
-                        onChange={(event) => {
-                          setEditName(event.target.value);
-                          setError('');
-                          setSuccessMessage('');
-                        }}
-                      />
-                    </div>
-
-                    <div>
-                      <label>Phone Number</label>
-
-                      <input
-                        type="tel"
-                        inputMode="numeric"
-                        maxLength="10"
-                        value={editPhone}
-                        placeholder="Enter 10-digit phone number"
-                        onChange={(event) => {
-                          setEditPhone(event.target.value.replace(/\D/g, ''));
-
-                          setError('');
-                          setSuccessMessage('');
-                        }}
-                      />
-                    </div>
-
-                    <button type="submit" disabled={updatingDetails}>
-                      {updatingDetails ? 'Saving...' : 'Save Changes'}
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setEditing(false);
-                        setEditName('');
-                        setEditPhone('');
-                        setError('');
-                        setSuccessMessage('');
-                      }}
-                      disabled={updatingDetails}
-                    >
-                      Cancel
-                    </button>
-                  </form>
-                </>
+                <DeliveryPersonEditForm
+                  editName={editName}
+                  setEditName={setEditName}
+                  editPhone={editPhone}
+                  setEditPhone={setEditPhone}
+                  handleUpdateDetails={handleUpdateDetails}
+                  updatingDetails={updatingDetails}
+                  setEditing={setEditing}
+                  setError={setError}
+                  setSuccessMessage={setSuccessMessage}
+                />
               )}
             </div>
           </>
         ) : (
           <>
-            <h1>Register Delivery Person</h1>
+            <DeliveryPersonHeader registered={false} />
 
-            <p>
-              Register a delivery person who will deliver orders for your shop.
-            </p>
-
-            <form onSubmit={handleRegister}>
-              <div>
-                <label>Delivery Person Name</label>
-
-                <input
-                  type="text"
-                  placeholder="Enter full name"
-                  value={name}
-                  onChange={(event) => {
-                    setName(event.target.value);
-                    setError('');
-                  }}
-                />
-              </div>
-
-              <div>
-                <label>Phone Number</label>
-
-                <input
-                  type="tel"
-                  inputMode="numeric"
-                  maxLength="10"
-                  placeholder="Enter 10-digit phone number"
-                  value={phone}
-                  onChange={(event) => {
-                    setPhone(event.target.value.replace(/\D/g, ''));
-                    setError('');
-                  }}
-                />
-              </div>
-
-              <button type="submit" disabled={loading}>
-                {loading ? 'Registering...' : 'Register Delivery Person'}
-              </button>
-            </form>
+            <DeliveryPersonRegisterForm
+              name={name}
+              setName={setName}
+              phone={phone}
+              setPhone={setPhone}
+              handleRegister={handleRegister}
+              loading={loading}
+              setError={setError}
+            />
 
             {error && <p className="delivery_person_error">{error}</p>}
 
@@ -428,4 +320,5 @@ function DeliveryPerson() {
     </main>
   );
 }
+
 export default DeliveryPerson;

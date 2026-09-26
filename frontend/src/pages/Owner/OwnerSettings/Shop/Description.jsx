@@ -3,6 +3,9 @@ import './Description.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import DescriptionHeader from './components/Description/DescriptionHeader';
+import DescriptionForm from './components/Description/DescriptionForm';
+
 function Description() {
   const navigate = useNavigate();
 
@@ -131,51 +134,16 @@ function Description() {
   return (
     <main className="owner_setting_page">
       <section className="owner_setting_card">
-        <button
-          type="button"
-          className="owner_setting_back"
-          onClick={() => navigate('/owner/settings/account')}
-        >
-          ← Shop Settings
-        </button>
+        <DescriptionHeader navigate={navigate} />
 
-        <div className="owner_setting_header">
-          <h1>Shop Description</h1>
-
-          <p>
-            Tell customers a little about your shop, products, quality, or what
-            makes your shop special.
-          </p>
-        </div>
-
-        <form onSubmit={handleSubmit}>
-          <label className="owner_setting_label">
-            Description
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Example: Fresh chicken and meat available daily."
-              maxLength={500}
-              rows={6}
-            />
-          </label>
-
-          <div className="owner_description_counter">
-            {description.length}/500
-          </div>
-
-          {error && <p className="owner_setting_error">{error}</p>}
-
-          {success && <p className="owner_setting_success">{success}</p>}
-
-          <button
-            type="submit"
-            className="owner_setting_save"
-            disabled={saving}
-          >
-            {saving ? 'Saving...' : 'Save Changes'}
-          </button>
-        </form>
+        <DescriptionForm
+          description={description}
+          setDescription={setDescription}
+          error={error}
+          success={success}
+          saving={saving}
+          handleSubmit={handleSubmit}
+        />
       </section>
     </main>
   );

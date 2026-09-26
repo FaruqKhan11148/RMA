@@ -3,6 +3,13 @@ import './ViewProducts.css';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import ViewProductsHeader from './components/ViewProducts/ViewProductsHeader';
+import ViewProductsMessages from './components/ViewProducts/ViewProductsMessages';
+import ViewProductsSummary from './components/ViewProducts/ViewProductsSummary';
+import ViewProductsFilters from './components/ViewProducts/ViewProductsFilters';
+import ViewProductsEmpty from './components/ViewProducts/ViewProductsEmpty';
+import ViewProductCard from './components/ViewProducts/ViewProductCard';
+
 function ViewProducts() {
   const navigate = useNavigate();
 
@@ -177,223 +184,38 @@ function ViewProducts() {
   return (
     <div className="products-page">
       <div className="products-container">
-        {/* HEADER */}
-        <div className="products-header">
-          <div>
-            <button
-              className="products-back-button"
-              onClick={() => navigate('/owner/settings/account')}
-            >
-              ← Products Settings
-            </button>
+        <ViewProductsHeader navigate={navigate} shopName={shopName} />
 
-            <h1>Products</h1>
+        <ViewProductsMessages successMessage={successMessage} error={error} />
 
-            <p>
-              Manage the products available at <strong>{shopName}</strong>
-            </p>
-          </div>
+        <ViewProductsSummary
+          products={products}
+          availableCount={availableCount}
+          unavailableCount={unavailableCount}
+        />
 
-          <button
-            className="add-product-button"
-            onClick={() => navigate('/owner/settings/products/add')}
-          >
-            + Add Product
-          </button>
-        </div>
+        <ViewProductsFilters
+          search={search}
+          setSearch={setSearch}
+          categoryFilter={categoryFilter}
+          setCategoryFilter={setCategoryFilter}
+          availabilityFilter={availabilityFilter}
+          setAvailabilityFilter={setAvailabilityFilter}
+          categories={categories}
+        />
 
-        {/* MESSAGES */}
-        {successMessage && (
-          <div className="products-success">{successMessage}</div>
-        )}
-
-        {error && <div className="products-error">{error}</div>}
-
-        {/* SUMMARY */}
-        <div className="products-summary">
-          <div className="summary-card">
-            <span>Total Products</span>
-            <strong>{products.length}</strong>
-          </div>
-
-          <div className="summary-card">
-            <span>Available</span>
-            <strong>{availableCount}</strong>
-          </div>
-
-          <div className="summary-card">
-            <span>Unavailable</span>
-            <strong>{unavailableCount}</strong>
-          </div>
-        </div>
-
-        {/* FILTERS */}
-        <div className="products-filters">
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-          />
-
-          <select
-            value={categoryFilter}
-            onChange={(event) => setCategoryFilter(event.target.value)}
-          >
-            {categories.map((category) => (
-              <option key={category} value={category}>
-                {category === 'ALL' ? 'All Categories' : category}
-              </option>
-            ))}
-          </select>
-
-          <select
-            value={availabilityFilter}
-            onChange={(event) => setAvailabilityFilter(event.target.value)}
-          >
-            <option value="ALL">All Products</option>
-
-            <option value="AVAILABLE">Available</option>
-
-            <option value="UNAVAILABLE">Unavailable</option>
-          </select>
-        </div>
-
-        {/* PRODUCTS */}
         {filteredProducts.length === 0 ? (
-          <div className="products-empty">
-            <div className="products-empty-icon">🛒</div>
-
-            <h2>No products found</h2>
-
-            <p>
-              {products.length === 0
-                ? 'Add your first product to start selling.'
-                : 'Try changing your search or filters.'}
-            </p>
-
-            {products.length === 0 && (
-              <button
-                className="add-product-button"
-                onClick={() => navigate('/owner/settings/products/add')}
-              >
-                + Add Product
-              </button>
-            )}
-          </div>
+          <ViewProductsEmpty />
         ) : (
           <div className="products-grid">
             {filteredProducts.map((product) => (
-              <div
-                className={`product-card ${
-                  !product.available ? 'product-card-unavailable' : ''
-                }`}
+              <ViewProductCard
                 key={product.productId}
-              >
-                {/* IMAGE */}
-                <div className="product-image-wrapper">
-                  {product.imageUrl ? (
-                    <img
-                      src={product.imageUrl}
-                      alt={product.name}
-                      className="product-image"
-                    />
-                  ) : (
-                    <div className="product-image-placeholder">
-                      {product.category === 'Chicken'
-                        ? '🍗'
-                        : product.category === 'Mutton'
-                          ? '🥩'
-                          : product.category === 'Fish'
-                            ? '🐟'
-                            : product.category === 'Seafood'
-                              ? '🦐'
-                              : product.category === 'Eggs'
-                                ? '🥚'
-                                : '🛒'}
-                    </div>
-                  )}
-
-                  <span
-                    className={`availability-badge ${
-                      product.available ? 'available' : 'unavailable'
-                    }`}
-                  >
-                    {product.available ? 'Available' : 'Unavailable'}
-                  </span>
-                </div>
-
-                {/* CONTENT */}
-                <div className="product-card-content">
-                  <div className="product-card-top">
-                    <div>
-                      <span className="product-category">
-                        {product.category}
-                      </span>
-
-                      <h3>{product.name}</h3>
-                    </div>
-
-                    <span
-                      className={`product-type ${
-                        product.isCustom ? 'custom' : 'catalogue'
-                      }`}
-                    >
-                      {product.isCustom ? 'Custom' : 'RMA'}
-                    </span>
-                  </div>
-
-                  <div className="product-price">
-                    ₹{Number(product.price).toFixed(0)}
-                    <span>/ {product.unit}</span>
-                  </div>
-
-                  {/* ACTIONS */}
-                  <div className="product-actions">
-                    <button
-                      className={`availability-button ${
-                        product.available
-                          ? 'make-unavailable'
-                          : 'make-available'
-                      }`}
-                      onClick={() => handleAvailabilityToggle(product)}
-                    >
-                      {product.available
-                        ? 'Mark Unavailable'
-                        : 'Mark Available'}
-                    </button>
-
-                    <div className="secondary-actions">
-                      <button
-                        onClick={() =>
-                          navigate(
-                            `/owner/settings/products/change-price/${product.productId}`,
-                          )
-                        }
-                      >
-                        Price
-                      </button>
-
-                      <button
-                        onClick={() =>
-                          navigate(
-                            `/owner/settings/products/edit/${product.productId}`,
-                          )
-                        }
-                      >
-                        Edit
-                      </button>
-
-                      <button
-                        className="remove-button"
-                        onClick={() => handleRemove(product)}
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                product={product}
+                navigate={navigate}
+                handleAvailabilityToggle={handleAvailabilityToggle}
+                handleRemove={handleRemove}
+              />
             ))}
           </div>
         )}

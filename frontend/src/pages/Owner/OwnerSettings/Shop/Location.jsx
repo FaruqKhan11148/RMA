@@ -3,7 +3,11 @@ import './Location.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import MapPicker from '../../../../components/map/MapPicker';
+import LocationHeader from './components/Location/LocationHeader';
+import LocationControls from './components/Location/LocationControls';
+import LocationMap from './components/Location/LocationMap';
+import LocationConfirmation from './components/Location/LocationConfirmation';
+import LocationActions from './components/Location/LocationActions';
 
 function Location() {
   const navigate = useNavigate();
@@ -191,84 +195,27 @@ function Location() {
   return (
     <div className="owner_setting_page">
       <div className="owner_setting_card">
-        <button
-          type="button"
-          className="owner_setting_back"
-          onClick={() => navigate(-1)}
-        >
-          ← Shop Settings
-        </button>
-
-        <div className="owner_setting_header">
-          <p className="owner_setting_tag">SHOP SETTINGS</p>
-
-          <h1>Shop Location</h1>
-
-          <p>
-            Select the exact location of your shop on the map. This location
-            will be used for delivery routing.
-          </p>
-        </div>
+        <LocationHeader navigate={navigate} />
 
         <form className="owner_location_form" onSubmit={handleSubmit}>
-          <div className="owner_location_info">
-            <strong>Shop Location</strong>
+          <LocationControls
+            handleUseCurrentLocation={handleUseCurrentLocation}
+            saving={saving}
+          />
 
-            <span>
-              Move the marker or tap anywhere on the map to select your exact
-              shop location.
-            </span>
-          </div>
+          <LocationMap
+            shopLocation={shopLocation}
+            handleLocationSelect={handleLocationSelect}
+          />
 
-          <button
-            type="button"
-            className="owner_location_current"
-            onClick={handleUseCurrentLocation}
-            disabled={saving}
-          >
-            📍 Use My Current Location
-          </button>
+          <LocationConfirmation shopLocation={shopLocation} />
 
-          <div className="owner_location_map">
-            <MapPicker
-              initialLocation={shopLocation}
-              onLocationSelect={handleLocationSelect}
-            />
-          </div>
-
-          {!shopLocation && (
-            <div className="owner_location_required">
-              Please select your shop location before saving.
-            </div>
-          )}
-
-          {shopLocation && (
-            <div className="owner_location_confirmation">
-              <strong>Shop location selected</strong>
-
-              {shopLocation.address && <span>{shopLocation.address}</span>}
-
-              <small>
-                {shopLocation.latitude.toFixed(6)}
-                {', '}
-                {shopLocation.longitude.toFixed(6)}
-              </small>
-            </div>
-          )}
-
-          {error && <div className="owner_setting_error">{error}</div>}
-
-          {successMessage && (
-            <div className="owner_setting_success">{successMessage}</div>
-          )}
-
-          <button
-            type="submit"
-            className="owner_setting_save"
-            disabled={saving || !shopLocation}
-          >
-            {saving ? 'Saving...' : 'Save Location'}
-          </button>
+          <LocationActions
+            error={error}
+            successMessage={successMessage}
+            saving={saving}
+            shopLocation={shopLocation}
+          />
         </form>
       </div>
     </div>

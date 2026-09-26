@@ -3,6 +3,12 @@ import './DeliveryAvailable.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import DeliveryAvailableHeader from './components/DeliveryAvailable/DeliveryAvailableHeader';
+import DeliveryStatusCard from './components/DeliveryAvailable/DeliveryStatusCard';
+import DeliveryStatusOptions from './components/DeliveryAvailable/DeliveryStatusOptions';
+import DeliveryAvailableMessages from './components/DeliveryAvailable/DeliveryAvailableMessages';
+import DeliveryAvailableNote from './components/DeliveryAvailable/DeliveryAvailableNote';
+
 function DeliveryAvailable() {
   const navigate = useNavigate();
 
@@ -116,109 +122,23 @@ function DeliveryAvailable() {
           ← Delivery Settings
         </button>
 
-        <div className="owner_setting_header">
-          <p className="owner_setting_tag">DELIVERY SETTINGS</p>
+        <DeliveryAvailableHeader />
 
-          <h1>Delivery Available</h1>
+        <DeliveryStatusCard delivery={delivery} />
 
-          <p>
-            Control whether customers can choose delivery when ordering from
-            your shop.
-          </p>
-        </div>
+        <DeliveryStatusOptions
+          delivery={delivery}
+          handleDeliveryChange={handleDeliveryChange}
+          saving={saving}
+        />
 
-        <div className="delivery_status_card">
-          <div
-            className={
-              delivery
-                ? 'delivery_status_icon available'
-                : 'delivery_status_icon unavailable'
-            }
-          >
-            {delivery ? '✓' : '×'}
-          </div>
+        <DeliveryAvailableMessages
+          saving={saving}
+          error={error}
+          successMessage={successMessage}
+        />
 
-          <div className="delivery_status_content">
-            <span className="delivery_status_label">
-              Current Delivery Status
-            </span>
-
-            <strong
-              className={
-                delivery
-                  ? 'delivery_status_value available'
-                  : 'delivery_status_value unavailable'
-              }
-            >
-              {delivery ? 'AVAILABLE' : 'UNAVAILABLE'}
-            </strong>
-
-            <p>
-              {delivery
-                ? 'Customers can choose delivery for their orders.'
-                : 'Customers will not be able to choose delivery for new orders.'}
-            </p>
-          </div>
-        </div>
-
-        <div className="delivery_status_options">
-          <button
-            type="button"
-            className={
-              delivery
-                ? 'delivery_status_option active available_option'
-                : 'delivery_status_option available_option'
-            }
-            onClick={() => handleDeliveryChange(true)}
-            disabled={saving}
-          >
-            <span className="delivery_status_option_icon">✓</span>
-
-            <span>
-              <strong>Enable Delivery</strong>
-              <small>Allow customers to order delivery</small>
-            </span>
-          </button>
-
-          <button
-            type="button"
-            className={
-              !delivery
-                ? 'delivery_status_option active unavailable_option'
-                : 'delivery_status_option unavailable_option'
-            }
-            onClick={() => handleDeliveryChange(false)}
-            disabled={saving}
-          >
-            <span className="delivery_status_option_icon">×</span>
-
-            <span>
-              <strong>Disable Delivery</strong>
-              <small>Stop accepting delivery orders</small>
-            </span>
-          </button>
-        </div>
-
-        {saving && (
-          <div className="delivery_status_saving">
-            Updating delivery availability...
-          </div>
-        )}
-
-        {error && <div className="owner_setting_error">{error}</div>}
-
-        {successMessage && (
-          <div className="owner_setting_success">{successMessage}</div>
-        )}
-
-        <div className="delivery_status_note">
-          <strong>Important</strong>
-
-          <span>
-            Disabling delivery should only remove the delivery option for new
-            orders. Existing orders should continue normally.
-          </span>
-        </div>
+        <DeliveryAvailableNote />
       </div>
     </div>
   );
