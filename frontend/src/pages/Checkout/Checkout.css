@@ -8,42 +8,42 @@
   background: var(--rma-bg);
 }
 
-/* ========================================
-   HEADER
-======================================== */
+  /* ========================================
+    HEADER
+  ======================================== */
 
-.checkout_header {
-  margin-bottom: var(--rma-space-5);
-}
+  .checkout_header {
+    margin-bottom: var(--rma-space-5);
+  }
 
-.checkout_header_content {
-  max-width: 700px;
-}
+  .checkout_header_content {
+    max-width: 700px;
+  }
 
-.checkout_eyebrow {
-  display: block;
-  margin-bottom: 7px;
-  color: var(--rma-primary);
-  font-size: var(--rma-font-xs);
-  font-weight: var(--rma-weight-bold);
-  letter-spacing: 1px;
-}
+  .checkout_eyebrow {
+    display: block;
+    margin-bottom: 7px;
+    color: var(--rma-primary);
+    font-size: var(--rma-font-xs);
+    font-weight: var(--rma-weight-bold);
+    letter-spacing: 1px;
+  }
 
-.checkout_header h1 {
-  margin: 0 0 8px;
-  color: var(--rma-text);
-  font-size: var(--rma-font-3xl);
-  font-weight: var(--rma-weight-extrabold);
-  letter-spacing: -0.7px;
-  line-height: 1.15;
-}
+  .checkout_header h1 {
+    margin: 0 0 8px;
+    color: var(--rma-text);
+    font-size: var(--rma-font-3xl);
+    font-weight: var(--rma-weight-extrabold);
+    letter-spacing: -0.7px;
+    line-height: 1.15;
+  }
 
-.checkout_header p {
-  margin: 0;
-  color: var(--rma-text-secondary);
-  font-size: var(--rma-font-sm);
-  line-height: 1.5;
-}
+  .checkout_header p {
+    margin: 0;
+    color: var(--rma-text-secondary);
+    font-size: var(--rma-font-sm);
+    line-height: 1.5;
+  }
 
 /* ========================================
    SHOP CARD

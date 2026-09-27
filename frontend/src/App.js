@@ -8,7 +8,16 @@ import {
   listenForCustomerNotifications,
 } from './firebase/notifications';
 
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom';
+
+import FlashMessage from './components/FlashMessage/FlashMessage';
+
 import OwnerProtectedRoute from './pages/Owner/OwnerProtectedRoute/OwnerProtectedRoute';
 import ScrollToTop from './components/ScrollToTop/ScrollToTop';
 import DeliveryPartnerRegister from './pages/DeliveryPartner/DeliveryPartnerRegister/DeliveryPartnerRegister';
@@ -115,8 +124,29 @@ import ShopPromotion from './pages/Owner/OwnerSettings/ShopPromotion/ShopPromoti
 
 function AppLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [customerLoggedIn, setCustomerLoggedIn] = useState(false);
   const [profileRole, setProfileRole] = useState(null);
+
+  const [flashMessage, setFlashMessage] = useState('');
+
+  const maintenanceRoutes = ['/owner', '/delivery', '/admin'];
+
+  const isMaintenanceRoute = maintenanceRoutes.some((route) =>
+    location.pathname.startsWith(route),
+  );
+
+  useEffect(() => {
+    if (!isMaintenanceRoute) {
+      return;
+    }
+
+    setFlashMessage(
+      'This section is currently under maintenance. Please check back soon.',
+    );
+
+    navigate('/', { replace: true });
+  }, [isMaintenanceRoute, navigate]);
 
   useEffect(() => {
     const checkCustomerLogin = async () => {
@@ -250,6 +280,10 @@ function AppLayout() {
   return (
     <>
       <ScrollToTop />
+      <FlashMessage
+        message={flashMessage}
+        onClose={() => setFlashMessage('')}
+      />
 
       <Navbar />
 

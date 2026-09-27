@@ -101,9 +101,24 @@ function OwnerLogin() {
         </form>
 
         <div className="owner_login_footer">
-          <p>Are you a customer?</p>
+          <p>
+            Don't have an owner account?{' '}
+            <button
+              type="button"
+              onClick={() => navigate('/owner/register/step-1')}
+              className="owner_register_link"
+            >
+              Register
+            </button>
+          </p>
 
-          <button onClick={() => navigate('/')}>Back to Home</button>
+          <button
+            type="button"
+            onClick={() => navigate('/')}
+            className="owner_back_home"
+          >
+            Back to Home
+          </button>
         </div>
       </section>
     </main>

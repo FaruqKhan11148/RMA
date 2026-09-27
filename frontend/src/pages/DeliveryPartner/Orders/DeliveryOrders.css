@@ -73,28 +73,6 @@
     transform 0.15s ease;
 }
 
-/* TOP GREEN LINE */
-
-.delivery_dashboard_tab::before {
-  content: '';
-
-  position: absolute;
-
-  top: 0;
-  left: 14px;
-  right: 14px;
-
-  height: 3px;
-
-  border-radius: 0 0 5px 5px;
-
-  background: #d9eadf;
-
-  transition: background-color 0.2s ease;
-}
-
-/* LABEL */
-
 .delivery_dashboard_tab span {
   margin-top: 3px;
 
@@ -188,13 +166,6 @@
     gap: 3px;
 
     box-shadow: 0 2px 7px rgba(23, 32, 24, 0.035);
-  }
-
-  .delivery_dashboard_tab::before {
-    left: 10px;
-    right: 10px;
-
-    height: 2px;
   }
 
   .delivery_dashboard_tab span {
@@ -1705,6 +1676,9 @@
   /* HEADER */
   .delivery_orders_header {
     margin-bottom: 14px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 40px;
   }
 
   .delivery_orders_header h1 {

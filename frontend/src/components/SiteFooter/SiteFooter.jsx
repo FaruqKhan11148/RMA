@@ -70,7 +70,7 @@ function SiteFooter() {
 
       {/* BOTTOM */}
       <div className="site_footer_bottom">
-        <h6 className="production_name">SHIRED PRODUCTIONS</h6>
+        {/* <h6 className="production_name">SHIRED PRODUCTIONS</h6> */}
         <p>© 2026 RMA. All rights reserved.</p>
 
         <p>Fresh. Local. Convenient.</p>
