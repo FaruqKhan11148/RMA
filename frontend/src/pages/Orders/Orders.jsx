@@ -9,8 +9,6 @@ import OrderCard from './components/OrderCard';
 import OrdersHeader from './components/OrdersHeader';
 import OrderSheet from './components/OrderSheet';
 
-import FlashMessage from '../../components/FlashMessage/FlashMessage';
-
 import { fetchCustomerOrders, deleteCustomerOrders } from './utils/ordersApi';
 
 const canDeleteOrder = (order) => {
@@ -39,8 +37,6 @@ function Orders() {
 
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showOrderSheet, setShowOrderSheet] = useState(false);
-
-  const [flashMessage, setFlashMessage] = useState('');
 
   // ==============================
   // SELECTION STATE
