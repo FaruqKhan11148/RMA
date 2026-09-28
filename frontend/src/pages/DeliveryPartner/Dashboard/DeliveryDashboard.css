@@ -609,3 +609,261 @@
     padding: 14px;
   }
 }
+
+/* ==========================================
+   DARK MODE — DELIVERY DASHBOARD
+========================================== */
+
+/* ==========================================
+   PAGE
+   ========================================== */
+
+[data-theme='dark'] .delivery_dashboard {
+  background: var(--rma-bg);
+}
+
+/* ==========================================
+   HEADER
+   ========================================== */
+
+[data-theme='dark'] .delivery_dashboard_greeting {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_dashboard_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_dashboard_header p {
+  color: var(--rma-text-secondary);
+}
+
+/* ==========================================
+   ONLINE / OFFLINE BADGE
+   ========================================== */
+
+[data-theme='dark'] .delivery_online_badge.online {
+  background: var(--rma-primary-light);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .delivery_online_badge.online span {
+  background: var(--rma-primary);
+}
+
+[data-theme='dark'] .delivery_online_badge.offline {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_online_badge.offline span {
+  background: var(--rma-text-muted);
+}
+
+/* ==========================================
+   ONLINE STATUS CARD
+   ========================================== */
+
+[data-theme='dark'] .delivery_status_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .delivery_status_icon {
+  background: var(--rma-primary-light);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .delivery_status_content strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_status_content span {
+  color: var(--rma-text-secondary);
+}
+
+/* ==========================================
+   TOGGLE
+   ========================================== */
+
+[data-theme='dark'] .delivery_toggle {
+  background: #4a514d;
+}
+
+[data-theme='dark'] .delivery_toggle span {
+  background: #f1f5f2;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme='dark'] .delivery_toggle.active {
+  background: var(--rma-primary);
+}
+
+/* ==========================================
+   SUMMARY GRID
+   ========================================== */
+
+[data-theme='dark'] .delivery_summary_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+}
+
+/* ==========================================
+   SUMMARY ICONS
+   Keep different colors for each metric.
+   ========================================== */
+
+[data-theme='dark'] .delivery_summary_icon.earnings {
+  background: var(--rma-primary-light);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .delivery_summary_icon.deliveries {
+  background: #182c40;
+  color: #6ea8d8;
+}
+
+[data-theme='dark'] .delivery_summary_icon.completed {
+  background: #183529;
+  color: #5dcc91;
+}
+
+[data-theme='dark'] .delivery_summary_card span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_summary_card strong {
+  color: var(--rma-text);
+}
+
+/* ==========================================
+   SECTIONS
+   ========================================== */
+
+[data-theme='dark'] .delivery_section_header h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_section_header span {
+  color: var(--rma-text-secondary);
+}
+
+/* ==========================================
+   REQUEST COUNT
+   ========================================== */
+
+[data-theme='dark'] .delivery_request_count {
+  background: var(--rma-primary);
+  color: var(--rma-text-white) !important;
+}
+
+/* ==========================================
+   EMPTY CARD
+   ========================================== */
+
+[data-theme='dark'] .delivery_empty_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .delivery_empty_icon {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .delivery_empty_card strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_empty_card p {
+  color: var(--rma-text-secondary);
+}
+
+/* ==========================================
+   ACTIVE DELIVERY
+   ========================================== */
+
+[data-theme='dark'] .delivery_active_card {
+  background: var(--rma-card);
+  border-color: #245335;
+
+  box-shadow: 0 5px 16px rgba(22, 128, 58, 0.12);
+}
+
+[data-theme='dark'] .delivery_active_top > div span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_active_top > div strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_active_status {
+  background: var(--rma-primary-light);
+  color: var(--rma-primary) !important;
+}
+
+[data-theme='dark'] .delivery_active_details {
+  border-top-color: var(--rma-border);
+}
+
+[data-theme='dark'] .delivery_active_details svg {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .delivery_active_details span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_active_button {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .delivery_active_button:hover {
+  background: var(--rma-primary-dark);
+}
+
+/* ==========================================
+   DELIVERY REQUEST CARD
+   ========================================== */
+
+[data-theme='dark'] .delivery_request_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .delivery_request_icon {
+  background: #3a2b12;
+  color: #e0a54f;
+}
+
+[data-theme='dark'] .delivery_request_card strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_request_card p {
+  color: var(--rma-text-secondary);
+}
+
+/* ==========================================
+   DELIVERY AREA
+   ========================================== */
+
+[data-theme='dark'] .delivery_area_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .delivery_area_icon {
+  background: #182d42;
+  color: #6ea8d8;
+}
+
+[data-theme='dark'] .delivery_area_card strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_area_card p {
+  color: var(--rma-text-secondary);
+}

@@ -364,3 +364,150 @@
     transition: none;
   }
 }
+
+/* =========================================================
+   DARK MODE — OWNER LOGIN
+   ========================================================= */
+
+/* =========================================================
+   PAGE
+   ========================================================= */
+
+[data-theme='dark'] .owner_login {
+  background: var(--rma-bg);
+}
+
+/* =========================================================
+   LOGIN CARD
+   ========================================================= */
+
+[data-theme='dark'] .owner_login_card {
+  background: var(--rma-card);
+
+  border-color: var(--rma-border);
+
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.22);
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+[data-theme='dark'] .owner_logo {
+  background: var(--rma-primary);
+  color: #ffffff;
+
+  box-shadow: 0 6px 16px rgba(22, 128, 58, 0.28);
+}
+
+[data-theme='dark'] .owner_login_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .owner_login_header p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+[data-theme='dark'] .owner_login_form label {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
+
+[data-theme='dark'] .owner_login_form input {
+  border-color: var(--rma-border);
+
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .owner_login_form input::placeholder {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .owner_login_form input:hover {
+  border-color: var(--rma-border-dark);
+}
+
+[data-theme='dark'] .owner_login_form input:focus {
+  border-color: var(--rma-primary);
+
+  background: var(--rma-bg-secondary);
+
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.18);
+}
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+[data-theme='dark'] .owner_login_error {
+  border-color: #613737;
+
+  background: #2c1b1b;
+  color: #f28b82;
+}
+
+/* =========================================================
+   LOGIN BUTTON
+   ========================================================= */
+
+[data-theme='dark'] .owner_login_button {
+  border-color: var(--rma-primary);
+
+  background: var(--rma-primary);
+  color: #ffffff;
+
+  box-shadow: 0 3px 8px rgba(22, 128, 58, 0.25);
+}
+
+[data-theme='dark'] .owner_login_button:hover {
+  background: var(--rma-primary-dark);
+  border-color: var(--rma-primary-dark);
+
+  box-shadow: 0 5px 12px rgba(22, 128, 58, 0.32);
+}
+
+[data-theme='dark'] .owner_login_button:disabled {
+  opacity: 0.55;
+}
+
+[data-theme='dark'] .owner_login_button:disabled:hover {
+  background: var(--rma-primary);
+  border-color: var(--rma-primary);
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+[data-theme='dark'] .owner_login_footer {
+  border-top-color: var(--rma-border-light);
+}
+
+[data-theme='dark'] .owner_login_footer p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .owner_login_footer button {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .owner_login_footer button:hover {
+  color: var(--rma-primary-light);
+}
+
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
+
+[data-theme='dark'] .owner_login button:focus-visible,
+[data-theme='dark'] .owner_login input:focus-visible {
+  outline-color: rgba(22, 128, 58, 0.35);
+}

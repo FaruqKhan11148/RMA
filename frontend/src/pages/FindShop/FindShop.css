@@ -2005,3 +2005,485 @@
   font-size: 14px;
   line-height: 1;
 }
+
+/* =========================================================
+   DARK MODE — FIND SHOP
+========================================================= */
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+[data-theme='dark'] .find_shop {
+  background: var(--rma-bg);
+}
+
+/* =========================================================
+   PAGE HEADER
+========================================================= */
+
+[data-theme='dark'] .find_shop_eyebrow,
+[data-theme='dark'] .find_shop_section_eyebrow {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .find_shop_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .find_shop_header p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   LOCATION
+========================================================= */
+
+[data-theme='dark'] .find_shop_location {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  box-shadow: var(--rma-shadow-sm);
+}
+
+[data-theme='dark'] .find_shop_location_icon {
+  background: var(--rma-primary-light);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .find_shop_location_content span {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .find_shop_location_content strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .find_shop_change_location {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .find_shop_change_location:hover {
+  background: var(--rma-primary-light);
+}
+
+/* =========================================================
+   SECTION HEADERS
+========================================================= */
+
+[data-theme='dark'] .find_shop_section_header h2,
+[data-theme='dark'] .find_shop_nearby .find_shop_section_header h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .find_shop_section_header p,
+[data-theme='dark'] .find_shop_nearby .find_shop_section_header p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .find_shop_distance {
+  background: var(--rma-primary-light);
+  color: var(--rma-primary);
+}
+
+/* =========================================================
+   EMPTY LOCATION STATE
+========================================================= */
+
+[data-theme='dark'] .find_shop_nearby_placeholder {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(34, 166, 83, 0.1), transparent 55%),
+    var(--rma-card);
+
+  border-color: var(--rma-border);
+
+  box-shadow: var(--rma-shadow-sm);
+}
+
+[data-theme='dark'] .find_shop_nearby_placeholder::before {
+  background: rgba(34, 166, 83, 0.055);
+}
+
+[data-theme='dark'] .find_shop_placeholder_icon {
+  background: var(--rma-primary-light);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .find_shop_nearby_placeholder h3 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .find_shop_nearby_placeholder p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .find_shop_nearby_placeholder button {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+  box-shadow: 0 6px 16px rgba(34, 166, 83, 0.18);
+}
+
+[data-theme='dark'] .find_shop_nearby_placeholder button:hover {
+  background: var(--rma-primary-dark);
+  box-shadow: 0 9px 22px rgba(34, 166, 83, 0.24);
+}
+
+/* =========================================================
+   NEARBY SHOP LIST
+========================================================= */
+
+[data-theme='dark'] .find_shop_nearby_list {
+  scrollbar-color: var(--rma-border-dark) transparent;
+}
+
+/* =========================================================
+   SHOP CARD
+========================================================= */
+
+[data-theme='dark'] .find_shop_nearby_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.18);
+}
+
+[data-theme='dark'] .find_shop_nearby_card:hover {
+  border-color: rgba(34, 166, 83, 0.35);
+
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+}
+
+[data-theme='dark'] .find_shop_nearby_card_top {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .find_shop_nearby_icon {
+  color: var(--rma-primary);
+}
+
+/* =========================================================
+   SHOP STATUS
+========================================================= */
+
+[data-theme='dark'] .find_shop_nearby_status_open {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .find_shop_nearby_status_closed {
+  color: #f28b8b;
+}
+
+/* =========================================================
+   SHOP CONTENT
+========================================================= */
+
+[data-theme='dark'] .find_shop_nearby_card_content h3 {
+  color: var(--rma-text);
+}
+
+/*
+   Original CSS uses black here.
+   Override it for dark mode so descriptions remain readable.
+*/
+
+[data-theme='dark'] .find_shop_nearby_card_content p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .find_shop_nearby_meta {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   SHOP DETAILS
+========================================================= */
+
+[data-theme='dark'] .find_shop_nearby_detail {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .find_shop_nearby_detail_icon {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .find_shop_nearby_delivery {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .find_shop_nearby_delivery_dot {
+  background: var(--rma-primary);
+
+  box-shadow: 0 0 0 4px rgba(34, 166, 83, 0.12);
+}
+
+/* =========================================================
+   SHOP CARD FOOTER
+========================================================= */
+
+[data-theme='dark'] .find_shop_nearby_card_footer {
+  border-top-color: var(--rma-border);
+}
+
+[data-theme='dark'] .find_shop_nearby_card_footer span:first-child,
+[data-theme='dark'] .find_shop_nearby_card_footer span:last-child {
+  color: var(--rma-primary);
+}
+
+/* =========================================================
+   SEARCH BY SHOP ID
+========================================================= */
+
+[data-theme='dark'] .find_shop_search {
+  border-top-color: var(--rma-border);
+}
+
+[data-theme='dark'] .find_shop_search label {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .find_shop_search input {
+  background: var(--rma-card);
+  border-color: var(--rma-border-dark);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .find_shop_search input::placeholder {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .find_shop_search input:hover {
+  border-color: var(--rma-border-dark);
+}
+
+[data-theme='dark'] .find_shop_search input:focus {
+  border-color: var(--rma-primary);
+
+  box-shadow: 0 0 0 3px rgba(34, 166, 83, 0.14);
+}
+
+[data-theme='dark'] .find_shop_search form button {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .find_shop_search form button:hover {
+  background: var(--rma-primary-dark);
+  box-shadow: var(--rma-shadow-sm);
+}
+
+/* =========================================================
+   QR SECTION
+========================================================= */
+
+[data-theme='dark'] .find_shop_qr {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .find_shop_qr:hover {
+  border-color: var(--rma-border-dark);
+  box-shadow: var(--rma-shadow-sm);
+}
+
+[data-theme='dark'] .find_shop_qr_icon {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .find_shop_qr_content h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .find_shop_qr_content p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .find_shop_qr_button {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .find_shop_qr_button:hover {
+  background: var(--rma-primary-light);
+}
+
+/* =========================================================
+   SAVED SHOP
+========================================================= */
+
+[data-theme='dark'] .find_shop_saved {
+  border-top-color: var(--rma-border);
+}
+
+[data-theme='dark'] .find_shop_saved_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  box-shadow: var(--rma-shadow-sm);
+}
+
+[data-theme='dark'] .find_shop_saved_info h3 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .find_shop_saved_info p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .find_shop_saved_info span {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .find_shop_saved_card > button {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .find_shop_saved_card > button:hover {
+  background: var(--rma-primary-dark);
+}
+
+/* =========================================================
+   MESSAGES
+========================================================= */
+
+[data-theme='dark'] .find_shop_message {
+  background: var(--rma-bg-secondary);
+  border-color: var(--rma-border);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .find_shop_error {
+  background: var(--rma-danger-light);
+  border-color: var(--rma-danger);
+  color: #f28b8b;
+}
+
+/* =========================================================
+   LOCATION BOTTOM SHEET
+========================================================= */
+
+[data-theme='dark'] .location_sheet_overlay {
+  background: rgba(0, 0, 0, 0.68);
+}
+
+[data-theme='dark'] .location_sheet {
+  background: var(--rma-card);
+}
+
+[data-theme='dark'] .location_sheet_handle {
+  background: var(--rma-border-dark);
+}
+
+[data-theme='dark'] .location_sheet_header h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .location_sheet_header button {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .location_sheet_options {
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .location_sheet_option {
+  background: var(--rma-card);
+}
+
+[data-theme='dark'] .location_sheet_option + .location_sheet_option {
+  border-top-color: var(--rma-border);
+}
+
+[data-theme='dark'] .location_sheet_option:hover {
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .location_sheet_option_icon {
+  background: var(--rma-primary-light);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .location_sheet_option_content strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .location_sheet_option_content span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .location_sheet_arrow {
+  color: var(--rma-text-muted);
+}
+
+/* =========================================================
+   SAVED ADDRESSES IN LOCATION SHEET
+========================================================= */
+
+[data-theme='dark'] .location_sheet_saved_title {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .location_sheet_empty {
+  background: var(--rma-bg-secondary);
+  border-color: var(--rma-border);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .location_sheet_saved_list {
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .location_sheet_saved_address {
+  background: var(--rma-card);
+}
+
+[data-theme='dark']
+  .location_sheet_saved_address
+  + .location_sheet_saved_address {
+  border-top-color: var(--rma-border);
+}
+
+[data-theme='dark'] .location_sheet_saved_address:hover {
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .location_sheet_saved_address_icon {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .location_sheet_saved_address_title strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .location_sheet_default {
+  background: var(--rma-primary-light);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .location_sheet_saved_address_content p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   RATING
+========================================================= */
+
+[data-theme='dark'] .find_shop_nearby_rating {
+  background: #3b3017;
+  color: var(--rma-text-primary);
+}
+
+[data-theme='dark'] .find_shop_nearby_rating_star {
+  color: #f5b301;
+}
+
+/* =========================================================
+   FOCUS STATES
+========================================================= */
+
+[data-theme='dark'] .find_shop button:focus-visible,
+[data-theme='dark'] .find_shop input:focus-visible {
+  outline-color: rgba(34, 166, 83, 0.32);
+}

@@ -17,7 +17,7 @@
 /* =========================================================
    BACK BUTTON
    ========================================================= */
-  
+
 .change-price-back {
   border: none;
   background: transparent;
@@ -515,4 +515,157 @@
   .change-price-product-info > p {
     font-size: 12px;
   }
+}
+
+/* =========================================================
+   DARK MODE — CHANGE PRICE PAGE
+   Append only — do not modify light mode above
+   ========================================================= */
+
+[data-theme='dark'] .change-price-page {
+  background: var(--rma-bg);
+}
+
+[data-theme='dark'] .change-price-back {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .change-price-back:hover {
+  color: var(--rma-text);
+}
+
+/* HEADER */
+
+[data-theme='dark'] .change-price-header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .change-price-header p {
+  color: var(--rma-text-secondary);
+}
+
+/* MESSAGES */
+
+[data-theme='dark'] .change-price-message.error {
+  background: rgba(180, 35, 24, 0.12);
+  border-color: rgba(180, 35, 24, 0.35);
+  color: #ff8f86;
+}
+
+[data-theme='dark'] .change-price-message.success {
+  background: rgba(22, 128, 58, 0.12);
+  border-color: rgba(22, 128, 58, 0.35);
+  color: var(--rma-primary-light);
+}
+
+/* CARD */
+
+[data-theme='dark'] .change-price-card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.24);
+}
+
+/* PRODUCT INFORMATION */
+
+[data-theme='dark'] .change-price-image {
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .change-price-product-info h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .change-price-product-info > p {
+  color: var(--rma-text-secondary);
+}
+
+/* CURRENT PRICE */
+
+[data-theme='dark'] .change-price-current span {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .change-price-current strong {
+  color: var(--rma-text);
+}
+
+/* DIVIDER */
+
+[data-theme='dark'] .change-price-divider {
+  background: var(--rma-border);
+}
+
+/* PRICE FIELD */
+
+[data-theme='dark'] .change-price-field label {
+  color: var(--rma-text);
+}
+
+/* PRICE INPUT */
+
+[data-theme='dark'] .change-price-input-wrapper {
+  background: var(--rma-bg-secondary);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .change-price-input-wrapper:focus-within {
+  background: var(--rma-card);
+  border-color: var(--rma-primary);
+
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.16);
+}
+
+[data-theme='dark'] .change-price-input-wrapper > span:first-child {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .change-price-input-wrapper > span:last-child {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .change-price-input-wrapper input {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .change-price-input-wrapper input::placeholder {
+  color: var(--rma-text-muted);
+}
+
+/* ACTIONS */
+
+[data-theme='dark'] .change-price-cancel {
+  background: var(--rma-bg-secondary);
+  border-color: var(--rma-border);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .change-price-cancel:hover:not(:disabled) {
+  background: var(--rma-border);
+  border-color: var(--rma-border-dark);
+}
+
+[data-theme='dark'] .change-price-submit {
+  background: var(--rma-primary);
+  border-color: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .change-price-submit:hover:not(:disabled) {
+  background: var(--rma-primary-dark);
+  border-color: var(--rma-primary-dark);
+}
+
+/* DISABLED */
+
+[data-theme='dark'] .change-price-cancel:disabled,
+[data-theme='dark'] .change-price-submit:disabled {
+  opacity: 0.45;
+}
+
+/* LOADING */
+
+[data-theme='dark'] .change-price-loading {
+  color: var(--rma-text-secondary);
 }

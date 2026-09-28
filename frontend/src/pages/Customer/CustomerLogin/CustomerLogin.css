@@ -258,3 +258,130 @@
     transition: none;
   }
 }
+
+/* =========================================================
+   DARK MODE — CUSTOMER LOGIN
+   ========================================================= */
+
+/* =========================================================
+   LOGIN PAGE
+   ========================================================= */
+
+[data-theme='dark'] .customer_login {
+  background:
+    radial-gradient(
+      circle at top right,
+      var(--rma-primary-light),
+      transparent 40%
+    ),
+    var(--rma-bg);
+}
+
+/* =========================================================
+   LOGIN CARD
+   ========================================================= */
+
+[data-theme='dark'] .customer_login_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+
+  box-shadow: var(--rma-shadow-lg);
+}
+
+/* =========================================================
+   BRAND
+   ========================================================= */
+
+[data-theme='dark'] .customer_login_logo {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+
+  box-shadow: var(--rma-shadow-md);
+}
+
+[data-theme='dark'] .customer_login_brand h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .customer_login_brand p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+[data-theme='dark'] .customer_login_form label {
+  color: var(--rma-text-primary);
+}
+
+[data-theme='dark'] .customer_login_form input {
+  background: var(--rma-card);
+  border-color: var(--rma-border-dark);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .customer_login_form input::placeholder {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .customer_login_form input:focus {
+  border-color: var(--rma-primary);
+
+  box-shadow: 0 0 0 3px rgba(34, 166, 83, 0.16);
+}
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+[data-theme='dark'] .customer_login_error {
+  background: var(--rma-danger-light);
+  border-color: var(--rma-danger);
+  color: #f28b8b;
+}
+
+/* =========================================================
+   LOGIN BUTTON
+   ========================================================= */
+
+[data-theme='dark'] .customer_login_button {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .customer_login_button:hover:not(:disabled) {
+  background: var(--rma-primary-dark);
+  box-shadow: var(--rma-shadow-md);
+}
+
+/* =========================================================
+   SIGNUP
+   ========================================================= */
+
+[data-theme='dark'] .customer_login_signup {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .customer_login_signup button {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .customer_login_signup button:hover {
+  color: #72d38f;
+}
+
+/* =========================================================
+   CONTINUE AS GUEST
+   ========================================================= */
+
+[data-theme='dark'] .customer_login_guest {
+  background: var(--rma-bg);
+  border-color: var(--rma-border);
+  color: var(--rma-text-primary);
+}
+
+[data-theme='dark'] .customer_login_guest:hover {
+  background: var(--rma-primary-soft);
+  border-color: var(--rma-primary);
+}

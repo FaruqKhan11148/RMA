@@ -190,3 +190,132 @@
     font-size: 21px;
   }
 }
+
+/* =========================================================
+   DARK MODE — PERSONAL DETAILS PAGE
+   Append only — do not modify light mode above
+   ========================================================= */
+
+/* ==========================================
+   PAGE
+========================================== */
+
+[data-theme='dark'] .personal_details {
+  background: var(--rma-bg);
+}
+
+/* ==========================================
+   HEADER
+========================================== */
+
+[data-theme='dark'] .personal_details_back {
+  background: var(--rma-card);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .personal_details_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .personal_details_header p {
+  color: var(--rma-text-secondary);
+}
+
+/* ==========================================
+   CARD
+========================================== */
+
+[data-theme='dark'] .personal_details_card {
+  background: var(--rma-card);
+
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18);
+}
+
+/* ==========================================
+   AVATAR
+========================================== */
+
+[data-theme='dark'] .personal_details_avatar {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+/* ==========================================
+   FORM FIELDS
+========================================== */
+
+[data-theme='dark'] .personal_details_field label {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .personal_details_field input {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .personal_details_field input:focus {
+  border-color: var(--rma-primary);
+}
+
+[data-theme='dark'] .personal_details_field input[readonly] {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-muted);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .personal_details_field small {
+  color: var(--rma-text-muted);
+}
+
+/* ==========================================
+   MESSAGES
+========================================== */
+
+[data-theme='dark'] .personal_details_message.error {
+  background: rgba(220, 38, 38, 0.1);
+  color: #ff8f86;
+}
+
+[data-theme='dark'] .personal_details_message.success {
+  background: rgba(22, 128, 58, 0.1);
+  color: var(--rma-primary-light);
+}
+
+/* ==========================================
+   SAVE BUTTON
+========================================== */
+
+[data-theme='dark'] .personal_details_save {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .personal_details_save:hover {
+  background: var(--rma-primary-dark);
+  opacity: 1;
+}
+
+/* ==========================================
+   LOADING
+========================================== */
+
+[data-theme='dark'] .personal_details_loading {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .personal_details_spinner {
+  border-color: var(--rma-border);
+  border-top-color: var(--rma-primary);
+}
+
+/* ==========================================
+   FOCUS
+========================================== */
+
+[data-theme='dark'] .personal_details_back:focus-visible,
+[data-theme='dark'] .personal_details_field input:focus-visible,
+[data-theme='dark'] .personal_details_save:focus-visible {
+  outline: 3px solid rgba(22, 128, 58, 0.35);
+  outline-offset: 2px;
+}

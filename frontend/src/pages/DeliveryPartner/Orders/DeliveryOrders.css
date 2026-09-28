@@ -2160,3 +2160,529 @@
     font-size: 12px;
   }
 }
+
+/* =========================================================
+   DARK MODE — DELIVERY ORDERS
+   ========================================================= */
+
+/* =========================================================
+   PAGE
+   ========================================================= */
+
+[data-theme='dark'] .delivery_orders {
+  background: var(--rma-bg);
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+[data-theme='dark'] .delivery_orders_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_orders_header p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_orders_header p strong {
+  color: var(--rma-primary);
+}
+
+/* =========================================================
+   DASHBOARD TABS
+   ========================================================= */
+
+[data-theme='dark'] .delivery_dashboard_tab {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  color: var(--rma-text);
+
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.16);
+}
+
+[data-theme='dark'] .delivery_dashboard_tab span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_dashboard_tab strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_dashboard_tab:hover {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-card-hover);
+
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22);
+}
+
+[data-theme='dark'] .delivery_dashboard_tab:hover::before {
+  background: var(--rma-primary);
+}
+
+/* ACTIVE TAB */
+
+[data-theme='dark'] .delivery_dashboard_tab.active {
+  border-color: var(--rma-primary);
+  background: var(--rma-primary);
+
+  box-shadow: 0 6px 16px rgba(22, 128, 58, 0.22);
+}
+
+[data-theme='dark'] .delivery_dashboard_tab.active::before {
+  background: #ffffff;
+}
+
+[data-theme='dark'] .delivery_dashboard_tab.active span {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+[data-theme='dark'] .delivery_dashboard_tab.active strong {
+  color: #ffffff;
+}
+
+/* =========================================================
+   ORDER LIST
+   ========================================================= */
+
+[data-theme='dark'] .delivery_orders_list {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   ORDER CARD
+   ========================================================= */
+
+[data-theme='dark'] .delivery_order_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.2),
+    0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+/* =========================================================
+   ORDER TOP
+   ========================================================= */
+
+[data-theme='dark'] .delivery_order_top {
+  border-bottom-color: var(--rma-border);
+}
+
+[data-theme='dark'] .delivery_order_top strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_order_status {
+  background: var(--rma-warning-light);
+  color: #f0b94f;
+  border-color: #66501d;
+}
+
+/* =========================================================
+   CUSTOMER INFORMATION
+   ========================================================= */
+
+[data-theme='dark'] .delivery_order_info h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_order_info p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_order_info p strong {
+  color: var(--rma-text-primary);
+}
+
+/* =========================================================
+   DELIVERY MAP
+   ========================================================= */
+
+[data-theme='dark'] .delivery_map_container {
+  border-color: var(--rma-border);
+  background: var(--rma-bg-secondary);
+}
+
+/* Keep Leaflet stacking behavior */
+
+[data-theme='dark'] .delivery_map_container .leaflet-container {
+  background: var(--rma-bg-secondary);
+}
+
+/* =========================================================
+   ORDER ITEMS
+   ========================================================= */
+
+[data-theme='dark'] .delivery_order_items {
+  border-color: var(--rma-border);
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .delivery_order_items p {
+  color: var(--rma-text-primary);
+}
+
+/* =========================================================
+   ORDER TOTAL
+   ========================================================= */
+
+[data-theme='dark'] .delivery_order_total {
+  color: var(--rma-primary);
+}
+
+/* =========================================================
+   OTP SECTION
+   ========================================================= */
+
+[data-theme='dark'] .delivery_otp_section {
+  border-top-color: var(--rma-border);
+}
+
+[data-theme='dark'] .delivery_otp_section h3 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_otp_section p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   OTP INPUT
+   ========================================================= */
+
+[data-theme='dark'] .delivery_otp_section input {
+  background: var(--rma-card);
+  border-color: var(--rma-border-dark);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_otp_section input::placeholder {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .delivery_otp_section input:focus {
+  border-color: var(--rma-primary);
+  background: var(--rma-card);
+
+  box-shadow: 0 0 0 3px rgba(34, 166, 83, 0.14);
+}
+
+/* =========================================================
+   COMPLETE BUTTON
+   ========================================================= */
+
+[data-theme='dark'] .delivery_complete_button {
+  border-color: var(--rma-primary);
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .delivery_complete_button:hover:not(:disabled) {
+  background: var(--rma-primary-dark);
+  border-color: var(--rma-primary-dark);
+
+  box-shadow: 0 5px 14px rgba(22, 128, 58, 0.22);
+}
+
+[data-theme='dark'] .delivery_complete_button:focus-visible {
+  outline-color: rgba(34, 166, 83, 0.28);
+}
+
+/* =========================================================
+   EMPTY / LOGIN / OTP CARD
+   ========================================================= */
+
+[data-theme='dark'] .delivery_no_orders {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+}
+
+[data-theme='dark'] .delivery_no_orders h1,
+[data-theme='dark'] .delivery_no_orders h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_no_orders p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_no_orders input {
+  background: var(--rma-card);
+  border-color: var(--rma-border-dark);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_no_orders input::placeholder {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .delivery_no_orders input:focus {
+  border-color: var(--rma-primary);
+
+  box-shadow: 0 0 0 3px rgba(34, 166, 83, 0.14);
+}
+
+/* =========================================================
+   ERROR MESSAGE
+   ========================================================= */
+
+[data-theme='dark'] .delivery_error_message {
+  border-color: var(--rma-danger);
+  background: var(--rma-danger-light);
+  color: #f28b8b !important;
+}
+
+/* =========================================================
+   SUCCESS MESSAGE
+   ========================================================= */
+
+[data-theme='dark'] .delivery_success_message {
+  border-color: var(--rma-success);
+  background: var(--rma-success-light);
+  color: #72d38f;
+}
+
+/* =========================================================
+   SECONDARY BUTTON
+   ========================================================= */
+
+[data-theme='dark']
+  .delivery_no_orders
+  .delivery_complete_button
+  + .delivery_complete_button {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-primary);
+}
+
+[data-theme='dark']
+  .delivery_no_orders
+  .delivery_complete_button
+  + .delivery_complete_button:hover {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-card-hover);
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   DELIVERY ORDER ROW
+   ========================================================= */
+
+[data-theme='dark'] .delivery_order_row {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  color: var(--rma-text);
+
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.16),
+    0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] .delivery_order_row:hover {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-card-hover);
+
+  box-shadow:
+    0 7px 20px rgba(0, 0, 0, 0.22),
+    0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme='dark'] .delivery_order_row:focus-visible {
+  outline-color: rgba(34, 166, 83, 0.25);
+}
+
+[data-theme='dark'] .delivery_order_row_main strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_order_row_info span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_order_row_info strong {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .delivery_order_row_footer {
+  border-top-color: var(--rma-border-light);
+}
+
+[data-theme='dark'] .delivery_order_row_footer span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_order_row_footer span:last-child {
+  color: var(--rma-primary);
+}
+
+/* =========================================================
+   ORDER DETAILS
+   ========================================================= */
+
+[data-theme='dark'] .delivery_order_details {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   BACK BUTTON
+   ========================================================= */
+
+[data-theme='dark'] .delivery_back_button {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  color: var(--rma-text-primary);
+}
+
+[data-theme='dark'] .delivery_back_button:hover {
+  background: var(--rma-card-hover);
+  border-color: var(--rma-border-dark);
+}
+
+/* =========================================================
+   DETAILS HEADER
+   ========================================================= */
+
+[data-theme='dark'] .delivery_details_heading span {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .delivery_details_heading h2 {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   DETAILS STATUS
+   ========================================================= */
+
+[data-theme='dark'] .delivery_details_status span {
+  background: var(--rma-primary-light);
+  color: var(--rma-primary);
+  border-color: var(--rma-border-dark);
+}
+
+/* =========================================================
+   DETAIL CARDS
+   ========================================================= */
+
+[data-theme='dark'] .delivery_details_section {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.16),
+    0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] .delivery_details_section h3 {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   CUSTOMER DETAILS
+   ========================================================= */
+
+[data-theme='dark'] .delivery_customer_details span {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .delivery_customer_details strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_customer_details a {
+  color: var(--rma-primary);
+}
+
+/* =========================================================
+   ADDRESS
+   ========================================================= */
+
+[data-theme='dark'] .delivery_address {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   ROUTE
+   ========================================================= */
+
+[data-theme='dark'] .delivery_route_message {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_route_error {
+  background: var(--rma-danger-light);
+  color: #f28b8b;
+}
+
+[data-theme='dark'] .delivery_distance {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   DETAIL ORDER ITEMS
+   ========================================================= */
+
+[data-theme='dark'] .delivery_order_item {
+  border-bottom-color: var(--rma-border-light);
+}
+
+[data-theme='dark'] .delivery_order_item strong {
+  color: var(--rma-text-primary);
+}
+
+[data-theme='dark'] .delivery_order_item span {
+  color: var(--rma-text-muted);
+}
+
+/* =========================================================
+   DETAIL TOTAL
+   ========================================================= */
+
+[data-theme='dark'] .delivery_details_total {
+  border-top-color: var(--rma-border-dark);
+}
+
+[data-theme='dark'] .delivery_details_total span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_details_total strong {
+  color: var(--rma-primary);
+}
+
+/* =========================================================
+   DETAIL OTP
+   ========================================================= */
+
+[data-theme='dark'] .delivery_otp_action input {
+  background: var(--rma-card);
+  border-color: var(--rma-border-dark);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_otp_action input::placeholder {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .delivery_otp_action input:focus {
+  border-color: var(--rma-primary);
+
+  box-shadow: 0 0 0 3px rgba(34, 166, 83, 0.12);
+}
+
+[data-theme='dark'] .delivery_otp_action button {
+  border-color: var(--rma-primary);
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .delivery_otp_action button:hover {
+  background: var(--rma-primary-dark);
+
+  box-shadow: 0 5px 14px rgba(22, 128, 58, 0.2);
+}

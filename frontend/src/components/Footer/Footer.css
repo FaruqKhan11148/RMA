@@ -175,7 +175,6 @@
   color: #16803a;
 }
 
-
 /* =========================================================
    PRESS EFFECT
    ========================================================= */
@@ -306,4 +305,44 @@
   line-height: 17px;
   text-align: center;
   box-sizing: border-box;
+}
+
+/* =========================================================
+   DARK MODE — MOBILE BOTTOM NAVIGATION
+   ========================================================= */
+
+[data-theme='dark'] .bottom_nav {
+  border-top-color: var(--rma-border);
+  background: rgba(24, 28, 26, 0.96);
+  box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.28);
+}
+
+[data-theme='dark'] .nav_item {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .nav_item:hover {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .nav_item.active {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .nav_item.active::before {
+  background: var(--rma-primary);
+}
+
+[data-theme='dark'] .nav_item:focus-visible {
+  outline-color: rgba(22, 128, 58, 0.35);
+}
+
+[data-theme='dark'] .cart_badge {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .notification_badge {
+  background: #dc3b3b;
+  color: #ffffff;
 }

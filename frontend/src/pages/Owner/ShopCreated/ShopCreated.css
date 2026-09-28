@@ -547,3 +547,179 @@
     transition: none;
   }
 }
+
+/* =========================================================
+   DARK MODE — SHOP CREATED
+   Append only — do not modify light mode above
+   ========================================================= */
+
+[data-theme='dark'] .shop_created {
+  background: var(--rma-bg);
+}
+
+/* =========================================================
+   MAIN CARD
+   ========================================================= */
+
+[data-theme='dark'] .shop_created_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.22),
+    0 2px 8px rgba(0, 0, 0, 0.16);
+}
+
+/* =========================================================
+   SUCCESS ICON
+   ========================================================= */
+
+[data-theme='dark'] .shop_created_success_icon {
+  background: rgba(22, 128, 58, 0.12);
+  color: var(--rma-primary-light);
+
+  border-color: rgba(22, 128, 58, 0.3);
+
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+[data-theme='dark'] .shop_created_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .shop_created_header p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   SHOP INFORMATION
+   ========================================================= */
+
+[data-theme='dark'] .shop_created_info {
+  border-color: var(--rma-border);
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .shop_created_info_row {
+  border-bottom-color: var(--rma-border);
+}
+
+[data-theme='dark'] .shop_created_info_row span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .shop_created_info_row strong {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   RMA SHOP NUMBER
+   ========================================================= */
+
+[data-theme='dark'] .shop_number_section {
+  border-color: rgba(22, 128, 58, 0.3);
+  background: rgba(22, 128, 58, 0.12);
+}
+
+[data-theme='dark'] .shop_number_section p {
+  color: #aebbb2;
+}
+
+[data-theme='dark'] .shop_number {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .shop_number_section span {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   QR CODE SECTION
+   ========================================================= */
+
+[data-theme='dark'] .shop_qr_section {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+}
+
+[data-theme='dark'] .shop_qr_section h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .shop_qr_section > p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   QR PLACEHOLDER
+   ========================================================= */
+
+[data-theme='dark'] .shop_qr_placeholder {
+  border-color: var(--rma-text);
+
+  background:
+    linear-gradient(45deg, var(--rma-text) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--rma-text) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--rma-text) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--rma-text) 75%);
+
+  background-size: 30px 30px;
+
+  background-position:
+    0 0,
+    0 15px,
+    15px -15px,
+    -15px 0;
+}
+
+[data-theme='dark'] .shop_qr_note {
+  color: var(--rma-text-secondary) !important;
+}
+
+/* =========================================================
+   PRIMARY BUTTON
+   ========================================================= */
+
+[data-theme='dark'] .shop_created_button.primary {
+  border-color: var(--rma-primary);
+
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='dark'] .shop_created_button.primary:hover {
+  background: var(--rma-primary-dark);
+  border-color: var(--rma-primary-dark);
+
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28);
+}
+
+/* =========================================================
+   SECONDARY BUTTON
+   ========================================================= */
+
+[data-theme='dark'] .shop_created_button.secondary {
+  border-color: var(--rma-border-dark);
+
+  background: var(--rma-card);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .shop_created_button.secondary:hover {
+  background: var(--rma-bg-secondary);
+  border-color: var(--rma-border-dark);
+}
+
+/* =========================================================
+   BUTTON ACCESSIBILITY
+   ========================================================= */
+
+[data-theme='dark'] .shop_created_button:focus-visible {
+  outline-color: rgba(22, 128, 58, 0.35);
+}

@@ -19,8 +19,11 @@ function CustomerSupport() {
 
           <span className="contact_card_arrow">›</span>
         </a>
-
-        <a href="mailto:support@rma.com" className="contact_card">
+        
+        <a
+          href="mailto:rma.customer.support@gmail.com"
+          className="contact_card"
+        >
           <div className="contact_card_icon">@</div>
 
           <div className="contact_card_content">

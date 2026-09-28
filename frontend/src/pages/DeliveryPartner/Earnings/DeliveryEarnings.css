@@ -247,3 +247,134 @@
     padding: 14px;
   }
 }
+
+/* =========================================
+   DARK MODE — DELIVERY EARNINGS
+========================================= */
+
+/* =========================================
+   PAGE
+========================================= */
+
+[data-theme='dark'] .delivery_earnings_page {
+  background: var(--rma-bg);
+}
+
+/* =========================================
+   HEADER
+========================================= */
+
+[data-theme='dark'] .delivery_earnings_header span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_earnings_header h1 {
+  color: var(--rma-text);
+}
+
+/* =========================================
+   TOTAL EARNINGS
+========================================= */
+
+[data-theme='dark'] .delivery_total_earnings {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+
+  box-shadow: 0 8px 22px rgba(22, 128, 58, 0.22);
+}
+
+[data-theme='dark'] .delivery_total_earnings_icon {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+[data-theme='dark'] .delivery_total_earnings span {
+  color: #ffffff;
+}
+
+[data-theme='dark'] .delivery_total_earnings strong {
+  color: #ffffff;
+}
+
+[data-theme='dark'] .delivery_total_earnings p {
+  color: #ffffff;
+}
+
+/* =========================================
+   TODAY / WEEK
+========================================= */
+
+[data-theme='dark'] .delivery_earning_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .delivery_earning_icon {
+  background: var(--rma-primary-light);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .delivery_earning_card span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_earning_card strong {
+  color: var(--rma-text);
+}
+
+/* =========================================
+   EARNINGS SECTION
+========================================= */
+
+[data-theme='dark'] .delivery_earnings_section_header h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_earnings_section_header span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_earnings_section_header > svg {
+  color: var(--rma-text-muted);
+}
+
+/* =========================================
+   EMPTY / LOADING / ERROR
+========================================= */
+
+[data-theme='dark'] .delivery_earnings_empty {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .delivery_earnings_empty strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_earnings_empty p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================
+   RECENT EARNINGS
+========================================= */
+
+[data-theme='dark'] .delivery_recent_earnings {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .delivery_recent_earning {
+  border-bottom-color: var(--rma-border);
+}
+
+[data-theme='dark'] .delivery_recent_earning > div strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_recent_earning > div span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_recent_earning > strong {
+  color: var(--rma-primary);
+}

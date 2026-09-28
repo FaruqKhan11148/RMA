@@ -284,3 +284,140 @@
     transition: none;
   }
 }
+
+/* =========================================================
+   DARK MODE — CUSTOMER SIGNUP
+   ========================================================= */
+
+/* =========================================================
+   SIGNUP PAGE
+   ========================================================= */
+
+[data-theme='dark'] .customer_signup {
+  background:
+    radial-gradient(
+      circle at top left,
+      var(--rma-primary-light),
+      transparent 40%
+    ),
+    var(--rma-bg);
+}
+
+/* =========================================================
+   SIGNUP CARD
+   ========================================================= */
+
+[data-theme='dark'] .customer_signup_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+
+  box-shadow: var(--rma-shadow-lg);
+}
+
+/* =========================================================
+   BRAND
+   ========================================================= */
+
+[data-theme='dark'] .customer_signup_logo {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+
+  box-shadow: var(--rma-shadow-md);
+}
+
+[data-theme='dark'] .customer_signup_brand h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .customer_signup_brand p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+[data-theme='dark'] .customer_signup_form label {
+  color: var(--rma-text-primary);
+}
+
+[data-theme='dark'] .customer_signup_form input {
+  background: var(--rma-card);
+  border-color: var(--rma-border-dark);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .customer_signup_form input::placeholder {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .customer_signup_form input:focus {
+  border-color: var(--rma-primary);
+
+  box-shadow: 0 0 0 3px rgba(34, 166, 83, 0.16);
+}
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+[data-theme='dark'] .customer_signup_error {
+  background: var(--rma-danger-light);
+  border-color: var(--rma-danger);
+  color: #f28b8b;
+}
+
+/* =========================================================
+   SUCCESS
+   ========================================================= */
+
+[data-theme='dark'] .customer_signup_success {
+  background: var(--rma-success-light);
+  border-color: var(--rma-success);
+  color: #72d38f;
+}
+
+/* =========================================================
+   SIGNUP BUTTON
+   ========================================================= */
+
+[data-theme='dark'] .customer_signup_button {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .customer_signup_button:hover:not(:disabled) {
+  background: var(--rma-primary-dark);
+  box-shadow: var(--rma-shadow-md);
+}
+
+/* =========================================================
+   LOGIN LINK
+   ========================================================= */
+
+[data-theme='dark'] .customer_signup_login {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .customer_signup_login button {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .customer_signup_login button:hover {
+  color: #72d38f;
+}
+
+/* =========================================================
+   CONTINUE AS GUEST
+   ========================================================= */
+
+[data-theme='dark'] .customer_signup_guest {
+  background: var(--rma-bg);
+  border-color: var(--rma-border);
+  color: var(--rma-text-primary);
+}
+
+[data-theme='dark'] .customer_signup_guest:hover {
+  background: var(--rma-primary-soft);
+  border-color: var(--rma-primary);
+}

@@ -9,11 +9,11 @@ function ReferralRewardCard({ shopId, copied, handleCopyShopId }) {
 
           <p>
             Refer another shop owner to RMA and earn
-            <strong> ₹300</strong>.
+            <strong> ₹50 to ₹500</strong>.
           </p>
         </div>
 
-        <div className="offer_reward_amount">₹300</div>
+        <div className="offer_reward_amount">₹50 to ₹500</div>
       </div>
 
       <div className="referral_steps">
@@ -49,10 +49,11 @@ function ReferralRewardCard({ shopId, copied, handleCopyShopId }) {
           <div className="referral_step_number">3</div>
 
           <div>
-            <strong>They stay active for 28 days</strong>
+            <strong>You stay active on RMA</strong>
 
             <span>
-              Their account remains under the 28-day qualification period.
+              Your shop must complete at least 5 orders each day during the
+              referral qualification period.
             </span>
           </div>
         </div>
@@ -63,10 +64,26 @@ function ReferralRewardCard({ shopId, copied, handleCopyShopId }) {
           <div className="referral_step_number">4</div>
 
           <div>
-            <strong>You receive ₹300</strong>
+            <strong>They stay active for 25 days</strong>
 
             <span>
-              Once the referral qualifies, your ₹300 reward becomes eligible.
+              Their shop must remain active for 25 days and complete at least 5
+              orders each day.
+            </span>
+          </div>
+        </div>
+
+        <div className="referral_line" />
+
+        <div className="referral_step">
+          <div className="referral_step_number">5</div>
+
+          <div>
+            <strong>You receive ₹50 - ₹500</strong>
+
+            <span>
+              Once both shops meet the requirements, your referral reward
+              becomes eligible.
             </span>
           </div>
         </div>

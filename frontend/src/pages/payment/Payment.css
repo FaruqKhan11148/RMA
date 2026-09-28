@@ -536,3 +536,108 @@
     font-size: 11px;
   }
 }
+
+/* =========================================
+   DARK MODE — PAYMENT PAGE
+   Append only — do not modify light mode above
+========================================= */
+
+/* =========================================
+   PAYMENT AMOUNT
+========================================= */
+
+[data-theme='dark'] .payment_amount {
+  background: rgba(22, 128, 58, 0.12);
+  border-color: rgba(22, 128, 58, 0.3);
+}
+
+[data-theme='dark'] .payment_amount p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .payment_amount h2 {
+  color: var(--rma-primary-light);
+}
+
+/* =========================================
+   PAYMENT OPTIONS
+========================================= */
+
+[data-theme='dark'] .payment_option:hover {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-card-hover);
+}
+
+[data-theme='dark'] .payment_option.selected {
+  border-color: var(--rma-primary);
+
+  background: rgba(22, 128, 58, 0.12);
+
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.12);
+}
+
+[data-theme='dark'] .payment_option > span {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+/* =========================================
+   PAY BUTTON
+========================================= */
+
+[data-theme='dark'] .pay_button {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .pay_button:hover {
+  background: var(--rma-primary-dark);
+}
+
+/* =========================================
+   BACK / PAY LATER BUTTON
+========================================= */
+
+[data-theme='dark'] .back_button {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .back_button:hover {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text);
+}
+
+/* =========================================
+   EMPTY STATE
+========================================= */
+
+[data-theme='dark'] .payment_empty {
+  background: var(--rma-bg);
+}
+
+[data-theme='dark'] .payment_empty h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .payment_empty button {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .payment_empty button:hover {
+  background: var(--rma-primary-dark);
+}
+
+/* =========================================
+   FOCUS
+========================================= */
+
+[data-theme='dark'] .payment_option:focus-visible,
+[data-theme='dark'] .pay_button:focus-visible,
+[data-theme='dark'] .back_button:focus-visible,
+[data-theme='dark'] .payment_empty button:focus-visible {
+  outline-color: rgba(22, 128, 58, 0.35);
+}

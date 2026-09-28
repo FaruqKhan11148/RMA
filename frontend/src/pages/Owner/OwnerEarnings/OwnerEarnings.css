@@ -451,3 +451,221 @@
     animation: none;
   }
 }
+
+/* =========================================================
+   DARK MODE — OWNER EARNINGS
+   ========================================================= */
+
+/* =========================================================
+   PAGE
+   ========================================================= */
+
+[data-theme='dark'] .owner_earnings_page {
+  background: var(--rma-bg);
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+[data-theme='dark'] .owner_earnings_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .owner_earnings_header p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   TOTAL EARNINGS
+   ========================================================= */
+
+[data-theme='dark'] .owner_earnings_total {
+  background: var(--rma-primary);
+  box-shadow: 0 8px 24px rgba(22, 128, 58, 0.28);
+}
+
+[data-theme='dark'] .owner_earnings_total_icon {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+
+[data-theme='dark'] .owner_earnings_total span {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+[data-theme='dark'] .owner_earnings_total strong {
+  color: #ffffff;
+}
+
+/* =========================================================
+   EARNING CARDS
+   ========================================================= */
+
+[data-theme='dark'] .owner_earning_card {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.16);
+}
+
+[data-theme='dark'] .owner_earning_card_icon.pending {
+  background: #302918;
+  color: #e5bd55;
+}
+
+[data-theme='dark'] .owner_earning_card_icon.processing {
+  background: #1b283b;
+  color: #7da5e5;
+}
+
+[data-theme='dark'] .owner_earning_card_icon.settled {
+  background: var(--rma-primary-soft);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .owner_earning_card span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .owner_earning_card strong {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   RECENT ORDERS
+   ========================================================= */
+
+[data-theme='dark'] .owner_earnings_section_header h2 {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   ORDER CARD
+   ========================================================= */
+
+[data-theme='dark'] .owner_earnings_order_card {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.16);
+}
+
+[data-theme='dark'] .owner_earnings_order_top {
+  border-bottom-color: var(--rma-border-light);
+}
+
+[data-theme='dark'] .owner_earnings_order_top span:first-child {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .owner_earnings_order_top strong {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   SETTLEMENT BADGE
+   ========================================================= */
+
+[data-theme='dark'] .owner_settlement_badge.pending {
+  background: #302918;
+  color: #e5bd55;
+}
+
+[data-theme='dark'] .owner_settlement_badge.processing {
+  background: #1b283b;
+  color: #7da5e5;
+}
+
+[data-theme='dark'] .owner_settlement_badge.settled {
+  background: var(--rma-primary-soft);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .owner_settlement_badge.failed {
+  background: #321c1c;
+  color: #f28b82;
+}
+
+/* =========================================================
+   ORDER DETAILS
+   ========================================================= */
+
+[data-theme='dark'] .owner_earnings_order_details span {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .owner_earnings_order_details strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .owner_earnings_order_details > div:last-child strong {
+  color: var(--rma-primary);
+}
+
+/* =========================================================
+   ORDER BOTTOM
+   ========================================================= */
+
+[data-theme='dark'] .owner_earnings_order_bottom {
+  border-top-color: var(--rma-border-light);
+}
+
+[data-theme='dark'] .owner_earnings_order_bottom span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .owner_earnings_order_bottom span:first-child {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+[data-theme='dark'] .owner_earnings_empty {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-card);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .owner_earnings_empty svg {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .owner_earnings_empty p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+[data-theme='dark'] .owner_earnings_loading {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .owner_earnings_loading p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .owner_earnings_spinner {
+  border-color: var(--rma-border);
+  border-top-color: var(--rma-primary);
+}
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+[data-theme='dark'] .owner_earnings_error {
+  border-color: #5c3838;
+  background: #241919;
+}
+
+[data-theme='dark'] .owner_earnings_error h2 {
+  color: #f28b82;
+}
+
+[data-theme='dark'] .owner_earnings_error p {
+  color: #c2aaaa;
+}

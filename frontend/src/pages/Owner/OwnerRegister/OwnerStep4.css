@@ -943,3 +943,286 @@
 .bank_field input::placeholder {
   color: #aaa;
 }
+
+/* =========================================================
+   DARK MODE — OWNER REGISTRATION STEP 4
+   Append only — do not modify light mode above
+   ========================================================= */
+
+[data-theme='dark'] .owner_step4 {
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(22, 128, 58, 0.14),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at top right,
+      rgba(22, 128, 58, 0.09),
+      transparent 28%
+    ),
+    var(--rma-bg);
+
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .owner_step4_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  box-shadow:
+    0 18px 50px rgba(0, 0, 0, 0.28),
+    0 4px 14px rgba(0, 0, 0, 0.16);
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+[data-theme='dark'] .owner_logo {
+  background: linear-gradient(
+    145deg,
+    var(--rma-primary),
+    var(--rma-primary-dark)
+  );
+
+  color: var(--rma-text-white);
+
+  box-shadow: 0 8px 18px rgba(22, 128, 58, 0.28);
+}
+
+[data-theme='dark'] .step_number {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .owner_step4_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .owner_step4_header > p:last-child {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   PROGRESS
+   ========================================================= */
+
+[data-theme='dark'] .progress_item span {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .progress_item p {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .progress_item.completed span,
+[data-theme='dark'] .progress_item.active span {
+  border-color: var(--rma-primary);
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+
+  box-shadow: 0 5px 12px rgba(22, 128, 58, 0.28);
+}
+
+[data-theme='dark'] .progress_item.completed p,
+[data-theme='dark'] .progress_item.active p {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .progress_line {
+  background: var(--rma-border);
+}
+
+[data-theme='dark'] .progress_line.completed,
+[data-theme='dark'] .progress_line.active {
+  background: var(--rma-primary);
+}
+
+/* =========================================================
+   PAYMENT SETUP
+   ========================================================= */
+
+[data-theme='dark'] .payment_setup {
+  border-color: rgba(22, 128, 58, 0.38);
+
+  background: linear-gradient(
+    135deg,
+    rgba(22, 128, 58, 0.16),
+    rgba(22, 128, 58, 0.08)
+  );
+}
+
+[data-theme='dark'] .payment_setup::before {
+  background: rgba(22, 128, 58, 0.09);
+}
+
+[data-theme='dark'] .payment_setup::after {
+  background: rgba(22, 128, 58, 0.07);
+}
+
+[data-theme='dark'] .payment_icon {
+  background: linear-gradient(
+    145deg,
+    var(--rma-primary),
+    var(--rma-primary-dark)
+  );
+
+  color: var(--rma-text-white);
+
+  box-shadow: 0 8px 18px rgba(22, 128, 58, 0.28);
+}
+
+[data-theme='dark'] .payment_setup h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .payment_setup p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   SETTLEMENT SECTION
+   ========================================================= */
+
+[data-theme='dark'] .settlement_section {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+}
+
+[data-theme='dark'] .settlement_section h2 {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   SETTLEMENT STEPS
+   ========================================================= */
+
+[data-theme='dark'] .settlement_step:not(:last-child)::after {
+  background: rgba(22, 128, 58, 0.28);
+}
+
+[data-theme='dark'] .settlement_number {
+  border-color: rgba(22, 128, 58, 0.45);
+  background: rgba(22, 128, 58, 0.16);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .settlement_step strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .settlement_step p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   SECURITY SECTION
+   ========================================================= */
+
+[data-theme='dark'] .security_section {
+  border-color: rgba(22, 128, 58, 0.32);
+  background: rgba(22, 128, 58, 0.09);
+}
+
+[data-theme='dark'] .security_section::before {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .security_section strong {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .security_section p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+[data-theme='dark'] .owner_step4_error {
+  border-color: rgba(220, 38, 38, 0.4);
+  background: rgba(220, 38, 38, 0.1);
+  color: #ff8f86;
+}
+
+/* =========================================================
+   BACK BUTTON
+   ========================================================= */
+
+[data-theme='dark'] .step_back_button {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .step_back_button:hover:not(:disabled) {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-bg-secondary);
+}
+
+/* =========================================================
+   CONTINUE BUTTON
+   ========================================================= */
+
+[data-theme='dark'] .step_continue_button {
+  background: linear-gradient(
+    135deg,
+    var(--rma-primary),
+    var(--rma-primary-dark)
+  );
+
+  color: var(--rma-text-white);
+
+  box-shadow: 0 7px 16px rgba(22, 128, 58, 0.28);
+}
+
+[data-theme='dark'] .step_continue_button:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--rma-primary-dark), #0a4d24);
+
+  box-shadow: 0 9px 20px rgba(15, 92, 42, 0.34);
+}
+
+/* =========================================================
+   DISABLED
+   ========================================================= */
+
+[data-theme='dark'] .step_back_button:disabled,
+[data-theme='dark'] .step_continue_button:disabled {
+  opacity: 0.5;
+}
+
+/* =========================================================
+   FOCUS
+   ========================================================= */
+
+[data-theme='dark'] .step_back_button:focus-visible,
+[data-theme='dark'] .step_continue_button:focus-visible {
+  outline-color: rgba(22, 128, 58, 0.38);
+}
+
+/* =========================================================
+   BANK DETAILS
+   ========================================================= */
+
+[data-theme='dark'] .bank_field label {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .bank_field input {
+  border-color: var(--rma-border);
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .bank_field input:focus {
+  border-color: var(--rma-primary);
+
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.16);
+}
+
+[data-theme='dark'] .bank_field input::placeholder {
+  color: var(--rma-text-muted);
+}

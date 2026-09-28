@@ -360,12 +360,28 @@
   border-top: none;
 }
 
-.profile_item span:last-child {
-  color: var(--rma-text-muted);
+/* =========================================
+   PROFILE ITEM ICONS
+========================================= */
 
-  font-size: 25px;
-  font-weight: var(--rma-weight-regular);
+.profile_item_left {
+  min-width: 0;
 
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.profile_item_left svg {
+  flex-shrink: 0;
+  color: var(--rma-primary);
+}
+
+.profile_item_arrow {
+  flex-shrink: 0;
+
+  color: var(--rma-text-secondary);
+  font-size: 22px;
   line-height: 1;
 }
 
@@ -540,33 +556,35 @@
 }
 
 .logout_button {
-  width: 100%;
-
-  margin-top: var(--rma-space-8);
+  margin-top: var(--rma-space-2);
   margin-bottom: var(--rma-space-8);
 
-  min-height: 48px;
-
-  border: 1px solid var(--rma-danger);
-  border-radius: var(--rma-radius-md);
-
-  background: var(--rma-danger-light);
   color: var(--rma-danger);
+}
 
-  font-family: inherit;
-  font-size: var(--rma-font-md);
-  font-weight: var(--rma-weight-semibold);
+.logout_button .profile_item_left {
+  color: var(--rma-danger);
+}
 
-  cursor: pointer;
+.logout_button .profile_item_left svg {
+  color: var(--rma-danger);
+}
 
-  transition:
-    background var(--rma-transition-fast),
-    color var(--rma-transition-fast);
+.logout_button .profile_item_left > span {
+  color: var(--rma-danger);
+}
+
+.logout_button .profile_item_arrow {
+  color: var(--rma-danger);
 }
 
 .logout_button:hover {
-  background: var(--rma-danger);
-  color: var(--rma-text-white);
+  background: var(--rma-danger-light);
+  border-color: var(--rma-danger);
+}
+
+.logout_button:active {
+  background: var(--rma-danger-light);
 }
 
 @media (max-width: 380px) {
@@ -854,4 +872,243 @@
     border-radius: 20px;
     max-width: 440px;
   }
+}
+
+/* =========================================
+   DARK MODE — PROFILE PAGE
+   Append only — do not modify light mode
+   ========================================= */
+
+/* =========================================
+   PROFILE LOGIN / SIGNUP
+   ========================================= */
+
+[data-theme='dark'] .profile_avatar {
+  background: rgba(22, 128, 58, 0.14);
+  color: var(--rma-primary-light);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .signup_button {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .signup_button:hover {
+  background: var(--rma-card-hover);
+  border-color: var(--rma-primary);
+}
+
+[data-theme='dark'] .login_button .profile_auth_content span {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='dark'] .signup_button .profile_auth_content span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .signup_button .profile_arrow {
+  color: var(--rma-primary-light);
+}
+
+/* =========================================
+   GUEST CARD
+   ========================================= */
+
+[data-theme='dark'] .profile_guest_card {
+  background: rgba(22, 128, 58, 0.1);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .profile_guest_icon {
+  background: rgba(22, 128, 58, 0.14);
+  color: var(--rma-primary-light);
+}
+
+/* =========================================
+   PROFILE ITEMS
+   ========================================= */
+
+[data-theme='dark'] .profile_item {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .profile_item:hover {
+  background: var(--rma-card-hover);
+  border-color: var(--rma-border-dark);
+}
+
+[data-theme='dark'] .profile_item_arrow {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .profile_item_left svg {
+  color: var(--rma-primary-light);
+}
+
+/* =========================================
+   CUSTOMER CARD
+   ========================================= */
+
+[data-theme='dark'] .profile_customer_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.16);
+}
+
+[data-theme='dark'] .profile_customer_row {
+  border-bottom-color: var(--rma-border);
+}
+
+[data-theme='dark'] .profile_customer_row span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .profile_customer_row strong {
+  color: var(--rma-text);
+}
+
+/* =========================================
+   LOADING
+========================================= */
+
+[data-theme='dark'] .profile_loading {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .profile_loading_spinner {
+  border-color: var(--rma-border);
+  border-top-color: var(--rma-primary);
+}
+
+/* =========================================
+   LOGOUT
+========================================= */
+
+[data-theme='dark'] .logout_button {
+  color: #ff8f86;
+}
+
+[data-theme='dark'] .logout_button .profile_item_left,
+[data-theme='dark'] .logout_button .profile_item_left svg,
+[data-theme='dark'] .logout_button .profile_item_left > span,
+[data-theme='dark'] .logout_button .profile_item_arrow {
+  color: #ff8f86;
+}
+
+[data-theme='dark'] .logout_button:hover,
+[data-theme='dark'] .logout_button:active {
+  background: rgba(220, 38, 38, 0.1);
+  border-color: rgba(220, 38, 38, 0.35);
+}
+
+/* =========================================
+   LOGIN BOTTOM SHEET
+========================================= */
+
+[data-theme='dark'] .profile_login_overlay {
+  background: rgba(0, 0, 0, 0.68);
+}
+
+[data-theme='dark'] .profile_login_sheet {
+  background: var(--rma-card);
+
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme='dark'] .profile_login_sheet_handle {
+  background: var(--rma-border-dark);
+}
+
+[data-theme='dark'] .profile_login_sheet_header h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .profile_login_sheet_header p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .profile_login_option {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .profile_login_option:hover {
+  background: var(--rma-card-hover);
+  border-color: var(--rma-primary);
+}
+
+[data-theme='dark'] .profile_login_option span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .profile_login_option > span:last-child {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .profile_login_cancel {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .profile_login_cancel:hover {
+  background: var(--rma-card-hover);
+}
+
+/* =========================================
+   ROLE SWITCH SHEET
+========================================= */
+
+[data-theme='dark'] .profile_switch_overlay {
+  background: rgba(0, 0, 0, 0.68);
+}
+
+[data-theme='dark'] .profile_switch_sheet {
+  background: var(--rma-card);
+
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme='dark'] .profile_switch_handle {
+  background: var(--rma-border-dark);
+}
+
+[data-theme='dark'] .profile_switch_header h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .profile_switch_header p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .profile_switch_cancel {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .profile_switch_confirm {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .profile_switch_confirm:hover {
+  background: var(--rma-primary-dark);
+}
+
+/* =========================================
+   FOCUS STATES
+========================================= */
+
+[data-theme='dark'] .profile_auth_button:focus-visible,
+[data-theme='dark'] .profile_item:focus-visible,
+[data-theme='dark'] .profile_login_option:focus-visible,
+[data-theme='dark'] .profile_login_cancel:focus-visible,
+[data-theme='dark'] .profile_switch_actions button:focus-visible {
+  outline: 3px solid rgba(22, 128, 58, 0.35);
+  outline-offset: 2px;
 }

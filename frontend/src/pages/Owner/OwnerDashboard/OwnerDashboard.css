@@ -1114,3 +1114,350 @@
 .owner_settings_button svg {
   stroke-width: 1.9;
 }
+
+/* =========================================================
+   DARK MODE — OWNER DASHBOARD
+   ========================================================= */
+
+/* PAGE */
+
+[data-theme='dark'] .owner_dashboard {
+  background:
+    radial-gradient(circle at 0% 0%, rgba(22, 128, 58, 0.12), transparent 28%),
+    var(--rma-bg);
+
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+[data-theme='dark'] .owner_dashboard_header p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .owner_dashboard_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .owner_dashboard_header span {
+  color: var(--rma-primary);
+}
+
+/* =========================================================
+   LOGOUT
+   ========================================================= */
+
+[data-theme='dark'] .owner_logout_button {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .owner_logout_button:hover {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-bg-secondary);
+  color: var(--rma-primary);
+}
+
+/* =========================================================
+   STATS
+   ========================================================= */
+
+[data-theme='dark'] .owner_stat_card {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+
+[data-theme='dark'] .owner_stat_card::after {
+  background: rgba(22, 128, 58, 0.1);
+}
+
+[data-theme='dark'] .owner_stat_card:hover {
+  border-color: var(--rma-border-dark);
+
+  box-shadow: 0 9px 22px rgba(0, 0, 0, 0.25);
+}
+
+[data-theme='dark'] .owner_stat_card span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .owner_stat_card strong {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   SECTIONS
+   ========================================================= */
+
+[data-theme='dark'] .owner_section_header h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .owner_section_header span {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   ORDER CARD
+   ========================================================= */
+
+[data-theme='dark'] .owner_order_card {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.16);
+}
+
+[data-theme='dark'] .owner_order_card:hover {
+  border-color: var(--rma-border-dark);
+
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+}
+
+[data-theme='dark'] .owner_order_top strong {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   CUSTOMER
+   ========================================================= */
+
+[data-theme='dark'] .owner_order_card > p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   ORDER ITEMS
+   ========================================================= */
+
+[data-theme='dark'] .owner_order_items {
+  border-color: var(--rma-border-light);
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .owner_order_items p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   ORDER TOTAL
+   ========================================================= */
+
+[data-theme='dark'] .owner_order_total {
+  color: var(--rma-primary);
+}
+
+/* =========================================================
+   ORDER STATUS
+   ========================================================= */
+
+/* PENDING */
+
+[data-theme='dark'] .pending_status,
+[data-theme='dark'] .order_status.pending {
+  border-color: #66572d;
+  background: #302b18;
+  color: #e7c75f;
+}
+
+/* ACCEPTED */
+
+[data-theme='dark'] .order_status.accepted {
+  border-color: #34527a;
+  background: #19283a;
+  color: #79a9e8;
+}
+
+/* PREPARING */
+
+[data-theme='dark'] .order_status.preparing {
+  border-color: #344d7a;
+  background: #19263b;
+  color: #78a5e8;
+}
+
+/* READY */
+
+[data-theme='dark'] .order_status.ready {
+  border-color: #356346;
+  background: #182d20;
+  color: #75c98c;
+}
+
+/* OUT FOR DELIVERY */
+
+[data-theme='dark'] .order_status.outfordelivery {
+  border-color: #356060;
+  background: #172b2b;
+  color: #73c1c1;
+}
+
+/* COMPLETED */
+
+[data-theme='dark'] .order_status.completed {
+  border-color: #356044;
+  background: #172c1f;
+  color: #70c789;
+}
+
+/* REJECTED */
+
+[data-theme='dark'] .order_status.rejected {
+  border-color: #6b3b3b;
+  background: #321c1c;
+  color: #f28b82;
+}
+
+/* =========================================================
+   ORDER ACTIONS
+   ========================================================= */
+
+[data-theme='dark'] .reject_button {
+  border-color: #593939;
+  background: var(--rma-card);
+  color: #e58b8b;
+}
+
+[data-theme='dark'] .reject_button:hover {
+  border-color: #7a4747;
+  background: #321c1c;
+  color: #f28b82;
+}
+
+[data-theme='dark'] .accept_button {
+  background: linear-gradient(
+    135deg,
+    var(--rma-primary),
+    var(--rma-primary-dark)
+  );
+
+  color: #ffffff;
+
+  box-shadow: 0 5px 13px rgba(22, 128, 58, 0.25);
+}
+
+[data-theme='dark'] .accept_button:hover {
+  background: linear-gradient(135deg, var(--rma-primary-dark), #0f5c2a);
+
+  box-shadow: 0 7px 16px rgba(15, 92, 42, 0.35);
+}
+
+/* =========================================================
+   EMPTY PENDING ORDERS
+   ========================================================= */
+
+[data-theme='dark'] .no_pending_orders {
+  border-color: var(--rma-border-dark);
+
+  background: linear-gradient(135deg, var(--rma-bg-secondary), var(--rma-card));
+}
+
+[data-theme='dark'] .no_pending_orders strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .no_pending_orders p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   MANAGE ALL ORDERS
+   ========================================================= */
+
+[data-theme='dark'] .manage_orders_card {
+  border-color: var(--rma-border-dark);
+
+  background: linear-gradient(135deg, var(--rma-bg-secondary), var(--rma-card));
+
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+}
+
+[data-theme='dark'] .manage_orders_card:hover {
+  border-color: #4f7655;
+
+  background: linear-gradient(135deg, #1b3020, var(--rma-card));
+
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+}
+
+/* ICON */
+
+[data-theme='dark'] .manage_orders_icon {
+  background: var(--rma-primary-soft);
+  color: var(--rma-primary);
+}
+
+/* CONTENT */
+
+[data-theme='dark'] .manage_orders_content strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .manage_orders_content span {
+  color: var(--rma-text-secondary);
+}
+
+/* ARROW */
+
+[data-theme='dark'] .manage_orders_arrow {
+  color: var(--rma-primary);
+}
+
+/* =========================================================
+   COMPACT ORDERS
+   ========================================================= */
+
+[data-theme='dark'] .compact_order_bottom {
+  border-top-color: var(--rma-border-light);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .compact_order_bottom strong {
+  color: var(--rma-primary);
+}
+
+/* =========================================================
+   LOADING STATE
+   ========================================================= */
+
+[data-theme='dark'] .owner_dashboard > h1 {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   ERROR STATE
+   ========================================================= */
+
+[data-theme='dark'] .owner_dashboard > p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   SETTINGS BUTTON
+   ========================================================= */
+
+[data-theme='dark'] .owner_settings_button {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .owner_settings_button:hover {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
+
+[data-theme='dark'] .owner_logout_button:focus-visible,
+[data-theme='dark'] .manage_orders_card:focus-visible,
+[data-theme='dark'] .owner_order_actions button:focus-visible {
+  outline-color: rgba(22, 128, 58, 0.35);
+}

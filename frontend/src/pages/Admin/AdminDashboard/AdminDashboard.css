@@ -954,3 +954,250 @@
     transform: none;
   }
 }
+
+/* =========================================================
+   DARK MODE — RMA ADMIN DASHBOARD
+   Append-only override
+   ========================================================= */
+
+[data-theme='dark'] .admin-dashboard {
+  background: var(--rma-bg);
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+[data-theme='dark'] .admin-sidebar {
+  background: #0b3f1e;
+  color: var(--rma-text-white);
+  border-right-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme='dark'] .admin-brand {
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme='dark'] .admin-brand-logo {
+  background: var(--rma-card);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .admin-brand h2 {
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .admin-brand span {
+  color: rgba(255, 255, 255, 0.68);
+}
+
+[data-theme='dark'] .admin-nav-item {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+[data-theme='dark'] .admin-nav-item:hover {
+  background: rgba(255, 255, 255, 0.09);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .admin-nav-item.active {
+  background: var(--rma-card);
+  color: var(--rma-primary-light);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+}
+
+[data-theme='dark'] .admin-nav-item.active::before {
+  background: #e8b84a;
+}
+
+[data-theme='dark'] .admin-sidebar-bottom {
+  border-top-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme='dark'] .admin-user-avatar {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--rma-text-white);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+[data-theme='dark'] .admin-user strong {
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .admin-user span {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+[data-theme='dark'] .admin-logout-button {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.82);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+[data-theme='dark'] .admin-logout-button:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--rma-text-white);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+/* =========================================================
+   MAIN
+   ========================================================= */
+
+[data-theme='dark'] .admin-main {
+  background: var(--rma-bg);
+}
+
+[data-theme='dark'] .admin-topbar h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin-topbar p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   SYSTEM STATUS
+   ========================================================= */
+
+[data-theme='dark'] .admin-status {
+  border-color: rgba(22, 128, 58, 0.35);
+  background: rgba(22, 128, 58, 0.12);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .admin-status-dot {
+  background: var(--rma-primary);
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.16);
+}
+
+/* =========================================================
+   STATISTICS
+   ========================================================= */
+
+[data-theme='dark'] .admin-stat-card {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.18),
+    0 8px 24px rgba(0, 0, 0, 0.16);
+}
+
+[data-theme='dark'] .admin-stat-card::after {
+  background: rgba(22, 128, 58, 0.14);
+}
+
+[data-theme='dark'] .admin-stat-card:hover {
+  border-color: var(--rma-border-dark);
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.22),
+    0 12px 28px rgba(0, 0, 0, 0.24);
+}
+
+[data-theme='dark'] .admin-stat-card span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .admin-stat-card strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin-stat-card small {
+  color: var(--rma-text-muted);
+}
+
+/* =========================================================
+   CONTENT PANELS
+   ========================================================= */
+
+[data-theme='dark'] .admin-panel {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.18),
+    0 8px 24px rgba(0, 0, 0, 0.16);
+}
+
+[data-theme='dark'] .admin-panel-header {
+  border-bottom-color: var(--rma-border);
+}
+
+[data-theme='dark'] .admin-panel-header h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin-panel-header p {
+  color: var(--rma-text-muted);
+}
+
+/* =========================================================
+   ORDER STATUS
+   ========================================================= */
+
+[data-theme='dark'] .order-status-row {
+  border-bottom-color: var(--rma-border);
+}
+
+[data-theme='dark'] .order-status-row span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .order-status-row strong {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   SYSTEM INFORMATION
+   ========================================================= */
+
+[data-theme='dark'] .admin-system-info > div {
+  border-bottom-color: var(--rma-border);
+}
+
+[data-theme='dark'] .admin-system-info span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .admin-system-info strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin-system-info > div:nth-child(2) strong,
+[data-theme='dark'] .admin-system-info > div:nth-child(4) strong {
+  color: var(--rma-primary-light);
+}
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+[data-theme='dark'] .admin-loading {
+  background: var(--rma-bg);
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   FOCUS STATES
+   ========================================================= */
+
+[data-theme='dark'] .admin-logout-button:focus-visible,
+[data-theme='dark'] .admin-nav-item:focus-visible {
+  outline-color: rgba(232, 184, 74, 0.4);
+}
+
+/* =========================================================
+   MOBILE SIDEBAR BORDERS
+   ========================================================= */
+
+@media (max-width: 600px) {
+  [data-theme='dark'] .admin-sidebar {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+
+  [data-theme='dark'] .admin-sidebar-bottom {
+    border-top-color: rgba(255, 255, 255, 0.1);
+  }
+}

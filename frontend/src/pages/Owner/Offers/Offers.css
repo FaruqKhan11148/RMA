@@ -660,3 +660,233 @@
     width: 100%;
   }
 }
+
+/* ========================================
+   DARK MODE — OWNER OFFERS PAGE
+======================================== */
+
+/* ========================================
+   PAGE HEADER
+======================================== */
+
+[data-theme='dark'] .owner_offers {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .owner_offers_eyebrow {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .owner_offers_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .owner_offers_header p {
+  color: var(--rma-text-secondary);
+}
+
+/* ========================================
+   COMMON OFFER CARD
+======================================== */
+
+[data-theme='dark'] .offer_card {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='dark'] .offer_badge {
+  background: var(--rma-primary-soft);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .offer_card h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .offer_card p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .offer_card p strong {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .offer_reward_amount {
+  color: var(--rma-primary);
+}
+
+/* ========================================
+   CIRCULAR PROGRESS
+======================================== */
+
+[data-theme='dark'] .circular_progress {
+  background: conic-gradient(
+    var(--rma-primary) var(--progress),
+    #344039 var(--progress)
+  );
+}
+
+[data-theme='dark'] .circular_progress::before {
+  background: var(--rma-card);
+}
+
+[data-theme='dark'] .circular_progress_inner strong {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .circular_progress_inner span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .circular_progress_inner small {
+  color: var(--rma-text-muted);
+}
+
+/* ========================================
+   ORDER PROGRESS INFORMATION
+======================================== */
+
+[data-theme='dark'] .progress_percentage {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .order_progress_info h3 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .order_progress_info p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .order_progress_bar {
+  background: #344039;
+}
+
+[data-theme='dark'] .order_progress_bar_fill {
+  background: var(--rma-primary);
+}
+
+[data-theme='dark'] .progress_hint {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .progress_error {
+  color: #f28b82;
+}
+
+/* ========================================
+   OFFER STATUS
+======================================== */
+
+[data-theme='dark'] .offer_status {
+  background: var(--rma-primary-soft);
+}
+
+[data-theme='dark'] .offer_status_icon {
+  background: var(--rma-primary);
+  color: #ffffff;
+}
+
+[data-theme='dark'] .offer_status strong {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .offer_status span {
+  color: var(--rma-text-secondary);
+}
+
+/* ========================================
+   PRIMARY BUTTON
+======================================== */
+
+[data-theme='dark'] .offer_primary_button {
+  background: var(--rma-primary);
+  color: #ffffff;
+}
+
+[data-theme='dark'] .offer_primary_button:hover {
+  opacity: 0.88;
+}
+
+/* ========================================
+   REFERRAL STEPS
+======================================== */
+
+[data-theme='dark'] .referral_step_number {
+  background: var(--rma-primary);
+  color: #ffffff;
+}
+
+[data-theme='dark'] .referral_step strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .referral_step span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .referral_line {
+  background: #45634a;
+}
+
+/* ========================================
+   REFERRAL ID BOX
+======================================== */
+
+[data-theme='dark'] .referral_id_box {
+  border-color: #527856;
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .referral_id_box span {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .referral_id_box strong {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .referral_id_box button {
+  border-color: #527856;
+  background: var(--rma-card);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .referral_id_box button:hover {
+  background: var(--rma-primary-soft);
+  border-color: var(--rma-primary);
+}
+
+/* ========================================
+   REFERRAL TRACKING
+======================================== */
+
+[data-theme='dark'] .tracking_count {
+  background: var(--rma-primary-soft);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .no_referrals_icon {
+  background: var(--rma-primary-soft);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .no_referrals h3 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .no_referrals p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .no_referrals button {
+  border-color: #527856;
+  background: var(--rma-card);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .no_referrals button:hover {
+  background: var(--rma-primary-soft);
+  border-color: var(--rma-primary);
+}

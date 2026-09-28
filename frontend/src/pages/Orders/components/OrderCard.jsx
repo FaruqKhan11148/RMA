@@ -1,7 +1,15 @@
-function OrderCard({ order, onOrderClick }) {
+function OrderCard({
+  order,
+  onOrderClick,
+  selectionMode,
+  selected,
+  canDelete,
+}) {
   return (
     <article
-      className="order_card"
+      className={`order_card ${selectionMode ? 'order_card_selectable' : ''} ${
+        selected ? 'order_card_selected' : ''
+      } ${selectionMode && !canDelete ? 'order_card_not_deletable' : ''}`}
       role="button"
       tabIndex={0}
       onClick={() => onOrderClick(order)}
@@ -12,38 +20,65 @@ function OrderCard({ order, onOrderClick }) {
         }
       }}
     >
-      <div className="order_card_top">
-        <strong>{order.orderId}</strong>
+      {selectionMode && (
+        <div className="order_card_selection">
+          <span
+            className={`order_checkbox ${
+              selected ? 'order_checkbox_checked' : ''
+            } ${!canDelete ? 'order_checkbox_disabled' : ''}`}
+            aria-hidden="true"
+          >
+            {selected ? '✓' : ''}
+          </span>
+        </div>
+      )}
 
-        <span className="order_status">{order.status}</span>
+      <div className="order_card_content">
+        <div className="order_card_top">
+          <strong>{order.orderId}</strong>
+
+          <span className="order_status">{order.status}</span>
+        </div>
+
+        <div className="order_card_middle">
+          <strong>
+            {order.ownerId?.shopName || order.ownerId?.ownerName || 'Shop'}
+          </strong>
+
+          {!selectionMode && <span className="order_card_arrow">›</span>}
+        </div>
+
+        <div className="order_card_bottom">
+          <span>
+            {order.totalItems} {order.totalItems === 1 ? 'item' : 'items'}
+          </span>
+
+          <span className="order_card_separator">•</span>
+
+          <span>{order.orderType === 'pickup' ? 'Pickup' : 'Delivery'}</span>
+
+          <strong>
+            ₹
+            {Number(
+              order.customerPayableAmount ?? order.totalPrice ?? 0,
+            ).toFixed(2)}
+          </strong>
+        </div>
+
+        {!selectionMode && (
+          <div className="order_card_hint">Tap to view order details</div>
+        )}
+
+        {selectionMode && (
+          <div className="order_card_hint">
+            {!canDelete
+              ? order.status === 'Rejected'
+                ? 'Available after refund is completed'
+                : 'Available after order is completed'
+              : `Tap to ${selected ? 'unselect' : 'select'} this order`}
+          </div>
+        )}
       </div>
-
-      <div className="order_card_middle">
-        <strong>
-          {order.ownerId?.shopName || order.ownerId?.ownerName || 'Shop'}
-        </strong>
-
-        <span className="order_card_arrow">›</span>
-      </div>
-
-      <div className="order_card_bottom">
-        <span>
-          {order.totalItems} {order.totalItems === 1 ? 'item' : 'items'}
-        </span>
-
-        <span className="order_card_separator">•</span>
-
-        <span>Delivery</span>
-
-        <strong>
-          ₹
-          {Number(order.customerPayableAmount ?? order.totalPrice ?? 0).toFixed(
-            2,
-          )}
-        </strong>
-      </div>
-
-      <div className="order_card_hint">Tap to view order details</div>
     </article>
   );
 }

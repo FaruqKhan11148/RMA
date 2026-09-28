@@ -1110,3 +1110,475 @@
     transition: none;
   }
 }
+
+/* =========================================================
+   DARK MODE
+   ========================================================= */
+
+[data-theme='dark'] .admin-delivery-page {
+  background: var(--rma-bg);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin-delivery-header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin-delivery-header p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   BACK BUTTON
+   ========================================================= */
+
+[data-theme='dark'] .back-button {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .back-button:hover {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .back-button:focus-visible {
+  outline-color: rgba(22, 128, 58, 0.35);
+}
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+[data-theme='dark'] .admin-delivery-error {
+  border-color: rgba(220, 38, 38, 0.28);
+  background: rgba(220, 38, 38, 0.1);
+  color: #ff8f86;
+}
+
+/* =========================================================
+   STATS
+   ========================================================= */
+
+[data-theme='dark'] .delivery-stat-card {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.16),
+    0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+[data-theme='dark'] .delivery-stat-card::before {
+  background: var(--rma-primary);
+}
+
+[data-theme='dark'] .delivery-stat-card:hover {
+  border-color: var(--rma-border-dark);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.2),
+    0 12px 28px rgba(0, 0, 0, 0.22);
+}
+
+[data-theme='dark'] .delivery-stat-card span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery-stat-card strong {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   CONTROLS
+   ========================================================= */
+
+[data-theme='dark'] .delivery-controls input,
+[data-theme='dark'] .delivery-controls select {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery-controls input::placeholder {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .delivery-controls input:hover,
+[data-theme='dark'] .delivery-controls select:hover {
+  border-color: var(--rma-border-dark);
+}
+
+[data-theme='dark'] .delivery-controls input:focus,
+[data-theme='dark'] .delivery-controls select:focus {
+  border-color: var(--rma-primary);
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.14);
+}
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+[data-theme='dark'] .delivery-loading {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   EMPTY
+   ========================================================= */
+
+[data-theme='dark'] .delivery-empty {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.16);
+}
+
+[data-theme='dark'] .delivery-empty h3 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery-empty p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+[data-theme='dark'] .delivery-table-wrapper {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.16),
+    0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+[data-theme='dark'] .delivery-table-wrapper::-webkit-scrollbar-track {
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .delivery-table-wrapper::-webkit-scrollbar-thumb {
+  background: var(--rma-border-dark);
+}
+
+[data-theme='dark'] .delivery-table th {
+  border-bottom-color: var(--rma-border);
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery-table td {
+  border-bottom-color: var(--rma-border);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery-table tbody tr:hover {
+  background: var(--rma-card-hover);
+}
+
+/* =========================================================
+   DELIVERY PERSON
+   ========================================================= */
+
+[data-theme='dark'] .delivery-person-cell strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery-person-cell span {
+  color: var(--rma-text-muted);
+}
+
+/* =========================================================
+   ORDER COUNTS
+   ========================================================= */
+
+[data-theme='dark'] .order-count.active {
+  background: rgba(234, 179, 8, 0.12);
+  color: #e8b84a;
+}
+
+[data-theme='dark'] .order-count.completed {
+  background: rgba(22, 128, 58, 0.12);
+  color: var(--rma-primary-light);
+}
+
+/* =========================================================
+   DELIVERY STATUS
+   ========================================================= */
+
+[data-theme='dark'] .delivery-status.active {
+  background: rgba(22, 128, 58, 0.12);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery-status.active::before {
+  background: var(--rma-primary);
+}
+
+[data-theme='dark'] .delivery-status.inactive {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery-status.inactive::before {
+  background: var(--rma-text-muted);
+}
+
+/* =========================================================
+   VIEW BUTTON
+   ========================================================= */
+
+[data-theme='dark'] .view-delivery-button {
+  border-color: rgba(22, 128, 58, 0.35);
+  background: rgba(22, 128, 58, 0.12);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .view-delivery-button:hover {
+  border-color: var(--rma-primary);
+  background: rgba(22, 128, 58, 0.18);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .view-delivery-button:focus-visible {
+  outline-color: rgba(22, 128, 58, 0.35);
+}
+
+/* =========================================================
+   MODAL OVERLAY
+   ========================================================= */
+
+[data-theme='dark'] .delivery-modal-overlay {
+  background: rgba(0, 0, 0, 0.68);
+}
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+[data-theme='dark'] .delivery-modal {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  box-shadow:
+    0 20px 45px rgba(0, 0, 0, 0.35),
+    0 35px 90px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme='dark'] .delivery-modal::-webkit-scrollbar-track {
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .delivery-modal::-webkit-scrollbar-thumb {
+  background: var(--rma-border-dark);
+}
+
+/* =========================================================
+   MODAL HEADER
+   ========================================================= */
+
+[data-theme='dark'] .delivery-modal-header {
+  border-bottom-color: var(--rma-border);
+  background: rgba(27, 32, 29, 0.97);
+}
+
+[data-theme='dark'] .delivery-modal-header h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery-modal-header p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .modal-close-button {
+  border-color: var(--rma-border);
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .modal-close-button:hover {
+  border-color: var(--rma-border-dark);
+  background: rgba(22, 128, 58, 0.12);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .modal-close-button:focus-visible {
+  outline-color: rgba(22, 128, 58, 0.35);
+}
+
+/* =========================================================
+   DETAIL SECTIONS
+   ========================================================= */
+
+[data-theme='dark'] .delivery-detail-section {
+  border-bottom-color: var(--rma-border);
+}
+
+[data-theme='dark'] .delivery-detail-section h3 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery-detail-section h3::before {
+  background: var(--rma-primary);
+}
+
+/* =========================================================
+   DETAIL GRID
+   ========================================================= */
+
+[data-theme='dark'] .delivery-detail-grid > div {
+  border-color: var(--rma-border);
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .delivery-detail-grid span,
+[data-theme='dark'] .delivery-summary-grid span,
+[data-theme='dark'] .delivery-order-info span,
+[data-theme='dark'] .delivery-order-timeline span {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .delivery-detail-grid strong,
+[data-theme='dark'] .delivery-summary-grid strong,
+[data-theme='dark'] .delivery-order-info strong {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   DELIVERY SUMMARY
+   ========================================================= */
+
+[data-theme='dark'] .delivery-summary-grid > div {
+  border-color: var(--rma-border);
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .delivery-summary-grid strong {
+  color: var(--rma-primary-light);
+}
+
+/* =========================================================
+   ORDER HISTORY
+   ========================================================= */
+
+[data-theme='dark'] .delivery-order-card {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+}
+
+[data-theme='dark'] .delivery-order-card:hover {
+  border-color: var(--rma-border-dark);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='dark'] .delivery-order-top strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery-order-top span:not(.order-status) {
+  color: var(--rma-text-muted);
+}
+
+/* =========================================================
+   ORDER STATUS
+   ========================================================= */
+
+[data-theme='dark'] .status-completed {
+  background: rgba(22, 128, 58, 0.12);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .status-delivery {
+  background: rgba(234, 179, 8, 0.12);
+  color: #e8b84a;
+}
+
+[data-theme='dark'] .status-accepted {
+  background: rgba(37, 99, 235, 0.12);
+  color: #7aa7ff;
+}
+
+[data-theme='dark'] .status-preparing {
+  background: rgba(234, 179, 8, 0.12);
+  color: #e8b84a;
+}
+
+[data-theme='dark'] .status-ready {
+  background: rgba(22, 128, 58, 0.12);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .status-rejected {
+  background: rgba(220, 38, 38, 0.1);
+  color: #ff8f86;
+}
+
+[data-theme='dark'] .status-pending {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   ORDER INFO
+   ========================================================= */
+
+[data-theme='dark'] .delivery-order-info > div {
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .delivery-order-info strong {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   ORDER TIMELINE
+   ========================================================= */
+
+[data-theme='dark'] .delivery-order-timeline {
+  border-top-color: var(--rma-border);
+}
+
+[data-theme='dark'] .delivery-order-timeline strong {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   NO DELIVERY ORDERS
+   ========================================================= */
+
+[data-theme='dark'] .no-delivery-orders {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   MODAL FOOTER
+   ========================================================= */
+
+[data-theme='dark'] .delivery-modal-footer {
+  border-top-color: var(--rma-border);
+  background: rgba(27, 32, 29, 0.97);
+}
+
+[data-theme='dark'] .modal-footer-close {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-card);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .modal-footer-close:hover {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-card-hover);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .modal-footer-close:focus-visible {
+  outline-color: rgba(22, 128, 58, 0.35);
+}
+
+/* =========================================================
+   MOBILE TIMELINE BORDERS
+   ========================================================= */
+
+@media (max-width: 768px) {
+  [data-theme='dark'] .delivery-order-timeline > div {
+    border-bottom-color: var(--rma-border);
+  }
+}

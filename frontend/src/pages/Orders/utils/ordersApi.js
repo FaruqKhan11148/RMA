@@ -33,3 +33,26 @@ export const fetchCustomerOrders = async () => {
 
   return data.orders || [];
 };
+
+export const deleteCustomerOrders = async (orderIds) => {
+  const response = await fetch(`${API_URL}api/customers/orders`, {
+    method: 'DELETE',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      orderIds,
+    }),
+  });
+
+  const data = await response.json();
+
+  console.log('[Orders] Delete orders response:', data);
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Failed to delete orders');
+  }
+
+  return data;
+};

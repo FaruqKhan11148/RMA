@@ -340,3 +340,168 @@
     font-size: 13px;
   }
 }
+
+/* =========================================================
+   DARK MODE — OWNER LOCATION SETTING
+   Append only — do not modify light mode above
+   ========================================================= */
+
+[data-theme='dark'] .owner_setting_page {
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(22, 128, 58, 0.12),
+      transparent 32%
+    ),
+    var(--rma-bg);
+}
+
+[data-theme='dark'] .owner_setting_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.24),
+    0 3px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* BACK BUTTON */
+
+[data-theme='dark'] .owner_setting_back {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .owner_setting_back:hover {
+  color: var(--rma-primary-dark);
+}
+
+/* HEADER */
+
+[data-theme='dark'] .owner_setting_tag {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .owner_setting_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .owner_setting_header > p:last-child {
+  color: var(--rma-text-secondary);
+}
+
+/* LOCATION FORM */
+
+[data-theme='dark'] .owner_location_info {
+  background: linear-gradient(
+    135deg,
+    rgba(22, 128, 58, 0.12),
+    rgba(22, 128, 58, 0.06)
+  );
+
+  border-color: rgba(22, 128, 58, 0.28);
+}
+
+[data-theme='dark'] .owner_location_info strong {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .owner_location_info span {
+  color: var(--rma-text-secondary);
+}
+
+/* CURRENT LOCATION BUTTON */
+
+[data-theme='dark'] .owner_location_current {
+  background: var(--rma-card);
+  border-color: var(--rma-primary);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .owner_location_current:hover {
+  background: var(--rma-bg-secondary);
+}
+
+/* MAP */
+
+[data-theme='dark'] .owner_location_map {
+  background: var(--rma-bg-secondary);
+  border-color: var(--rma-border);
+}
+
+/* REQUIRED */
+
+[data-theme='dark'] .owner_location_required {
+  background: rgba(220, 38, 38, 0.1);
+  border-color: rgba(220, 38, 38, 0.3);
+  color: #ff8f86;
+}
+
+/* CONFIRMATION */
+
+[data-theme='dark'] .owner_location_confirmation {
+  background: linear-gradient(
+    135deg,
+    rgba(22, 128, 58, 0.12),
+    rgba(22, 128, 58, 0.06)
+  );
+
+  border-color: rgba(22, 128, 58, 0.28);
+}
+
+[data-theme='dark'] .owner_location_confirmation strong {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .owner_location_confirmation span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .owner_location_confirmation small {
+  color: var(--rma-text-muted);
+}
+
+/* ERROR */
+
+[data-theme='dark'] .owner_setting_error {
+  background: rgba(220, 38, 38, 0.1);
+  border-color: rgba(220, 38, 38, 0.3);
+  color: #ff8f86;
+}
+
+/* SUCCESS */
+
+[data-theme='dark'] .owner_setting_success {
+  background: rgba(22, 128, 58, 0.12);
+  border-color: rgba(22, 128, 58, 0.28);
+  color: var(--rma-primary-light);
+}
+
+/* SAVE */
+
+[data-theme='dark'] .owner_setting_save {
+  background: linear-gradient(
+    135deg,
+    var(--rma-primary),
+    var(--rma-primary-dark)
+  );
+
+  color: var(--rma-text-white);
+
+  box-shadow: 0 7px 16px rgba(22, 128, 58, 0.2);
+}
+
+[data-theme='dark'] .owner_setting_save:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--rma-primary-dark), #0b5226);
+
+  box-shadow: 0 9px 20px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='dark'] .owner_setting_save:disabled {
+  opacity: 0.45;
+}
+
+/* LOADING */
+
+[data-theme='dark'] .owner_setting_loading {
+  color: var(--rma-text-secondary);
+}

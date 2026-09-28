@@ -767,3 +767,233 @@
     padding: 16px;
   }
 }
+
+/* =========================================================
+   DARK MODE — CART
+   ========================================================= */
+
+/* =========================================================
+   CART PAGE
+   ========================================================= */
+
+[data-theme='dark'] .cart {
+  background: var(--rma-bg);
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+[data-theme='dark'] .cart_eyebrow {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .cart_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .cart_item_count {
+  background: var(--rma-primary-light);
+  color: #72d38f;
+}
+
+/* =========================================================
+   SHOP
+   ========================================================= */
+
+[data-theme='dark'] .cart_shop {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+
+  box-shadow: var(--rma-shadow-sm);
+}
+
+[data-theme='dark'] .cart_shop_icon {
+  background: var(--rma-primary-light);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .cart_shop_info > span {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .cart_shop_info h2 {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   CART ITEMS HEADER
+   ========================================================= */
+
+[data-theme='dark'] .cart_items_header h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .cart_items_header span {
+  color: var(--rma-text-muted);
+}
+
+/* =========================================================
+   CART ITEM
+   ========================================================= */
+
+[data-theme='dark'] .cart_item {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+
+  box-shadow: var(--rma-shadow-sm);
+}
+
+[data-theme='dark'] .cart_item:hover {
+  border-color: var(--rma-border-dark);
+
+  box-shadow: var(--rma-shadow-md);
+}
+
+/* =========================================================
+   ITEM IMAGE
+   ========================================================= */
+
+[data-theme='dark'] .cart_item_image {
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .cart_item_image_placeholder {
+  background: var(--rma-primary-light);
+  color: var(--rma-primary);
+}
+
+/* =========================================================
+   ITEM CONTENT
+   ========================================================= */
+
+[data-theme='dark'] .cart_item_info h3 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .cart_item_info p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   REMOVE BUTTON
+   ========================================================= */
+
+[data-theme='dark'] .remove_button {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .remove_button:hover {
+  background: var(--rma-danger-light);
+  color: var(--rma-danger);
+}
+
+/* =========================================================
+   ITEM BOTTOM
+   ========================================================= */
+
+[data-theme='dark'] .cart_item_bottom > strong {
+  color: #4ade80;
+}
+
+/* =========================================================
+   QUANTITY CONTROLS
+   ========================================================= */
+
+[data-theme='dark'] .cart_controls {
+  background: var(--rma-bg);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .cart_controls button {
+  background: var(--rma-card);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .cart_controls button:hover {
+  background: var(--rma-primary-light);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .cart_controls span {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   SUMMARY
+   ========================================================= */
+
+[data-theme='dark'] .cart_summary {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+
+  box-shadow: var(--rma-shadow-md);
+}
+
+[data-theme='dark'] .cart_summary_header h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .cart_summary_row span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .cart_summary_row > span:last-child,
+[data-theme='dark'] .cart_summary_row strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .cart_summary_divider {
+  background: var(--rma-border);
+}
+
+[data-theme='dark'] .cart_summary_total span {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .cart_summary_total strong {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   CHECKOUT
+   ========================================================= */
+
+[data-theme='dark'] .checkout_button {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .checkout_button:hover {
+  background: var(--rma-primary-dark);
+  box-shadow: var(--rma-shadow-lg);
+}
+
+/* =========================================================
+   EMPTY CART
+   ========================================================= */
+
+[data-theme='dark'] .cart_empty {
+  background: var(--rma-bg);
+}
+
+[data-theme='dark'] .cart_empty_icon {
+  background: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .cart_empty h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .cart_empty p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .cart_empty_button {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .cart_empty_button:hover {
+  background: var(--rma-primary-dark);
+}

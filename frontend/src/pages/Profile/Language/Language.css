@@ -235,3 +235,113 @@
     padding: 14px;
   }
 }
+
+/* =========================================================
+   DARK MODE — LANGUAGE PAGE
+   Append only — do not modify light mode above
+   ========================================================= */
+
+/* ==========================================
+   PAGE
+========================================== */
+
+[data-theme='dark'] .language_page {
+  background: var(--rma-bg);
+}
+
+/* ==========================================
+   HEADER
+========================================== */
+
+[data-theme='dark'] .language_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .language_back {
+  background: var(--rma-card);
+  color: var(--rma-text);
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+
+[data-theme='dark'] .language_back:hover {
+  background: var(--rma-card-hover);
+}
+
+/* ==========================================
+   LANGUAGE CARD
+========================================== */
+
+[data-theme='dark'] .language_card {
+  background: var(--rma-card);
+
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18);
+}
+
+/* ==========================================
+   CARD HEADER
+========================================== */
+
+[data-theme='dark'] .language_card_header h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .language_card_header p {
+  color: var(--rma-text-secondary);
+}
+
+/* ==========================================
+   LANGUAGE ITEM
+========================================== */
+
+[data-theme='dark'] .language_item {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .language_item:hover {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-card-hover);
+}
+
+[data-theme='dark'] .language_item.selected {
+  border-color: var(--rma-primary);
+  background: rgba(22, 128, 58, 0.12);
+}
+
+/* ==========================================
+   LANGUAGE TEXT
+========================================== */
+
+[data-theme='dark'] .language_item_text strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .language_item_text span {
+  color: var(--rma-text-secondary);
+}
+
+/* ==========================================
+   RADIO
+========================================== */
+
+[data-theme='dark'] .language_radio {
+  border-color: var(--rma-border-dark);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .language_radio.checked {
+  border-color: var(--rma-primary);
+  background: var(--rma-primary);
+}
+
+/* ==========================================
+   FOCUS
+========================================== */
+
+[data-theme='dark'] .language_back:focus-visible,
+[data-theme='dark'] .language_item:focus-visible {
+  outline: 3px solid rgba(22, 128, 58, 0.35);
+  outline-offset: 2px;
+}

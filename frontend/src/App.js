@@ -44,6 +44,9 @@ import RateOrder from './pages/RateOrder/RateOrder';
 import Profile from './pages/Profile/Profile';
 import Payment from './pages/payment/Payment';
 import Notifications from './pages/Notifications/Notifications';
+import NotFound from './pages/NotFound/NotFound';
+import RMAChat from './pages/RMAChat/RMAChat';
+import Appearance from './pages/Profile/Appearance/Appearance';
 
 import OwnerSettings from './pages/Owner/OwnerSettings/OwnerSettings';
 
@@ -124,6 +127,7 @@ import ShopPromotion from './pages/Owner/OwnerSettings/ShopPromotion/ShopPromoti
 
 function AppLayout() {
   const location = useLocation();
+  const isRMAChatRoute = location.pathname === '/rma-chat';
   const navigate = useNavigate();
   const [customerLoggedIn, setCustomerLoggedIn] = useState(false);
   const [profileRole, setProfileRole] = useState(null);
@@ -151,12 +155,9 @@ function AppLayout() {
   useEffect(() => {
     const checkCustomerLogin = async () => {
       try {
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/customers/me',
-          {
-            credentials: 'include',
-          },
-        );
+        const response = await fetch('http://localhost:5000/api/customers/me', {
+          credentials: 'include',
+        });
 
         if (response.ok) {
           setCustomerLoggedIn(true);
@@ -285,9 +286,13 @@ function AppLayout() {
         onClose={() => setFlashMessage('')}
       />
 
-      <Navbar />
+      {!isRMAChatRoute && <Navbar />}
 
-      <div className="app_content">
+      <div
+        className={
+          isRMAChatRoute ? 'app_content app_content_chat' : 'app_content'
+        }
+      >
         <Routes>
           {/* ==================== CUSTOMER ROUTES ==================== */}
 
@@ -521,20 +526,24 @@ function AppLayout() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
+          <Route path="/rma-chat" element={<RMAChat />} />
+
+          <Route path="/profile/appearance" element={<Appearance />} />
           <Route
             path="/owner/settings/shop-promotion"
             element={<ShopPromotion />}
           />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
 
-      <SiteFooter />
+      {!isRMAChatRoute && <SiteFooter />}
 
-      {showOwnerFooter && <OwnerFooter />}
+      {!isRMAChatRoute && showOwnerFooter && <OwnerFooter />}
 
-      {showDeliveryFooter && <DeliveryFooter />}
+      {!isRMAChatRoute && showDeliveryFooter && <DeliveryFooter />}
 
-      {showCustomerFooter && <Footer />}
+      {!isRMAChatRoute && showCustomerFooter && <Footer />}
     </>
   );
 }

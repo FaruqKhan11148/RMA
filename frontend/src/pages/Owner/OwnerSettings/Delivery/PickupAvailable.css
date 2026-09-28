@@ -423,3 +423,165 @@
     padding: 12px;
   }
 }
+
+/* =========================================================
+   DARK MODE — OWNER PICKUP STATUS SETTING
+   Append only — do not modify light mode above
+   ========================================================= */
+
+[data-theme='dark'] .owner_setting_page {
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(22, 128, 58, 0.14),
+      transparent 32%
+    ),
+    var(--rma-bg);
+}
+
+[data-theme='dark'] .owner_setting_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.28),
+    0 3px 12px rgba(0, 0, 0, 0.14);
+}
+
+/* BACK */
+
+[data-theme='dark'] .owner_setting_back {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .owner_setting_back:hover {
+  color: var(--rma-primary-dark);
+}
+
+/* HEADER */
+
+[data-theme='dark'] .owner_setting_tag {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .owner_setting_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .owner_setting_header > p:last-child {
+  color: var(--rma-text-secondary);
+}
+
+/* CURRENT STATUS */
+
+[data-theme='dark'] .pickup_status_card {
+  border-color: var(--rma-border);
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .pickup_status_icon.available {
+  background: rgba(22, 128, 58, 0.16);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .pickup_status_icon.unavailable {
+  background: rgba(220, 38, 38, 0.12);
+  color: #ff8f86;
+}
+
+[data-theme='dark'] .pickup_status_label {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .pickup_status_value.available {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .pickup_status_value.unavailable {
+  color: #ff8f86;
+}
+
+[data-theme='dark'] .pickup_status_content p {
+  color: var(--rma-text-secondary);
+}
+
+/* OPTIONS */
+
+[data-theme='dark'] .pickup_status_option {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+}
+
+[data-theme='dark'] .pickup_status_option.active.available_option {
+  border-color: var(--rma-primary);
+  background: rgba(22, 128, 58, 0.11);
+
+  box-shadow: 0 6px 16px rgba(22, 128, 58, 0.18);
+}
+
+[data-theme='dark'] .pickup_status_option.active.unavailable_option {
+  border-color: #dc2626;
+  background: rgba(220, 38, 38, 0.09);
+
+  box-shadow: 0 6px 16px rgba(220, 38, 38, 0.14);
+}
+
+[data-theme='dark'] .pickup_status_option:disabled {
+  opacity: 0.45;
+}
+
+[data-theme='dark'] .available_option .pickup_status_option_icon {
+  background: rgba(22, 128, 58, 0.16);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .unavailable_option .pickup_status_option_icon {
+  background: rgba(220, 38, 38, 0.12);
+  color: #ff8f86;
+}
+
+[data-theme='dark'] .pickup_status_option strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .pickup_status_option small {
+  color: var(--rma-text-muted);
+}
+
+/* SAVING / LOADING */
+
+[data-theme='dark'] .pickup_status_saving,
+[data-theme='dark'] .owner_setting_loading {
+  color: var(--rma-text-secondary);
+}
+
+/* ERROR */
+
+[data-theme='dark'] .owner_setting_error {
+  border-color: rgba(220, 38, 38, 0.4);
+  background: rgba(220, 38, 38, 0.1);
+  color: #ff8f86;
+}
+
+/* SUCCESS */
+
+[data-theme='dark'] .owner_setting_success {
+  border-color: rgba(22, 128, 58, 0.35);
+  background: rgba(22, 128, 58, 0.1);
+  color: var(--rma-primary-light);
+}
+
+/* NOTE */
+
+[data-theme='dark'] .pickup_status_note {
+  border-color: var(--rma-border);
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .pickup_status_note strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .pickup_status_note span {
+  color: var(--rma-text-secondary);
+}

@@ -1442,3 +1442,276 @@
     width: calc(100% - 24px);
   }
 }
+
+/* =========================================================
+   DARK MODE
+   ========================================================= */
+
+[data-theme='dark'] .shop {
+  background: var(--rma-bg);
+}
+
+[data-theme='dark'] .shop_hero {
+  background: var(--rma-bg);
+}
+
+[data-theme='dark'] .shop_back_button {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  color: var(--rma-text);
+  box-shadow: var(--rma-shadow-xs);
+}
+
+[data-theme='dark'] .shop_back_button:hover {
+  background: var(--rma-card-hover);
+  border-color: var(--rma-border-dark);
+}
+
+[data-theme='dark'] .shop_hero_id {
+  background: var(--rma-bg-secondary);
+  border-color: var(--rma-border);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .shop_share_button {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  color: var(--rma-text);
+  box-shadow: var(--rma-shadow-xs);
+}
+
+[data-theme='dark'] .shop_share_button:hover {
+  background: var(--rma-card-hover);
+  border-color: var(--rma-border-dark);
+}
+
+/* HERO */
+
+[data-theme='dark'] .shop_hero_content {
+  background: linear-gradient(
+    145deg,
+    var(--rma-card) 0%,
+    var(--rma-bg-secondary) 100%
+  );
+
+  border-color: var(--rma-border);
+  box-shadow: var(--rma-shadow-sm);
+}
+
+[data-theme='dark'] .shop_status_open {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .shop_status_closed {
+  color: #ff8f86;
+}
+
+[data-theme='dark'] .shop_hero_content h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .shop_rating {
+  border-color: rgba(245, 158, 11, 0.25);
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .shop_rating_star {
+  color: #f6b83f;
+}
+
+[data-theme='dark'] .shop_rating_average {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .shop_rating_count {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .shop_hero_description {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .shop_location {
+  border-top-color: var(--rma-border);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .rma_location_arrow_shop {
+  color: var(--rma-primary-light);
+}
+
+/* CATEGORIES */
+
+[data-theme='dark'] .categories h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .category_list button {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .category_list button:hover {
+  background: var(--rma-card-hover);
+  border-color: var(--rma-primary);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .category_active {
+  background: var(--rma-primary) !important;
+  border-color: var(--rma-primary) !important;
+  color: var(--rma-text-white) !important;
+
+  box-shadow: 0 3px 8px rgba(22, 139, 75, 0.28);
+}
+
+/* PRODUCTS */
+
+[data-theme='dark'] .products_header {
+  border-bottom-color: var(--rma-border);
+}
+
+[data-theme='dark'] .products_header h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .products_header h2::before {
+  background: var(--rma-primary);
+}
+
+[data-theme='dark'] .products_header span {
+  background: var(--rma-bg-secondary);
+  border-color: var(--rma-border);
+  color: var(--rma-text-secondary);
+}
+
+/* PRODUCT CARD */
+
+[data-theme='dark'] .product_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  box-shadow: var(--rma-shadow-xs);
+}
+
+[data-theme='dark'] .product_card:hover {
+  border-color: var(--rma-border-dark);
+  box-shadow: var(--rma-shadow-sm);
+}
+
+[data-theme='dark'] .product_image {
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .product_image_placeholder {
+  background: var(--rma-primary-soft);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .product_info h3 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .product_info p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .product_info strong {
+  color: var(--rma-primary-light);
+}
+
+/* ADD BUTTON */
+
+[data-theme='dark'] .add_button {
+  background: var(--rma-card);
+  border-color: var(--rma-primary);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .add_button:focus {
+  background: var(--rma-card);
+  color: var(--rma-primary-light);
+  box-shadow: none;
+}
+
+[data-theme='dark'] .add_button:disabled {
+  background: var(--rma-bg-secondary);
+  border-color: var(--rma-border);
+  color: var(--rma-text-muted);
+}
+
+/* EMPTY PRODUCTS */
+
+[data-theme='dark'] .product_list > p {
+  background: var(--rma-card);
+  border-color: var(--rma-border-dark);
+  color: var(--rma-text-secondary);
+}
+
+/* FLOATING CART */
+
+[data-theme='dark'] .floating_cart_bar {
+  background: rgba(24, 28, 26, 0.96);
+  border-color: var(--rma-border);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.42);
+}
+
+[data-theme='dark'] .floating_cart_image {
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .floating_cart_image_placeholder {
+  background: var(--rma-primary-soft);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .floating_cart_info strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .floating_cart_info span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .floating_cart_button {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+/* SHOP NOT FOUND */
+
+[data-theme='dark'] .shop_not_found {
+  background: var(--rma-bg);
+}
+
+[data-theme='dark'] .shop_not_found h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .shop_not_found p {
+  color: var(--rma-text-secondary);
+}
+
+/* CONTINUE CART */
+
+[data-theme='dark'] .continue_cart_button {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .continue_cart_button:hover {
+  opacity: 0.92;
+}
+
+/* FOCUS */
+
+[data-theme='dark'] .shop_back_button:focus-visible,
+[data-theme='dark'] .shop_share_button:focus-visible,
+[data-theme='dark'] .category_list button:focus-visible,
+[data-theme='dark'] .add_button:focus-visible,
+[data-theme='dark'] .floating_cart_button:focus-visible,
+[data-theme='dark'] .continue_cart_button:focus-visible {
+  outline: 3px solid rgba(22, 128, 58, 0.35);
+  outline-offset: 2px;
+}

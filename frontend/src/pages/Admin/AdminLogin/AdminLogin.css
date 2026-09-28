@@ -374,3 +374,111 @@
     transition: none;
   }
 }
+
+/* =========================================================
+   DARK MODE
+========================================================= */
+
+[data-theme='dark'] .admin-login-page {
+  background:
+    radial-gradient(circle at top, rgba(22, 128, 58, 0.14), transparent 35%),
+    var(--rma-bg);
+}
+
+/* LOGIN CARD */
+
+[data-theme='dark'] .admin-login-card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.3),
+    0 4px 12px rgba(0, 0, 0, 0.16);
+}
+
+/* RMA ADMIN LOGO */
+
+[data-theme='dark'] .admin-logo {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+  box-shadow: 0 8px 20px rgba(22, 128, 58, 0.25);
+}
+
+/* TITLE */
+
+[data-theme='dark'] .admin-login-header h1 {
+  color: var(--rma-text);
+}
+
+/* SUBTITLE */
+
+[data-theme='dark'] .admin-login-header p {
+  color: var(--rma-text-secondary);
+}
+
+/* LABEL */
+
+[data-theme='dark'] .admin-form-group label {
+  color: var(--rma-text-secondary);
+}
+
+/* INPUT */
+
+[data-theme='dark'] .admin-form-group input {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin-form-group input::placeholder {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .admin-form-group input:hover:not(:disabled) {
+  border-color: var(--rma-border-dark);
+}
+
+[data-theme='dark'] .admin-form-group input:focus {
+  border-color: var(--rma-primary);
+  background: var(--rma-card);
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.14);
+}
+
+[data-theme='dark'] .admin-form-group input:disabled {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-muted);
+  border-color: var(--rma-border);
+}
+
+/* ERROR */
+
+[data-theme='dark'] .admin-login-error {
+  border-color: rgba(220, 38, 38, 0.28);
+  background: rgba(220, 38, 38, 0.1);
+  color: #ff8f86;
+}
+
+/* LOGIN BUTTON */
+
+[data-theme='dark'] .admin-login-button {
+  border-color: var(--rma-primary);
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+  box-shadow: 0 5px 14px rgba(22, 128, 58, 0.22);
+}
+
+[data-theme='dark'] .admin-login-button:hover:not(:disabled) {
+  background: var(--rma-primary-dark);
+  border-color: var(--rma-primary-dark);
+  box-shadow: 0 7px 18px rgba(15, 92, 42, 0.3);
+}
+
+[data-theme='dark'] .admin-login-button:focus-visible {
+  outline-color: rgba(22, 128, 58, 0.35);
+}
+
+/* SECURITY MESSAGE */
+
+[data-theme='dark'] .admin-login-security {
+  border-top-color: var(--rma-border);
+  color: var(--rma-text-muted);
+}

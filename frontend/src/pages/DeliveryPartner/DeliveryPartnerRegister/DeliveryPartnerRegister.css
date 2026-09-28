@@ -172,3 +172,127 @@
     font-size: 22px;
   }
 }
+
+/* =========================================
+   DARK MODE — DELIVERY PARTNER REGISTER
+========================================= */
+
+[data-theme='dark'] .delivery_partner_register {
+  background: var(--rma-bg);
+}
+
+/* =========================================
+   REGISTER / SUCCESS CARD
+========================================= */
+
+[data-theme='dark'] .delivery_partner_register_card,
+[data-theme='dark'] .delivery_partner_success {
+  background: var(--rma-card);
+}
+
+/* =========================================
+   BACK BUTTON
+========================================= */
+
+[data-theme='dark'] .delivery_partner_back {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_partner_back:hover {
+  color: var(--rma-primary);
+}
+
+/* =========================================
+   HEADER
+========================================= */
+
+[data-theme='dark'] .delivery_partner_header {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_partner_icon {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .delivery_partner_header h1,
+[data-theme='dark'] .delivery_partner_success h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_partner_header p,
+[data-theme='dark'] .delivery_partner_success p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================
+   FORM
+========================================= */
+
+[data-theme='dark'] .delivery_partner_field label {
+  color: var(--rma-text-primary);
+}
+
+[data-theme='dark'] .delivery_partner_field input {
+  background: var(--rma-card);
+  border-color: var(--rma-border-dark);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_partner_field input::placeholder {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .delivery_partner_field input:focus {
+  border-color: var(--rma-primary);
+
+  box-shadow: 0 0 0 3px rgba(34, 166, 83, 0.16);
+}
+
+/* =========================================
+   PRIMARY BUTTON
+========================================= */
+
+[data-theme='dark'] .delivery_partner_primary_button {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .delivery_partner_primary_button:hover:not(:disabled) {
+  background: var(--rma-primary-dark);
+}
+
+/* =========================================
+   ERROR
+========================================= */
+
+[data-theme='dark'] .delivery_partner_error {
+  background: var(--rma-danger-light);
+  color: #f28b8b;
+  border: 1px solid var(--rma-danger);
+}
+
+/* =========================================
+   INFORMATION CARD
+========================================= */
+
+[data-theme='dark'] .delivery_partner_info {
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .delivery_partner_info strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_partner_info p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================
+   SUCCESS
+========================================= */
+
+[data-theme='dark'] .delivery_partner_success_icon {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}

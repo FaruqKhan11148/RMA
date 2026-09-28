@@ -1,23 +1,40 @@
 import './HelpSupport.css';
 
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import HelpSupportHeader from './components/HelpSupport/HelpSupportHeader';
 import HelpSupportFaq from './components/HelpSupport/HelpSupportFaq';
 import HelpSupportContact from './components/HelpSupport/HelpSupportContact';
 import HelpSupportReport from './components/HelpSupport/HelpSupportReport';
 
+import FlashMessage from '../../../components/FlashMessage/FlashMessage';
+
 function HelpSupport() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [openFaq, setOpenFaq] = useState(null);
+  const [flashMessage, setFlashMessage] = useState(
+    location.state?.flashMessage || '',
+  );
+
+  useEffect(() => {
+    if (location.state?.flashMessage) {
+      setFlashMessage(location.state.flashMessage);
+
+      navigate(location.pathname, {
+        replace: true,
+        state: {},
+      });
+    }
+  }, [location, navigate]);
 
   const faqs = [
     {
       question: 'How do I place an order?',
       answer:
-        'Find or scan an RMA shop, select the products you want, add them to your cart, and continue to checkout. After completing payment, your order will be sent to the shop.',
+        'Find or scan an RMA shop, select the products you want, add the products to your cart, and continue to checkout. After completing payment, your order will be sent to the shop.',
     },
     {
       question: 'How can I track my order?',
@@ -52,6 +69,12 @@ function HelpSupport() {
 
   return (
     <main className="help_support_page">
+      <FlashMessage
+        message={flashMessage}
+        onClose={() => setFlashMessage('')}
+        duration={5000}
+      />
+
       <HelpSupportHeader navigate={navigate} />
 
       <HelpSupportFaq faqs={faqs} openFaq={openFaq} toggleFaq={toggleFaq} />

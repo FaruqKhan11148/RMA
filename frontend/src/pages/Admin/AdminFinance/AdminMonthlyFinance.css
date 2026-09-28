@@ -318,3 +318,161 @@
     grid-template-columns: 1fr 1fr;
   }
 }
+
+/* =========================================================
+   DARK MODE
+========================================================= */
+
+[data-theme='dark'] .admin_monthly_finance_page {
+  background: var(--rma-bg);
+  color: var(--rma-text);
+}
+
+/* HEADER */
+
+[data-theme='dark'] .admin_monthly_finance_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin_monthly_finance_header p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .admin_back_button {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .admin_back_button:hover {
+  color: var(--rma-text);
+}
+
+/* MONTH SELECTOR */
+
+[data-theme='dark'] .admin_month_selector label {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .admin_month_selector input {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin_month_selector input:focus {
+  border-color: var(--rma-primary);
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.14);
+}
+
+/* SUMMARY */
+
+[data-theme='dark'] .admin_finance_card {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.14),
+    0 8px 22px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] .admin_finance_card span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .admin_finance_card strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin_rma_fee_card {
+  border-color: rgba(22, 128, 58, 0.35);
+  background: linear-gradient(
+    145deg,
+    var(--rma-card) 0%,
+    rgba(22, 128, 58, 0.08) 100%
+  );
+}
+
+/* SECTIONS */
+
+[data-theme='dark'] .admin_finance_section {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.14),
+    0 8px 22px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] .admin_finance_section_header h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin_finance_section_header p {
+  color: var(--rma-text-secondary);
+}
+
+/* STATUS */
+
+[data-theme='dark'] .admin_status_card {
+  border-color: var(--rma-border);
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .admin_status_card span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .admin_status_card strong {
+  color: var(--rma-text);
+}
+
+/* SHOP TABLE */
+
+[data-theme='dark'] .admin_shop_finance_table th {
+  border-bottom-color: var(--rma-border);
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .admin_shop_finance_table td {
+  border-bottom-color: var(--rma-border);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .admin_shop_finance_table tbody tr:hover {
+  background: var(--rma-card-hover);
+}
+
+[data-theme='dark'] .admin_shop_id_button strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin_shop_id_button span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .admin_shop_id_button:hover strong {
+  color: var(--rma-primary-light);
+}
+
+/* MESSAGES */
+
+[data-theme='dark'] .admin_finance_message,
+[data-theme='dark'] .admin_finance_error,
+[data-theme='dark'] .admin_empty_state {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .admin_finance_error {
+  border-color: rgba(220, 38, 38, 0.28);
+  background: rgba(220, 38, 38, 0.1);
+  color: #ff8f86;
+}
+
+/* ACCESSIBILITY */
+
+[data-theme='dark'] .admin_back_button:focus-visible,
+[data-theme='dark'] .admin_month_selector input:focus-visible,
+[data-theme='dark'] .admin_shop_id_button:focus-visible {
+  outline: 3px solid rgba(22, 128, 58, 0.35);
+  outline-offset: 2px;
+}

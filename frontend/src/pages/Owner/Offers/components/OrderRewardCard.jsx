@@ -19,11 +19,11 @@ function OrderRewardCard({
 
           <p>
             Complete 60 orders and earn
-            <strong> ₹199</strong>.
+            <strong> ₹100</strong>.
           </p>
         </div>
 
-        <div className="offer_reward_amount">₹199</div>
+        <div className="offer_reward_amount">₹100</div>
       </div>
 
       <div className="order_progress_section">
@@ -80,7 +80,7 @@ function OrderRewardCard({
           </div>
 
           <span className="progress_hint">
-            Keep completing orders to reach ₹199.
+            Keep completing orders to reach ₹100.
           </span>
 
           {ordersError && <span className="progress_error">{ordersError}</span>}
@@ -95,8 +95,8 @@ function OrderRewardCard({
         <div>
           <strong>
             {completedOrders >= targetOrders
-              ? '₹199 Reward Unlocked'
-              : '₹199 Reward in Progress'}
+              ? '₹100 Reward Unlocked'
+              : '₹100 Reward in Progress'}
           </strong>
 
           <span>

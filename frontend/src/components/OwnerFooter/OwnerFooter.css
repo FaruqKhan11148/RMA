@@ -240,3 +240,41 @@
     transition: none;
   }
 }
+
+/* =========================================================
+   RMA — OWNER MOBILE BOTTOM NAVIGATION — DARK MODE
+   ========================================================= */
+
+[data-theme='dark'] .owner_bottom_nav {
+  border-top-color: var(--rma-border);
+
+  background: rgba(24, 28, 26, 0.96);
+
+  box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.28);
+}
+
+[data-theme='dark'] .owner_nav_item {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .owner_nav_item:hover {
+  background: var(--rma-card-hover);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .owner_nav_item.active {
+  background: rgba(22, 128, 58, 0.14);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .owner_nav_item.active:hover {
+  background: rgba(22, 128, 58, 0.18);
+}
+
+[data-theme='dark'] .owner_nav_item.active::before {
+  background: var(--rma-primary);
+}
+
+[data-theme='dark'] .owner_nav_item:focus-visible {
+  outline-color: rgba(22, 128, 58, 0.35);
+}

@@ -397,3 +397,152 @@
     padding-right: 14px;
   }
 }
+
+/* =========================================
+   DARK MODE — DELIVERY HISTORY
+========================================= */
+
+/* =========================================
+   PAGE
+========================================= */
+
+[data-theme='dark'] .delivery_history_page {
+  background: var(--rma-bg);
+}
+
+/* =========================================
+   HEADER
+========================================= */
+
+[data-theme='dark'] .delivery_history_header span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_history_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_history_header p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================
+   HISTORY COUNT
+========================================= */
+
+[data-theme='dark'] .delivery_history_count {
+  background: var(--rma-primary-light);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .delivery_history_count strong {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .delivery_history_count span {
+  color: var(--rma-primary);
+}
+
+/* =========================================
+   HISTORY CARD
+========================================= */
+
+[data-theme='dark'] .delivery_history_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}
+
+/* =========================================
+   TOP
+========================================= */
+
+[data-theme='dark'] .delivery_history_status_icon {
+  background: var(--rma-primary-light);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .delivery_history_order strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_history_order span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_history_completed {
+  background: var(--rma-primary-light);
+  color: var(--rma-primary) !important;
+}
+
+/* =========================================
+   DETAILS
+========================================= */
+
+[data-theme='dark'] .delivery_history_details {
+  border-top-color: var(--rma-border);
+  border-bottom-color: var(--rma-border);
+}
+
+[data-theme='dark'] .delivery_history_detail svg {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .delivery_history_detail span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_history_detail strong {
+  color: var(--rma-text-primary);
+}
+
+/* =========================================
+   CUSTOMER
+========================================= */
+
+[data-theme='dark'] .delivery_history_customer span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_history_customer strong {
+  color: var(--rma-text-primary);
+}
+
+/* =========================================
+   EARNINGS
+========================================= */
+
+[data-theme='dark'] .delivery_history_bottom {
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .delivery_history_bottom span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_history_bottom > strong {
+  color: var(--rma-primary);
+}
+
+/* =========================================
+   EMPTY / LOADING / ERROR
+========================================= */
+
+[data-theme='dark'] .delivery_history_empty {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .delivery_history_empty_icon {
+  background: var(--rma-primary-light);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .delivery_history_empty strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_history_empty p {
+  color: var(--rma-text-secondary);
+}

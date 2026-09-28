@@ -416,3 +416,155 @@
     height: 39px;
   }
 }
+
+/* =========================================================
+   DARK MODE — CONTACT
+   ========================================================= */
+
+/* =========================================================
+   PAGE
+   ========================================================= */
+
+[data-theme='dark'] .contact_page {
+  background: var(--rma-bg);
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+[data-theme='dark'] .contact_header {
+  background: var(--rma-card);
+  border-bottom-color: var(--rma-border);
+}
+
+[data-theme='dark'] .contact_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .contact_back {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .contact_back:hover {
+  background: var(--rma-card-hover);
+}
+
+/* =========================================================
+   INTRO
+   Keep the strong dark intro style.
+   ========================================================= */
+
+[data-theme='dark'] .contact_intro {
+  background: #0b100d;
+  color: #ffffff;
+
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='dark'] .contact_badge {
+  background: #ffffff;
+  color: #111111;
+}
+
+[data-theme='dark'] .contact_intro h2 {
+  color: #ffffff;
+}
+
+[data-theme='dark'] .contact_intro p {
+  color: #c3ccc5;
+}
+
+/* =========================================================
+   SECTION
+   ========================================================= */
+
+[data-theme='dark'] .contact_section_heading h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .contact_section_heading p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   CONTACT CARDS
+   ========================================================= */
+
+[data-theme='dark'] .contact_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+
+  color: var(--rma-text);
+
+  box-shadow: var(--rma-shadow-sm);
+}
+
+[data-theme='dark'] .contact_card:hover {
+  border-color: var(--rma-border-dark);
+
+  box-shadow: var(--rma-shadow-md);
+}
+
+[data-theme='dark'] .contact_card_icon {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .contact_card_content strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .contact_card_content span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .contact_card_arrow {
+  color: var(--rma-text-muted);
+}
+
+/* =========================================================
+   ACTION BUTTON
+   ========================================================= */
+
+[data-theme='dark'] .contact_action_button {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  color: var(--rma-text);
+
+  box-shadow: var(--rma-shadow-sm);
+}
+
+[data-theme='dark'] .contact_action_button:hover {
+  border-color: var(--rma-border-dark);
+
+  box-shadow: var(--rma-shadow-md);
+}
+
+[data-theme='dark'] .contact_action_button span:last-child {
+  color: var(--rma-text-muted);
+}
+
+/* =========================================================
+   BUSINESS CARD
+   ========================================================= */
+
+[data-theme='dark'] .contact_business_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+
+  box-shadow: var(--rma-shadow-sm);
+}
+
+[data-theme='dark'] .contact_business_card h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .contact_business_card p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .contact_business_card span {
+  color: var(--rma-text-muted);
+}

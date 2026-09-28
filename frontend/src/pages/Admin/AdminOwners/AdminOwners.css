@@ -1495,3 +1495,468 @@
     width: 100%;
   }
 }
+
+/* =========================================================
+   DARK MODE
+========================================================= */
+
+[data-theme='dark'] .admin-owners-page {
+  background: var(--rma-bg);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin-page-header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin-page-header p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .admin-owner-count {
+  border-color: rgba(22, 128, 58, 0.35);
+  background: rgba(22, 128, 58, 0.12);
+  color: var(--rma-primary-light);
+}
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+[data-theme='dark'] .admin-page-error {
+  border-color: rgba(220, 38, 38, 0.28);
+  background: rgba(220, 38, 38, 0.1);
+  color: #ff8f86;
+}
+
+/* =========================================================
+   TOOLBAR
+========================================================= */
+
+[data-theme='dark'] .admin-owner-toolbar input {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin-owner-toolbar input::placeholder {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .admin-owner-toolbar input:hover {
+  border-color: var(--rma-border-dark);
+}
+
+[data-theme='dark'] .admin-owner-toolbar input:focus {
+  border-color: var(--rma-primary);
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.14);
+}
+
+[data-theme='dark'] .admin-owner-toolbar span {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   TABLE CONTAINER
+========================================================= */
+
+[data-theme='dark'] .admin-owner-table-container {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.14),
+    0 8px 24px rgba(0, 0, 0, 0.18);
+  scrollbar-color: var(--rma-border-dark) transparent;
+}
+
+[data-theme='dark'] .admin-owner-table-container::-webkit-scrollbar-thumb {
+  background: var(--rma-border-dark);
+}
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+[data-theme='dark'] .admin-owner-table th {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+  border-bottom-color: var(--rma-border);
+}
+
+[data-theme='dark'] .admin-owner-table td {
+  color: var(--rma-text-secondary);
+  border-bottom-color: var(--rma-border);
+}
+
+[data-theme='dark'] .admin-owner-table tbody tr:hover {
+  background: var(--rma-card-hover);
+}
+
+[data-theme='dark'] .admin-owner-table td strong {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+[data-theme='dark'] .admin-empty-state {
+  color: var(--rma-text-muted) !important;
+}
+
+/* =========================================================
+   OWNER STATUS
+========================================================= */
+
+[data-theme='dark'] .owner-status.open {
+  background: rgba(22, 128, 58, 0.12);
+  color: var(--rma-primary-light);
+  border-color: rgba(22, 128, 58, 0.35);
+}
+
+[data-theme='dark'] .owner-status.closed {
+  background: rgba(220, 38, 38, 0.1);
+  color: #ff8f86;
+  border-color: rgba(220, 38, 38, 0.28);
+}
+
+/* =========================================================
+   SERVICE BADGES
+========================================================= */
+
+[data-theme='dark'] .admin-service-badges span {
+  border-color: var(--rma-border);
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   VIEW BUTTON
+========================================================= */
+
+[data-theme='dark'] .admin-view-button {
+  border-color: rgba(22, 128, 58, 0.35);
+  background: var(--rma-card);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .admin-view-button:hover {
+  border-color: var(--rma-primary);
+  background: rgba(22, 128, 58, 0.12);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .admin-view-button:focus-visible {
+  outline-color: rgba(22, 128, 58, 0.35);
+}
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+[data-theme='dark'] .admin-page-loading {
+  background: var(--rma-bg);
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   MODAL OVERLAY
+========================================================= */
+
+[data-theme='dark'] .admin-owner-overlay {
+  background: rgba(0, 0, 0, 0.72);
+}
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+[data-theme='dark'] .admin-owner-modal {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  box-shadow:
+    0 18px 50px rgba(0, 0, 0, 0.42),
+    0 4px 14px rgba(0, 0, 0, 0.25);
+  scrollbar-color: var(--rma-border-dark) transparent;
+}
+
+[data-theme='dark'] .admin-owner-modal::-webkit-scrollbar-thumb {
+  background: var(--rma-border-dark);
+}
+
+/* =========================================================
+   MODAL HEADER
+========================================================= */
+
+[data-theme='dark'] .admin-modal-header {
+  border-bottom-color: var(--rma-border);
+  background: rgba(27, 32, 29, 0.97);
+}
+
+[data-theme='dark'] .admin-modal-shop-id {
+  border-color: rgba(22, 128, 58, 0.35);
+  background: rgba(22, 128, 58, 0.12);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .admin-modal-header h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin-modal-header p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .admin-modal-close {
+  border-color: var(--rma-border);
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .admin-modal-close:hover {
+  border-color: rgba(220, 38, 38, 0.35);
+  background: rgba(220, 38, 38, 0.1);
+  color: #ff8f86;
+}
+
+[data-theme='dark'] .admin-modal-close:focus-visible {
+  outline-color: rgba(22, 128, 58, 0.35);
+}
+
+/* =========================================================
+   MODAL DETAILS
+========================================================= */
+
+[data-theme='dark'] .admin-owner-details h3 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin-owner-details h3::before {
+  background: var(--rma-primary);
+}
+
+/* =========================================================
+   DETAIL GRID
+========================================================= */
+
+[data-theme='dark'] .admin-detail-grid > div {
+  border-color: var(--rma-border);
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .admin-detail-grid > div:hover {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-card-hover);
+}
+
+[data-theme='dark'] .admin-detail-grid span {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .admin-detail-grid strong {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   PRODUCTS
+========================================================= */
+
+[data-theme='dark'] .admin-products-list {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+}
+
+[data-theme='dark'] .admin-product-row {
+  border-bottom-color: var(--rma-border);
+}
+
+[data-theme='dark'] .admin-product-row:hover {
+  background: var(--rma-card-hover);
+}
+
+[data-theme='dark'] .admin-product-row > div:first-child strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin-product-row > div:first-child span {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .admin-product-right strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .product-available {
+  color: var(--rma-primary-light) !important;
+}
+
+[data-theme='dark'] .product-unavailable {
+  color: #ff8f86 !important;
+}
+
+/* =========================================================
+   NO PRODUCTS
+========================================================= */
+
+[data-theme='dark'] .admin-no-products {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-muted);
+}
+
+/* =========================================================
+   SETTLEMENT VERIFICATION
+========================================================= */
+
+[data-theme='dark'] .admin-settlement-section {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.14),
+    0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+[data-theme='dark'] .admin-settlement-eyebrow {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .admin-settlement-header h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin-settlement-header p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .admin-settlement-count {
+  border-color: rgba(22, 128, 58, 0.35);
+  background: rgba(22, 128, 58, 0.12);
+  color: var(--rma-primary-light);
+}
+
+/* =========================================================
+   SETTLEMENT LIST
+========================================================= */
+
+[data-theme='dark'] .admin-settlement-card {
+  border-color: var(--rma-border);
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .admin-settlement-shop-id {
+  border-color: rgba(22, 128, 58, 0.35);
+  background: rgba(22, 128, 58, 0.12);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .admin-settlement-card-header h3 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin-settlement-card-header p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .admin-settlement-status.pending {
+  border-color: rgba(234, 179, 8, 0.3);
+  background: rgba(234, 179, 8, 0.1);
+  color: #e8b84a;
+}
+
+/* =========================================================
+   BANK DETAILS
+========================================================= */
+
+[data-theme='dark'] .admin-settlement-details > div {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+}
+
+[data-theme='dark'] .admin-settlement-details span {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .admin-settlement-details strong {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   FOOTER / ACTIONS
+========================================================= */
+
+[data-theme='dark'] .admin-settlement-card-footer {
+  border-top-color: var(--rma-border);
+}
+
+[data-theme='dark'] .admin-settlement-card-footer > span {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .admin-settlement-reject {
+  border-color: rgba(220, 38, 38, 0.28);
+  background: var(--rma-card);
+  color: #ff8f86;
+}
+
+[data-theme='dark'] .admin-settlement-reject:hover:not(:disabled) {
+  background: rgba(220, 38, 38, 0.1);
+  border-color: rgba(220, 38, 38, 0.4);
+}
+
+[data-theme='dark'] .admin-settlement-approve {
+  border-color: var(--rma-primary);
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .admin-settlement-approve:hover:not(:disabled) {
+  background: var(--rma-primary-dark);
+  border-color: var(--rma-primary-dark);
+}
+
+/* =========================================================
+   EMPTY / LOADING
+========================================================= */
+
+[data-theme='dark'] .admin-settlement-loading,
+[data-theme='dark'] .admin-settlement-empty {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .admin-settlement-empty strong {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .admin-settlement-empty span {
+  color: var(--rma-text-muted);
+}
+
+/* =========================================================
+   PAYU VERIFICATION ACTIONS
+========================================================= */
+
+[data-theme='dark'] .admin-settlement-payu {
+  border-color: var(--rma-primary);
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .admin-settlement-payu:hover {
+  background: var(--rma-primary-dark);
+  border-color: var(--rma-primary-dark);
+}
+
+[data-theme='dark'] .admin-settlement-payu:disabled {
+  opacity: 0.55;
+}
+
+/* =========================================================
+   ACCESSIBILITY
+========================================================= */
+
+[data-theme='dark'] .admin-owners-page button:focus-visible,
+[data-theme='dark'] .admin-owners-page input:focus-visible,
+[data-theme='dark'] .admin-owners-page select:focus-visible {
+  outline-color: rgba(22, 128, 58, 0.35);
+}

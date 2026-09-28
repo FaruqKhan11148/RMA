@@ -354,3 +354,164 @@
   font-size: 11px;
   color: #777777;
 }
+
+/* =========================================================
+   DARK MODE — ADD ADDRESS PAGE
+   Append only — do not modify light mode above
+   ========================================================= */
+
+/* ==========================================
+   PAGE
+========================================== */
+
+[data-theme='dark'] .add_address_page {
+  background: var(--rma-bg);
+}
+
+/* ==========================================
+   HEADER
+========================================== */
+
+[data-theme='dark'] .add_address_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .add_address_back {
+  background: var(--rma-card);
+  color: var(--rma-text);
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+
+[data-theme='dark'] .add_address_back:hover {
+  background: var(--rma-card-hover);
+}
+
+/* ==========================================
+   FORM
+========================================== */
+
+[data-theme='dark'] .add_address_form {
+  background: var(--rma-card);
+
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18);
+}
+
+/* ==========================================
+   FIELD LABELS
+========================================== */
+
+[data-theme='dark'] .add_address_field label,
+[data-theme='dark'] .add_address_location > label {
+  color: var(--rma-text);
+}
+
+/* ==========================================
+   ADDRESS TYPE
+========================================== */
+
+[data-theme='dark'] .address_label_option {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-card);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .address_label_option:hover {
+  border-color: var(--rma-primary);
+  color: var(--rma-primary-light);
+  background: var(--rma-card-hover);
+}
+
+[data-theme='dark'] .address_label_option.active {
+  background: var(--rma-primary);
+  border-color: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+/* ==========================================
+   TEXTAREA
+========================================== */
+
+[data-theme='dark'] .add_address_field textarea {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .add_address_field textarea::placeholder {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .add_address_field textarea:focus {
+  border-color: var(--rma-primary);
+  background: var(--rma-card);
+
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.14);
+}
+
+/* ==========================================
+   CHARACTER COUNT
+========================================== */
+
+[data-theme='dark'] .address_character_count {
+  color: var(--rma-text-muted);
+}
+
+/* ==========================================
+   ERROR
+========================================== */
+
+[data-theme='dark'] .add_address_error {
+  background: rgba(220, 38, 38, 0.1);
+  border-color: rgba(220, 38, 38, 0.28);
+  color: #ff8f86;
+}
+
+/* ==========================================
+   SAVE BUTTON
+========================================== */
+
+[data-theme='dark'] .save_address_button {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .save_address_button:hover {
+  background: var(--rma-primary-dark);
+}
+
+/* ==========================================
+   DELIVERY LOCATION
+========================================== */
+
+[data-theme='dark'] .add_address_location {
+  color: var(--rma-text);
+}
+
+/* ==========================================
+   SELECTED LOCATION
+========================================== */
+
+[data-theme='dark'] .selected_location_info {
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .selected_location_info span {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .selected_location_info small {
+  color: var(--rma-text-secondary);
+}
+
+/* ==========================================
+   FOCUS
+========================================== */
+
+[data-theme='dark'] .add_address_back:focus-visible,
+[data-theme='dark'] .address_label_option:focus-visible,
+[data-theme='dark'] .add_address_field textarea:focus-visible,
+[data-theme='dark'] .save_address_button:focus-visible {
+  outline: 3px solid rgba(22, 128, 58, 0.35);
+  outline-offset: 2px;
+}

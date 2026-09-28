@@ -787,3 +787,242 @@
   background-color: #090d0b00;
   border: none;
 }
+
+/* =========================================================
+   DARK MODE — SCAN SHOP QR
+   Append only — do not modify light mode
+   ========================================================= */
+
+/* =========================================================
+   PAGE
+   ========================================================= */
+
+[data-theme='dark'] .scan_qr {
+  background:
+    radial-gradient(circle at top, rgba(22, 128, 58, 0.12), transparent 35%),
+    var(--rma-bg);
+
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   GALLERY QR BUTTON
+   ========================================================= */
+
+[data-theme='dark'] .gallery_qr_button {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .gallery_qr_button:focus-visible {
+  outline-color: rgba(22, 128, 58, 0.35);
+}
+
+/* =========================================================
+   CARD
+   ========================================================= */
+
+[data-theme='dark'] .scan_qr_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.24),
+    0 2px 8px rgba(0, 0, 0, 0.14);
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+[data-theme='dark'] .scan_qr_logo {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+
+  box-shadow: 0 8px 18px rgba(22, 128, 58, 0.24);
+}
+
+[data-theme='dark'] .scan_qr_label {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .scan_qr_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .scan_qr_header > p:last-child {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   QR SCANNER
+   ========================================================= */
+
+[data-theme='dark'] .qr_scanner_box {
+  background: radial-gradient(
+    circle at center,
+    #202a23 0%,
+    #101511 65%,
+    #090d0b 100%
+  );
+
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.07),
+    0 12px 28px rgba(0, 0, 0, 0.35);
+}
+
+/* =========================================================
+   PLACEHOLDER
+   ========================================================= */
+
+[data-theme='dark'] .scanner_placeholder {
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .scanner_placeholder span {
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
+[data-theme='dark'] .scanner_placeholder p {
+  color: rgba(255, 255, 255, 0.68);
+}
+
+/* =========================================================
+   SCANNER CORNERS
+   ========================================================= */
+
+[data-theme='dark'] .scanner_corner {
+  border-color: #ffffff;
+}
+
+/* =========================================================
+   SCAN LINE
+   ========================================================= */
+
+[data-theme='dark'] .scanner_line {
+  background: #39b864;
+
+  box-shadow:
+    0 0 8px rgba(57, 184, 100, 0.85),
+    0 0 18px rgba(57, 184, 100, 0.5);
+}
+
+/* =========================================================
+   INFO
+   ========================================================= */
+
+[data-theme='dark'] .scan_qr_info h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .scan_qr_info p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+[data-theme='dark'] .scan_qr_error {
+  border-color: rgba(220, 38, 38, 0.28);
+  background: rgba(220, 38, 38, 0.1);
+  color: #ff8f86;
+}
+
+/* =========================================================
+   MANUAL SHOP ID
+   ========================================================= */
+
+[data-theme='dark'] .manual_shop_section label {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .manual_shop_row input {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .manual_shop_row input::placeholder {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .manual_shop_row input:focus {
+  border-color: var(--rma-primary);
+
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.14);
+}
+
+[data-theme='dark'] .manual_shop_row button {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .manual_shop_row button:hover {
+  background: var(--rma-primary-dark);
+}
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+[data-theme='dark'] .scan_qr_back {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .scan_qr_back:hover {
+  background: var(--rma-card-hover);
+}
+
+[data-theme='dark'] .scan_qr_manual {
+  background: var(--rma-primary);
+  border-color: var(--rma-primary);
+  color: var(--rma-text-white);
+
+  box-shadow: 0 6px 14px rgba(22, 128, 58, 0.22);
+}
+
+[data-theme='dark'] .scan_qr_manual:hover {
+  background: var(--rma-primary-dark);
+}
+
+[data-theme='dark'] .scan_qr_stop {
+  background: #b42318;
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .scan_qr_stop:hover {
+  background: #981b12;
+}
+
+/* =========================================================
+   ENTER SHOP ID
+   ========================================================= */
+
+[data-theme='dark'] .enter_shop_button {
+  color: var(--rma-primary-light);
+}
+
+/* =========================================================
+   SCANNER BACK BUTTON
+   ========================================================= */
+
+[data-theme='dark'] .scanner_back_button {
+  background-color: transparent;
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   FOCUS
+   ========================================================= */
+
+[data-theme='dark'] .scan_qr button:focus-visible {
+  outline: 3px solid rgba(22, 128, 58, 0.35);
+  outline-offset: 2px;
+}
+
+[data-theme='dark'] .manual_shop_row input:focus-visible {
+  outline: 3px solid rgba(22, 128, 58, 0.25);
+  outline-offset: 1px;
+}

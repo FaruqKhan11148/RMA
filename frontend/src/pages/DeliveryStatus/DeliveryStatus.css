@@ -1439,3 +1439,505 @@
   font-size: 13px;
   font-weight: 700;
 }
+
+/* =========================================
+   DARK MODE — DELIVERY STATUS
+========================================= */
+
+/* =========================================
+   MAIN PAGE
+========================================= */
+
+[data-theme='dark'] .delivery_status {
+  background: var(--rma-bg);
+}
+
+/* =========================================
+   HEADER
+========================================= */
+
+[data-theme='dark'] .delivery_status_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_status_header p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================
+   MAIN STATUS CARD
+========================================= */
+
+[data-theme='dark'] .order_status_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  box-shadow: var(--rma-shadow-sm);
+}
+
+[data-theme='dark'] .order_status_card h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .order_status_card > p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================
+   STATUS ICON
+========================================= */
+
+[data-theme='dark'] .status_icon {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+  box-shadow: 0 0 0 8px var(--rma-primary-light);
+}
+
+/* =========================================
+   TIMELINE
+========================================= */
+
+[data-theme='dark'] .status_steps::before {
+  background: var(--rma-border);
+}
+
+[data-theme='dark'] .status_step_icon {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-muted);
+  border-color: var(--rma-card);
+  box-shadow: 0 0 0 1px var(--rma-border);
+}
+
+[data-theme='dark'] .status_step.completed .status_step_icon {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+  box-shadow: 0 0 0 1px var(--rma-primary);
+}
+
+[data-theme='dark'] .status_step.current .status_step_icon {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+  border-color: var(--rma-card);
+  box-shadow:
+    0 0 0 2px var(--rma-primary),
+    0 0 0 7px var(--rma-primary-light);
+}
+
+[data-theme='dark'] .status_step strong {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .status_step p {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .status_step.completed strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .status_step.completed p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .status_step.current strong {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .status_step.current p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .status_step.completed::before,
+[data-theme='dark'] .status_step.current::before {
+  background: var(--rma-primary);
+}
+
+/* =========================================
+   DELIVERY OTP CARD
+========================================= */
+
+[data-theme='dark'] .delivery_otp_card {
+  background: var(--rma-accent-light);
+  border-color: #70591f;
+  box-shadow: var(--rma-shadow-xs);
+}
+
+[data-theme='dark'] .delivery_otp_card h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_otp_card p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_otp {
+  background: var(--rma-card);
+  border-color: var(--rma-accent);
+  color: var(--rma-text);
+  box-shadow: var(--rma-shadow-sm);
+}
+
+/* =========================================
+   ORDER DETAILS
+========================================= */
+
+[data-theme='dark'] .order_details {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  box-shadow: var(--rma-shadow-xs);
+}
+
+[data-theme='dark'] .order_details h2 {
+  color: var(--rma-text);
+  border-bottom-color: var(--rma-border-light);
+}
+
+[data-theme='dark'] .order_details p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .order_details strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .order_details p span {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================
+   HOME BUTTON
+========================================= */
+
+[data-theme='dark'] .home_button {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+  box-shadow: var(--rma-shadow-sm);
+}
+
+[data-theme='dark'] .home_button:hover {
+  background: var(--rma-primary-dark);
+  box-shadow: var(--rma-shadow-md);
+}
+
+/* =========================================
+   REJECTED ORDER
+========================================= */
+
+[data-theme='dark'] .rejected_card .status_icon {
+  background: var(--rma-danger);
+  box-shadow: 0 0 0 8px var(--rma-danger-light);
+}
+
+[data-theme='dark'] .rejected_card h2 {
+  color: var(--rma-danger);
+}
+
+/* =========================================
+   REFUND CARD
+========================================= */
+
+[data-theme='dark'] .refund_card .status_icon {
+  background: var(--rma-primary);
+  box-shadow: 0 0 0 8px var(--rma-primary-light);
+}
+
+/* =========================================
+   EMPTY / LOADING / ERROR
+========================================= */
+
+[data-theme='dark'] .delivery_status_empty {
+  background: var(--rma-bg);
+}
+
+[data-theme='dark'] .delivery_status_empty h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_status_empty p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_status_empty button {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .delivery_status_empty button:hover {
+  background: var(--rma-primary-dark);
+}
+
+/* =========================================
+   RATE YOUR EXPERIENCE
+========================================= */
+
+[data-theme='dark'] .rate_order_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .rate_order_card h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .rate_order_card p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .rate_order_button {
+  background: var(--rma-text);
+  color: var(--rma-bg);
+}
+
+[data-theme='dark'] .review_submitted_message {
+  color: #34d399 !important;
+}
+
+/* =========================================
+   RATING MODAL
+========================================= */
+
+[data-theme='dark'] .rating_modal_overlay {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+[data-theme='dark'] .rating_modal {
+  background: var(--rma-card);
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme='dark'] .rating_modal_close {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .rating_modal_header h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .rating_modal_header p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================
+   RATING ERROR
+========================================= */
+
+[data-theme='dark'] .rating_modal_error {
+  background: var(--rma-danger-light);
+  border-color: var(--rma-danger);
+  color: #f28b8b;
+}
+
+/* =========================================
+   RATING SECTIONS
+========================================= */
+
+[data-theme='dark'] .rating_modal .rating_section {
+  background: var(--rma-bg-secondary);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .rating_modal .rating_section h3 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .rating_modal .rating_section p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================
+   STARS
+========================================= */
+
+[data-theme='dark'] .rating_star {
+  color: #5d655f;
+}
+
+[data-theme='dark'] .rating_star.active {
+  color: var(--rma-accent);
+}
+
+/* =========================================
+   FEEDBACK
+========================================= */
+
+[data-theme='dark'] .rating_modal .feedback_section {
+  background: var(--rma-bg-secondary);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .rating_modal .feedback_section label {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .rating_modal .feedback_section label span {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .rating_modal .feedback_section textarea {
+  background: var(--rma-card);
+  border-color: var(--rma-border-dark);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .rating_modal .feedback_section textarea::placeholder {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .rating_modal .feedback_section textarea:focus {
+  border-color: var(--rma-primary);
+}
+
+[data-theme='dark'] .rating_modal .feedback_section small {
+  color: var(--rma-text-muted);
+}
+
+/* =========================================
+   SUBMIT REVIEW
+========================================= */
+
+[data-theme='dark'] .submit_review_button {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .submit_review_button:hover {
+  background: var(--rma-primary-dark);
+}
+
+/* =========================================
+   REVIEW SUCCESS
+========================================= */
+
+[data-theme='dark'] .review_success_icon {
+  background: var(--rma-success-light);
+  color: #34d399;
+}
+
+[data-theme='dark'] .review_success h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .review_success p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================
+   CANCEL / REJECT BUTTONS
+========================================= */
+
+[data-theme='dark'] .delivery_status_cancel_button {
+  border-color: var(--rma-danger);
+  background: var(--rma-card);
+  color: var(--rma-danger);
+}
+
+[data-theme='dark'] .delivery_status_cancel_button:hover {
+  background: var(--rma-danger-light);
+}
+
+[data-theme='dark'] .delivery_status_reject_button {
+  border-color: var(--rma-danger);
+  background: var(--rma-danger-light);
+  color: var(--rma-danger);
+}
+
+[data-theme='dark'] .delivery_status_reject_button:hover {
+  background: #4a2024;
+}
+
+/* =========================================
+   CANCEL / REJECT MODAL
+========================================= */
+
+[data-theme='dark'] .delivery_status_modal_overlay {
+  background: rgba(0, 0, 0, 0.65);
+}
+
+[data-theme='dark'] .delivery_status_modal {
+  background: var(--rma-card);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme='dark'] .delivery_status_modal_header h3 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_status_modal_close {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_status_modal_text {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_status_modal_label {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_status_modal_select {
+  background: var(--rma-card);
+  border-color: var(--rma-border-dark);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_status_modal_select:focus {
+  border-color: var(--rma-primary);
+}
+
+[data-theme='dark'] .delivery_status_modal_error {
+  color: var(--rma-danger);
+}
+
+[data-theme='dark'] .delivery_status_modal_secondary {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_status_modal_danger {
+  border-color: var(--rma-danger);
+  background: var(--rma-danger);
+  color: var(--rma-text-white);
+}
+
+/* =========================================
+   MODAL TEXTAREA
+========================================= */
+
+[data-theme='dark'] .delivery_status_modal_textarea {
+  background: var(--rma-card);
+  border-color: var(--rma-border-dark);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_status_modal_textarea::placeholder {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .delivery_status_modal_textarea:focus {
+  border-color: var(--rma-primary);
+}
+
+/* =========================================
+   OTP WARNING
+========================================= */
+
+[data-theme='dark'] .delivery_status_otp_warning {
+  background: var(--rma-warning-light);
+  border-color: #70591f;
+  color: #e6c86a;
+}
+
+[data-theme='dark'] .delivery_status_otp_warning strong {
+  color: #f0d98c;
+}
+
+/* =========================================
+   FOCUS
+========================================= */
+
+[data-theme='dark'] .home_button:focus-visible,
+[data-theme='dark'] .delivery_status_empty button:focus-visible {
+  outline-color: rgba(34, 166, 83, 0.35);
+}

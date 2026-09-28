@@ -349,3 +349,128 @@
     width: 100%;
   }
 }
+
+/* =========================================================
+   DARK MODE — PRIVACY PAGE
+   Append only — do not modify light mode above
+   ========================================================= */
+
+[data-theme='dark'] .privacy_page {
+  background: var(--rma-bg);
+}
+
+/* ===============================
+   HEADER
+================================ */
+
+[data-theme='dark'] .privacy_header {
+  background: var(--rma-card);
+  border-bottom-color: var(--rma-border);
+}
+
+[data-theme='dark'] .privacy_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .privacy_back {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .privacy_back:hover {
+  background: var(--rma-border);
+}
+
+/* ===============================
+   INTRO
+================================ */
+
+[data-theme='dark'] .privacy_intro {
+  background: #151817;
+  color: var(--rma-text-white);
+
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+[data-theme='dark'] .privacy_badge {
+  background: #ffffff;
+  color: #111111;
+}
+
+[data-theme='dark'] .privacy_intro h2 {
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .privacy_intro p {
+  color: #c0c7c2;
+}
+
+[data-theme='dark'] .privacy_updated {
+  color: #929b95;
+}
+
+/* ===============================
+   SECTIONS
+================================ */
+
+[data-theme='dark'] .privacy_section {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+}
+
+[data-theme='dark'] .privacy_section h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .privacy_section p {
+  color: var(--rma-text-secondary);
+}
+
+/* ===============================
+   LISTS
+================================ */
+
+[data-theme='dark'] .privacy_section li {
+  color: var(--rma-text-secondary);
+}
+
+/* ===============================
+   CONTACT CARD
+================================ */
+
+[data-theme='dark'] .privacy_contact {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+}
+
+[data-theme='dark'] .privacy_contact h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .privacy_contact p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .privacy_contact button {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .privacy_contact button:hover {
+  background: var(--rma-primary-dark);
+  opacity: 1;
+}
+
+/* ===============================
+   FOCUS
+================================ */
+
+[data-theme='dark'] .privacy_back:focus-visible,
+[data-theme='dark'] .privacy_contact button:focus-visible {
+  outline: 3px solid rgba(22, 128, 58, 0.35);
+  outline-offset: 2px;
+}

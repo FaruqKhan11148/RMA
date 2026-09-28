@@ -279,3 +279,185 @@
     font-size: 17px;
   }
 }
+
+/* =========================================================
+   DARK MODE — DELIVERY PERSON SETTINGS
+   Append only — do not modify light mode above
+   ========================================================= */
+
+[data-theme='dark'] .delivery_person_settings {
+  background: var(--rma-bg);
+}
+
+[data-theme='dark'] .delivery_person_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+[data-theme='dark'] .delivery_person_card h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_person_card > p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   FORM LABELS
+   ========================================================= */
+
+[data-theme='dark'] .delivery_person_card label {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
+
+[data-theme='dark'] .delivery_person_card input {
+  border-color: var(--rma-border);
+
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_person_card input::placeholder {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .delivery_person_card input:focus {
+  border-color: var(--rma-primary);
+
+  box-shadow: 0 0 0 3px rgba(46, 155, 95, 0.16);
+}
+
+/* =========================================================
+   PRIMARY BUTTONS
+   ========================================================= */
+
+[data-theme='dark'] .delivery_person_card button {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .delivery_person_card button:hover {
+  background: var(--rma-primary-dark);
+}
+
+[data-theme='dark'] .delivery_person_card button:disabled {
+  opacity: 0.5;
+}
+
+/* =========================================================
+   EXISTING DELIVERY PERSON
+   ========================================================= */
+
+[data-theme='dark'] .delivery_person_result {
+  background: rgba(22, 128, 58, 0.08);
+  border-color: rgba(22, 128, 58, 0.3);
+}
+
+[data-theme='dark'] .delivery_person_result h2 {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   DETAILS
+   ========================================================= */
+
+[data-theme='dark'] .delivery_person_result > p {
+  border-bottom-color: var(--rma-border);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_person_result > p strong {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   EDIT DETAILS
+   ========================================================= */
+
+[data-theme='dark'] .delivery_person_result > button:first-of-type {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .delivery_person_result > button:first-of-type:hover {
+  background: var(--rma-primary-dark);
+}
+
+/* =========================================================
+   ACTIVATE / DEACTIVATE
+   ========================================================= */
+
+[data-theme='dark'] .delivery_person_result > button:last-of-type {
+  background: rgba(22, 128, 58, 0.12);
+  color: var(--rma-primary-light);
+
+  border-color: rgba(22, 128, 58, 0.35);
+}
+
+[data-theme='dark'] .delivery_person_result > button:last-of-type:hover {
+  background: rgba(22, 128, 58, 0.18);
+}
+
+/* =========================================================
+   SAVE CHANGES
+   ========================================================= */
+
+[data-theme='dark'] .delivery_person_result form button:first-of-type {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .delivery_person_result form button:first-of-type:hover {
+  background: var(--rma-primary-dark);
+}
+
+/* =========================================================
+   CANCEL
+   ========================================================= */
+
+[data-theme='dark'] .delivery_person_result form button:last-of-type {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text);
+
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .delivery_person_result form button:last-of-type:hover {
+  background: var(--rma-border);
+}
+
+/* =========================================================
+   SUCCESS
+   ========================================================= */
+
+[data-theme='dark'] .delivery_person_success {
+  background: rgba(22, 128, 58, 0.12);
+  color: var(--rma-primary-light);
+  border-color: rgba(22, 128, 58, 0.35);
+}
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+[data-theme='dark'] .delivery_person_error {
+  background: rgba(180, 35, 24, 0.12);
+  color: #ff8f86;
+  border-color: rgba(180, 35, 24, 0.35);
+}
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+[data-theme='dark'] .delivery_person_loading {
+  color: var(--rma-text-secondary);
+}

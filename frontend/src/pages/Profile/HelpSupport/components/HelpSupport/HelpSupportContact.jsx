@@ -20,7 +20,10 @@ function HelpSupportContact() {
           <span className="support_contact_arrow">›</span>
         </a>
 
-        <a className="support_contact_item" href="mailto:support@rma.com">
+        <a
+          className="support_contact_item"
+          href="mailto:rma.customer.support@gmail.com"
+        >
           <div className="support_contact_icon">@</div>
 
           <div className="support_contact_text">

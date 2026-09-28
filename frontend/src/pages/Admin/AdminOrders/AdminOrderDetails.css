@@ -421,3 +421,244 @@
     white-space: nowrap;
   }
 }
+
+/* =========================================================
+   DARK MODE
+========================================================= */
+
+[data-theme='dark'] .admin-order-details-page {
+  background: var(--rma-bg);
+  color: var(--rma-text);
+}
+
+/* HEADER */
+
+[data-theme='dark'] .admin-order-back {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .admin-order-back:hover {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin-order-title-row h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin-order-title-row p {
+  color: var(--rma-text-secondary);
+}
+
+/* MAIN ORDER STATUS */
+
+[data-theme='dark'] .admin-order-main-status {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+  border: 1px solid var(--rma-border);
+}
+
+[data-theme='dark'] .admin-order-main-status.pending {
+  background: rgba(234, 179, 8, 0.1);
+  color: #e8b84a;
+}
+
+[data-theme='dark'] .admin-order-main-status.accepted {
+  background: rgba(59, 130, 246, 0.1);
+  color: #8bb8ff;
+}
+
+[data-theme='dark'] .admin-order-main-status.preparing {
+  background: rgba(124, 58, 237, 0.12);
+  color: #b99aff;
+}
+
+[data-theme='dark'] .admin-order-main-status.ready {
+  background: rgba(22, 128, 58, 0.12);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .admin-order-main-status.outfordelivery {
+  background: rgba(14, 116, 144, 0.12);
+  color: #72c7e8;
+}
+
+[data-theme='dark'] .admin-order-main-status.completed {
+  background: rgba(22, 128, 58, 0.12);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .admin-order-main-status.rejected {
+  background: rgba(220, 38, 38, 0.1);
+  color: #ff8f86;
+}
+
+/* CARD */
+
+[data-theme='dark'] .admin-order-card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.12),
+    0 8px 22px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='dark'] .admin-order-card-header h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin-order-card-header p {
+  color: var(--rma-text-secondary);
+}
+
+/* INFO GRID */
+
+[data-theme='dark'] .admin-order-info-grid span,
+[data-theme='dark'] .admin-finance-grid span {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .admin-order-info-grid strong {
+  color: var(--rma-text);
+}
+
+/* ITEMS */
+
+[data-theme='dark'] .admin-order-items {
+  border-top-color: var(--rma-border);
+}
+
+[data-theme='dark'] .admin-order-item {
+  border-bottom-color: var(--rma-border);
+}
+
+[data-theme='dark'] .admin-order-item strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin-order-item span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .admin-order-total-row {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin-order-total-row strong {
+  color: var(--rma-text);
+}
+
+/* PAYMENT */
+
+[data-theme='dark'] .admin-payment-badge.paid {
+  background: rgba(22, 128, 58, 0.12);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .admin-payment-badge.pending {
+  background: rgba(234, 179, 8, 0.1);
+  color: #e8b84a;
+}
+
+[data-theme='dark'] .admin-payment-badge.failed {
+  background: rgba(220, 38, 38, 0.1);
+  color: #ff8f86;
+}
+
+[data-theme='dark'] .admin-payment-badge.refunded {
+  background: rgba(124, 58, 237, 0.12);
+  color: #b99aff;
+}
+
+/* FINANCE */
+
+[data-theme='dark'] .admin-finance-grid > div {
+  background: var(--rma-bg-secondary);
+  border: 1px solid var(--rma-border);
+}
+
+[data-theme='dark'] .admin-finance-grid strong {
+  color: var(--rma-text);
+}
+
+/* DELIVERY */
+
+[data-theme='dark'] .admin-order-type-badge {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+  border: 1px solid var(--rma-border);
+}
+
+[data-theme='dark'] .admin-otp-verified {
+  color: var(--rma-primary-light) !important;
+}
+
+[data-theme='dark'] .admin-otp-pending {
+  color: #e8b84a !important;
+}
+
+[data-theme='dark'] .admin-pickup-message {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+  border: 1px solid var(--rma-border);
+}
+
+/* TIMELINE */
+
+[data-theme='dark'] .admin-timeline-marker {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-card);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .admin-timeline-step.completed .admin-timeline-marker {
+  border-color: var(--rma-primary);
+  background: var(--rma-primary);
+}
+
+[data-theme='dark'] .admin-timeline-content strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin-timeline-content span {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .admin-timeline-line {
+  background: var(--rma-border-dark);
+}
+
+/* STATES */
+
+[data-theme='dark'] .admin-order-details-state {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .admin-order-details-error {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin-order-details-error h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin-order-details-error p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .admin-order-details-error button {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .admin-order-details-error button:hover {
+  background: var(--rma-primary-dark);
+}
+
+/* ACCESSIBILITY */
+
+[data-theme='dark'] .admin-order-back:focus-visible,
+[data-theme='dark'] .admin-order-error button:focus-visible,
+[data-theme='dark'] .admin-order-details-error button:focus-visible {
+  outline: 3px solid rgba(22, 128, 58, 0.35);
+  outline-offset: 2px;
+}

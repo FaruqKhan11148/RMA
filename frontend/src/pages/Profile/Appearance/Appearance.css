@@ -1,0 +1,395 @@
+/* =========================================
+   RMA — APPEARANCE PAGE
+   ========================================= */
+
+.appearance {
+  min-height: calc(100vh - 120px);
+
+  padding: var(--rma-space-8) var(--rma-mobile-padding) 96px;
+
+  box-sizing: border-box;
+
+  background: var(--rma-bg);
+
+  transition:
+    background var(--rma-transition-smooth),
+    color var(--rma-transition-smooth);
+}
+
+/* =========================================
+   HEADER
+   ========================================= */
+
+.appearance_header {
+  width: 100%;
+  max-width: 560px;
+
+  margin: 0 auto var(--rma-space-8);
+}
+
+.appearance_header h1 {
+  margin: 0 0 var(--rma-space-2);
+
+  color: var(--rma-text);
+
+  font-size: var(--rma-font-2xl);
+  font-weight: var(--rma-weight-extrabold);
+
+  letter-spacing: -0.3px;
+}
+
+.appearance_header p {
+  margin: 0;
+
+  color: var(--rma-text-secondary);
+
+  font-size: var(--rma-font-sm);
+  line-height: 1.6;
+}
+
+/* =========================================
+   SECTION
+   ========================================= */
+
+.appearance_section {
+  width: 100%;
+  max-width: 560px;
+
+  margin: 0 auto;
+}
+
+.appearance_section h2 {
+  margin: 0 0 var(--rma-space-3);
+
+  color: var(--rma-text);
+
+  font-size: var(--rma-font-sm);
+  font-weight: var(--rma-weight-bold);
+}
+
+/* =========================================
+   OPTIONS
+   ========================================= */
+
+.appearance_options {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--rma-space-3);
+}
+
+.appearance_option {
+  width: 100%;
+
+  min-height: 72px;
+
+  padding: var(--rma-space-4);
+
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--rma-space-4);
+
+  border: 1px solid var(--rma-border);
+  border-radius: var(--rma-radius-md);
+
+  background: var(--rma-card);
+
+  color: var(--rma-text);
+
+  font-family: inherit;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background var(--rma-transition-fast),
+    border-color var(--rma-transition-fast),
+    box-shadow var(--rma-transition-fast),
+    transform var(--rma-transition-fast);
+}
+
+.appearance_option:hover {
+  background: var(--rma-card-hover);
+  border-color: var(--rma-border-dark);
+}
+
+.appearance_option:active {
+  transform: scale(0.99);
+}
+
+.appearance_option:focus-visible {
+  outline: 3px solid var(--rma-primary-light);
+  outline-offset: 2px;
+}
+
+/* =========================================
+   ACTIVE OPTION
+   ========================================= */
+
+.appearance_option_active {
+  border-color: var(--rma-primary);
+
+  background: var(--rma-primary-soft);
+
+  box-shadow: 0 0 0 1px var(--rma-primary);
+}
+
+.appearance_option_active:hover {
+  border-color: var(--rma-primary);
+
+  background: var(--rma-primary-soft);
+}
+
+/* =========================================
+   LEFT CONTENT
+   ========================================= */
+
+.appearance_option_left {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: var(--rma-space-3);
+}
+
+.appearance_option_icon {
+  width: 40px;
+  height: 40px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: var(--rma-radius-md);
+
+  background: var(--rma-primary-light);
+
+  color: var(--rma-primary);
+}
+
+.appearance_option_content {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.appearance_option_content strong {
+  color: var(--rma-text);
+
+  font-size: var(--rma-font-md);
+  font-weight: var(--rma-weight-semibold);
+}
+
+.appearance_option_content span {
+  color: var(--rma-text-secondary);
+
+  font-size: var(--rma-font-xs);
+  line-height: 1.4;
+}
+
+/* =========================================
+   CHECK
+   ========================================= */
+
+.appearance_option_check {
+  width: 24px;
+  height: 24px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 2px solid var(--rma-border-dark);
+
+  border-radius: var(--rma-radius-full);
+
+  color: var(--rma-text-white);
+
+  background: transparent;
+}
+
+.appearance_option_active .appearance_option_check {
+  border-color: var(--rma-primary);
+
+  background: var(--rma-primary);
+}
+
+/* =========================================
+   TABLET
+   ========================================= */
+
+@media (min-width: 768px) {
+  .appearance {
+    padding: var(--rma-space-10) var(--rma-tablet-padding) 100px;
+  }
+
+  .appearance_header h1 {
+    font-size: var(--rma-font-3xl);
+  }
+}
+
+/* =========================================
+   DESKTOP
+   ========================================= */
+
+@media (min-width: 1100px) {
+  .appearance {
+    padding: var(--rma-space-12) var(--rma-desktop-padding) 100px;
+  }
+}
+
+/* =========================================
+   SMALL MOBILE
+   ========================================= */
+
+@media (max-width: 380px) {
+  .appearance {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .appearance_option {
+    min-height: 68px;
+
+    padding: var(--rma-space-3);
+  }
+
+  .appearance_option_icon {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* =========================================
+   REDUCED MOTION
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .appearance,
+  .appearance_option {
+    transition: none;
+  }
+}
+
+/* =========================================================
+   DARK MODE — APPEARANCE PAGE
+   Append only — do not modify light mode above
+   ========================================================= */
+
+/* =========================================
+   PAGE
+========================================= */
+
+[data-theme='dark'] .appearance {
+  background: var(--rma-bg);
+}
+
+/* =========================================
+   HEADER
+========================================= */
+
+[data-theme='dark'] .appearance_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .appearance_header p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================
+   SECTION
+========================================= */
+
+[data-theme='dark'] .appearance_section h2 {
+  color: var(--rma-text);
+}
+
+/* =========================================
+   OPTIONS
+========================================= */
+
+[data-theme='dark'] .appearance_option {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .appearance_option:hover {
+  background: var(--rma-card-hover);
+  border-color: var(--rma-border-dark);
+}
+
+/* =========================================
+   ACTIVE OPTION
+========================================= */
+
+[data-theme='dark'] .appearance_option_active {
+  border-color: var(--rma-primary);
+
+  background: rgba(22, 128, 58, 0.12);
+
+  box-shadow: 0 0 0 1px var(--rma-primary);
+}
+
+[data-theme='dark'] .appearance_option_active:hover {
+  border-color: var(--rma-primary);
+  background: rgba(22, 128, 58, 0.12);
+}
+
+/* =========================================
+   OPTION ICON
+========================================= */
+
+[data-theme='dark'] .appearance_option_icon {
+  background: rgba(22, 128, 58, 0.12);
+  color: var(--rma-primary-light);
+}
+
+/* =========================================
+   OPTION CONTENT
+========================================= */
+
+[data-theme='dark'] .appearance_option_content strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .appearance_option_content span {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================
+   CHECK
+========================================= */
+
+[data-theme='dark'] .appearance_option_check {
+  border-color: var(--rma-border-dark);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .appearance_option_active .appearance_option_check {
+  border-color: var(--rma-primary);
+  background: var(--rma-primary);
+}
+
+/* =========================================
+   FOCUS
+========================================= */
+
+[data-theme='dark'] .appearance_option:focus-visible {
+  outline-color: var(--rma-primary-light);
+}

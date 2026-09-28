@@ -9,7 +9,25 @@ import OrderCard from './components/OrderCard';
 import OrdersHeader from './components/OrdersHeader';
 import OrderSheet from './components/OrderSheet';
 
-import { fetchCustomerOrders } from './utils/ordersApi';
+import FlashMessage from '../../components/FlashMessage/FlashMessage';
+
+import { fetchCustomerOrders, deleteCustomerOrders } from './utils/ordersApi';
+
+const canDeleteOrder = (order) => {
+  if (!order) {
+    return false;
+  }
+
+  if (order.status === 'Completed') {
+    return true;
+  }
+
+  if (order.status === 'Rejected' && order.refundStatus === 'Completed') {
+    return true;
+  }
+
+  return false;
+};
 
 function Orders() {
   const navigate = useNavigate();
@@ -21,6 +39,21 @@ function Orders() {
 
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showOrderSheet, setShowOrderSheet] = useState(false);
+
+  const [flashMessage, setFlashMessage] = useState('');
+
+  // ==============================
+  // SELECTION STATE
+  // ==============================
+
+  const [selectionMode, setSelectionMode] = useState(false);
+  const [selectedOrders, setSelectedOrders] = useState([]);
+
+  const [deleting, setDeleting] = useState(false);
+
+  // ==============================
+  // LOAD ORDERS
+  // ==============================
 
   useEffect(() => {
     const loadOrders = async () => {
@@ -60,10 +93,126 @@ function Orders() {
     loadOrders();
   }, [getGuestOrders]);
 
+  // ==============================
+  // ORDER CARD CLICK
+  // ==============================
+
   const handleOrderClick = (order) => {
+    // Selection mode → select/unselect order
+    if (selectionMode) {
+      if (!canDeleteOrder(order)) {
+        if (order.status === 'Rejected') {
+          window.alert(
+            'This rejected order can be deleted only after the refund is completed.',
+          );
+        } else {
+          window.alert('This order cannot be deleted until it is completed.');
+        }
+
+        return;
+      }
+
+      setSelectedOrders((currentSelected) => {
+        if (currentSelected.includes(order.orderId)) {
+          return currentSelected.filter((orderId) => orderId !== order.orderId);
+        }
+
+        return [...currentSelected, order.orderId];
+      });
+
+      return;
+    }
+
+    // Normal mode → open order sheet
     setSelectedOrder(order);
     setShowOrderSheet(true);
   };
+
+  // ==============================
+  // SELECT MODE
+  // ==============================
+
+  const handleSelect = () => {
+    setSelectionMode(true);
+    setSelectedOrders([]);
+    setShowOrderSheet(false);
+  };
+
+  const handleCancelSelection = () => {
+    setSelectionMode(false);
+    setSelectedOrders([]);
+  };
+
+  // ==============================
+  // SELECT ALL
+  // ==============================
+
+  const handleSelectAll = () => {
+    const deletableOrders = orders.filter(canDeleteOrder);
+
+    if (deletableOrders.length === 0) {
+      window.alert(
+        'No completed or refunded rejected orders are available to delete.',
+      );
+
+      return;
+    }
+
+    if (selectedOrders.length === deletableOrders.length) {
+      setSelectedOrders([]);
+      return;
+    }
+
+    setSelectedOrders(deletableOrders.map((order) => order.orderId));
+  };
+
+  // ==============================
+  // DELETE SELECTED ORDERS
+  // ==============================
+
+  const handleDeleteSelected = async () => {
+    if (selectedOrders.length === 0 || deleting) {
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `Delete ${selectedOrders.length} ${
+        selectedOrders.length === 1 ? 'order' : 'orders'
+      }?`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setDeleting(true);
+
+      const result = await deleteCustomerOrders(selectedOrders);
+
+      console.log('[Orders] Deleted orders:', result);
+
+      // Remove deleted orders immediately from UI
+      setOrders((currentOrders) =>
+        currentOrders.filter(
+          (order) => !selectedOrders.includes(order.orderId),
+        ),
+      );
+
+      setSelectedOrders([]);
+      setSelectionMode(false);
+    } catch (error) {
+      console.error('[Orders] DELETE FAILED:', error);
+
+      window.alert(error.message || 'Failed to delete orders');
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  // ==============================
+  // ORDER SHEET
+  // ==============================
 
   const closeOrderSheet = () => {
     setShowOrderSheet(false);
@@ -79,16 +228,35 @@ function Orders() {
     navigate(`/delivery-status/${selectedOrder.orderId}`);
   };
 
+  // ==============================
+  // EMPTY STATE
+  // ==============================
+
   if (loading || orders.length === 0) {
     return (
       <OrdersEmpty loading={loading} onStartOrdering={() => navigate('/')} />
     );
   }
 
+  const deletableOrdersCount = orders.filter(canDeleteOrder).length;
+
+  // ==============================
+  // PAGE
+  // ==============================
+
   return (
     <>
       <main className="orders">
-        <OrdersHeader />
+        <OrdersHeader
+          selectionMode={selectionMode}
+          selectedCount={selectedOrders.length}
+          totalOrders={deletableOrdersCount}
+          deleting={deleting}
+          onSelect={handleSelect}
+          onCancelSelection={handleCancelSelection}
+          onSelectAll={handleSelectAll}
+          onDeleteSelected={handleDeleteSelected}
+        />
 
         <div className="orders_list">
           {orders.map((order) => (
@@ -96,6 +264,9 @@ function Orders() {
               key={order.orderId}
               order={order}
               onOrderClick={handleOrderClick}
+              selectionMode={selectionMode}
+              selected={selectedOrders.includes(order.orderId)}
+              canDelete={canDeleteOrder(order)}
             />
           ))}
         </div>

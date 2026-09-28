@@ -150,3 +150,83 @@
   --rma-z-modal: 1000;
   --rma-z-toast: 1100;
 }
+
+/* ========================================
+   RMA — DARK THEME
+======================================== */
+
+[data-theme='dark'] {
+  /* ========================================
+     RMA BRAND COLORS
+  ======================================== */
+
+  --rma-primary: #22a653;
+
+  --rma-primary-dark: #16803a;
+
+  --rma-primary-light: #183c25;
+
+  --rma-primary-soft: #142b1c;
+
+  --rma-accent: #f59e0b;
+
+  --rma-accent-dark: #d97706;
+
+  --rma-accent-light: #3a2b0f;
+
+  /* ========================================
+     BACKGROUNDS
+  ======================================== */
+
+  --rma-bg: #101512;
+
+  --rma-bg-secondary: #171d19;
+
+  --rma-card: #1b231e;
+
+  --rma-card-hover: #222c25;
+
+  /* ========================================
+     TEXT
+  ======================================== */
+
+  --rma-text: #f1f5f2;
+
+  --rma-text-primary: #e8eee9;
+
+  --rma-text-secondary: #a8b3aa;
+
+  --rma-text-muted: #7f8a82;
+
+  --rma-text-white: #ffffff;
+
+  /* ========================================
+     BORDERS
+  ======================================== */
+
+  --rma-border: #303a33;
+
+  --rma-border-light: #252e28;
+
+  --rma-border-dark: #465248;
+
+  /* ========================================
+     STATUS COLORS
+  ======================================== */
+
+  --rma-success: #22c55e;
+
+  --rma-success-light: #163821;
+
+  --rma-warning: #f59e0b;
+
+  --rma-warning-light: #3a2d10;
+
+  --rma-danger: #ef4444;
+
+  --rma-danger-light: #3a1d20;
+
+  --rma-info: #3b82f6;
+
+  --rma-info-light: #182d4a;
+}

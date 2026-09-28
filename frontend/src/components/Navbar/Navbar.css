@@ -568,3 +568,128 @@ body.rma_navbar_offset {
     font-size: 12px;
   }
 }
+
+/* =========================================================
+   DARK MODE — RMA NAVBAR + APP MODAL
+========================================================= */
+
+[data-theme='dark'] .rma_navbar_brand_name {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .rma_navbar_brand_tagline {
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .rma_navbar_app_button {
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .rma_navbar_app_text {
+  background: rgba(15, 20, 17, 0.92);
+  color: var(--rma-text-white);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.24);
+}
+
+[data-theme='dark'] .rma_navbar_profile {
+  border-color: rgba(255, 255, 255, 0.65);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .rma_navbar_profile:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* =========================================================
+   INNER PAGE NAVBAR
+========================================================= */
+
+[data-theme='dark'] .rma_navbar_inner_page .rma_navbar_brand_tagline {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .rma_navbar_inner_page .rma_navbar_profile {
+  border-color: var(--rma-text-secondary);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .rma_navbar_inner_page .rma_navbar_profile:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme='dark'] .rma_navbar_inner_page .rma_navbar_app_button {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   APP MODAL
+========================================================= */
+
+[data-theme='dark'] .rma_app_modal_overlay {
+  background: rgba(0, 0, 0, 0.68);
+}
+
+[data-theme='dark'] .rma_app_modal {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  box-shadow:
+    0 25px 70px rgba(0, 0, 0, 0.45),
+    0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='dark'] .rma_app_modal_close {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .rma_app_modal_close:hover {
+  background: var(--rma-card-hover);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .rma_app_modal_icon {
+  background: rgba(22, 128, 58, 0.12);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .rma_app_modal h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .rma_app_modal p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .rma_app_modal_message {
+  color: var(--rma-text) !important;
+}
+
+[data-theme='dark'] .rma_app_modal_note span:first-child {
+  background: rgba(22, 128, 58, 0.12);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .rma_app_modal_note span:last-child {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .rma_app_modal_button {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .rma_app_modal_button:hover {
+  background: var(--rma-primary-dark);
+  opacity: 1;
+}
+
+/* =========================================================
+   FOCUS
+========================================================= */
+
+[data-theme='dark'] .rma_navbar_profile:focus-visible,
+[data-theme='dark'] .rma_navbar_app_button:focus-visible,
+[data-theme='dark'] .rma_app_modal_close:focus-visible,
+[data-theme='dark'] .rma_app_modal_button:focus-visible {
+  outline: 3px solid rgba(22, 128, 58, 0.35);
+  outline-offset: 2px;
+}

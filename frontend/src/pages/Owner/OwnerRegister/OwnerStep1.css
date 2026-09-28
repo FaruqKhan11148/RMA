@@ -572,3 +572,177 @@
     transform: none;
   }
 }
+
+/* ==========================================
+   DARK MODE
+   ========================================== */
+
+[data-theme='dark'] .owner_step {
+  background: radial-gradient(
+    circle at 50% 0%,
+    var(--rma-primary-soft) 0,
+    var(--rma-bg) 34%,
+    var(--rma-bg) 100%
+  );
+}
+
+/* ==========================================
+   MAIN CARD
+   ========================================== */
+
+[data-theme='dark'] .owner_step_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  box-shadow: var(--rma-shadow-lg);
+}
+
+/* ==========================================
+   HEADER
+   ========================================== */
+
+[data-theme='dark'] .owner_logo {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+
+  box-shadow: 0 8px 20px rgba(22, 128, 58, 0.28);
+}
+
+[data-theme='dark'] .step_number {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .owner_step_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .owner_step_header > p:last-child {
+  color: var(--rma-text-secondary);
+}
+
+/* ==========================================
+   REGISTRATION PROGRESS
+   ========================================== */
+
+[data-theme='dark'] .registration_progress {
+  background: var(--rma-primary-soft);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .progress_item span {
+  background: var(--rma-card);
+  border-color: var(--rma-border-dark);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .progress_item p {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .progress_item.active span {
+  background: var(--rma-primary);
+  border-color: var(--rma-primary);
+  color: var(--rma-text-white);
+
+  box-shadow: 0 4px 10px rgba(22, 128, 58, 0.28);
+}
+
+[data-theme='dark'] .progress_item.active p {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .progress_line {
+  background: var(--rma-border);
+}
+
+/* ==========================================
+   FORM SECTION
+   ========================================== */
+
+[data-theme='dark'] .register_section {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .register_section h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .register_section label {
+  color: var(--rma-text);
+}
+
+/* ==========================================
+   INPUT
+   ========================================== */
+
+[data-theme='dark'] .register_section input {
+  background: var(--rma-card);
+  border-color: var(--rma-border-dark);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .register_section input::placeholder {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .register_section input:hover {
+  border-color: #5d6a61;
+}
+
+[data-theme='dark'] .register_section input:focus {
+  background: var(--rma-card);
+  border-color: var(--rma-primary);
+
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.18);
+}
+
+/* ==========================================
+   ERROR
+   ========================================== */
+
+[data-theme='dark'] .owner_step_error {
+  border-color: #713b3b;
+  background: rgba(185, 28, 28, 0.16);
+  color: #ff9b94;
+}
+
+/* ==========================================
+   CONTINUE BUTTON
+   ========================================== */
+
+[data-theme='dark'] .owner_step_button {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+
+  box-shadow: 0 6px 16px rgba(22, 128, 58, 0.28);
+}
+
+[data-theme='dark'] .owner_step_button:hover {
+  background: var(--rma-primary-dark);
+
+  box-shadow: 0 8px 20px rgba(22, 128, 58, 0.34);
+}
+
+[data-theme='dark'] .owner_step_button:focus-visible {
+  outline-color: rgba(22, 128, 58, 0.35);
+}
+
+/* ==========================================
+   FOOTER
+   ========================================== */
+
+[data-theme='dark'] .owner_step_footer {
+  border-top-color: var(--rma-border);
+}
+
+[data-theme='dark'] .owner_step_footer p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .owner_step_footer button {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .owner_step_footer button:hover {
+  color: var(--rma-primary);
+}

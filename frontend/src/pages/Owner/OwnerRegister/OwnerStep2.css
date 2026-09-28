@@ -785,3 +785,249 @@
     transform: none;
   }
 }
+
+/* ==========================================
+   DARK MODE
+   ========================================== */
+
+[data-theme='dark'] .owner_step {
+  background: radial-gradient(
+    circle at 50% 0%,
+    var(--rma-primary-soft) 0,
+    var(--rma-bg) 34%,
+    var(--rma-bg) 100%
+  );
+}
+
+/* ==========================================
+   MAIN CARD
+   ========================================== */
+
+[data-theme='dark'] .owner_step_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  box-shadow: var(--rma-shadow-lg);
+}
+
+/* ==========================================
+   HEADER
+   ========================================== */
+
+[data-theme='dark'] .owner_logo {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+
+  box-shadow: 0 8px 20px rgba(22, 128, 58, 0.28);
+}
+
+[data-theme='dark'] .step_number {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .owner_step_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .owner_step_header > p:last-child {
+  color: var(--rma-text-secondary);
+}
+
+/* ==========================================
+   REGISTRATION PROGRESS
+   ========================================== */
+
+[data-theme='dark'] .registration_progress {
+  background: var(--rma-primary-soft);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .progress_item span {
+  background: var(--rma-card);
+  border-color: var(--rma-border-dark);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .progress_item p {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .progress_item.completed span,
+[data-theme='dark'] .progress_item.active span {
+  background: var(--rma-primary);
+  border-color: var(--rma-primary);
+  color: var(--rma-text-white);
+
+  box-shadow: 0 4px 10px rgba(22, 128, 58, 0.28);
+}
+
+[data-theme='dark'] .progress_item.completed p,
+[data-theme='dark'] .progress_item.active p {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .progress_line {
+  background: var(--rma-border);
+}
+
+[data-theme='dark'] .progress_line.active {
+  background: var(--rma-primary);
+}
+
+/* ==========================================
+   FORM SECTIONS
+   ========================================== */
+
+[data-theme='dark'] .register_section {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .register_section h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .section_description {
+  color: var(--rma-text-secondary);
+}
+
+/* ==========================================
+   FORM LABELS
+   ========================================== */
+
+[data-theme='dark'] .register_section label:not(.checkbox_label) {
+  color: var(--rma-text);
+}
+
+/* ==========================================
+   INPUTS + TEXTAREA
+   ========================================== */
+
+[data-theme='dark'] .register_section input[type='text'],
+[data-theme='dark'] .register_section input[type='email'],
+[data-theme='dark'] .register_section input[type='tel'],
+[data-theme='dark'] .register_section input[type='number'],
+[data-theme='dark'] .register_section input[type='password'],
+[data-theme='dark'] .register_section textarea {
+  background: var(--rma-card);
+  border-color: var(--rma-border-dark);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .register_section input::placeholder,
+[data-theme='dark'] .register_section textarea::placeholder {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .register_section input:hover,
+[data-theme='dark'] .register_section textarea:hover {
+  border-color: #5d6a61;
+}
+
+[data-theme='dark'] .register_section input:focus,
+[data-theme='dark'] .register_section textarea:focus {
+  background: var(--rma-card);
+  border-color: var(--rma-primary);
+
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.18);
+}
+
+/* ==========================================
+   ORDER OPTIONS
+   ========================================== */
+
+[data-theme='dark'] .checkbox_label {
+  background: var(--rma-bg);
+  border-color: var(--rma-border);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .checkbox_label:hover {
+  background: var(--rma-primary-soft);
+  border-color: var(--rma-primary);
+}
+
+[data-theme='dark'] .checkbox_label:has(input:checked) {
+  background: var(--rma-primary-soft);
+  border-color: var(--rma-primary);
+
+  box-shadow: 0 2px 8px rgba(22, 128, 58, 0.16);
+}
+
+/* ==========================================
+   CHECKBOX
+   ========================================== */
+
+[data-theme='dark'] .checkbox_label input[type='checkbox'] {
+  accent-color: var(--rma-primary);
+}
+
+/* ==========================================
+   ERROR
+   ========================================== */
+
+[data-theme='dark'] .owner_step_error {
+  background: rgba(185, 28, 28, 0.16);
+  border-color: #713b3b;
+  color: #ff9b94;
+}
+
+/* ==========================================
+   ACTIONS
+   ========================================== */
+
+[data-theme='dark'] .owner_step_back_button,
+[data-theme='dark'] .owner_step_button {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .owner_step_back_button {
+  background: var(--rma-card);
+  border-color: var(--rma-border-dark);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .owner_step_back_button:hover {
+  background: var(--rma-bg-secondary);
+  border-color: var(--rma-border-dark);
+}
+
+[data-theme='dark'] .owner_step_button {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+
+  box-shadow: 0 6px 16px rgba(22, 128, 58, 0.28);
+}
+
+[data-theme='dark'] .owner_step_button:hover {
+  background: var(--rma-primary-dark);
+
+  box-shadow: 0 8px 20px rgba(22, 128, 58, 0.34);
+}
+
+/* ==========================================
+   FOOTER
+   ========================================== */
+
+[data-theme='dark'] .owner_step_footer {
+  border-top-color: var(--rma-border);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .owner_step_footer button {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .owner_step_footer button:hover {
+  color: var(--rma-primary);
+}
+
+/* ==========================================
+   FOCUS ACCESSIBILITY
+   ========================================== */
+
+[data-theme='dark'] .owner_step_back_button:focus-visible,
+[data-theme='dark'] .owner_step_button:focus-visible,
+[data-theme='dark'] .owner_step_footer button:focus-visible,
+[data-theme='dark'] .checkbox_label:has(input:focus-visible) {
+  outline-color: rgba(22, 128, 58, 0.35);
+}

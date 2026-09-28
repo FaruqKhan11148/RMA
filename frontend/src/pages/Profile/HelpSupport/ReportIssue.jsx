@@ -46,7 +46,12 @@ function ReportIssue() {
 
       console.log('Issue submitted:', data);
 
-      navigate('/profile/help-support');
+      navigate('/profile/help-support', {
+        state: {
+          flashMessage:
+            'Sorry for the trouble. Your issue has been reported successfully. We will look into it and help you as soon as possible.',
+        },
+      });
     } catch (error) {
       console.error('Submit issue failed:', error);
       setError(error.message || 'Unable to submit report');

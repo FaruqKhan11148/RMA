@@ -77,11 +77,11 @@ function Offers() {
 
   const getProgressMessage = () => {
     if (completedOrders >= targetOrders) {
-      return 'Reward unlocked! ₹199 is yours.';
+      return 'Reward unlocked! ₹150 is yours.';
     }
 
     if (remainingOrders === 1) {
-      return 'ONE MORE ORDER! Complete it to unlock ₹199.';
+      return 'ONE MORE ORDER! Complete it to unlock ₹150.';
     }
 
     if (remainingOrders <= 5) {

@@ -239,3 +239,44 @@
     margin-bottom: 80px;
   }
 }
+
+/* =========================================================
+   RMA SITE FOOTER — DARK MODE
+   ========================================================= */
+
+[data-theme='dark'] .site_footer {
+  background: #151a17;
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .footer_column h3 {
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .footer_column button {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .footer_column button:hover {
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .footer_logo {
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .footer_description {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .site_footer_bottom {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .site_footer_bottom p {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .production_name {
+  color: var(--rma-text-secondary);
+}

@@ -8,42 +8,42 @@
   background: var(--rma-bg);
 }
 
-  /* ========================================
+/* ========================================
     HEADER
   ======================================== */
 
-  .checkout_header {
-    margin-bottom: var(--rma-space-5);
-  }
+.checkout_header {
+  margin-bottom: var(--rma-space-5);
+}
 
-  .checkout_header_content {
-    max-width: 700px;
-  }
+.checkout_header_content {
+  max-width: 700px;
+}
 
-  .checkout_eyebrow {
-    display: block;
-    margin-bottom: 7px;
-    color: var(--rma-primary);
-    font-size: var(--rma-font-xs);
-    font-weight: var(--rma-weight-bold);
-    letter-spacing: 1px;
-  }
+.checkout_eyebrow {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--rma-primary);
+  font-size: var(--rma-font-xs);
+  font-weight: var(--rma-weight-bold);
+  letter-spacing: 1px;
+}
 
-  .checkout_header h1 {
-    margin: 0 0 8px;
-    color: var(--rma-text);
-    font-size: var(--rma-font-3xl);
-    font-weight: var(--rma-weight-extrabold);
-    letter-spacing: -0.7px;
-    line-height: 1.15;
-  }
+.checkout_header h1 {
+  margin: 0 0 8px;
+  color: var(--rma-text);
+  font-size: var(--rma-font-3xl);
+  font-weight: var(--rma-weight-extrabold);
+  letter-spacing: -0.7px;
+  line-height: 1.15;
+}
 
-  .checkout_header p {
-    margin: 0;
-    color: var(--rma-text-secondary);
-    font-size: var(--rma-font-sm);
-    line-height: 1.5;
-  }
+.checkout_header p {
+  margin: 0;
+  color: var(--rma-text-secondary);
+  font-size: var(--rma-font-sm);
+  line-height: 1.5;
+}
 
 /* ========================================
    SHOP CARD
@@ -1451,7 +1451,7 @@
 
   overflow-y: auto;
 
-  background: var(--rma-background);
+  background: var(--rma-card);
   border-radius: var(--rma-radius-lg);
   box-shadow: var(--rma-shadow-lg);
 }
@@ -1565,4 +1565,556 @@
   .location_sheet_map_mode .map {
     height: 300px;
   }
+}
+
+/* =========================================================
+   DARK MODE — CHECKOUT
+   ========================================================= */
+
+/* =========================================================
+   CHECKOUT PAGE
+   ========================================================= */
+
+[data-theme='dark'] .checkout {
+  background: var(--rma-bg);
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+[data-theme='dark'] .checkout_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .checkout_header p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .checkout_eyebrow {
+  color: var(--rma-primary);
+}
+
+/* =========================================================
+   SHOP CARD
+   ========================================================= */
+
+[data-theme='dark'] .checkout_shop_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  box-shadow: var(--rma-shadow-sm);
+}
+
+[data-theme='dark'] .checkout_shop_icon {
+  background: var(--rma-primary-light);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .checkout_shop_info span {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .checkout_shop_info h2 {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   CHECKOUT CARDS
+   ========================================================= */
+
+[data-theme='dark'] .checkout_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  box-shadow: var(--rma-shadow-sm);
+}
+
+[data-theme='dark'] .checkout_card_header h2,
+[data-theme='dark'] .checkout_payment_header h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .checkout_card_header p,
+[data-theme='dark'] .checkout_payment_header p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .checkout_step {
+  background: var(--rma-primary-light);
+  color: var(--rma-primary);
+}
+
+/* =========================================================
+   ORDER TYPE
+   ========================================================= */
+
+[data-theme='dark'] .order_type_option {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .order_type_option:hover {
+  border-color: var(--rma-primary);
+}
+
+[data-theme='dark'] .order_type_option.selected {
+  background: var(--rma-primary-light);
+  border-color: var(--rma-primary);
+
+  box-shadow: inset 0 0 0 1px var(--rma-primary);
+}
+
+[data-theme='dark'] .order_type_icon {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .order_type_option.selected .order_type_icon {
+  background: var(--rma-card);
+}
+
+[data-theme='dark'] .order_type_content strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .order_type_content span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .order_type_content small {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .order_type_check {
+  background: var(--rma-card);
+  border-color: var(--rma-border-dark);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .order_type_option.selected .order_type_check {
+  background: var(--rma-primary);
+  border-color: var(--rma-primary);
+}
+
+/* =========================================================
+   MAP / LOCATION
+   ========================================================= */
+
+[data-theme='dark'] .checkout_map {
+  background: var(--rma-bg-secondary);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .location_selected {
+  background: var(--rma-primary-light);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .location_selected .location_selected_icon {
+  background: var(--rma-primary);
+  color: #ffffff;
+}
+
+[data-theme='dark'] .location_selected strong {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .location_selected span {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   CUSTOMER FORM
+   ========================================================= */
+
+[data-theme='dark'] .checkout_form_group label {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .checkout_form_group input,
+[data-theme='dark'] .checkout_form_group textarea {
+  background: var(--rma-card);
+  border-color: var(--rma-border-dark);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .checkout_form_group input::placeholder,
+[data-theme='dark'] .checkout_form_group textarea::placeholder {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .checkout_form_group input:hover,
+[data-theme='dark'] .checkout_form_group textarea:hover {
+  border-color: var(--rma-border-dark);
+}
+
+[data-theme='dark'] .checkout_form_group input:focus,
+[data-theme='dark'] .checkout_form_group textarea:focus {
+  border-color: var(--rma-primary);
+
+  box-shadow: 0 0 0 3px rgba(34, 166, 83, 0.16);
+}
+
+/* =========================================================
+   PAYMENT
+   ========================================================= */
+
+[data-theme='dark'] .checkout_payment {
+  border-top-color: var(--rma-border);
+}
+
+[data-theme='dark'] .payment_option {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .payment_option:hover {
+  border-color: var(--rma-primary);
+}
+
+[data-theme='dark'] .payment_option.selected {
+  background: var(--rma-primary-light);
+  border-color: var(--rma-primary);
+
+  box-shadow: inset 0 0 0 1px var(--rma-primary);
+}
+
+[data-theme='dark'] .payment_option_icon {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .payment_option.selected .payment_option_icon {
+  background: var(--rma-card);
+}
+
+[data-theme='dark'] .payment_option_content strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .payment_option_content span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .payment_check {
+  background: var(--rma-card);
+  border-color: var(--rma-border-dark);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .payment_option.selected .payment_check {
+  background: var(--rma-primary);
+  border-color: var(--rma-primary);
+}
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+[data-theme='dark'] .checkout_error {
+  background: var(--rma-danger-light);
+  border-color: #653034;
+  color: #f28b8b;
+}
+
+[data-theme='dark'] .checkout_error > span {
+  background: #b91c1c;
+  color: #ffffff;
+}
+
+/* =========================================================
+   PLACE ORDER
+   ========================================================= */
+
+[data-theme='dark'] .place_order_button {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .place_order_button:hover:not(:disabled) {
+  background: var(--rma-primary-dark);
+  box-shadow: var(--rma-shadow-lg);
+}
+
+/* =========================================================
+   SUMMARY CARD
+   ========================================================= */
+
+[data-theme='dark'] .checkout_summary_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  box-shadow: var(--rma-shadow-md);
+}
+
+[data-theme='dark'] .checkout_summary_header > div > span {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .checkout_summary_header h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .checkout_summary_count {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   SUMMARY SHOP
+   ========================================================= */
+
+[data-theme='dark'] .checkout_summary_shop {
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .checkout_summary_shop_icon {
+  background: var(--rma-primary-light);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .checkout_summary_shop span {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .checkout_summary_shop strong {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   SUMMARY ITEMS
+   ========================================================= */
+
+[data-theme='dark'] .summary_item_info strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .summary_item_info span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .summary_item_price {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   SUMMARY TOTALS
+   ========================================================= */
+
+[data-theme='dark'] .checkout_summary_divider {
+  background: var(--rma-border);
+}
+
+[data-theme='dark'] .summary_row {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .summary_row strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .summary_total span {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .summary_total strong {
+  color: #4ade80;
+}
+
+/* =========================================================
+   DELIVERY / PAYU SUMMARY TEXT
+   ========================================================= */
+
+[data-theme='dark'] .summary_delivery_label small,
+[data-theme='dark'] .summary_payu_label small {
+  color: var(--rma-text-muted);
+}
+
+/* =========================================================
+   SECURE NOTE
+   ========================================================= */
+
+[data-theme='dark'] .checkout_secure_note {
+  background: var(--rma-bg-secondary);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .checkout_secure_note > span {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .checkout_secure_note p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   EMPTY CHECKOUT
+   ========================================================= */
+
+[data-theme='dark'] .checkout_empty {
+  background: var(--rma-bg);
+}
+
+[data-theme='dark'] .checkout_empty_icon {
+  background: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .checkout_empty h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .checkout_empty p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .checkout_empty button {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .checkout_empty button:hover {
+  background: var(--rma-primary-dark);
+}
+
+/* =========================================================
+   CHOOSE LOCATION BUTTON
+   ========================================================= */
+
+[data-theme='dark'] .checkout_choose_location_button {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .checkout_choose_location_button:hover {
+  border-color: var(--rma-border-dark);
+}
+
+[data-theme='dark'] .checkout_choose_location_icon {
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .checkout_choose_location_content strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .checkout_choose_location_content span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .checkout_choose_location_arrow {
+  color: var(--rma-text-muted);
+}
+
+/* =========================================================
+   LOCATION SHEET
+   ========================================================= */
+
+[data-theme='dark'] .location_sheet_overlay {
+  background: rgba(0, 0, 0, 0.62);
+}
+
+[data-theme='dark'] .location_sheet {
+  background: var(--rma-card);
+}
+
+[data-theme='dark'] .location_sheet_handle {
+  background: var(--rma-border-dark);
+}
+
+[data-theme='dark'] .location_sheet_header h3 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .location_sheet_close {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .location_sheet_current,
+[data-theme='dark'] .location_sheet_add {
+  border-bottom-color: var(--rma-border);
+}
+
+[data-theme='dark'] .location_sheet_option_icon {
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .location_sheet_current strong,
+[data-theme='dark'] .location_sheet_add strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .location_sheet_current span,
+[data-theme='dark'] .location_sheet_add span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .location_sheet_arrow {
+  color: var(--rma-text-muted);
+}
+
+/* =========================================================
+   SAVED LOCATIONS
+   ========================================================= */
+
+[data-theme='dark'] .location_sheet_saved h4 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .location_sheet_saved_item {
+  border-bottom-color: var(--rma-border);
+}
+
+[data-theme='dark'] .location_sheet_saved_icon {
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .location_sheet_saved_content strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .location_sheet_saved_content span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .location_sheet_empty {
+  color: var(--rma-text-muted);
+}
+
+/* =========================================================
+   MAP PICKER
+   ========================================================= */
+
+[data-theme='dark'] .map_picker_overlay {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+[data-theme='dark'] .map_picker_modal {
+  background: var(--rma-card);
+}
+
+[data-theme='dark'] .map_picker_close {
+  background: rgba(0, 0, 0, 0.72);
+  color: #ffffff;
+}
+
+[data-theme='dark'] .map_picker_close:hover {
+  background: rgba(0, 0, 0, 0.88);
+}
+
+/* =========================================================
+   LOCATION SHEET MAP MODE
+   ========================================================= */
+
+[data-theme='dark'] .location_sheet_map_mode {
+  background: var(--rma-card);
+}
+
+[data-theme='dark'] .location_sheet_map_mode .map_picker {
+  background: transparent;
+}
+
+[data-theme='dark'] .location_sheet_back {
+  color: var(--rma-text);
 }

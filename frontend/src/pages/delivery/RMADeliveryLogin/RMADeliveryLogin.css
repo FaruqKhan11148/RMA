@@ -411,3 +411,175 @@
   letter-spacing: 5px;
   color: #16803a;
 }
+
+/* =========================================
+   DARK MODE — RMA DELIVERY LOGIN
+========================================= */
+
+[data-theme='dark'] .rma_delivery_login {
+  background: var(--rma-bg);
+}
+
+/* =========================================
+   LOGIN CARD
+========================================= */
+
+[data-theme='dark'] .rma_delivery_login_card {
+  background: var(--rma-card);
+
+  box-shadow: var(--rma-shadow-lg);
+}
+
+/* =========================================
+   BACK BUTTON
+========================================= */
+
+[data-theme='dark'] .rma_delivery_back {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .rma_delivery_back:hover {
+  color: #72d38f;
+}
+
+/* =========================================
+   HEADER
+========================================= */
+
+[data-theme='dark'] .rma_delivery_login_header {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .rma_delivery_icon {
+  background: var(--rma-primary-light);
+  color: var(--rma-primary);
+
+  box-shadow: inset 0 0 0 1px rgba(34, 166, 83, 0.16);
+}
+
+[data-theme='dark'] .rma_delivery_login_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .rma_delivery_login_header p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================
+   LABEL
+========================================= */
+
+[data-theme='dark'] .rma_delivery_login_card > label {
+  color: var(--rma-text-primary);
+}
+
+/* =========================================
+   INPUT
+========================================= */
+
+[data-theme='dark'] .rma_delivery_login_card input {
+  background: var(--rma-card);
+  border-color: var(--rma-border-dark);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .rma_delivery_login_card input::placeholder {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .rma_delivery_login_card input:focus {
+  border-color: var(--rma-primary);
+
+  box-shadow: 0 0 0 3px rgba(34, 166, 83, 0.16);
+}
+
+[data-theme='dark'] .rma_delivery_login_card input:hover {
+  border-color: var(--rma-border-dark);
+}
+
+/* =========================================
+   PRIMARY BUTTON
+========================================= */
+
+[data-theme='dark'] .rma_delivery_primary_button {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .rma_delivery_primary_button:hover:not(:disabled) {
+  background: var(--rma-primary-dark);
+
+  box-shadow: 0 6px 18px rgba(34, 166, 83, 0.22);
+}
+
+/* =========================================
+   SECONDARY BUTTON
+========================================= */
+
+[data-theme='dark'] .rma_delivery_secondary_button {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .rma_delivery_secondary_button:hover {
+  background: var(--rma-primary-soft);
+  border-color: var(--rma-primary);
+}
+
+/* =========================================
+   SUCCESS MESSAGE
+========================================= */
+
+[data-theme='dark'] .rma_delivery_success {
+  border-color: var(--rma-success);
+  background: var(--rma-success-light);
+  color: #72d38f;
+}
+
+/* =========================================
+   ERROR MESSAGE
+========================================= */
+
+[data-theme='dark'] .rma_delivery_error {
+  border-color: var(--rma-danger);
+  background: var(--rma-danger-light);
+  color: #f28b8b;
+}
+
+/* =========================================
+   REGISTER PROMPT
+========================================= */
+
+[data-theme='dark'] .rma_delivery_register_prompt {
+  border-top-color: var(--rma-border);
+}
+
+[data-theme='dark'] .rma_delivery_register_prompt span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .rma_delivery_register_prompt button {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .rma_delivery_register_prompt button:hover {
+  color: #72d38f;
+}
+
+/* =========================================
+   OTP DISPLAY
+========================================= */
+
+[data-theme='dark'] .rma_delivery_otp_display {
+  border-color: var(--rma-success);
+  background: var(--rma-success-light);
+}
+
+[data-theme='dark'] .rma_delivery_otp_display span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .rma_delivery_otp_display strong {
+  color: #72d38f;
+}

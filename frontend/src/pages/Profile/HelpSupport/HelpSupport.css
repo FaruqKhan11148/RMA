@@ -378,3 +378,168 @@
     padding: 15px;
   }
 }
+
+/* =========================================================
+   DARK MODE — HELP & SUPPORT PAGE
+   Append only — do not modify light mode above
+   ========================================================= */
+
+/* ==========================================
+   PAGE
+========================================== */
+
+[data-theme='dark'] .help_support_page {
+  background: var(--rma-bg);
+}
+
+/* ==========================================
+   HEADER
+========================================== */
+
+[data-theme='dark'] .help_support_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .help_support_back {
+  background: var(--rma-card);
+  color: var(--rma-text);
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+
+[data-theme='dark'] .help_support_back:hover {
+  background: var(--rma-card-hover);
+}
+
+/* ==========================================
+   SECTION HEADINGS
+========================================== */
+
+[data-theme='dark'] .help_support_section_heading h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .help_support_section_heading p {
+  color: var(--rma-text-secondary);
+}
+
+/* ==========================================
+   FAQ
+========================================== */
+
+[data-theme='dark'] .faq_list {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.16);
+}
+
+[data-theme='dark'] .faq_item {
+  border-bottom-color: var(--rma-border);
+}
+
+[data-theme='dark'] .faq_item.open {
+  background: var(--rma-bg-secondary);
+}
+
+/* ==========================================
+   FAQ QUESTION
+========================================== */
+
+[data-theme='dark'] .faq_question span:first-child {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .faq_arrow {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .faq_item.open .faq_arrow {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+/* ==========================================
+   FAQ ANSWER
+========================================== */
+
+[data-theme='dark'] .faq_answer p {
+  color: var(--rma-text-secondary);
+}
+
+/* ==========================================
+   CONTACT SUPPORT
+========================================== */
+
+[data-theme='dark'] .support_contact_list {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.16);
+}
+
+[data-theme='dark'] .support_contact_item {
+  border-bottom-color: var(--rma-border);
+}
+
+[data-theme='dark'] .support_contact_item:hover {
+  background: var(--rma-card-hover);
+}
+
+/* ==========================================
+   CONTACT ICON
+========================================== */
+
+[data-theme='dark'] .support_contact_icon {
+  background: rgba(22, 128, 58, 0.12);
+  color: var(--rma-primary-light);
+}
+
+/* ==========================================
+   CONTACT TEXT
+========================================== */
+
+[data-theme='dark'] .support_contact_text strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .support_contact_text span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .support_contact_arrow {
+  color: var(--rma-text-muted);
+}
+
+/* ==========================================
+   REPORT ISSUE
+========================================== */
+
+[data-theme='dark'] .report_issue_button {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  color: var(--rma-text);
+
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.16);
+}
+
+[data-theme='dark'] .report_issue_button:hover {
+  background: var(--rma-card-hover);
+}
+
+[data-theme='dark'] .report_issue_button span:last-child {
+  color: var(--rma-text-muted);
+}
+
+/* ==========================================
+   FOCUS
+========================================== */
+
+[data-theme='dark'] .help_support_back:focus-visible,
+[data-theme='dark'] .faq_question:focus-visible,
+[data-theme='dark'] .support_contact_item:focus-visible,
+[data-theme='dark'] .report_issue_button:focus-visible {
+  outline: 3px solid rgba(22, 128, 58, 0.35);
+  outline-offset: 2px;
+}

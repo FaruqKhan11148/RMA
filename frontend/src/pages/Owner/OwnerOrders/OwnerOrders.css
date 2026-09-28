@@ -1928,3 +1928,712 @@
     width: 100%;
   }
 }
+
+/* =========================================================
+   DARK MODE — OWNER ORDERS
+   ========================================================= */
+
+/* =========================================================
+   MAIN PAGE
+   ========================================================= */
+
+[data-theme='dark'] .owner_orders {
+  background: var(--rma-bg);
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+[data-theme='dark'] .owner_orders_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .owner_orders_header p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .owner_order_distance {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .owner_orders_back {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .owner_orders_back:hover {
+  background: var(--rma-bg-secondary);
+  border-color: var(--rma-border-dark);
+  color: var(--rma-primary);
+}
+
+/* =========================================================
+   FILTER SECTION
+   ========================================================= */
+
+[data-theme='dark'] .owner_order_filters h2 {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   FILTER BUTTONS
+   ========================================================= */
+
+[data-theme='dark'] .owner_filter_buttons {
+  scrollbar-color: #46534a transparent;
+}
+
+[data-theme='dark'] .owner_filter_buttons::-webkit-scrollbar-thumb {
+  background: #46534a;
+}
+
+[data-theme='dark'] .owner_filter_button {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .owner_filter_button:hover {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-bg-secondary);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .owner_filter_button span {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .owner_filter_button.active {
+  border-color: var(--rma-primary);
+  background: var(--rma-primary);
+  color: #ffffff;
+}
+
+[data-theme='dark'] .owner_filter_button.active:hover {
+  background: var(--rma-primary-dark);
+  border-color: var(--rma-primary-dark);
+  color: #ffffff;
+}
+
+[data-theme='dark'] .owner_filter_button.active span {
+  background: #ffffff;
+  color: var(--rma-primary);
+}
+
+/* =========================================================
+   ORDER CARD
+   ========================================================= */
+
+[data-theme='dark'] .owner_order_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+}
+
+[data-theme='dark'] .owner_order_card:hover {
+  border-color: var(--rma-border-dark);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.24);
+}
+
+/* =========================================================
+   ORDER TOP
+   ========================================================= */
+
+[data-theme='dark'] .owner_order_top {
+  border-bottom-color: var(--rma-border-light);
+}
+
+[data-theme='dark'] .owner_order_top strong {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   ORDER STATUS BADGES
+   ========================================================= */
+
+/* PENDING */
+
+[data-theme='dark'] .order_status.pending {
+  background: #302918;
+  color: #e5bd55;
+}
+
+/* ACCEPTED */
+
+[data-theme='dark'] .order_status.accepted {
+  background: #193021;
+  color: #73c98a;
+}
+
+/* PREPARING */
+
+[data-theme='dark'] .order_status.preparing {
+  background: #1b283b;
+  color: #7da5e5;
+}
+
+/* READY */
+
+[data-theme='dark'] .order_status.ready {
+  background: #182d20;
+  color: #75c98c;
+}
+
+/* OUT FOR DELIVERY */
+
+[data-theme='dark'] .order_status.out-for-delivery {
+  background: #302619;
+  color: #e5a85b;
+}
+
+/* COMPLETED */
+
+[data-theme='dark'] .order_status.completed {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+}
+
+/* REJECTED */
+
+[data-theme='dark'] .order_status.rejected {
+  background: #321c1c;
+  color: #f28b82;
+}
+
+/* =========================================================
+   CUSTOMER / ORDER INFO
+   ========================================================= */
+
+[data-theme='dark'] .owner_order_info h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .owner_order_info p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   ORDER ITEMS
+   ========================================================= */
+
+[data-theme='dark'] .owner_order_items {
+  border-color: var(--rma-border-light);
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .owner_order_items p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   TOTAL
+   ========================================================= */
+
+[data-theme='dark'] .owner_order_total {
+  border-top-color: var(--rma-border-light);
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   ACCEPT / PRIMARY ACTION
+   ========================================================= */
+
+[data-theme='dark'] .accept_order_button {
+  border-color: var(--rma-primary);
+  background: var(--rma-primary);
+  color: #ffffff;
+
+  box-shadow: 0 2px 5px rgba(22, 128, 58, 0.25);
+}
+
+[data-theme='dark'] .accept_order_button:hover {
+  border-color: var(--rma-primary-dark);
+  background: var(--rma-primary-dark);
+
+  box-shadow: 0 4px 10px rgba(22, 128, 58, 0.32);
+}
+
+/* =========================================================
+   REJECT ACTION
+   ========================================================= */
+
+[data-theme='dark'] .reject_order_button {
+  border-color: #593939;
+  background: var(--rma-card);
+  color: #f28b82;
+}
+
+[data-theme='dark'] .reject_order_button:hover {
+  border-color: #754545;
+  background: #321c1c;
+}
+
+/* =========================================================
+   DELIVERY MESSAGE
+   ========================================================= */
+
+[data-theme='dark'] .order_delivery_message {
+  border-color: #5d4b2d;
+  background: #302719;
+}
+
+[data-theme='dark'] .order_delivery_message strong {
+  color: #e5bd55;
+}
+
+[data-theme='dark'] .order_delivery_message p {
+  color: #c8ad78;
+}
+
+/* =========================================================
+   COMPLETED / REJECTED MESSAGES
+   ========================================================= */
+
+[data-theme='dark'] .order_completed_message {
+  border-color: #356044;
+  background: #182d20;
+  color: #75c98c;
+}
+
+[data-theme='dark'] .order_rejected_message {
+  border-color: #603939;
+  background: #321c1c;
+  color: #f28b82;
+}
+
+/* =========================================================
+   EMPTY ORDERS
+   ========================================================= */
+
+[data-theme='dark'] .owner_no_orders {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.14);
+}
+
+[data-theme='dark'] .owner_no_orders h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .owner_no_orders p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   COMPACT ORDER CARDS
+   ========================================================= */
+
+[data-theme='dark'] .owner_order_customer h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .owner_order_customer p {
+  color: var(--rma-text-secondary);
+}
+
+/* SUMMARY */
+
+[data-theme='dark'] .owner_order_summary > div {
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .owner_order_summary span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .owner_order_summary strong {
+  color: var(--rma-text);
+}
+
+/* META */
+
+[data-theme='dark'] .owner_order_meta {
+  border-top-color: var(--rma-border-light);
+  border-bottom-color: var(--rma-border-light);
+  color: var(--rma-text-secondary);
+}
+
+/* DELIVERY PARTNER */
+
+[data-theme='dark'] .owner_order_delivery_partner {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .owner_order_delivery_partner span:last-child {
+  color: var(--rma-primary);
+}
+
+/* VIEW DETAILS */
+
+[data-theme='dark'] .owner_order_view_button {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .owner_order_view_button:hover {
+  color: var(--rma-primary-light);
+}
+
+/* MOBILE VIEW BUTTON BORDER */
+
+[data-theme='dark'] .owner_order_card_footer .owner_order_view_button {
+  border-top-color: var(--rma-border-light);
+}
+
+/* STATUS MESSAGES */
+
+[data-theme='dark'] .order_delivery_message {
+  color: #79a9e8;
+}
+
+[data-theme='dark'] .order_completed_message {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .order_rejected_message {
+  color: #f28b82;
+}
+
+/* =========================================================
+   ORDER DETAILS
+   ========================================================= */
+
+[data-theme='dark'] .owner_order_details_back {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .owner_order_details_back:hover {
+  background: var(--rma-border);
+}
+
+[data-theme='dark'] .owner_order_details_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .owner_order_details_header p {
+  color: var(--rma-text-secondary);
+}
+
+/* DETAILS SECTIONS */
+
+[data-theme='dark'] .owner_order_details_section {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .owner_order_details_section h2 {
+  color: var(--rma-text);
+}
+
+/* DETAILS STATUS */
+
+[data-theme='dark'] .owner_order_details_status_row strong {
+  color: var(--rma-text);
+}
+
+/* DETAIL ROWS */
+
+[data-theme='dark'] .owner_order_details_rows span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .owner_order_details_rows strong {
+  color: var(--rma-text);
+}
+
+/* ADDRESS */
+
+[data-theme='dark'] .owner_order_address span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .owner_order_address strong {
+  color: var(--rma-text);
+}
+
+/* MAP */
+
+[data-theme='dark'] .owner_order_details_map {
+  border-color: var(--rma-border);
+}
+
+/* DETAILS ITEMS */
+
+[data-theme='dark'] .owner_order_details_item {
+  border-bottom-color: var(--rma-border-light);
+}
+
+[data-theme='dark'] .owner_order_details_item > div strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .owner_order_details_item > div span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .owner_order_details_item > strong {
+  color: var(--rma-text);
+}
+
+/* PRICE BREAKDOWN */
+
+[data-theme='dark'] .owner_order_price_breakdown span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .owner_order_price_breakdown strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .owner_order_price_total {
+  border-top-color: var(--rma-border);
+}
+
+[data-theme='dark'] .owner_order_price_total span {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .owner_order_price_total strong {
+  color: var(--rma-primary);
+}
+
+/* DELIVERY PARTNER DETAILS */
+
+[data-theme='dark'] .owner_order_delivery_details span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .owner_order_delivery_details strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .owner_order_delivery_unassigned {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+}
+
+/* TIMELINE */
+
+[data-theme='dark'] .owner_order_timeline span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .owner_order_timeline strong {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   DELIVERY ASSIGNMENT MODAL
+   ========================================================= */
+
+[data-theme='dark'] .delivery_assignment_overlay {
+  background: rgba(0, 0, 0, 0.68);
+}
+
+[data-theme='dark'] .delivery_assignment_modal {
+  background: var(--rma-card);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme='dark'] .delivery_assignment_header h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_assignment_header p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_assignment_close {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_assignment_close:hover {
+  background: var(--rma-border);
+}
+
+/* DELIVERY TYPE */
+
+[data-theme='dark'] .delivery_assignment_type h3,
+[data-theme='dark'] .delivery_partner_list_header h3 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_type_option {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+}
+
+[data-theme='dark'] .delivery_type_option.active {
+  border-color: var(--rma-primary);
+  background: var(--rma-primary-soft);
+}
+
+[data-theme='dark'] .delivery_radio {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .delivery_type_option strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_type_option small {
+  color: var(--rma-text-secondary);
+}
+
+/* DELIVERY PARTNERS */
+
+[data-theme='dark'] .delivery_partner_list_header > span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_partner_card {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+}
+
+[data-theme='dark'] .delivery_partner_card:hover {
+  border-color: var(--rma-primary);
+}
+
+[data-theme='dark'] .delivery_partner_card.selected {
+  border-color: var(--rma-primary);
+  background: var(--rma-primary-soft);
+}
+
+[data-theme='dark'] .delivery_partner_radio {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .delivery_partner_details strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_partner_details span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_partner_details .delivery_partner_distance {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .delivery_partner_loading,
+[data-theme='dark'] .delivery_partner_empty {
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .delivery_partner_empty strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_partner_empty p {
+  color: var(--rma-text-secondary);
+}
+
+/* DELIVERY ACTIONS */
+
+[data-theme='dark'] .delivery_cancel_button {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_assign_button {
+  background: var(--rma-primary);
+  color: #ffffff;
+}
+
+[data-theme='dark'] .delivery_assign_button:disabled {
+  background: #496c50;
+}
+
+/* =========================================================
+   REJECTION REASON MODAL
+   ========================================================= */
+
+[data-theme='dark'] .rejection_reason_overlay {
+  background: rgba(0, 0, 0, 0.72);
+}
+
+[data-theme='dark'] .rejection_reason_modal {
+  background: var(--rma-card);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme='dark'] .rejection_reason_header h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .rejection_reason_header p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .rejection_reason_close {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .rejection_reason_close:hover {
+  background: var(--rma-border);
+}
+
+/* REJECTION FIELD */
+
+[data-theme='dark'] .rejection_reason_field label {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .rejection_reason_field select,
+[data-theme='dark'] .rejection_reason_field textarea {
+  border-color: var(--rma-border);
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .rejection_reason_field select:focus,
+[data-theme='dark'] .rejection_reason_field textarea:focus {
+  border-color: var(--rma-primary);
+
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.18);
+}
+
+[data-theme='dark'] .rejection_reason_field select:disabled,
+[data-theme='dark'] .rejection_reason_field textarea:disabled {
+  background: #202622;
+  color: var(--rma-text-muted);
+}
+
+/* =========================================================
+   REJECTION ACTIONS
+   ========================================================= */
+
+[data-theme='dark'] .rejection_cancel_button {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .rejection_cancel_button:hover {
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .rejection_confirm_button {
+  background: #c62828;
+  color: #ffffff;
+}
+
+[data-theme='dark'] .rejection_confirm_button:hover:not(:disabled) {
+  background: #a91f1f;
+}
+
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
+
+[data-theme='dark'] .owner_orders button:focus-visible {
+  outline-color: rgba(22, 128, 58, 0.35);
+}

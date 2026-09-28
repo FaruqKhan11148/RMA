@@ -135,3 +135,38 @@
     width: 30px;
   }
 }
+
+/* =========================================
+   DARK MODE — DELIVERY FOOTER
+========================================= */
+
+[data-theme='dark'] .delivery_bottom_nav {
+  background: var(--rma-card);
+  border-top-color: var(--rma-border);
+
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.25);
+}
+
+/* =========================================
+   NAV ITEMS
+========================================= */
+
+[data-theme='dark'] .delivery_nav_item {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .delivery_nav_item.active {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .delivery_nav_item.active::before {
+  background: var(--rma-primary);
+}
+
+/* =========================================
+   ACTIVE / TOUCH FEEDBACK
+========================================= */
+
+[data-theme='dark'] .delivery_nav_item:active {
+  background: var(--rma-primary-soft);
+}

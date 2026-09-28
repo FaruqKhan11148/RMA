@@ -23,6 +23,20 @@
   margin: 0 auto var(--rma-space-6);
 }
 
+.orders_header_top {
+  display: flex;
+
+  align-items: flex-start;
+
+  justify-content: space-between;
+
+  gap: var(--rma-space-4);
+}
+
+.orders_header_top > div {
+  min-width: 0;
+}
+
 .orders_header h1 {
   margin: 0;
 
@@ -46,20 +60,150 @@
 }
 
 /* =========================================
-   ORDERS LIST
+   HEADER SELECT / CANCEL BUTTON
 ========================================= */
 
-.orders_list {
-  width: 100%;
-  max-width: var(--rma-max-width);
+.orders_select_button,
+.orders_cancel_button {
+  flex-shrink: 0;
 
-  margin: 0 auto;
+  min-height: 40px;
 
-  display: grid;
+  padding: 0 15px;
 
-  grid-template-columns: 1fr;
+  border: 1px solid var(--rma-border);
 
-  gap: 12px;
+  border-radius: var(--rma-radius-md);
+
+  background: var(--rma-card);
+
+  color: var(--rma-primary);
+
+  font-family: inherit;
+
+  font-size: var(--rma-font-sm);
+
+  font-weight: var(--rma-weight-bold);
+
+  cursor: pointer;
+
+  transition:
+    background var(--rma-transition-fast),
+    border-color var(--rma-transition-fast),
+    color var(--rma-transition-fast),
+    transform var(--rma-transition-fast);
+}
+
+.orders_select_button:hover {
+  background: var(--rma-primary-light);
+
+  border-color: var(--rma-primary);
+
+  color: var(--rma-primary-dark);
+}
+
+.orders_cancel_button {
+  color: var(--rma-text-secondary);
+}
+
+.orders_cancel_button:hover {
+  background: var(--rma-bg-secondary);
+
+  border-color: var(--rma-border-dark);
+
+  color: var(--rma-text);
+}
+
+.orders_select_button:active,
+.orders_cancel_button:active {
+  transform: scale(0.97);
+}
+
+/* =========================================
+   SELECTION ACTIONS
+========================================= */
+
+.orders_selection_actions {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: var(--rma-space-3);
+
+  margin-top: var(--rma-space-4);
+
+  padding-top: var(--rma-space-4);
+
+  border-top: 1px solid var(--rma-border-light);
+}
+
+.orders_select_all_button,
+.orders_delete_button {
+  min-height: 42px;
+
+  padding: 0 16px;
+
+  border-radius: var(--rma-radius-md);
+
+  font-family: inherit;
+
+  font-size: var(--rma-font-sm);
+
+  font-weight: var(--rma-weight-bold);
+
+  cursor: pointer;
+
+  transition:
+    background var(--rma-transition-fast),
+    border-color var(--rma-transition-fast),
+    color var(--rma-transition-fast),
+    transform var(--rma-transition-fast),
+    opacity var(--rma-transition-fast);
+}
+
+.orders_select_all_button {
+  flex: 1;
+
+  border: 1px solid var(--rma-border);
+
+  background: var(--rma-card);
+
+  color: var(--rma-text);
+}
+
+.orders_select_all_button:hover:not(:disabled) {
+  background: var(--rma-bg-secondary);
+
+  border-color: var(--rma-border-dark);
+}
+
+.orders_delete_button {
+  flex: 1;
+
+  border: 1px solid transparent;
+
+  background: #dc2626;
+
+  color: #ffffff;
+}
+
+.orders_delete_button:hover:not(:disabled) {
+  background: #b91c1c;
+}
+
+.orders_select_all_button:active:not(:disabled),
+.orders_delete_button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.orders_select_all_button:disabled,
+.orders_delete_button:disabled,
+.orders_cancel_button:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.5;
 }
 
 /* =========================================
@@ -115,6 +259,111 @@
   outline: 3px solid rgba(22, 128, 58, 0.25);
 
   outline-offset: 2px;
+}
+
+/* =========================================
+   ORDER CARD — SELECTION MODE
+========================================= */
+
+.order_card_selectable {
+  position: relative;
+
+  flex-direction: row;
+
+  align-items: flex-start;
+
+  gap: var(--rma-space-3);
+}
+
+.order_card_selectable:hover {
+  transform: none;
+
+  border-color: var(--rma-border);
+
+  box-shadow: var(--rma-shadow-xs);
+}
+
+.order_card_selectable:active {
+  transform: scale(0.99);
+}
+
+.order_card_selected {
+  border-color: var(--rma-primary);
+
+  background: var(--rma-primary-light);
+
+  box-shadow: 0 0 0 1px var(--rma-primary);
+}
+
+.order_card_selected:hover {
+  border-color: var(--rma-primary);
+
+  box-shadow: 0 0 0 1px var(--rma-primary);
+}
+
+/* =========================================
+   ORDER CARD SELECTION CHECKBOX
+========================================= */
+
+.order_card_selection {
+  flex-shrink: 0;
+
+  padding-top: 2px;
+}
+
+.order_checkbox {
+  width: 22px;
+  height: 22px;
+
+  box-sizing: border-box;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border: 2px solid var(--rma-border-dark);
+
+  border-radius: 6px;
+
+  background: var(--rma-card);
+
+  color: var(--rma-text-white);
+
+  font-size: 14px;
+
+  font-weight: var(--rma-weight-extrabold);
+
+  line-height: 1;
+
+  transition:
+    background var(--rma-transition-fast),
+    border-color var(--rma-transition-fast),
+    transform var(--rma-transition-fast);
+}
+
+.order_checkbox_checked {
+  border-color: var(--rma-primary);
+
+  background: var(--rma-primary);
+}
+
+.order_card_selectable:active .order_checkbox {
+  transform: scale(0.92);
+}
+
+/* =========================================
+   ORDER CARD CONTENT
+========================================= */
+
+.order_card_content {
+  min-width: 0;
+
+  flex: 1;
+
+  display: flex;
+
+  flex-direction: column;
 }
 
 /* =========================================
@@ -935,6 +1184,49 @@
   .order_sheet_total strong {
     font-size: var(--rma-font-lg);
   }
+
+  .orders_header_top {
+    gap: 10px;
+  }
+
+  .orders_select_button,
+  .orders_cancel_button {
+    min-height: 36px;
+
+    padding: 0 12px;
+
+    font-size: 12px;
+  }
+
+  .orders_selection_actions {
+    gap: 8px;
+
+    margin-top: 12px;
+
+    padding-top: 12px;
+  }
+
+  .orders_select_all_button,
+  .orders_delete_button {
+    min-height: 40px;
+
+    padding: 0 10px;
+
+    font-size: 12px;
+  }
+
+  .order_card_selectable {
+    gap: 10px;
+  }
+
+  .order_checkbox {
+    width: 20px;
+    height: 20px;
+
+    border-radius: 5px;
+
+    font-size: 12px;
+  }
 }
 
 /* =========================================
@@ -943,7 +1235,11 @@
 
 .order_sheet_close:focus-visible,
 .order_sheet_button:focus-visible,
-.orders_empty button:focus-visible {
+.orders_empty button:focus-visible,
+.orders_select_button:focus-visible,
+.orders_cancel_button:focus-visible,
+.orders_select_all_button:focus-visible,
+.orders_delete_button:focus-visible {
   outline: 3px solid rgba(22, 128, 58, 0.25);
 
   outline-offset: 2px;
@@ -973,4 +1269,340 @@
   .order_card:hover .order_card_arrow {
     transform: none;
   }
+}
+
+.order_card_not_deletable {
+  opacity: 0.72;
+}
+
+.order_checkbox_disabled {
+  border-color: var(--rma-border);
+  background: var(--rma-bg-secondary);
+}
+
+.order_card_not_deletable:active .order_checkbox {
+  transform: none;
+}
+
+/* =========================================
+   DARK MODE — ORDERS PAGE
+========================================= */
+
+/* =========================================
+   HEADER ACTION BUTTONS
+========================================= */
+
+[data-theme='dark'] .orders_select_button,
+[data-theme='dark'] .orders_cancel_button {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .orders_select_button {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .orders_select_button:hover {
+  background: var(--rma-primary-soft);
+  border-color: var(--rma-primary);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .orders_cancel_button {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .orders_cancel_button:hover {
+  background: var(--rma-bg-secondary);
+  border-color: var(--rma-border-dark);
+  color: var(--rma-text);
+}
+
+/* =========================================
+   SELECTION ACTIONS
+========================================= */
+
+[data-theme='dark'] .orders_selection_actions {
+  border-top-color: var(--rma-border);
+}
+
+[data-theme='dark'] .orders_select_all_button {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .orders_select_all_button:hover:not(:disabled) {
+  background: var(--rma-bg-secondary);
+  border-color: var(--rma-border-dark);
+}
+
+[data-theme='dark'] .orders_delete_button {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+[data-theme='dark'] .orders_delete_button:hover:not(:disabled) {
+  background: #b91c1c;
+}
+
+/* =========================================
+   ORDER CARD
+========================================= */
+
+[data-theme='dark'] .order_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  box-shadow: var(--rma-shadow-xs);
+}
+
+[data-theme='dark'] .order_card:hover {
+  border-color: var(--rma-border-dark);
+  box-shadow: var(--rma-shadow-sm);
+}
+
+[data-theme='dark'] .order_card_selectable:hover {
+  border-color: var(--rma-border);
+  box-shadow: var(--rma-shadow-xs);
+}
+
+/* =========================================
+   SELECTED ORDER CARD
+========================================= */
+
+[data-theme='dark'] .order_card_selected {
+  border-color: var(--rma-primary);
+  background: var(--rma-primary-soft);
+  box-shadow: 0 0 0 1px var(--rma-primary);
+}
+
+[data-theme='dark'] .order_card_selected:hover {
+  border-color: var(--rma-primary);
+  box-shadow: 0 0 0 1px var(--rma-primary);
+}
+
+/* =========================================
+   CHECKBOX
+========================================= */
+
+[data-theme='dark'] .order_checkbox {
+  background: var(--rma-card);
+  border-color: var(--rma-border-dark);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .order_checkbox_checked {
+  background: var(--rma-primary);
+  border-color: var(--rma-primary);
+}
+
+[data-theme='dark'] .order_checkbox_disabled {
+  background: var(--rma-bg-secondary);
+  border-color: var(--rma-border);
+}
+
+/* =========================================
+   ORDER STATUS
+========================================= */
+
+[data-theme='dark'] .order_status {
+  background: var(--rma-primary-soft);
+  color: var(--rma-primary);
+}
+
+/* =========================================
+   ORDER ARROW
+========================================= */
+
+[data-theme='dark'] .order_card_arrow {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .order_card:hover .order_card_arrow {
+  background: var(--rma-primary-soft);
+  color: var(--rma-primary);
+}
+
+/* =========================================
+   ORDER CARD TEXT
+========================================= */
+
+[data-theme='dark'] .order_card_top > strong,
+[data-theme='dark'] .order_card_middle strong,
+[data-theme='dark'] .order_card_bottom strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .order_card_bottom {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .order_card_separator {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .order_card_hint {
+  color: var(--rma-text-muted);
+}
+
+/* =========================================
+   BOTTOM SHEET OVERLAY
+========================================= */
+
+[data-theme='dark'] .order_sheet_overlay {
+  background: rgba(0, 0, 0, 0.68);
+}
+
+/* =========================================
+   BOTTOM SHEET
+========================================= */
+
+[data-theme='dark'] .order_sheet {
+  background: var(--rma-card);
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* =========================================
+   SHEET HANDLE
+========================================= */
+
+[data-theme='dark'] .order_sheet_handle {
+  background: var(--rma-border-dark);
+}
+
+/* =========================================
+   SHEET HEADER
+========================================= */
+
+[data-theme='dark'] .order_sheet_header {
+  border-bottom-color: var(--rma-border);
+}
+
+[data-theme='dark'] .order_sheet_header span {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .order_sheet_header h2 {
+  color: var(--rma-text);
+}
+
+/* =========================================
+   SHEET CLOSE BUTTON
+========================================= */
+
+[data-theme='dark'] .order_sheet_close {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .order_sheet_close:hover {
+  background: var(--rma-border);
+  color: var(--rma-text);
+}
+
+/* =========================================
+   SHEET STATUS
+========================================= */
+
+[data-theme='dark'] .order_sheet_status {
+  background: var(--rma-primary-soft);
+}
+
+[data-theme='dark'] .order_sheet_status span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .order_sheet_status strong {
+  color: var(--rma-primary);
+}
+
+/* =========================================
+   SHEET DETAILS
+========================================= */
+
+[data-theme='dark'] .order_sheet_details {
+  border-top-color: var(--rma-border);
+}
+
+[data-theme='dark'] .order_sheet_detail {
+  border-bottom-color: var(--rma-border);
+}
+
+[data-theme='dark'] .order_sheet_detail span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .order_sheet_detail strong {
+  color: var(--rma-text);
+}
+
+/* =========================================
+   SHEET TOTAL
+========================================= */
+
+[data-theme='dark'] .order_sheet_total span,
+[data-theme='dark'] .order_sheet_total strong {
+  color: var(--rma-text);
+}
+
+/* =========================================
+   SHEET BUTTON
+========================================= */
+
+[data-theme='dark'] .order_sheet_button {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .order_sheet_button:hover {
+  background: var(--rma-primary-dark);
+}
+
+/* =========================================
+   EMPTY STATE
+========================================= */
+
+[data-theme='dark'] .orders_empty {
+  background: var(--rma-bg);
+}
+
+[data-theme='dark'] .orders_empty h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .orders_empty p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .orders_empty button {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .orders_empty button:hover {
+  background: var(--rma-primary-dark);
+}
+
+/* =========================================
+   NON-DELETABLE ORDER
+========================================= */
+
+[data-theme='dark'] .order_card_not_deletable {
+  opacity: 0.72;
+}
+
+/* =========================================
+   FOCUS STATES
+========================================= */
+
+[data-theme='dark'] .order_sheet_close:focus-visible,
+[data-theme='dark'] .order_sheet_button:focus-visible,
+[data-theme='dark'] .orders_empty button:focus-visible,
+[data-theme='dark'] .orders_select_button:focus-visible,
+[data-theme='dark'] .orders_cancel_button:focus-visible,
+[data-theme='dark'] .orders_select_all_button:focus-visible,
+[data-theme='dark'] .orders_delete_button:focus-visible,
+[data-theme='dark'] .order_card:focus-visible {
+  outline-color: rgba(22, 128, 58, 0.4);
 }

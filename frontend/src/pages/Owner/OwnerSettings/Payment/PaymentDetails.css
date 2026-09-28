@@ -354,3 +354,136 @@
     font-size: 11px;
   }
 }
+
+/* =========================================================
+   DARK MODE — PAYMENT PROVIDER / PAYMENT DETAILS
+   Append only — do not modify light mode above
+   ========================================================= */
+
+/* PAYMENT PROVIDER */
+
+[data-theme='dark'] .payment_provider_card {
+  border-color: var(--rma-border);
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .payment_provider_icon {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .payment_provider_content > span {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .payment_provider_content strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .payment_provider_content small {
+  color: var(--rma-text-secondary);
+}
+
+/* SECTIONS */
+
+[data-theme='dark'] .payment_section {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+}
+
+[data-theme='dark'] .payment_section_tag {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .payment_section_header h2 {
+  color: var(--rma-text);
+}
+
+/* STATUS BADGES */
+
+[data-theme='dark'] .payment_status_verified {
+  color: var(--rma-primary-light);
+  background: rgba(22, 128, 58, 0.14);
+}
+
+[data-theme='dark'] .payment_status_pending {
+  color: #e8b84a;
+  background: rgba(234, 179, 8, 0.12);
+}
+
+[data-theme='dark'] .payment_status_rejected {
+  color: #ff8f86;
+  background: rgba(180, 35, 24, 0.12);
+}
+
+[data-theme='dark'] .payment_status_default {
+  color: var(--rma-text-secondary);
+  background: var(--rma-bg-secondary);
+}
+
+/* DETAILS */
+
+[data-theme='dark'] .payment_detail_row {
+  border-top-color: var(--rma-border);
+}
+
+[data-theme='dark'] .payment_detail_row span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .payment_detail_row strong {
+  color: var(--rma-text);
+}
+
+/* SETTLEMENT */
+
+[data-theme='dark'] .payment_settlement_card {
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .payment_settlement_icon {
+  background: var(--rma-border);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .payment_settlement_card strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .payment_settlement_card p {
+  color: var(--rma-text-secondary);
+}
+
+/* ONBOARDED DATE */
+
+[data-theme='dark'] .payment_onboarded_info {
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .payment_onboarded_info span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .payment_onboarded_info strong {
+  color: var(--rma-text);
+}
+
+/* NEXT STEP */
+
+[data-theme='dark'] .payment_next_step {
+  border-color: rgba(234, 179, 8, 0.28);
+  background: rgba(234, 179, 8, 0.08);
+}
+
+[data-theme='dark'] .payment_next_step_icon {
+  background: rgba(234, 179, 8, 0.14);
+  color: #e8b84a;
+}
+
+[data-theme='dark'] .payment_next_step strong {
+  color: #e8b84a;
+}
+
+[data-theme='dark'] .payment_next_step p {
+  color: #c9b98f;
+}

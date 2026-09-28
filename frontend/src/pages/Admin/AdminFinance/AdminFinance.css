@@ -1086,3 +1086,466 @@
     transform: none;
   }
 }
+
+/* =========================================================
+   DARK MODE
+   ========================================================= */
+
+[data-theme='dark'] .admin-finance-page {
+  background: var(--rma-bg);
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+[data-theme='dark'] .admin-finance-header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin-finance-header p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .finance-back-button {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .finance-back-button:hover {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .finance-fee-info {
+  border-color: rgba(22, 128, 58, 0.35);
+  background: rgba(22, 128, 58, 0.12);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+}
+
+[data-theme='dark'] .finance-fee-info span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .finance-fee-info strong {
+  color: var(--rma-primary-light);
+}
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+[data-theme='dark'] .finance-error {
+  border-color: rgba(220, 38, 38, 0.28);
+  background: rgba(220, 38, 38, 0.1);
+  color: #ff8f86;
+}
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+[data-theme='dark'] .finance-loading {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   MAIN FINANCE STATS
+   ========================================================= */
+
+[data-theme='dark'] .finance-stat-card {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.18);
+}
+
+[data-theme='dark'] .finance-stat-card::before {
+  background: var(--rma-border);
+}
+
+[data-theme='dark'] .finance-stat-card:hover {
+  border-color: var(--rma-border-dark);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.24);
+}
+
+[data-theme='dark'] .finance-stat-card span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .finance-stat-card strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .finance-stat-card small {
+  color: var(--rma-text-muted);
+}
+
+/* =========================================================
+   RMA REVENUE CARD
+   ========================================================= */
+
+[data-theme='dark'] .finance-rma-card {
+  border-color: rgba(22, 128, 58, 0.35);
+  background: linear-gradient(
+    145deg,
+    var(--rma-card) 0%,
+    rgba(22, 128, 58, 0.1) 100%
+  );
+}
+
+[data-theme='dark'] .finance-rma-card::before {
+  background: var(--rma-primary);
+}
+
+[data-theme='dark'] .finance-rma-card strong {
+  color: var(--rma-primary-light);
+}
+
+/* =========================================================
+   SECTIONS
+   ========================================================= */
+
+[data-theme='dark'] .finance-section {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.18);
+}
+
+[data-theme='dark'] .finance-section-header h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .finance-section-header p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   PAYMENT BREAKDOWN
+   ========================================================= */
+
+[data-theme='dark'] .finance-payment-card {
+  border-color: var(--rma-border);
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .finance-payment-card:hover {
+  border-color: var(--rma-border-dark);
+}
+
+[data-theme='dark'] .finance-payment-card span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .finance-payment-card strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .finance-payment-card small {
+  color: var(--rma-text-muted);
+}
+
+/* =========================================================
+   CONTROLS
+   ========================================================= */
+
+[data-theme='dark'] .finance-controls input,
+[data-theme='dark'] .finance-controls select {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .finance-controls input::placeholder {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .finance-controls input:hover,
+[data-theme='dark'] .finance-controls select:hover {
+  border-color: var(--rma-border-dark);
+}
+
+[data-theme='dark'] .finance-controls input:focus,
+[data-theme='dark'] .finance-controls select:focus {
+  border-color: var(--rma-primary);
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.14);
+}
+
+/* =========================================================
+   TABLE WRAPPER
+   ========================================================= */
+
+[data-theme='dark'] .finance-table-wrapper {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  scrollbar-color: var(--rma-border-dark) transparent;
+}
+
+[data-theme='dark'] .finance-table-wrapper::-webkit-scrollbar-thumb {
+  background: var(--rma-border-dark);
+}
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+[data-theme='dark'] .finance-table th {
+  border-bottom-color: var(--rma-border);
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .finance-table td {
+  border-bottom-color: var(--rma-border);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .finance-table tbody tr:hover {
+  background: var(--rma-card-hover);
+}
+
+[data-theme='dark'] .finance-table td strong {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   SHOP NAME
+   ========================================================= */
+
+[data-theme='dark'] .finance-shop-name strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .finance-shop-name span {
+  color: var(--rma-text-muted);
+}
+
+/* =========================================================
+   FINANCE VALUES
+   ========================================================= */
+
+[data-theme='dark'] .finance-rma-value {
+  color: var(--rma-primary-light) !important;
+}
+
+[data-theme='dark'] .finance-owner-value {
+  color: #6fcf91 !important;
+}
+
+/* =========================================================
+   PAYMENT STATUS
+   ========================================================= */
+
+[data-theme='dark'] .finance-status-paid {
+  border-color: rgba(22, 128, 58, 0.35);
+  background: rgba(22, 128, 58, 0.12);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .finance-status-pending {
+  border-color: rgba(234, 179, 8, 0.3);
+  background: rgba(234, 179, 8, 0.1);
+  color: #e8b84a;
+}
+
+[data-theme='dark'] .finance-status-failed {
+  border-color: rgba(220, 38, 38, 0.28);
+  background: rgba(220, 38, 38, 0.1);
+  color: #ff8f86;
+}
+
+[data-theme='dark'] .finance-status-refunded {
+  border-color: rgba(99, 102, 241, 0.3);
+  background: rgba(99, 102, 241, 0.1);
+  color: #aeb4ff;
+}
+
+/* =========================================================
+   ORDER STATUS
+   ========================================================= */
+
+[data-theme='dark'] .finance-order-status {
+  border-color: var(--rma-border);
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   VIEW BUTTON
+   ========================================================= */
+
+[data-theme='dark'] .finance-view-button {
+  border-color: rgba(22, 128, 58, 0.35);
+  background: rgba(22, 128, 58, 0.1);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .finance-view-button:hover {
+  border-color: var(--rma-primary);
+  background: rgba(22, 128, 58, 0.18);
+  color: var(--rma-primary-light);
+}
+
+/* =========================================================
+   RESULTS COUNT
+   ========================================================= */
+
+[data-theme='dark'] .finance-results-count {
+  color: var(--rma-text-muted);
+}
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+[data-theme='dark'] .finance-empty {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-muted);
+}
+
+/* =========================================================
+   MODAL OVERLAY
+   ========================================================= */
+
+[data-theme='dark'] .finance-modal-overlay {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+[data-theme='dark'] .finance-modal {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.42);
+  scrollbar-color: var(--rma-border-dark) transparent;
+}
+
+[data-theme='dark'] .finance-modal::-webkit-scrollbar-thumb {
+  background: var(--rma-border-dark);
+}
+
+/* =========================================================
+   MODAL HEADER
+   ========================================================= */
+
+[data-theme='dark'] .finance-modal-header {
+  border-bottom-color: var(--rma-border);
+  background: rgba(27, 32, 29, 0.97);
+}
+
+[data-theme='dark'] .finance-modal-header span {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .finance-modal-header h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .finance-modal-close {
+  border-color: var(--rma-border);
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .finance-modal-close:hover {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-card-hover);
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   FINANCE DETAIL CARDS
+   ========================================================= */
+
+[data-theme='dark'] .finance-detail-grid > div {
+  border-color: var(--rma-border);
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .finance-detail-grid span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .finance-detail-grid strong {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   MODAL SECTIONS
+   ========================================================= */
+
+[data-theme='dark'] .finance-modal-section {
+  border-bottom-color: var(--rma-border);
+}
+
+[data-theme='dark'] .finance-modal-section h3 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .finance-modal-section p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .finance-modal-section p strong {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   MODAL PAYMENT INFORMATION
+   ========================================================= */
+
+[data-theme='dark'] .finance-modal-info {
+  border-bottom-color: var(--rma-border);
+}
+
+[data-theme='dark'] .finance-modal-info span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .finance-modal-info strong {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   TIMELINE
+   ========================================================= */
+
+[data-theme='dark'] .finance-timeline {
+  border-left-color: var(--rma-border-dark);
+}
+
+[data-theme='dark'] .finance-timeline > div::before {
+  border-color: var(--rma-card);
+  background: var(--rma-primary);
+  box-shadow: 0 0 0 1px var(--rma-primary);
+}
+
+[data-theme='dark'] .finance-timeline span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .finance-timeline strong {
+  color: var(--rma-text-muted);
+}
+
+/* =========================================================
+   MODAL FOOTER
+   ========================================================= */
+
+[data-theme='dark'] .finance-modal-footer {
+  border-top-color: var(--rma-border);
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .finance-modal-footer button {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-card);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .finance-modal-footer button:hover {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-card-hover);
+  color: var(--rma-text);
+}

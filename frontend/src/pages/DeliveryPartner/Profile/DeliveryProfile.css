@@ -177,3 +177,111 @@
   background: #fff0f0;
   color: #d63b3b;
 }
+
+/* =========================================
+   DARK MODE — DELIVERY PROFILE
+========================================= */
+
+/* =========================================
+   PAGE
+========================================= */
+
+[data-theme='dark'] .delivery_profile_page {
+  background: var(--rma-bg);
+}
+
+/* =========================================
+   HEADER
+========================================= */
+
+[data-theme='dark'] .delivery_profile_header span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_profile_header h1 {
+  color: var(--rma-text);
+}
+
+/* =========================================
+   PROFILE CARD
+========================================= */
+
+[data-theme='dark'] .delivery_profile_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .delivery_profile_avatar {
+  background: var(--rma-primary-light);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .delivery_profile_identity strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_profile_identity span {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================
+   PROFILE SECTIONS
+========================================= */
+
+[data-theme='dark'] .delivery_profile_section h2 {
+  color: var(--rma-text);
+}
+
+/* =========================================
+   PROFILE INFORMATION ITEMS
+========================================= */
+
+[data-theme='dark'] .delivery_profile_item {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .delivery_profile_item_icon {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_profile_item span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_profile_item strong {
+  color: var(--rma-text);
+}
+
+/* =========================================
+   PROFILE ACTIONS
+========================================= */
+
+[data-theme='dark'] .delivery_profile_action {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_profile_action:hover {
+  background: var(--rma-card-hover);
+  border-color: var(--rma-border-dark);
+}
+
+[data-theme='dark'] .delivery_profile_action_left > span {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_profile_action > svg {
+  color: var(--rma-text-muted);
+}
+
+/* =========================================
+   LOGOUT
+========================================= */
+
+[data-theme='dark'] .delivery_profile_action_icon.logout {
+  background: var(--rma-danger-light);
+  color: #f28b8b;
+}

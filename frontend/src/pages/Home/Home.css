@@ -1288,7 +1288,7 @@
 }
 
 .shop_card_info span {
-  color: var(--rma-text-light);
+  color: var(--rma-text-muted);
 
   font-size: 10px;
   line-height: 1.35;
@@ -2488,7 +2488,7 @@
   .nearby_shop_card {
     width: 225px;
     min-width: 225px;
-    border: 2px solid #0c700c;
+    /* border: 2px solid #0c700c; */
   }
 
   .popular_products {
@@ -2502,7 +2502,7 @@
   .popular_product_card {
     width: 190px;
     min-width: 190px;
-    border: 2px solid green;
+    /* border: 2px solid green; */
   }
 
   .popular_product_image {
@@ -2804,4 +2804,406 @@
     min-height: 40px;
     font-size: 10px;
   }
+}
+
+/* =========================================================
+   DARK MODE — HOME
+   ========================================================= */
+
+[data-theme='dark'] .home {
+  background: var(--rma-bg);
+}
+
+/* =========================================================
+   SEARCH BAR
+   ========================================================= */
+
+[data-theme='dark'] .rma_search_bar {
+  background: var(--rma-card);
+  color: var(--rma-text);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .rma_search_bar:hover {
+  border-color: var(--rma-border-dark);
+}
+
+/* =========================================================
+   HERO
+   Keep the hero image, overlay and white typography intact.
+   ========================================================= */
+
+[data-theme='dark'] .home_hero {
+  background: #0b100d;
+}
+
+/* =========================================================
+   ACTION CARDS
+   ========================================================= */
+
+[data-theme='dark'] .qr_action {
+  border-color: #31583d;
+
+  background: linear-gradient(
+    135deg,
+    var(--rma-primary-light) 0%,
+    var(--rma-primary-soft) 55%,
+    #1b2b21 100%
+  );
+
+  color: var(--rma-text);
+
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.22),
+    var(--rma-shadow-sm);
+}
+
+[data-theme='dark'] .qr_action:hover {
+  border-color: #477253;
+
+  box-shadow:
+    0 7px 20px rgba(0, 0, 0, 0.28),
+    var(--rma-shadow-md);
+}
+
+[data-theme='dark'] .qr_action::after {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme='dark'] .action_icon {
+  border-color: #42624b;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .qr_icon_pattern {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .action_badge {
+  color: #72d38f;
+}
+
+[data-theme='dark'] .action_content h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .action_content p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .action_arrow {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .qr_action:hover .action_arrow {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+/* =========================================================
+   FIND SHOP
+   ========================================================= */
+
+[data-theme='dark'] .find_action {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  color: var(--rma-text);
+
+  box-shadow: var(--rma-shadow-sm);
+}
+
+[data-theme='dark'] .find_action::after {
+  background: rgba(34, 166, 83, 0.08);
+}
+
+[data-theme='dark'] .find_action:hover {
+  border-color: var(--rma-border-dark);
+  box-shadow: var(--rma-shadow-md);
+}
+
+[data-theme='dark'] .find_icon {
+  border-color: #344d3b;
+  background: #18251c;
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .find_badge {
+  color: #72d38f;
+}
+
+[data-theme='dark'] .find_title {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .find_description {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .find_arrow {
+  background: #202d24;
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .find_action:hover .find_arrow {
+  background: var(--rma-primary-light);
+}
+
+/* =========================================================
+   SECTION TITLES
+   ========================================================= */
+
+[data-theme='dark'] .section_title h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .section_title button {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .section_title button:hover {
+  color: #72d38f;
+}
+
+/* =========================================================
+   MY SHOPS — LOADING
+   ========================================================= */
+
+[data-theme='dark'] .shop_loading {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   MY SHOPS — ERROR
+   ========================================================= */
+
+[data-theme='dark'] .shop_error {
+  border-color: #573235;
+  background: #241719;
+  color: #f28b8b;
+}
+
+/* =========================================================
+   MY SHOP CARD
+   ========================================================= */
+
+[data-theme='dark'] .shop_card {
+  border-color: var(--rma-border);
+
+  background: linear-gradient(145deg, #1b231e 0%, #18201b 100%);
+
+  box-shadow: var(--rma-shadow-sm);
+}
+
+[data-theme='dark'] .shop_card_info h3 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .shop_card_info p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .shop_card_info span {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .shop_order_button {
+  color: #ffffff;
+}
+
+[data-theme='dark'] .shop_order_button:hover {
+  background: var(--rma-primary-dark);
+}
+
+/* =========================================================
+   NEARBY SHOPS
+   ========================================================= */
+
+[data-theme='dark'] .nearby_shops_eyebrow {
+  color: #7aa487;
+}
+
+[data-theme='dark'] .nearby_shops_header h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .nearby_shops_header p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .nearby_shops_see_all {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .nearby_shops_see_all:hover {
+  color: #72d38f;
+}
+
+[data-theme='dark'] .nearby_shop_card {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.22);
+}
+
+[data-theme='dark'] .nearby_shop_card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='dark'] .nearby_shop_title_row h3 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .nearby_shop_description {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .nearby_shop_meta {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .shop_status_open {
+  color: #4ade80;
+}
+
+[data-theme='dark'] .shop_status_closed {
+  color: #f08080;
+}
+
+[data-theme='dark'] .nearby_shops_loading,
+[data-theme='dark'] .nearby_shops_error,
+[data-theme='dark'] .nearby_shops_empty {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+}
+
+[data-theme='dark'] .nearby_shops_loading {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .nearby_shops_error {
+  color: #f08080;
+}
+
+[data-theme='dark'] .nearby_shops_empty h3 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .nearby_shops_empty p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .nearby_shops_empty button {
+  background: var(--rma-primary);
+  color: #ffffff;
+}
+
+/* =========================================================
+   POPULAR PRODUCTS
+   ========================================================= */
+
+[data-theme='dark'] .popular_products_eyebrow {
+  color: #7aa487;
+}
+
+[data-theme='dark'] .popular_products_header h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .popular_products_header p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .popular_products_see_all {
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .popular_products_see_all:hover {
+  color: #72d38f;
+}
+
+[data-theme='dark'] .popular_product_card {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.22);
+}
+
+[data-theme='dark'] .popular_product_card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='dark'] .popular_product_image {
+  background: #202922;
+}
+
+[data-theme='dark'] .popular_product_image > span:first-child {
+  color: #82a98d;
+}
+
+[data-theme='dark'] .popular_product_tag {
+  background: rgba(34, 166, 83, 0.92);
+  color: #ffffff;
+}
+
+[data-theme='dark'] .popular_product_content h3 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .popular_product_shop {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .popular_product_price {
+  color: #4ade80;
+}
+
+[data-theme='dark'] .popular_product_arrow {
+  background: #203126;
+  color: #4ade80;
+}
+
+[data-theme='dark'] .popular_products_empty {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   NEARBY SHOP IMAGE
+   ========================================================= */
+
+[data-theme='dark'] .nearby_shop_image {
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .nearby_shop_product_name {
+  background: rgba(27, 35, 30, 0.92);
+  color: #a5e5b5;
+}
+
+/* =========================================================
+   PROMO
+   Keep image + dark overlay + white typography.
+   ========================================================= */
+
+[data-theme='dark'] .rma_promo_overlay {
+  background: rgba(0, 0, 0, 0.62);
+}
+
+[data-theme='dark'] .rma_promo_button {
+  background: #ffffff;
+  color: #168b4b;
+}
+
+/* =========================================================
+   EXPLORE MORE
+   Keep this section intentionally dark-green.
+   Only slightly deepen it for dark mode.
+   ========================================================= */
+
+[data-theme='dark'] .home_explore_end {
+  background: linear-gradient(135deg, #0c2d1b 0%, #16452a 100%);
 }

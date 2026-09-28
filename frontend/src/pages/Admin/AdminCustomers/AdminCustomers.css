@@ -1501,3 +1501,548 @@
   background: #fef2f2;
   color: #b91c1c;
 }
+
+/* =========================================================
+   DARK MODE — RMA ADMIN CUSTOMERS
+   ========================================================= */
+
+[data-theme='dark'] .admin-customers-page {
+  background: var(--rma-bg);
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+[data-theme='dark'] .admin-customers-header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin-customers-header p {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   DASHBOARD BUTTON
+   ========================================================= */
+
+[data-theme='dark'] .admin-customers-back-btn {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-card);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .admin-customers-back-btn:hover {
+  border-color: var(--rma-primary);
+  background: rgba(22, 128, 58, 0.12);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .admin-customers-back-btn:focus-visible {
+  outline-color: rgba(22, 128, 58, 0.35);
+}
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+[data-theme='dark'] .admin-customers-error {
+  border-color: rgba(220, 38, 38, 0.28);
+  background: rgba(220, 38, 38, 0.1);
+  color: #ff8f86;
+}
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+[data-theme='dark'] .admin-customers-loading {
+  background: var(--rma-bg);
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   STATISTICS
+   ========================================================= */
+
+[data-theme='dark'] .admin-customer-stat-card {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.12),
+    0 8px 24px rgba(0, 0, 0, 0.16);
+}
+
+[data-theme='dark'] .admin-customer-stat-card::after {
+  background: rgba(22, 128, 58, 0.12);
+}
+
+[data-theme='dark'] .admin-customer-stat-card:hover {
+  border-color: var(--rma-border-dark);
+
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.18),
+    0 12px 28px rgba(0, 0, 0, 0.22);
+}
+
+[data-theme='dark'] .admin-customer-stat-card span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .admin-customer-stat-card strong {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   TOOLBAR
+   ========================================================= */
+
+[data-theme='dark'] .admin-customers-toolbar {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme='dark'] .admin-customers-toolbar input {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin-customers-toolbar input::placeholder {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .admin-customers-toolbar input:hover {
+  border-color: var(--rma-border-dark);
+}
+
+[data-theme='dark'] .admin-customers-toolbar input:focus {
+  border-color: var(--rma-primary);
+
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.14);
+}
+
+[data-theme='dark'] .admin-customers-toolbar span {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+[data-theme='dark'] .admin-customers-table-wrapper {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.12),
+    0 8px 24px rgba(0, 0, 0, 0.16);
+
+  scrollbar-color: var(--rma-border-dark) transparent;
+}
+
+[data-theme='dark'] .admin-customers-table-wrapper::-webkit-scrollbar-thumb {
+  background: var(--rma-border-dark);
+}
+
+[data-theme='dark'] .admin-customers-table th {
+  border-bottom-color: var(--rma-border);
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .admin-customers-table td {
+  border-bottom-color: var(--rma-border);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .admin-customers-table tbody tr:hover {
+  background: var(--rma-card-hover);
+}
+
+/* =========================================================
+   CUSTOMER NAME
+   ========================================================= */
+
+[data-theme='dark'] .admin-customer-name {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   LOCATION
+   ========================================================= */
+
+[data-theme='dark'] .admin-customer-location {
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   CUSTOMER STATUS
+   ========================================================= */
+
+[data-theme='dark'] .customer-status {
+  border-color: var(--rma-border);
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .customer-status.active {
+  border-color: rgba(22, 128, 58, 0.35);
+  background: rgba(22, 128, 58, 0.12);
+  color: var(--rma-primary-light);
+}
+
+/* =========================================================
+   VIEW BUTTON
+   ========================================================= */
+
+[data-theme='dark'] .admin-customer-view-btn {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-card);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .admin-customer-view-btn:hover {
+  border-color: var(--rma-primary);
+  background: rgba(22, 128, 58, 0.12);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .admin-customer-view-btn:focus-visible {
+  outline-color: rgba(22, 128, 58, 0.35);
+}
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+[data-theme='dark'] .admin-customers-empty {
+  color: var(--rma-text-muted) !important;
+}
+
+/* =========================================================
+   MODAL OVERLAY
+   ========================================================= */
+
+[data-theme='dark'] .admin-customer-modal-overlay {
+  background: rgba(0, 0, 0, 0.72);
+}
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+[data-theme='dark'] .admin-customer-modal {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+
+  box-shadow:
+    0 18px 50px rgba(0, 0, 0, 0.45),
+    0 4px 14px rgba(0, 0, 0, 0.25);
+
+  scrollbar-color: var(--rma-border-dark) transparent;
+}
+
+[data-theme='dark'] .admin-customer-modal::-webkit-scrollbar-thumb {
+  background: var(--rma-border-dark);
+}
+
+/* =========================================================
+   MODAL HEADER
+   ========================================================= */
+
+[data-theme='dark'] .admin-customer-modal-header {
+  border-bottom-color: var(--rma-border);
+  background: rgba(24, 28, 26, 0.97);
+}
+
+[data-theme='dark'] .admin-customer-modal-header h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin-customer-modal-header p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .admin-customer-close-btn {
+  border-color: var(--rma-border);
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .admin-customer-close-btn:hover {
+  border-color: rgba(220, 38, 38, 0.35);
+  background: rgba(220, 38, 38, 0.1);
+  color: #ff8f86;
+}
+
+[data-theme='dark'] .admin-customer-close-btn:focus-visible {
+  outline-color: rgba(22, 128, 58, 0.35);
+}
+
+/* =========================================================
+   CUSTOMER DETAIL CARDS
+   ========================================================= */
+
+[data-theme='dark'] .customer-detail-card {
+  border-color: var(--rma-border);
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .customer-detail-card:hover {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-card-hover);
+}
+
+[data-theme='dark'] .customer-detail-card span {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .customer-detail-card strong {
+  color: var(--rma-text);
+}
+
+/* =========================================================
+   ADDRESS
+   ========================================================= */
+
+[data-theme='dark'] .admin-customer-address-section h3 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin-customer-address-section h3::before {
+  background: var(--rma-primary);
+}
+
+[data-theme='dark'] .admin-customer-address-section p {
+  border-color: var(--rma-border);
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+}
+
+/* =========================================================
+   LOCATION ACTIONS
+   ========================================================= */
+
+[data-theme='dark'] .admin-customer-map-btn {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .admin-customer-map-btn:hover {
+  background: var(--rma-primary-dark);
+  opacity: 1;
+}
+
+/* =========================================================
+   ORDER HISTORY
+   ========================================================= */
+
+[data-theme='dark'] .admin-customer-orders-section h3 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin-customer-orders-section h3::before {
+  background: var(--rma-primary);
+}
+
+[data-theme='dark'] .admin-customer-order-card {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+}
+
+[data-theme='dark'] .admin-customer-order-card:hover {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-card-hover);
+}
+
+[data-theme='dark'] .admin-customer-order-card strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin-customer-order-card span {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .admin-customer-order-id {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .admin-customer-order-id:hover {
+  color: var(--rma-primary-light);
+}
+
+/* =========================================================
+   MOBILE ORDER CARD DIVIDERS
+   ========================================================= */
+
+[data-theme='dark'] .admin-customer-order-card > div {
+  border-bottom-color: var(--rma-border);
+}
+
+/* =========================================================
+   PAYMENT STATUS
+   ========================================================= */
+
+[data-theme='dark'] .customer-payment-status.paid {
+  background: rgba(22, 128, 58, 0.12);
+  color: var(--rma-primary-light);
+  border-color: rgba(22, 128, 58, 0.35);
+}
+
+[data-theme='dark'] .customer-payment-status.pending {
+  background: rgba(234, 179, 8, 0.1);
+  color: #e8b84a;
+  border-color: rgba(234, 179, 8, 0.3);
+}
+
+[data-theme='dark'] .customer-payment-status.failed {
+  background: rgba(220, 38, 38, 0.1);
+  color: #ff8f86;
+  border-color: rgba(220, 38, 38, 0.28);
+}
+
+[data-theme='dark'] .customer-payment-status.refunded {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+  border-color: var(--rma-border);
+}
+
+/* =========================================================
+   ORDER STATUS
+   ========================================================= */
+
+[data-theme='dark'] .customer-order-status {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .customer-order-status.completed {
+  background: rgba(22, 128, 58, 0.12);
+  color: var(--rma-primary-light);
+  border-color: rgba(22, 128, 58, 0.35);
+}
+
+[data-theme='dark'] .customer-order-status.pending {
+  background: rgba(234, 88, 12, 0.1);
+  color: #f0a36a;
+  border-color: rgba(234, 88, 12, 0.28);
+}
+
+[data-theme='dark'] .customer-order-status.accepted,
+[data-theme='dark'] .customer-order-status.preparing,
+[data-theme='dark'] .customer-order-status.ready,
+[data-theme='dark'] .customer-order-status.outfordelivery {
+  background: rgba(59, 130, 246, 0.1);
+  color: #8bb8ff;
+  border-color: rgba(59, 130, 246, 0.28);
+}
+
+[data-theme='dark'] .customer-order-status.rejected {
+  background: rgba(220, 38, 38, 0.1);
+  color: #ff8f86;
+  border-color: rgba(220, 38, 38, 0.28);
+}
+
+/* =========================================================
+   ADMIN CUSTOMER STATUS VARIANTS
+   ========================================================= */
+
+[data-theme='dark'] .admin-customer-status {
+  background: var(--rma-bg-secondary);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .admin-customer-status-pending {
+  background: rgba(234, 88, 12, 0.1);
+  color: #f0a36a;
+}
+
+[data-theme='dark'] .admin-customer-status-accepted {
+  background: rgba(59, 130, 246, 0.1);
+  color: #8bb8ff;
+}
+
+[data-theme='dark'] .admin-customer-status-preparing {
+  background: rgba(234, 179, 8, 0.1);
+  color: #e8b84a;
+}
+
+[data-theme='dark'] .admin-customer-status-ready {
+  background: rgba(22, 128, 58, 0.12);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .admin-customer-status-outfordelivery,
+[data-theme='dark'] .admin-customer-status-out-for-delivery {
+  background: rgba(124, 58, 237, 0.12);
+  color: #b99aff;
+}
+
+[data-theme='dark'] .admin-customer-status-completed {
+  background: rgba(5, 150, 105, 0.12);
+  color: #6ee7c2;
+}
+
+[data-theme='dark'] .admin-customer-status-rejected {
+  background: rgba(220, 38, 38, 0.1);
+  color: #ff8f86;
+}
+
+/* =========================================================
+   CUSTOMER STATUS VARIANTS
+   ========================================================= */
+
+[data-theme='dark'] .customer-status.status-pending {
+  background: rgba(234, 88, 12, 0.1);
+  color: #f0a36a;
+}
+
+[data-theme='dark'] .customer-status.status-accepted {
+  background: rgba(59, 130, 246, 0.1);
+  color: #8bb8ff;
+}
+
+[data-theme='dark'] .customer-status.status-preparing {
+  background: rgba(234, 179, 8, 0.1);
+  color: #e8b84a;
+}
+
+[data-theme='dark'] .customer-status.status-ready {
+  background: rgba(22, 128, 58, 0.12);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .customer-status.status-outfordelivery {
+  background: rgba(124, 58, 237, 0.12);
+  color: #b99aff;
+}
+
+[data-theme='dark'] .customer-status.status-completed {
+  background: rgba(5, 150, 105, 0.12);
+  color: #6ee7c2;
+}
+
+[data-theme='dark'] .customer-status.status-rejected {
+  background: rgba(220, 38, 38, 0.1);
+  color: #ff8f86;
+}
+
+/* =========================================================
+   DARK MODE FOCUS
+   ========================================================= */
+
+[data-theme='dark'] .admin-customers-back-btn:focus-visible,
+[data-theme='dark'] .admin-customer-view-btn:focus-visible,
+[data-theme='dark'] .admin-customer-close-btn:focus-visible,
+[data-theme='dark'] .admin-customers-toolbar input:focus-visible,
+[data-theme='dark'] .admin-customer-map-btn:focus-visible,
+[data-theme='dark'] .admin-customer-order-id:focus-visible {
+  outline: 3px solid rgba(22, 128, 58, 0.35);
+  outline-offset: 2px;
+}
