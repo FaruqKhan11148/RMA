@@ -86,8 +86,6 @@ function MapPicker({ onLocationSelect }) {
 
   const [address, setAddress] = useState('');
 
-  const [accuracy, setAccuracy] = useState(null);
-
   const [loadingLocation, setLoadingLocation] = useState(false);
 
   const [loadingAddress, setLoadingAddress] = useState(false);
@@ -125,8 +123,6 @@ function MapPicker({ onLocationSelect }) {
 
         setAddress(displayName);
 
-        setAccuracy(locationAccuracy);
-
         setSelectedLocation({
           latitude,
           longitude,
@@ -160,8 +156,6 @@ function MapPicker({ onLocationSelect }) {
   const selectLocation = useCallback(
     (newPosition, locationAccuracy = null) => {
       setPosition(newPosition);
-
-      setAccuracy(locationAccuracy);
 
       setError('');
 

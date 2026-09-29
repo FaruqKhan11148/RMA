@@ -1,5 +1,4 @@
 import {
-  Store,
   LayoutDashboard,
   Gift,
   Languages,
