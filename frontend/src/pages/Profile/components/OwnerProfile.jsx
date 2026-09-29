@@ -1,3 +1,17 @@
+import {
+  Store,
+  LayoutDashboard,
+  Gift,
+  Languages,
+  Palette,
+  Info,
+  CircleHelp,
+  MessageCircle,
+  UserRound,
+  Truck,
+  LogOut,
+} from 'lucide-react';
+
 import RoleSwitchSheet from './RoleSwitchSheet';
 import DeliveryLoginTypeSheet from './DeliveryLoginTypeSheet';
 
@@ -52,16 +66,24 @@ function OwnerProfile({
           className="profile_item"
           onClick={() => navigate('/owner/dashboard')}
         >
-          <span>Owner Dashboard</span>
-          <span>›</span>
+          <span className="profile_item_left">
+            <LayoutDashboard size={19} strokeWidth={2} />
+            <span>Owner Dashboard</span>
+          </span>
+
+          <span className="profile_item_arrow">›</span>
         </button>
 
         <button
           className="profile_item"
           onClick={() => navigate('/owner/offers')}
         >
-          <span>Offers & Rewards</span>
-          <span>›</span>
+          <span className="profile_item_left">
+            <Gift size={19} strokeWidth={2} />
+            <span>Offers & Rewards</span>
+          </span>
+
+          <span className="profile_item_arrow">›</span>
         </button>
       </section>
 
@@ -72,20 +94,62 @@ function OwnerProfile({
           className="profile_item"
           onClick={() => navigate('/profile/language')}
         >
-          <span>Language</span>
-          <span>›</span>
+          <span className="profile_item_left">
+            <Languages size={19} strokeWidth={2} />
+            <span>Language</span>
+          </span>
+
+          <span className="profile_item_arrow">›</span>
+        </button>
+
+        <button
+          className="profile_item"
+          onClick={() => navigate('/profile/appearance')}
+        >
+          <span className="profile_item_left">
+            <Palette size={19} strokeWidth={2} />
+            <span>Appearance</span>
+          </span>
+
+          <span className="profile_item_arrow">›</span>
+        </button>
+      </section>
+
+      <section className="profile_section">
+        <h2>About RMA</h2>
+
+        <button className="profile_item" onClick={() => navigate('/about')}>
+          <span className="profile_item_left">
+            <Info size={19} strokeWidth={2} />
+            <span>About Us</span>
+          </span>
+
+          <span className="profile_item_arrow">›</span>
         </button>
       </section>
 
       <section className="profile_section">
         <h2>Support</h2>
 
+        <button className="profile_item" onClick={() => navigate('/rma-chat')}>
+          <span className="profile_item_left">
+            <MessageCircle size={19} strokeWidth={2} />
+            <span>RMA Support</span>
+          </span>
+
+          <span className="profile_item_arrow">›</span>
+        </button>
+
         <button
           className="profile_item"
           onClick={() => navigate('/profile/help-support')}
         >
-          <span>Help & Support</span>
-          <span>›</span>
+          <span className="profile_item_left">
+            <CircleHelp size={19} strokeWidth={2} />
+            <span>Help & Support</span>
+          </span>
+
+          <span className="profile_item_arrow">›</span>
         </button>
       </section>
 
@@ -96,21 +160,37 @@ function OwnerProfile({
           className="profile_item"
           onClick={() => setSwitchRole('customer')}
         >
-          <span>Customer Login</span>
-          <span>›</span>
+          <span className="profile_item_left">
+            <UserRound size={19} strokeWidth={2} />
+            <span>Customer Login</span>
+          </span>
+
+          <span className="profile_item_arrow">›</span>
         </button>
 
         <button
           className="profile_item"
           onClick={() => setDeliveryLoginTypeSheetOpen(true)}
         >
-          <span>Delivery Partner Login</span>
-          <span>›</span>
+          <span className="profile_item_left">
+            <Truck size={19} strokeWidth={2} />
+            <span>Delivery Partner Login</span>
+          </span>
+
+          <span className="profile_item_arrow">›</span>
         </button>
       </section>
 
-      <button className="logout_button" onClick={handleOwnerLogout}>
-        Logout
+      <button
+        className="profile_item logout_button"
+        onClick={handleOwnerLogout}
+      >
+        <span className="profile_item_left">
+          <LogOut size={19} strokeWidth={2} />
+          <span>Logout</span>
+        </span>
+
+        <span className="profile_item_arrow">›</span>
       </button>
 
       <RoleSwitchSheet

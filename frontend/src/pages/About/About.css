@@ -1,0 +1,241 @@
+.about_page {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px 16px 100px;
+}
+
+.about_header {
+  text-align: center;
+  padding: 20px 0 28px;
+}
+
+.about_logo {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.about_header h1 {
+  margin: 0;
+  color: var(--rma-text);
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.about_tagline {
+  margin: 6px 0 8px;
+  color: var(--rma-text-secondary);
+  font-size: 15px;
+}
+
+.about_version {
+  display: inline-block;
+  color: var(--rma-text-muted);
+  font-size: 13px;
+}
+
+.about_content {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.about_section {
+  display: flex;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid var(--rma-border);
+  border-radius: 14px;
+  background: var(--rma-card);
+}
+
+.about_section_icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: var(--rma-primary-soft);
+  color: var(--rma-primary);
+}
+
+.about_section h2 {
+  margin: 0 0 8px;
+  color: var(--rma-text);
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.about_section p {
+  margin: 0 0 10px;
+  color: var(--rma-text-secondary);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.about_section p:last-child {
+  margin-bottom: 0;
+}
+
+.about_links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.about_link {
+  width: 100%;
+  min-height: 56px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--rma-border);
+  border-radius: 14px;
+  background: var(--rma-card);
+  color: var(--rma-text);
+  cursor: pointer;
+  transition:
+    background var(--rma-transition),
+    border-color var(--rma-transition),
+    transform var(--rma-transition);
+}
+
+.about_link:hover {
+  background: var(--rma-card-hover);
+  border-color: var(--rma-border-dark);
+}
+
+.about_link:active {
+  transform: scale(0.99);
+}
+
+.about_link_left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--rma-text);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.about_link_left svg {
+  color: var(--rma-primary);
+  flex-shrink: 0;
+}
+
+.about_link_arrow {
+  color: var(--rma-text-secondary);
+  font-size: 24px;
+  line-height: 1;
+}
+
+.about_link:focus-visible {
+  outline: 3px solid rgba(22, 128, 58, 0.35);
+  outline-offset: 2px;
+}
+
+/* Dark mode */
+[data-theme='dark'] .about_logo {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+}
+
+[data-theme='dark'] .about_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .about_tagline {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .about_version {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .about_section {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .about_section_icon {
+  background: rgba(22, 128, 58, 0.14);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .about_section h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .about_section p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .about_link {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .about_link:hover {
+  background: var(--rma-card-hover);
+  border-color: var(--rma-border-dark);
+}
+
+[data-theme='dark'] .about_link_left {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .about_link_left svg {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .about_link_arrow {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .about_link:focus-visible {
+  outline-color: rgba(22, 128, 58, 0.35);
+}
+
+@media (max-width: 480px) {
+  .about_page {
+    padding: 18px 14px 90px;
+  }
+
+  .about_header {
+    padding: 16px 0 24px;
+  }
+
+  .about_header h1 {
+    font-size: 24px;
+  }
+
+  .about_section {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .about_section_icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+  }
+
+  .about_section p {
+    font-size: 13.5px;
+  }
+}

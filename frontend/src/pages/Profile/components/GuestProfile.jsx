@@ -1,3 +1,12 @@
+import {
+  ShoppingBag,
+  Languages,
+  Palette,
+  Info,
+  MessageCircle,
+  CircleHelp,
+} from 'lucide-react';
+
 function GuestProfile({ t, navigate, setLoginSheetOpen }) {
   return (
     <main className="profile">
@@ -55,29 +64,78 @@ function GuestProfile({ t, navigate, setLoginSheetOpen }) {
         <h2>My Activity</h2>
 
         <button className="profile_item" onClick={() => navigate('/orders')}>
-          <span>{t.bottomNav.orders}</span>
-          <span>›</span>
+          <span className="profile_item_left">
+            <ShoppingBag size={19} strokeWidth={2} />
+            <span>{t.bottomNav.orders}</span>
+          </span>
+
+          <span className="profile_item_arrow">›</span>
         </button>
       </section>
 
       <section className="profile_section">
         <h2>Preferences</h2>
 
-        <button className="profile_item">
-          <span>Language</span>
-          <span>›</span>
+        <button
+          className="profile_item"
+          onClick={() => navigate('/profile/language')}
+        >
+          <span className="profile_item_left">
+            <Languages size={19} strokeWidth={2} />
+            <span>Language</span>
+          </span>
+
+          <span className="profile_item_arrow">›</span>
+        </button>
+
+        <button
+          className="profile_item"
+          onClick={() => navigate('/profile/appearance')}
+        >
+          <span className="profile_item_left">
+            <Palette size={19} strokeWidth={2} />
+            <span>Appearance</span>
+          </span>
+
+          <span className="profile_item_arrow">›</span>
+        </button>
+      </section>
+
+      <section className="profile_section">
+        <h2>About RMA</h2>
+
+        <button className="profile_item" onClick={() => navigate('/about')}>
+          <span className="profile_item_left">
+            <Info size={19} strokeWidth={2} />
+            <span>About Us</span>
+          </span>
+
+          <span className="profile_item_arrow">›</span>
         </button>
       </section>
 
       <section className="profile_section">
         <h2>Support</h2>
 
+        <button className="profile_item" onClick={() => navigate('/rma-chat')}>
+          <span className="profile_item_left">
+            <MessageCircle size={19} strokeWidth={2} />
+            <span>RMA Support</span>
+          </span>
+
+          <span className="profile_item_arrow">›</span>
+        </button>
+
         <button
           className="profile_item"
           onClick={() => navigate('/profile/help-support')}
         >
-          <span>Help & Support</span>
-          <span>›</span>
+          <span className="profile_item_left">
+            <CircleHelp size={19} strokeWidth={2} />
+            <span>Help & Support</span>
+          </span>
+
+          <span className="profile_item_arrow">›</span>
         </button>
       </section>
     </main>

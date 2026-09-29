@@ -1,5 +1,19 @@
 import RoleSwitchSheet from './RoleSwitchSheet';
 
+import {
+  LayoutDashboard,
+  Truck,
+  WalletCards,
+  Languages,
+  Palette,
+  Info,
+  MessageCircle,
+  CircleHelp,
+  UserRound,
+  Store,
+  LogOut,
+} from 'lucide-react';
+
 function DeliveryProfile({
   deliveryPerson,
   navigate,
@@ -29,14 +43,12 @@ function DeliveryProfile({
         {isShopDeliveryPartner && deliveryPerson.shopId && (
           <div className="profile_customer_row">
             <span>Shop ID</span>
-
             <strong>{deliveryPerson.shopId}</strong>
           </div>
         )}
 
         <div className="profile_customer_row">
           <span>Mobile</span>
-
           <strong>{deliveryPerson.phone}</strong>
         </div>
 
@@ -58,27 +70,36 @@ function DeliveryProfile({
           className="profile_item"
           onClick={() => navigate('/delivery/dashboard')}
         >
-          <span>Delivery Dashboard</span>
+          <span className="profile_item_left">
+            <LayoutDashboard size={19} strokeWidth={2} />
+            <span>Delivery Dashboard</span>
+          </span>
 
-          <span>›</span>
+          <span className="profile_item_arrow">›</span>
         </button>
 
         <button
           className="profile_item"
           onClick={() => navigate('/delivery/orders-delivery')}
         >
-          <span>Delivery Orders</span>
+          <span className="profile_item_left">
+            <Truck size={19} strokeWidth={2} />
+            <span>Delivery Orders</span>
+          </span>
 
-          <span>›</span>
+          <span className="profile_item_arrow">›</span>
         </button>
 
         <button
           className="profile_item"
           onClick={() => navigate('/delivery/earnings')}
         >
-          <span>Earnings</span>
+          <span className="profile_item_left">
+            <WalletCards size={19} strokeWidth={2} />
+            <span>Earnings</span>
+          </span>
 
-          <span>›</span>
+          <span className="profile_item_arrow">›</span>
         </button>
       </section>
 
@@ -89,22 +110,62 @@ function DeliveryProfile({
           className="profile_item"
           onClick={() => navigate('/profile/language')}
         >
-          <span>Language</span>
+          <span className="profile_item_left">
+            <Languages size={19} strokeWidth={2} />
+            <span>Language</span>
+          </span>
 
-          <span>›</span>
+          <span className="profile_item_arrow">›</span>
+        </button>
+
+        <button
+          className="profile_item"
+          onClick={() => navigate('/profile/appearance')}
+        >
+          <span className="profile_item_left">
+            <Palette size={19} strokeWidth={2} />
+            <span>Appearance</span>
+          </span>
+
+          <span className="profile_item_arrow">›</span>
+        </button>
+      </section>
+
+      <section className="profile_section">
+        <h2>About RMA</h2>
+
+        <button className="profile_item" onClick={() => navigate('/about')}>
+          <span className="profile_item_left">
+            <Info size={19} strokeWidth={2} />
+            <span>About Us</span>
+          </span>
+
+          <span className="profile_item_arrow">›</span>
         </button>
       </section>
 
       <section className="profile_section">
         <h2>Support</h2>
 
+        <button className="profile_item" onClick={() => navigate('/rma-chat')}>
+          <span className="profile_item_left">
+            <MessageCircle size={19} strokeWidth={2} />
+            <span>RMA Support</span>
+          </span>
+
+          <span className="profile_item_arrow">›</span>
+        </button>
+
         <button
           className="profile_item"
           onClick={() => navigate('/profile/help-support')}
         >
-          <span>Help & Support</span>
+          <span className="profile_item_left">
+            <CircleHelp size={19} strokeWidth={2} />
+            <span>Help & Support</span>
+          </span>
 
-          <span>›</span>
+          <span className="profile_item_arrow">›</span>
         </button>
       </section>
 
@@ -115,20 +176,34 @@ function DeliveryProfile({
           className="profile_item"
           onClick={() => setSwitchRole('customer')}
         >
-          <span>Customer Login</span>
+          <span className="profile_item_left">
+            <UserRound size={19} strokeWidth={2} />
+            <span>Customer Login</span>
+          </span>
 
-          <span>›</span>
+          <span className="profile_item_arrow">›</span>
         </button>
 
         <button className="profile_item" onClick={() => setSwitchRole('owner')}>
-          <span>Owner Login</span>
+          <span className="profile_item_left">
+            <Store size={19} strokeWidth={2} />
+            <span>Owner Login</span>
+          </span>
 
-          <span>›</span>
+          <span className="profile_item_arrow">›</span>
         </button>
       </section>
 
-      <button className="logout_button" onClick={handleDeliveryLogout}>
-        Logout
+      <button
+        className="profile_item logout_button"
+        onClick={handleDeliveryLogout}
+      >
+        <span className="profile_item_left">
+          <LogOut size={19} strokeWidth={2} />
+          <span>Logout</span>
+        </span>
+
+        <span className="profile_item_arrow">›</span>
       </button>
 
       <RoleSwitchSheet

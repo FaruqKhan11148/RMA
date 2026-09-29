@@ -208,6 +208,7 @@
 
   font-size: 10px;
   letter-spacing: 1.3px;
+  margin-bottom: 13px;
 }
 
 .find_shop_distance {
@@ -667,6 +668,7 @@
 
   .find_shop_nearby .find_shop_section_header h2 {
     font-size: 19px;
+    margin-bottom: 10px;
   }
 
   .find_shop_nearby .find_shop_section_header p {
@@ -1548,6 +1550,7 @@
 
   .find_shop_section_header h2 {
     font-size: var(--rma-font-lg);
+    margin-bottom: 10px;
   }
 
   .find_shop_distance {

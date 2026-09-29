@@ -318,12 +318,12 @@
   color: #222222;
 }
 
-/* Map container */
+/* ==========================================
+   FULL-SCREEN MAP PICKER
+========================================== */
 
 .add_address_location .map_picker {
   width: 100%;
-  overflow: hidden;
-  border-radius: 14px;
 }
 
 /* Selected coordinates */
@@ -352,7 +352,152 @@
 
 .selected_location_info small {
   font-size: 11px;
+  color: hsl(0, 0%, 47%);
+}
+
+/* ==========================================
+   CHOOSE LOCATION BUTTON
+========================================== */
+
+.select_location_button {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 13px 16px;
+
+  border: 1px solid #dddddd;
+  border-radius: 12px;
+
+  background: #ffffff;
+  color: #222222;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.select_location_button:hover {
+  border-color: #111111;
+  background: #f8f8f8;
+
+  transform: translateY(-1px);
+}
+
+.select_location_button:active {
+  transform: translateY(0);
+}
+
+/* ==========================================
+   SELECTED LOCATION
+========================================== */
+
+.selected_location_info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  margin-top: 0;
+
+  padding: 12px 14px;
+
+  border: 1px solid #dddddd;
+  border-radius: 12px;
+
+  background: #fafafa;
+}
+
+.selected_location_info span {
+  flex: 1;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  color: #222222;
+}
+
+.selected_location_info small {
+  font-size: 11px;
   color: #777777;
+}
+
+/* ==========================================
+   CHANGE LOCATION BUTTON
+========================================== */
+
+.selected_location_info button {
+  flex-shrink: 0;
+
+  padding: 7px 12px;
+
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+
+  background: #ffffff;
+  color: #222222;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.selected_location_info button:hover {
+  border-color: #111111;
+  background: #111111;
+  color: #ffffff;
+}
+
+.selected_location_info button:active {
+  transform: scale(0.97);
+}
+
+/* ==========================================
+   DARK MODE — LOCATION BUTTONS
+========================================== */
+
+[data-theme='dark'] .select_location_button {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-card);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .select_location_button:hover {
+  border-color: var(--rma-primary);
+  background: var(--rma-card-hover);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .selected_location_info {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .selected_location_info span {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .selected_location_info small {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .selected_location_info button {
+  border-color: var(--rma-border-dark);
+  background: var(--rma-card);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .selected_location_info button:hover {
+  border-color: var(--rma-primary);
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
 }
 
 /* =========================================================

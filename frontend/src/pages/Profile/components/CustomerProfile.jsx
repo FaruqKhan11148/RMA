@@ -11,6 +11,7 @@ import {
   CircleHelp,
   LogOut,
   Palette,
+  Info,
 } from 'lucide-react';
 
 import RoleSwitchSheet from './RoleSwitchSheet';
@@ -192,6 +193,19 @@ function CustomerProfile({
           <span className="profile_item_left">
             <LayoutDashboard size={19} strokeWidth={2} />
             <span>Delivery Partner Dashboard</span>
+          </span>
+
+          <span className="profile_item_arrow">›</span>
+        </button>
+      </section>
+
+      <section className="profile_section">
+        <h2>About RMA</h2>
+
+        <button className="profile_item" onClick={() => navigate('/about')}>
+          <span className="profile_item_left">
+            <Info size={19} strokeWidth={2} />
+            <span>About Us</span>
           </span>
 
           <span className="profile_item_arrow">›</span>

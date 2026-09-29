@@ -8,6 +8,8 @@ function AddAddress() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const [showMap, setShowMap] = useState(false);
+
   const [label, setLabel] = useState('Home');
   const [address, setAddress] = useState('');
 
@@ -120,16 +122,39 @@ function AddAddress() {
           <div className="add_address_location">
             <label>Delivery Location</label>
 
-            <MapPicker onLocationSelect={handleLocationSelect} />
+            {!showMap && (
+              <>
+                {latitude !== null && longitude !== null ? (
+                  <div className="selected_location_info">
+                    <span>Location selected</span>
 
-            {latitude !== null && longitude !== null && (
-              <div className="selected_location_info">
-                <span>Location selected</span>
+                    <small>
+                      {latitude.toFixed(6)}, {longitude.toFixed(6)}
+                    </small>
 
-                <small>
-                  {latitude.toFixed(6)}, {longitude.toFixed(6)}
-                </small>
-              </div>
+                    <button type="button" onClick={() => setShowMap(true)}>
+                      Change
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    className="select_location_button"
+                    onClick={() => setShowMap(true)}
+                  >
+                    Choose delivery location
+                  </button>
+                )}
+              </>
+            )}
+
+            {showMap && (
+              <MapPicker
+                onLocationSelect={(selectedLocation) => {
+                  handleLocationSelect(selectedLocation);
+                  setShowMap(false);
+                }}
+              />
             )}
           </div>
           <label htmlFor="address">Full Address</label>

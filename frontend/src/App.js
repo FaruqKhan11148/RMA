@@ -18,6 +18,10 @@ import {
 
 import FlashMessage from './components/FlashMessage/FlashMessage';
 
+import About from './pages/About/About';
+import PrivacyPolicy from './pages/PrivacyPolicy/PrivacyPolicy';
+import TermsConditions from './pages/TermsConditions/TermsConditions';
+
 import OwnerProtectedRoute from './pages/Owner/OwnerProtectedRoute/OwnerProtectedRoute';
 import ScrollToTop from './components/ScrollToTop/ScrollToTop';
 import DeliveryPartnerRegister from './pages/DeliveryPartner/DeliveryPartnerRegister/DeliveryPartnerRegister';
@@ -128,7 +132,7 @@ import ShopPromotion from './pages/Owner/OwnerSettings/ShopPromotion/ShopPromoti
 function AppLayout() {
   const location = useLocation();
   const isRMAChatRoute = location.pathname === '/rma-chat';
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [customerLoggedIn, setCustomerLoggedIn] = useState(false);
   const [profileRole, setProfileRole] = useState(null);
 
@@ -155,9 +159,12 @@ function AppLayout() {
   useEffect(() => {
     const checkCustomerLogin = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/customers/me', {
-          credentials: 'include',
-        });
+        const response = await fetch(
+          'https://rma-backend-bo4a.onrender.com/api/customers/me',
+          {
+            credentials: 'include',
+          },
+        );
 
         if (response.ok) {
           setCustomerLoggedIn(true);
@@ -294,6 +301,12 @@ function AppLayout() {
         }
       >
         <Routes>
+          {/* About Us */}
+
+          <Route path="/about" element={<About />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-conditions" element={<TermsConditions />} />
+
           {/* ==================== CUSTOMER ROUTES ==================== */}
 
           <Route path="/" element={<Home />} />

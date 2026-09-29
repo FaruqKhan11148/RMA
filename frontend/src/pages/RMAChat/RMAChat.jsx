@@ -3,10 +3,13 @@ import './RMAChat.css';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import useUserRole from '../../hooks/useUserRole';
 import rmaChatData from './rmaChatData';
 
 function RMAChat() {
   const navigate = useNavigate();
+
+  const { role, loading } = useUserRole();
 
   const [messages, setMessages] = useState([]);
   const [currentNode, setCurrentNode] = useState('main');
@@ -15,7 +18,21 @@ function RMAChat() {
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    const node = rmaChatData.main;
+    if (loading || !role) {
+      return;
+    }
+
+    const roleChatData = rmaChatData[role];
+
+    if (!roleChatData) {
+      return;
+    }
+
+    const node = roleChatData.main;
+
+    if (!node) {
+      return;
+    }
 
     setMessages([
       {
@@ -24,7 +41,7 @@ function RMAChat() {
         text: node.message,
       },
     ]);
-  }, []);
+  }, [loading, role]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({
@@ -59,14 +76,19 @@ function RMAChat() {
   };
 
   const showNextNode = (nodeId) => {
-    const node = rmaChatData[nodeId];
+    const roleChatData = rmaChatData[role];
+
+    if (!roleChatData) {
+      return;
+    }
+
+    const node = roleChatData[nodeId];
 
     if (!node) {
       return;
     }
 
     setCurrentNode(nodeId);
-
     setIsTyping(true);
 
     setTimeout(() => {
@@ -85,7 +107,11 @@ function RMAChat() {
       setTimeout(() => {
         setIsTyping(false);
 
-        addRmaMessage(rmaChatData.end.message);
+        const roleChatData = rmaChatData[role];
+
+        if (roleChatData?.end) {
+          addRmaMessage(roleChatData.end.message);
+        }
       }, 700);
 
       return;
@@ -95,15 +121,27 @@ function RMAChat() {
       setIsTyping(true);
 
       setTimeout(() => {
-        setIsTyping(false);
-
         addRmaMessage(option.answer);
 
         if (option.next) {
+          const roleChatData = rmaChatData[role];
+          const nextNode = roleChatData?.[option.next];
+
+          if (!nextNode) {
+            setIsTyping(false);
+            return;
+          }
+
           setTimeout(() => {
-            showNextNode(option.next);
-          }, 250);
+            setCurrentNode(option.next);
+            setIsTyping(false);
+            addRmaMessage(nextNode.message);
+          }, 400);
+
+          return;
         }
+
+        setIsTyping(false);
       }, 700);
 
       return;
@@ -114,7 +152,49 @@ function RMAChat() {
     }
   };
 
-  const currentNodeData = rmaChatData[currentNode];
+  const currentNodeData = role ? rmaChatData[role]?.[currentNode] : null;
+
+  if (loading || !role) {
+    return (
+      <main className="rma_chat">
+        <header className="rma_chat_header">
+          <button
+            type="button"
+            className="rma_chat_back"
+            onClick={endChat}
+            aria-label="Go back"
+          >
+            ‹
+          </button>
+
+          <div className="rma_chat_header_info">
+            <div className="rma_chat_logo">R</div>
+
+            <div>
+              <h1>Chat with RMA</h1>
+              <span>RMA Help</span>
+            </div>
+          </div>
+
+          <button type="button" className="rma_chat_end" onClick={endChat}>
+            End
+          </button>
+        </header>
+
+        <section className="rma_chat_messages">
+          <div className="rma_chat_message rma_chat_message_rma">
+            <div className="rma_chat_typing">
+              <span />
+              <span />
+              <span />
+            </div>
+          </div>
+
+          <div ref={messagesEndRef} />
+        </section>
+      </main>
+    );
+  }
 
   return (
     <main className="rma_chat">

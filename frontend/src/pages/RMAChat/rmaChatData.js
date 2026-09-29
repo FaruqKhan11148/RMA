@@ -1,399 +1,768 @@
 const rmaChatData = {
-  main: {
-    message: 'Hi! How can we help you today?',
-    options: [
-      {
-        id: 'order',
-        label: 'I have an issue with my order',
-        next: 'order',
-      },
-      {
-        id: 'payment',
-        label: 'Payment problem',
-        next: 'payment',
-      },
-      {
-        id: 'refund',
-        label: 'Refund problem',
-        next: 'refund',
-      },
-      {
-        id: 'delivery',
-        label: 'Delivery problem',
-        next: 'delivery',
-      },
-      {
-        id: 'shop',
-        label: 'Shop or product problem',
-        next: 'shop',
-      },
-      {
-        id: 'account',
-        label: 'Account problem',
-        next: 'account',
-      },
-    ],
+  customer: {
+    main: {
+      message: 'Hi! How can RMA help you today?',
+      options: [
+        {
+          id: 'orders',
+          label: 'My Order',
+          next: 'orders',
+        },
+        {
+          id: 'payment',
+          label: 'Payment',
+          next: 'payment',
+        },
+        {
+          id: 'refund',
+          label: 'Refund',
+          next: 'refund',
+        },
+        {
+          id: 'delivery',
+          label: 'Delivery',
+          next: 'delivery',
+        },
+        {
+          id: 'shop',
+          label: 'Shop',
+          next: 'shop',
+        },
+        {
+          id: 'account',
+          label: 'Account',
+          next: 'account',
+        },
+      ],
+    },
+
+    orders: {
+      message: 'What do you need help with regarding your order?',
+      options: [
+        {
+          id: 'order_status',
+          label: 'Check order status',
+          answer:
+            'You can check your latest order status from the Orders section in your RMA account.',
+          next: 'orders',
+        },
+        {
+          id: 'order_not_received',
+          label: 'Order not received',
+          answer:
+            'If your order has not arrived within the expected time, please check the Delivery Status page first.',
+          next: 'orders',
+        },
+        {
+          id: 'cancel_order',
+          label: 'Cancel my order',
+          answer:
+            'Order cancellation depends on the current order status. If cancellation is available, use the cancellation option from your order.',
+          next: 'orders',
+        },
+        {
+          id: 'wrong_order',
+          label: 'Wrong order received',
+          answer:
+            'Please contact RMA Support with your order details so we can help you with the issue.',
+          next: 'orders',
+        },
+        {
+          id: 'orders_main',
+          label: 'Main Menu',
+          next: 'main',
+        },
+      ],
+    },
+
+    payment: {
+      message: 'What payment issue are you facing?',
+      options: [
+        {
+          id: 'payment_failed',
+          label: 'Payment failed',
+          answer:
+            'If your payment failed, please check whether your bank or UPI app shows the transaction as successful before trying again.',
+          next: 'payment',
+        },
+        {
+          id: 'payment_deducted',
+          label: 'Money deducted but order not confirmed',
+          answer:
+            'If money was deducted but your order was not confirmed, please keep the transaction details and contact RMA Support.',
+          next: 'payment',
+        },
+        {
+          id: 'payment_methods',
+          label: 'Supported payment methods',
+          answer:
+            'RMA supports the payment methods available through the payment gateway during checkout.',
+          next: 'payment',
+        },
+        {
+          id: 'payment_main',
+          label: 'Main Menu',
+          next: 'main',
+        },
+      ],
+    },
+
+    refund: {
+      message: 'What do you need help with regarding your refund?',
+      options: [
+        {
+          id: 'refund_status',
+          label: 'Refund status',
+          answer:
+            'Refund processing time can depend on the payment method and payment provider.',
+          next: 'refund',
+        },
+        {
+          id: 'rejected_refund',
+          label: 'Rejected order refund',
+          answer:
+            'If your order was rejected after payment, check your order details first. If the refund is not reflected, contact RMA Support.',
+          next: 'refund',
+        },
+        {
+          id: 'wrong_refund',
+          label: 'Wrong refund amount',
+          answer:
+            'If the refunded amount appears incorrect, please contact RMA Support with your order and payment details.',
+          next: 'refund',
+        },
+        {
+          id: 'refund_main',
+          label: 'Main Menu',
+          next: 'main',
+        },
+      ],
+    },
+
+    delivery: {
+      message: 'What do you need help with regarding delivery?',
+      options: [
+        {
+          id: 'delivery_late',
+          label: 'Delivery is late',
+          answer:
+            'You can check the current order status from the Delivery Status page.',
+          next: 'delivery',
+        },
+        {
+          id: 'wrong_address',
+          label: 'Wrong delivery address',
+          answer:
+            'If the order has not been dispatched yet, contact the shop as soon as possible about the address.',
+          next: 'delivery',
+        },
+        {
+          id: 'track_delivery',
+          label: 'Track my delivery',
+          answer:
+            'Open your Delivery Status page to see the latest status of your order.',
+          next: 'delivery',
+        },
+        {
+          id: 'delivery_main',
+          label: 'Main Menu',
+          next: 'main',
+        },
+      ],
+    },
+
+    shop: {
+      message: 'What do you need help with regarding the shop?',
+      options: [
+        {
+          id: 'shop_closed',
+          label: 'Shop is closed',
+          answer:
+            'Shop availability depends on the shop owner settings and opening hours.',
+          next: 'shop',
+        },
+        {
+          id: 'product_unavailable',
+          label: 'Product unavailable',
+          answer:
+            'A product may temporarily be unavailable if the shop owner has marked it unavailable.',
+          next: 'shop',
+        },
+        {
+          id: 'wrong_product',
+          label: 'Wrong product',
+          answer:
+            'If you received a different product from what you ordered, contact RMA Support with your order details.',
+          next: 'shop',
+        },
+        {
+          id: 'shop_main',
+          label: 'Main Menu',
+          next: 'main',
+        },
+      ],
+    },
+
+    account: {
+      message: 'What do you need help with regarding your account?',
+      options: [
+        {
+          id: 'cannot_login',
+          label: 'Cannot log in',
+          answer:
+            'Check your registered mobile number and try logging in again. If the problem continues, contact RMA Support.',
+          next: 'account',
+        },
+        {
+          id: 'update_profile',
+          label: 'Update my profile',
+          answer:
+            'You can manage your profile information from the Profile section.',
+          next: 'account',
+        },
+        {
+          id: 'manage_addresses',
+          label: 'Manage my addresses',
+          answer:
+            'Your saved delivery addresses can be managed from your profile.',
+          next: 'account',
+        },
+        {
+          id: 'account_main',
+          label: 'Main Menu',
+          next: 'main',
+        },
+      ],
+    },
+
+    end: {
+      message:
+        'Thanks for contacting RMA Support. If you need anything else, you can start a new chat anytime.',
+      options: [],
+    },
   },
 
-  order: {
-    message: 'What problem are you facing with your order?',
-    options: [
-      {
-        id: 'order_status',
-        label: 'I want to check my order status',
-        answer:
-          'You can check your latest order status from the Orders section. Open the order to view its current status and delivery progress.',
-        next: 'order_status_followup',
-      },
-      {
-        id: 'order_not_received',
-        label: 'My order has not arrived',
-        answer:
-          'Please open your order from the Orders section and check its current status. If the order is marked as Out For Delivery, please allow some time for the delivery partner to reach you.',
-        next: 'order_followup',
-      },
-      {
-        id: 'order_cancel',
-        label: 'I want to cancel my order',
-        answer:
-          'Order cancellation depends on the current order status. If cancellation is available, you will see the cancellation option on the order.',
-        next: 'order_followup',
-      },
-      {
-        id: 'wrong_order',
-        label: 'I received the wrong order',
-        answer:
-          'Please keep the order details available and contact RMA support with your order ID so we can check the issue.',
-        next: 'order_followup',
-      },
-      {
-        id: 'order_main',
-        label: 'Main Menu',
-        next: 'main',
-      },
-    ],
-  },
+  owner: {
+    main: {
+      message: 'Hi! How can RMA help you with your shop today?',
+      options: [
+        {
+          id: 'owner_orders',
+          label: 'Orders',
+          next: 'orders',
+        },
+        {
+          id: 'owner_shop',
+          label: 'Shop',
+          next: 'shop',
+        },
+        {
+          id: 'owner_products',
+          label: 'Products',
+          next: 'products',
+        },
+        {
+          id: 'owner_payments',
+          label: 'Payments & Earnings',
+          next: 'payments',
+        },
+        {
+          id: 'owner_delivery',
+          label: 'Delivery',
+          next: 'delivery',
+        },
+        {
+          id: 'owner_account',
+          label: 'Account',
+          next: 'account',
+        },
+      ],
+    },
 
-  order_status_followup: {
-    message: 'Is there anything else you would like help with?',
-    options: [
-      {
-        id: 'order_again',
-        label: 'I have another order question',
-        next: 'order',
-      },
-      {
-        id: 'payment',
-        label: 'Payment problem',
-        next: 'payment',
-      },
-      {
-        id: 'delivery',
-        label: 'Delivery problem',
-        next: 'delivery',
-      },
-      {
-        id: 'main',
-        label: 'Main Menu',
-        next: 'main',
-      },
-    ],
-  },
+    orders: {
+      message: 'What do you need help with regarding your shop orders?',
+      options: [
+        {
+          id: 'new_orders',
+          label: 'New orders',
+          answer:
+            'New customer orders can be viewed from your Owner Dashboard.',
+          next: 'orders',
+        },
+        {
+          id: 'order_status',
+          label: 'Order status',
+          answer:
+            'You can update and manage the order status from the order management section.',
+          next: 'orders',
+        },
+        {
+          id: 'order_issue',
+          label: 'Order issue',
+          answer:
+            'For an order-specific issue, open the order details and review the customer and delivery information.',
+          next: 'orders',
+        },
+        {
+          id: 'orders_main',
+          label: 'Main Menu',
+          next: 'main',
+        },
+      ],
+    },
 
-  order_followup: {
-    message: 'Is there anything else you would like help with?',
-    options: [
-      {
-        id: 'order_again',
-        label: 'Another order problem',
-        next: 'order',
-      },
-      {
-        id: 'refund',
-        label: 'Refund problem',
-        next: 'refund',
-      },
-      {
-        id: 'main',
-        label: 'Main Menu',
-        next: 'main',
-      },
-    ],
-  },
+    shop: {
+      message: 'What do you need help with regarding your shop?',
+      options: [
+        {
+          id: 'shop_status',
+          label: 'Open / Closed status',
+          answer:
+            'Your shop availability can be managed through the shop settings.',
+          next: 'shop',
+        },
+        {
+          id: 'delivery_settings',
+          label: 'Delivery settings',
+          answer:
+            'Delivery availability, radius, minimum order and delivery charges can be managed from Delivery Settings.',
+          next: 'shop',
+        },
+        {
+          id: 'pickup_settings',
+          label: 'Pickup settings',
+          answer: 'Pickup availability can be managed from your shop settings.',
+          next: 'shop',
+        },
+        {
+          id: 'shop_main',
+          label: 'Main Menu',
+          next: 'main',
+        },
+      ],
+    },
 
-  payment: {
-    message: 'What payment problem are you facing?',
-    options: [
-      {
-        id: 'payment_failed',
-        label: 'My payment failed',
-        answer:
-          'If your payment failed, please check whether the amount was actually deducted from your bank account. If the amount was not deducted, you can try placing the payment again.',
-        next: 'payment_followup',
-      },
-      {
-        id: 'payment_deducted',
-        label: 'Money was deducted but order was not confirmed',
-        answer:
-          'Please do not make another payment immediately. First check your Orders section. If the payment was deducted but the order was not confirmed, the payment may be processed or refunded automatically.',
-        next: 'payment_followup',
-      },
-      {
-        id: 'payment_method',
-        label: 'What payment methods are supported?',
-        answer:
-          'RMA currently uses online payment through the available payment options shown during checkout.',
-        next: 'payment_followup',
-      },
-      {
-        id: 'payment_main',
-        label: 'Main Menu',
-        next: 'main',
-      },
-    ],
-  },
+    products: {
+      message: 'What do you need help with regarding your products?',
+      options: [
+        {
+          id: 'add_product',
+          label: 'Add products',
+          answer:
+            'You can add your shop products from the Products section of your Owner Dashboard.',
+          next: 'products',
+        },
+        {
+          id: 'product_price',
+          label: 'Change product price',
+          answer:
+            'Product pricing can be managed according to the product type and catalogue rules.',
+          next: 'products',
+        },
+        {
+          id: 'product_available',
+          label: 'Product availability',
+          answer:
+            'You can mark products as available or unavailable from the Products section.',
+          next: 'products',
+        },
+        {
+          id: 'products_main',
+          label: 'Main Menu',
+          next: 'main',
+        },
+      ],
+    },
 
-  payment_followup: {
-    message: 'Did you get the answer you were looking for?',
-    options: [
-      {
-        id: 'yes',
-        label: 'Yes, I got my answer',
-        next: 'end',
-      },
-      {
-        id: 'payment_again',
-        label: 'I have another payment problem',
-        next: 'payment',
-      },
-      {
-        id: 'refund',
-        label: 'I need help with a refund',
-        next: 'refund',
-      },
-      {
-        id: 'main',
-        label: 'Main Menu',
-        next: 'main',
-      },
-    ],
-  },
+    payments: {
+      message: 'What do you need help with regarding payments and earnings?',
+      options: [
+        {
+          id: 'owner_settlement',
+          label: 'Settlement',
+          answer:
+            'Shop settlements are processed according to the payment and settlement setup configured for your account.',
+          next: 'payments',
+        },
+        {
+          id: 'rma_fee',
+          label: 'RMA platform fee',
+          answer:
+            'RMA applies the platform fee configured for your shop account. You can review applicable fee information from the owner payment section.',
+          next: 'payments',
+        },
+        {
+          id: 'payment_issue',
+          label: 'Payment issue',
+          answer:
+            'For a payment-specific issue, keep the order and transaction details available when contacting RMA Support.',
+          next: 'payments',
+        },
+        {
+          id: 'payments_main',
+          label: 'Main Menu',
+          next: 'main',
+        },
+      ],
+    },
 
-  refund: {
-    message: 'What refund problem are you facing?',
-    options: [
-      {
-        id: 'refund_status',
-        label: 'Where is my refund?',
-        answer:
-          'Refund processing time can depend on the payment method and banking system. Please check your order payment/refund status first. If the refund has been initiated and you still have not received it, contact RMA support with your order ID.',
-        next: 'refund_followup',
-      },
-      {
-        id: 'refund_rejected',
-        label: 'My rejected order has not been refunded',
-        answer:
-          'A rejected order may require refund processing before the amount reaches your original payment method. Please check the refund status associated with your order.',
-        next: 'refund_followup',
-      },
-      {
-        id: 'refund_amount',
-        label: 'I received the wrong refund amount',
-        answer:
-          'Please check the refund amount shown in your order details. If the amount does not match the amount that should have been refunded, contact RMA support with your order ID.',
-        next: 'refund_followup',
-      },
-      {
-        id: 'refund_main',
-        label: 'Main Menu',
-        next: 'main',
-      },
-    ],
-  },
+    delivery: {
+      message: 'What do you need help with regarding delivery?',
+      options: [
+        {
+          id: 'delivery_available',
+          label: 'Delivery availability',
+          answer:
+            'You can enable or disable delivery from your shop delivery settings.',
+          next: 'delivery',
+        },
+        {
+          id: 'delivery_charge',
+          label: 'Delivery charges',
+          answer:
+            'Delivery charges and related settings can be managed from Delivery Settings.',
+          next: 'delivery',
+        },
+        {
+          id: 'delivery_partner',
+          label: 'Delivery partner',
+          answer:
+            'Orders requiring delivery can be handled according to the delivery setup available for your shop.',
+          next: 'delivery',
+        },
+        {
+          id: 'delivery_main',
+          label: 'Main Menu',
+          next: 'main',
+        },
+      ],
+    },
 
-  refund_followup: {
-    message: 'What would you like to do next?',
-    options: [
-      {
-        id: 'refund_again',
-        label: 'Another refund question',
-        next: 'refund',
-      },
-      {
-        id: 'payment',
-        label: 'Payment problem',
-        next: 'payment',
-      },
-      {
-        id: 'main',
-        label: 'Main Menu',
-        next: 'main',
-      },
-    ],
+    account: {
+      message: 'What do you need help with regarding your owner account?',
+      options: [
+        {
+          id: 'owner_profile',
+          label: 'Profile settings',
+          answer:
+            'Your owner profile and shop settings can be managed from the Owner Profile section.',
+          next: 'account',
+        },
+        {
+          id: 'owner_login',
+          label: 'Login issue',
+          answer:
+            'Check your registered owner credentials and try logging in again. If the problem continues, contact RMA Support.',
+          next: 'account',
+        },
+        {
+          id: 'account_main',
+          label: 'Main Menu',
+          next: 'main',
+        },
+      ],
+    },
+
+    end: {
+      message:
+        'Thanks for contacting RMA Support. If you need anything else, you can start a new chat anytime.',
+      options: [],
+    },
   },
 
   delivery: {
-    message: 'What delivery problem are you facing?',
-    options: [
-      {
-        id: 'delivery_late',
-        label: 'My delivery is late',
-        answer:
-          'Please check the delivery status of your order. If the order is Out For Delivery, the delivery partner may still be on the way.',
-        next: 'delivery_followup',
-      },
-      {
-        id: 'delivery_address',
-        label: 'I entered the wrong address',
-        answer:
-          'If your order has already been accepted or prepared, changing the delivery address may not be possible. Please check the available options for your order.',
-        next: 'delivery_followup',
-      },
-      {
-        id: 'delivery_status',
-        label: 'I want to track my delivery',
-        answer:
-          'Open your order from the Orders section to view its current delivery status.',
-        next: 'delivery_followup',
-      },
-      {
-        id: 'delivery_main',
-        label: 'Main Menu',
-        next: 'main',
-      },
-    ],
+    main: {
+      message: 'Hi! How can RMA help you with your delivery work today?',
+      options: [
+        {
+          id: 'delivery_orders',
+          label: 'Orders',
+          next: 'orders',
+        },
+        {
+          id: 'delivery_status',
+          label: 'Delivery',
+          next: 'delivery',
+        },
+        {
+          id: 'delivery_earnings',
+          label: 'Earnings',
+          next: 'earnings',
+        },
+        {
+          id: 'delivery_account',
+          label: 'Account',
+          next: 'account',
+        },
+      ],
+    },
+
+    orders: {
+      message: 'What do you need help with regarding your orders?',
+      options: [
+        {
+          id: 'available_orders',
+          label: 'Available orders',
+          answer:
+            'Available delivery orders can be viewed from your Delivery Dashboard.',
+          next: 'orders',
+        },
+        {
+          id: 'accept_order',
+          label: 'Accepting an order',
+          answer:
+            'When an eligible delivery order is available, you can review its details and accept it from the delivery order section.',
+          next: 'orders',
+        },
+        {
+          id: 'order_issue',
+          label: 'Order issue',
+          answer:
+            'For an order-specific issue, review the order details and contact RMA Support if further help is needed.',
+          next: 'orders',
+        },
+        {
+          id: 'orders_main',
+          label: 'Main Menu',
+          next: 'main',
+        },
+      ],
+    },
+
+    delivery: {
+      message: 'What do you need help with during delivery?',
+      options: [
+        {
+          id: 'delivery_status',
+          label: 'Update delivery status',
+          answer:
+            'Delivery status can be updated from the delivery order management section.',
+          next: 'delivery',
+        },
+        {
+          id: 'customer_location',
+          label: 'Customer location',
+          answer:
+            'Use the customer delivery information shown with the order to reach the correct delivery location.',
+          next: 'delivery',
+        },
+        {
+          id: 'delivery_problem',
+          label: 'Delivery problem',
+          answer:
+            'If you cannot complete a delivery, keep the order details available and contact RMA Support.',
+          next: 'delivery',
+        },
+        {
+          id: 'delivery_main',
+          label: 'Main Menu',
+          next: 'main',
+        },
+      ],
+    },
+
+    earnings: {
+      message: 'What do you need help with regarding your earnings?',
+      options: [
+        {
+          id: 'earnings',
+          label: 'View earnings',
+          answer:
+            'Your delivery earnings can be viewed from the Earnings section of your Delivery Dashboard.',
+          next: 'earnings',
+        },
+        {
+          id: 'earning_issue',
+          label: 'Earning issue',
+          answer:
+            'If an earning appears incorrect, keep the related order details available when contacting RMA Support.',
+          next: 'earnings',
+        },
+        {
+          id: 'earnings_main',
+          label: 'Main Menu',
+          next: 'main',
+        },
+      ],
+    },
+
+    account: {
+      message: 'What do you need help with regarding your delivery account?',
+      options: [
+        {
+          id: 'delivery_profile',
+          label: 'Profile settings',
+          answer:
+            'Your delivery profile information can be managed from the Delivery Profile section.',
+          next: 'account',
+        },
+        {
+          id: 'delivery_login',
+          label: 'Login issue',
+          answer:
+            'Check your delivery credentials and try logging in again. If the issue continues, contact RMA Support.',
+          next: 'account',
+        },
+        {
+          id: 'account_main',
+          label: 'Main Menu',
+          next: 'main',
+        },
+      ],
+    },
+
+    end: {
+      message:
+        'Thanks for contacting RMA Support. If you need anything else, you can start a new chat anytime.',
+      options: [],
+    },
   },
 
-  delivery_followup: {
-    message: 'Is there anything else I can help you with?',
-    options: [
-      {
-        id: 'delivery_again',
-        label: 'Another delivery problem',
-        next: 'delivery',
-      },
-      {
-        id: 'order',
-        label: 'Order problem',
-        next: 'order',
-      },
-      {
-        id: 'main',
-        label: 'Main Menu',
-        next: 'main',
-      },
-    ],
-  },
+  guest: {
+    main: {
+      message: 'Hi! Welcome to RMA Support. What can we help you with?',
+      options: [
+        {
+          id: 'guest_rma',
+          label: 'About RMA',
+          next: 'rma',
+        },
+        {
+          id: 'guest_account',
+          label: 'Customer Account',
+          next: 'account',
+        },
+        {
+          id: 'guest_orders',
+          label: 'Ordering',
+          next: 'orders',
+        },
+        {
+          id: 'guest_payment',
+          label: 'Payments',
+          next: 'payment',
+        },
+      ],
+    },
 
-  shop: {
-    message: 'What problem are you facing with the shop or product?',
-    options: [
-      {
-        id: 'shop_closed',
-        label: 'The shop is closed',
-        answer:
-          'Shop availability depends on the shop owner settings and operating hours. You can try another available shop from Find Shop.',
-        next: 'shop_followup',
-      },
-      {
-        id: 'product_unavailable',
-        label: 'The product is unavailable',
-        answer:
-          'Product availability is controlled by the shop. If a product is unavailable, you can check again later or choose another product.',
-        next: 'shop_followup',
-      },
-      {
-        id: 'wrong_product',
-        label: 'I received a different product',
-        answer:
-          'Please keep your order details available and contact RMA support with your order ID so the issue can be checked.',
-        next: 'shop_followup',
-      },
-      {
-        id: 'shop_main',
-        label: 'Main Menu',
-        next: 'main',
-      },
-    ],
-  },
+    rma: {
+      message: 'What would you like to know about RMA?',
+      options: [
+        {
+          id: 'what_is_rma',
+          label: 'What is RMA?',
+          answer:
+            'RMA, or Raw Meat Application, helps customers order products from registered local meat shops.',
+          next: 'rma',
+        },
+        {
+          id: 'how_rma_works',
+          label: 'How does RMA work?',
+          answer:
+            'Customers can find a participating shop, select products, place an order and track the order through RMA.',
+          next: 'rma',
+        },
+        {
+          id: 'become_owner',
+          label: 'I want to register my shop',
+          answer:
+            'Shop owners can use the Owner registration flow to create their RMA shop account.',
+          next: 'rma',
+        },
+        {
+          id: 'rma_main',
+          label: 'Main Menu',
+          next: 'main',
+        },
+      ],
+    },
 
-  shop_followup: {
-    message: 'What would you like to do next?',
-    options: [
-      {
-        id: 'shop_again',
-        label: 'Another shop/product problem',
-        next: 'shop',
-      },
-      {
-        id: 'order',
-        label: 'Order problem',
-        next: 'order',
-      },
-      {
-        id: 'main',
-        label: 'Main Menu',
-        next: 'main',
-      },
-    ],
-  },
+    account: {
+      message: 'What do you need help with regarding your account?',
+      options: [
+        {
+          id: 'create_account',
+          label: 'Create an account',
+          answer:
+            'You can create a customer account through the RMA customer registration page.',
+          next: 'account',
+        },
+        {
+          id: 'login',
+          label: 'Login',
+          answer:
+            'Use the RMA login option and enter the credentials associated with your account.',
+          next: 'account',
+        },
+        {
+          id: 'account_main',
+          label: 'Main Menu',
+          next: 'main',
+        },
+      ],
+    },
 
-  account: {
-    message: 'What account problem are you facing?',
-    options: [
-      {
-        id: 'login',
-        label: 'I cannot log in',
-        answer:
-          'Please check that you are using the correct phone number and password. If the problem continues, try logging in again after refreshing the page.',
-        next: 'account_followup',
-      },
-      {
-        id: 'profile',
-        label: 'I want to update my profile',
-        answer:
-          'You can manage your profile information from the Profile section.',
-        next: 'account_followup',
-      },
-      {
-        id: 'address',
-        label: 'I want to manage my addresses',
-        answer:
-          'You can add, edit, or manage your saved delivery addresses from Profile → Saved Addresses.',
-        next: 'account_followup',
-      },
-      {
-        id: 'account_main',
-        label: 'Main Menu',
-        next: 'main',
-      },
-    ],
-  },
+    orders: {
+      message: 'What would you like to know about ordering?',
+      options: [
+        {
+          id: 'find_shop',
+          label: 'Find a shop',
+          answer:
+            'You can use Find Shop to discover participating RMA shops near your location.',
+          next: 'orders',
+        },
+        {
+          id: 'place_order',
+          label: 'Place an order',
+          answer:
+            'Select a shop, choose the products you want, add them to your cart and continue through checkout.',
+          next: 'orders',
+        },
+        {
+          id: 'track_order',
+          label: 'Track an order',
+          answer:
+            'After placing an order, you can use the Delivery Status page to follow its progress.',
+          next: 'orders',
+        },
+        {
+          id: 'orders_main',
+          label: 'Main Menu',
+          next: 'main',
+        },
+      ],
+    },
 
-  account_followup: {
-    message: 'Is there anything else you need help with?',
-    options: [
-      {
-        id: 'account_again',
-        label: 'Another account problem',
-        next: 'account',
-      },
-      {
-        id: 'order',
-        label: 'Order problem',
-        next: 'order',
-      },
-      {
-        id: 'main',
-        label: 'Main Menu',
-        next: 'main',
-      },
-    ],
-  },
+    payment: {
+      message: 'What do you need help with regarding payment?',
+      options: [
+        {
+          id: 'payment_methods',
+          label: 'Payment methods',
+          answer: 'Available payment methods are shown during checkout.',
+          next: 'payment',
+        },
+        {
+          id: 'payment_failed',
+          label: 'Payment failed',
+          answer:
+            'If a payment fails, check your payment provider before trying the transaction again.',
+          next: 'payment',
+        },
+        {
+          id: 'payment_main',
+          label: 'Main Menu',
+          next: 'main',
+        },
+      ],
+    },
 
-  end: {
-    message: 'Glad we could help! Your RMA chat has ended.',
-    options: [],
+    end: {
+      message:
+        'Thanks for contacting RMA Support. You can start a new chat anytime.',
+      options: [],
+    },
   },
 };
 

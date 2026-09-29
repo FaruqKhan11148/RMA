@@ -1,68 +1,51 @@
+/* =========================================================
+   FULL SCREEN MAP PICKER
+   ========================================================= */
+
 .map_picker {
-  width: 100%;
-  margin-top: 24px;
-  padding: 20px;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  width: 100vw;
+  height: 100dvh;
+
+  margin: 0;
+  padding: 0;
 
   background: var(--rma-card);
 
-  border: 1px solid var(--rma-border);
-  border-radius: var(--rma-radius-lg);
+  border: none;
+  border-radius: 0;
 
-  box-shadow: var(--rma-shadow-sm);
+  box-shadow: none;
+
+  overflow: hidden;
 }
 
-/* =========================
-   HEADER
-========================= */
-
-.map_header {
-  margin-bottom: 14px;
-}
-
-.map_header h2 {
-  margin: 0 0 6px;
-
-  color: var(--rma-text);
-
-  font-size: var(--rma-font-xl);
-  font-weight: var(--rma-weight-bold);
-}
-
-.map_header p {
-  margin: 0;
-
-  color: var(--rma-text-secondary);
-
-  font-size: var(--rma-font-sm);
-  line-height: 1.5;
-}
-
-/* =========================
-   MAP
-========================= */
+/* =========================================================
+   FULL SCREEN MAP
+   ========================================================= */
 
 .map_wrapper {
-  position: relative;
+  position: absolute;
+  inset: 0;
 
   width: 100%;
+  height: 100%;
 
   overflow: hidden;
 
-  border-radius: var(--rma-radius-md);
+  border: none;
+  border-radius: 0;
 
-  border: 1px solid var(--rma-border);
-
-  box-shadow: var(--rma-shadow-xs);
+  box-shadow: none;
 }
 
 .map {
-  width: 100%;
-  height: 390px;
+  width: 100% !important;
+  height: 100% !important;
 }
-
-/* =========================
-   LEAFLET
-========================= */
 
 .map .leaflet-container {
   width: 100%;
@@ -71,21 +54,24 @@
   font-family: inherit;
 }
 
-/* Zoom controls */
+/* =========================================================
+   LEAFLET ZOOM
+   ========================================================= */
 
 .map .leaflet-control-zoom {
-  margin: 12px;
+  margin-top: 92px;
+  margin-right: 14px;
 
   border: none;
 
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.18);
 }
 
 .map .leaflet-control-zoom a {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
 
-  line-height: 36px;
+  line-height: 38px;
 
   color: #333;
 
@@ -100,21 +86,94 @@
   background: #f5f5f5;
 }
 
-/* Attribution */
+/* =========================================================
+   MAP ATTRIBUTION
+   ========================================================= */
 
 .map .leaflet-control-attribution {
   padding: 3px 6px;
 
   color: #555;
 
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.88);
 
   font-size: 9px;
 }
 
-/* =========================
+/* =========================================================
+   TOP HEADER
+   ========================================================= */
+
+.map_top_bar {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+  right: 0;
+
+  z-index: 700;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding: calc(12px + env(safe-area-inset-top)) 16px 14px;
+
+  background: var(--rma-card);
+
+  border-bottom: 1px solid var(--rma-border);
+
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.map_back_button {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  color: var(--rma-text);
+
+  font-size: 24px;
+
+  line-height: 1;
+}
+
+.map_top_title {
+  min-width: 0;
+}
+
+.map_top_title h1 {
+  margin: 0;
+
+  color: var(--rma-text);
+
+  font-size: var(--rma-font-lg);
+
+  font-weight: var(--rma-weight-bold);
+
+  line-height: 1.2;
+}
+
+.map_top_title p {
+  margin: 4px 0 0;
+
+  color: var(--rma-text-secondary);
+
+  font-size: var(--rma-font-xs);
+
+  line-height: 1.4;
+}
+
+/* =========================================================
    MAP INSTRUCTION
-========================= */
+   ========================================================= */
 
 .map_instruction {
   position: absolute;
@@ -122,21 +181,22 @@
   top: 12px;
   left: 50%;
 
-  z-index: 500;
+  z-index: 600;
 
   transform: translateX(-50%);
 
-  padding: 7px 12px;
+  padding: 8px 3px;
 
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.96);
 
-  border-radius: 20px;
+  border-radius: 999px;
 
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.16);
 
   color: #333;
 
   font-size: 11px;
+
   font-weight: 500;
 
   white-space: nowrap;
@@ -144,11 +204,20 @@
   pointer-events: none;
 }
 
-/* =========================
+/* =========================================================
    CURRENT LOCATION
-========================= */
+   ========================================================= */
 
 .current_location_button {
+  position: absolute;
+
+  left: 50%;
+  bottom: 24px;
+
+  z-index: 650;
+
+  transform: translateX(-50%);
+
   display: flex;
 
   align-items: center;
@@ -156,13 +225,13 @@
 
   gap: 8px;
 
-  width: 100%;
+  width: calc(100% - 32px);
+  max-width: 360px;
 
-  min-height: 48px;
+  min-height: 52px;
 
-  margin-top: 12px;
-
-  padding: 12px 16px;
+  margin: 0;
+  padding: 13px 18px;
 
   color: var(--rma-text-white);
 
@@ -170,7 +239,7 @@
 
   border: 1px solid var(--rma-primary);
 
-  border-radius: var(--rma-radius-md);
+  border-radius: 14px;
 
   font-family: inherit;
 
@@ -180,15 +249,261 @@
 
   cursor: pointer;
 
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.22);
+
   transition:
     background var(--rma-transition-normal),
     transform var(--rma-transition-fast),
     box-shadow var(--rma-transition-normal);
 }
 
-/* =========================
-   CONFIRM LOCATION
-========================= */
+.current_location_button:hover {
+  background: var(--rma-primary-dark);
+
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+.current_location_button:active {
+  transform: translateX(-50%) scale(0.98);
+}
+
+.current_location_button:disabled {
+  opacity: 0.65;
+
+  cursor: not-allowed;
+
+  transform: translateX(-50%);
+}
+
+.current_location_icon {
+  font-size: 19px;
+  line-height: 1;
+}
+
+/* =========================================================
+   RMA LOCATION PIN
+   ========================================================= */
+
+.rma_location_marker {
+  background: transparent;
+
+  border: none;
+}
+
+.rma_location_pin {
+  width: 44px;
+  height: 44px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  background: var(--rma-primary);
+
+  border: 3px solid #ffffff;
+
+  border-radius: 50% 50% 50% 0;
+
+  transform: rotate(-45deg);
+
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.28);
+}
+
+.rma_location_pin_inner {
+  width: 24px;
+  height: 24px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  background: #ffffff;
+
+  border-radius: 50%;
+
+  color: var(--rma-primary);
+
+  font-size: 14px;
+
+  font-weight: 800;
+
+  transform: rotate(45deg);
+}
+
+/* =========================================================
+   BOTTOM LOCATION SHEET
+   ========================================================= */
+
+.location_bottom_sheet {
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  z-index: 800;
+
+  margin: 0;
+
+  padding: 18px 18px calc(18px + env(safe-area-inset-bottom));
+
+  background: var(--rma-card);
+
+  border-radius: 24px 24px 0 0;
+
+  border: none;
+
+  box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.16);
+}
+
+.location_sheet_handle {
+  width: 42px;
+  height: 4px;
+
+  margin: 0 auto 16px;
+
+  background: var(--rma-border);
+
+  border-radius: 999px;
+}
+
+/* =========================================================
+   LOCATION HEADER
+   ========================================================= */
+
+.location_sheet_header {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 12px;
+
+  margin-bottom: 14px;
+}
+
+.location_pin_circle {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  width: 40px;
+  height: 40px;
+
+  background: var(--rma-primary-soft);
+
+  border-radius: 50%;
+
+  color: var(--rma-primary);
+
+  font-size: 16px;
+}
+
+.location_sheet_header h2 {
+  margin: 1px 0 4px;
+
+  color: var(--rma-text);
+
+  font-size: var(--rma-font-lg);
+
+  font-weight: var(--rma-weight-bold);
+
+  line-height: 1.2;
+}
+
+.location_sheet_header p {
+  margin: 0;
+
+  color: var(--rma-text-secondary);
+
+  font-size: var(--rma-font-xs);
+
+  line-height: 1.45;
+}
+
+/* =========================================================
+   ADDRESS
+   ========================================================= */
+
+.selected_address_card {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 12px;
+
+  padding: 13px;
+
+  background: var(--rma-bg-secondary);
+
+  border: 1px solid var(--rma-border);
+
+  border-radius: var(--rma-radius-md);
+}
+
+.address_icon {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  width: 34px;
+  height: 34px;
+
+  background: var(--rma-primary-soft);
+
+  border-radius: 50%;
+
+  color: var(--rma-primary);
+
+  font-size: 19px;
+}
+
+.address_content {
+  min-width: 0;
+}
+
+.address_label {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: var(--rma-text-secondary);
+
+  font-size: var(--rma-font-xs);
+
+  font-weight: var(--rma-weight-semibold);
+}
+
+.selected_address {
+  margin: 0;
+
+  color: var(--rma-text);
+
+  font-size: var(--rma-font-sm);
+
+  line-height: 1.5;
+
+  word-break: break-word;
+}
+
+.address_loading {
+  margin: 0;
+
+  color: var(--rma-text-secondary);
+
+  font-size: var(--rma-font-sm);
+}
+
+/* =========================================================
+   CONFIRM
+   ========================================================= */
 
 .confirm_location_button {
   display: flex;
@@ -200,7 +515,7 @@
 
   min-height: 50px;
 
-  margin-top: 12px;
+  margin-top: 14px;
 
   padding: 13px 16px;
 
@@ -246,141 +561,20 @@
   box-shadow: none;
 }
 
-.current_location_button:hover {
-  background: var(--rma-primary-dark);
-
-  box-shadow: var(--rma-shadow-sm);
-}
-
-.current_location_button:active {
-  transform: scale(0.98);
-}
-
-.current_location_button:disabled {
-  opacity: 0.65;
-
-  cursor: not-allowed;
-
-  transform: none;
-}
-
-.current_location_icon {
-  font-size: 18px;
-  line-height: 1;
-}
-
-/* =========================
-   SELECTED LOCATION
-========================= */
-
-.selected_location {
-  margin-top: 16px;
-
-  padding: 16px;
-
-  background: var(--rma-primary-soft);
-
-  border: 1px solid #cfe8d6;
-
-  border-radius: var(--rma-radius-md);
-}
-
-/* Title */
-
-.selected_location_title {
-  display: flex;
-
-  align-items: flex-start;
-
-  gap: 10px;
-}
-
-.selected_location_icon {
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  flex-shrink: 0;
-
-  width: 36px;
-  height: 36px;
-
-  background: #fff;
-
-  border-radius: 50%;
-
-  font-size: 17px;
-}
-
-.selected_location_title h3 {
-  margin: 1px 0 5px;
-
-  color: var(--rma-primary-dark);
-
-  font-size: var(--rma-font-md);
-
-  font-weight: var(--rma-weight-bold);
-}
-
-/* Address */
-
-.selected_address {
-  margin: 0;
-
-  color: var(--rma-text);
-
-  font-size: var(--rma-font-sm);
-
-  line-height: 1.5;
-}
-
-.address_loading {
-  margin: 0;
-
-  color: var(--rma-text-secondary);
-
-  font-size: var(--rma-font-sm);
-}
-
-/* Coordinates */
-
-.location_coordinates {
-  display: inline-block;
-
-  margin-top: 12px;
-
-  padding: 6px 9px;
-
-  color: var(--rma-text-secondary);
-
-  background: #fff;
-
-  border: 1px solid var(--rma-border);
-
-  border-radius: var(--rma-radius-sm);
-
-  font-family: monospace;
-
-  font-size: var(--rma-font-xs);
-}
-
-/* Accuracy */
-
-.location_accuracy {
-  margin-top: 7px;
-
-  color: var(--rma-text-secondary);
-
-  font-size: var(--rma-font-xs);
-}
-
-/* =========================
+/* =========================================================
    ERROR
-========================= */
+   ========================================================= */
 
 .map_error {
-  margin-top: 12px;
+  position: absolute;
+
+  left: 16px;
+  right: 16px;
+  bottom: 90px;
+
+  z-index: 900;
+
+  margin: 0;
 
   padding: 12px 14px;
 
@@ -397,28 +591,101 @@
   line-height: 1.45;
 }
 
-/* =========================
+/* =========================================================
    MOBILE
-========================= */
+   ========================================================= */
 
 @media (max-width: 480px) {
   .map_picker {
-    margin-top: 16px;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
 
-    padding: 14px;
+    width: 100vw;
+    height: 100dvh;
 
-    border-radius: var(--rma-radius-md);
+    margin: 0;
+    padding: 0;
+
+    background: var(--rma-card);
+
+    border: none;
+    border-radius: 0;
+
+    box-shadow: none;
+
+    overflow: hidden;
   }
 
-  .map_header {
-    margin-bottom: 12px;
+  .map_top_bar {
+    padding: calc(10px + env(safe-area-inset-top)) 14px 12px;
   }
 
-  .map_header h2 {
-    font-size: var(--rma-font-lg);
+  .map_back_button {
+    width: 40px;
+    height: 40px;
+
+    font-size: 22px;
   }
 
-  .map_header p {
+  .map_top_title h1 {
+    font-size: var(--rma-font-md);
+  }
+
+  .map_top_title p {
+    font-size: 10px;
+  }
+
+  .map_instruction {
+    top: 20px;
+
+    padding: 7px 11px;
+
+    font-size: 10px;
+  }
+
+  .map .leaflet-control-zoom {
+    margin-top: 78px;
+
+    margin-right: 10px;
+  }
+
+  .map .leaflet-control-zoom a {
+    width: 34px;
+    height: 34px;
+
+    line-height: 34px;
+
+    font-size: 18px;
+  }
+
+  .current_location_button {
+    bottom: 18px;
+
+    width: calc(100% - 28px);
+
+    min-height: 48px;
+
+    font-size: var(--rma-font-sm);
+  }
+
+  .location_bottom_sheet {
+    padding: 16px 14px calc(16px + env(safe-area-inset-bottom));
+  }
+
+  .location_sheet_header h2 {
+    font-size: var(--rma-font-md);
+  }
+
+  .location_sheet_header p {
+    font-size: 10px;
+  }
+
+  .selected_address_card {
+    padding: 12px;
+  }
+
+  .selected_address {
     font-size: var(--rma-font-xs);
   }
 
@@ -427,74 +694,480 @@
 
     font-size: var(--rma-font-sm);
   }
-
-  .map {
-    height: 330px;
-  }
-
-  .map_instruction {
-    top: 10px;
-
-    padding: 6px 10px;
-
-    font-size: 10px;
-  }
-
-  .current_location_button {
-    min-height: 46px;
-
-    font-size: var(--rma-font-sm);
-  }
-
-  .selected_location {
-    padding: 14px;
-  }
-
-  .selected_address {
-    font-size: var(--rma-font-xs);
-  }
-
-  .location_coordinates {
-    font-size: 10px;
-  }
 }
 
-/* =========================
+/* =========================================================
    DESKTOP
-========================= */
+   ========================================================= */
 
 @media (min-width: 768px) {
-  .map_picker {
-    padding: 24px;
-  }
-
-  .map {
-    height: 430px;
-  }
-
   .current_location_button {
-    width: auto;
+    bottom: 28px;
+  }
 
-    min-width: 240px;
+  .location_bottom_sheet {
+    padding: 22px 24px calc(22px + env(safe-area-inset-bottom));
   }
 }
 
-/* =========================
+/* =========================================================
    REDUCED MOTION
-========================= */
+   ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
-  .current_location_button {
+  .current_location_button,
+  .confirm_location_button {
     transition: none;
   }
 }
 
 /* =========================================================
-   DARK MODE — MAP PICKER
+   FULL-SCREEN LOCATION PICKER
+   ========================================================= */
+
+.map_picker {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+
+  width: 100vw;
+  height: 100vh;
+  min-height: 100dvh;
+
+  margin: 0;
+  padding: 0;
+
+  background: var(--rma-card);
+
+  border: none;
+  border-radius: 0;
+
+  box-shadow: none;
+
+  overflow: hidden;
+}
+
+/* Full-screen map area */
+
+.map_wrapper {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+
+  border: none;
+  border-radius: 0;
+
+  box-shadow: none;
+
+  z-index: 1;
+}
+
+/* Leaflet */
+
+.map {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+}
+
+/* Keep Leaflet itself below our UI */
+
+.map_wrapper .leaflet-container {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  z-index: 1;
+}
+
+/* Top navigation */
+
+.map_top_bar {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+  right: 0;
+
+  z-index: 2000;
+
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 18px 20px 16px;
+
+  background: var(--rma-card);
+
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.map_back_button {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border-radius: 50%;
+
+  color: var(--rma-text);
+
+  font-size: 26px;
+  line-height: 1;
+
+  cursor: pointer;
+
+  pointer-events: auto;
+}
+
+.map_top_title {
+  min-width: 0;
+}
+
+.map_top_title h1 {
+  margin: 0 0 3px;
+
+  color: var(--rma-text);
+
+  font-size: 20px;
+  font-weight: var(--rma-weight-bold);
+}
+
+.map_top_title p {
+  margin: 0;
+
+  color: var(--rma-text-secondary);
+
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* Map instruction */
+
+.map_instruction {
+  position: absolute;
+
+  top: 50px;
+  left: 50%;
+
+  z-index: 2000;
+
+  transform: translateX(-50%);
+
+  padding: 9px 15px;
+
+  background: rgba(255, 255, 255, 0.96);
+
+  border-radius: 22px;
+
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
+
+  color: #333;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  pointer-events: none;
+}
+
+/* =========================================================
+   CURRENT LOCATION BUTTON — FULL SCREEN MAP
+   ========================================================= */
+
+.map_wrapper > .current_location_button {
+  position: absolute;
+
+  left: 24px;
+  right: 24px;
+  bottom: 24px;
+
+  z-index: 2000;
+
+  width: auto;
+  max-width: none;
+  min-height: 54px;
+
+  margin: 0;
+
+  transform: none;
+}
+
+/* Do not use the old centered-button transform */
+.map_wrapper > .current_location_button:hover {
+  transform: none;
+}
+
+.map_wrapper > .current_location_button:active {
+  transform: scale(0.98);
+}
+
+.map_wrapper > .current_location_button:disabled {
+  transform: none;
+}
+
+/* =========================================================
+   LOCATION BOTTOM SHEET
+   ========================================================= */
+
+.location_bottom_sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5000;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 18px 24px 24px;
+  background: var(--rma-card);
+  border-radius: 28px 28px 0 0;
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.16);
+  pointer-events: auto;
+  height: 270px;
+}
+
+.location_sheet_handle {
+  width: 52px;
+  height: 5px;
+
+  margin: 0 auto 20px;
+
+  border-radius: 999px;
+
+  background: var(--rma-border);
+}
+
+.location_sheet_header {
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  margin-bottom: 16px;
+}
+
+.location_pin_circle {
+  flex-shrink: 0;
+
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: var(--rma-primary-soft);
+
+  color: var(--rma-primary);
+
+  font-size: 18px;
+}
+
+.location_sheet_header h2 {
+  margin: 0 0 4px;
+
+  color: var(--rma-text);
+
+  font-size: 18px;
+  font-weight: var(--rma-weight-bold);
+}
+
+.location_sheet_header p {
+  margin: 0;
+
+  color: var(--rma-text-secondary);
+
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* Address */
+
+.selected_address_card {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 12px;
+
+  padding: 14px;
+
+  margin-bottom: 16px;
+
+  background: var(--rma-bg-secondary);
+
+  border: 1px solid var(--rma-border);
+
+  border-radius: 16px;
+}
+
+.address_icon {
+  flex-shrink: 0;
+
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: var(--rma-primary-soft);
+
+  color: var(--rma-primary);
+
+  font-size: 18px;
+}
+
+.address_content {
+  min-width: 0;
+}
+
+.address_label {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: var(--rma-text-secondary);
+
+  font-size: 12px;
+}
+
+.selected_address {
+  margin: 0;
+
+  color: var(--rma-text);
+
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Confirm */
+
+.location_bottom_sheet .confirm_location_button {
+  position: relative;
+
+  z-index: 6000;
+
+  width: 100%;
+
+  min-height: 54px;
+
+  margin: 0;
+
+  pointer-events: auto;
+}
+
+/* Leaflet controls stay below sheet */
+
+.map .leaflet-control-zoom {
+  z-index: 1000;
+}
+
+.map .leaflet-control-attribution {
+  z-index: 1000;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+  .map_top_bar {
+    padding: 2px 18px 2px;
+  }
+
+  .map_back_button {
+    width: 44px;
+    height: 44px;
+  }
+
+  .map_top_title h1 {
+    font-size: 18px;
+  }
+
+  .map_top_title p {
+    font-size: 11px;
+  }
+
+  .map_instruction {
+    top: 50px;
+
+    max-width: calc(100% - 40px);
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+  }
+
+  .map_wrapper > .current_location_button {
+    left: 18px;
+    right: 18px;
+    bottom: 18px;
+
+    width: auto;
+    max-width: none;
+
+    transform: none;
+  }
+
+  .map_wrapper > .current_location_button:hover {
+    transform: none;
+  }
+
+  .map_wrapper > .current_location_button:active {
+    transform: scale(0.98);
+  }
+
+  .map_wrapper > .current_location_button:disabled {
+    transform: none;
+  }
+
+  .location_bottom_sheet {
+    padding: 14px 18px 18px;
+
+    border-radius: 24px 24px 0 0;
+  }
+
+  .location_sheet_header h2 {
+    font-size: 17px;
+  }
+
+  .location_sheet_header p {
+    font-size: 11px;
+  }
+
+  .selected_address_card {
+    padding: 12px;
+  }
+
+  .location_bottom_sheet .confirm_location_button {
+    min-height: 52px;
+  }
+}
+
+/* =========================================================
+   DARK MODE
    ========================================================= */
 
 [data-theme='dark'] .map .leaflet-control-zoom a {
   color: var(--rma-text);
+
   background: var(--rma-card);
 }
 
@@ -504,43 +1177,73 @@
 
 [data-theme='dark'] .map .leaflet-control-attribution {
   color: var(--rma-text-secondary);
+
   background: rgba(24, 28, 26, 0.88);
+}
+
+[data-theme='dark'] .map_top_bar {
+  background: var(--rma-card);
+
+  border-color: var(--rma-border);
+
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme='dark'] .map_back_button {
+  color: var(--rma-text);
+
+  background: var(--rma-bg-secondary);
+
+  border-color: var(--rma-border);
 }
 
 [data-theme='dark'] .map_instruction {
   background: rgba(24, 28, 26, 0.94);
+
   color: var(--rma-text);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
+
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
 }
 
-[data-theme='dark'] .selected_location {
-  background: rgba(22, 128, 58, 0.1);
-  border-color: rgba(22, 128, 58, 0.3);
-}
-
-[data-theme='dark'] .selected_location_icon {
+[data-theme='dark'] .location_bottom_sheet {
   background: var(--rma-card);
-  color: var(--rma-text);
+
+  box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.4);
 }
 
-[data-theme='dark'] .selected_location_title h3 {
+[data-theme='dark'] .location_sheet_handle {
+  background: var(--rma-border);
+}
+
+[data-theme='dark'] .location_pin_circle {
+  background: rgba(22, 128, 58, 0.12);
+
   color: var(--rma-primary-light);
 }
 
-[data-theme='dark'] .location_coordinates {
-  color: var(--rma-text-secondary);
+[data-theme='dark'] .selected_address_card {
   background: var(--rma-bg-secondary);
+
   border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .address_icon {
+  background: rgba(22, 128, 58, 0.12);
+
+  color: var(--rma-primary-light);
 }
 
 [data-theme='dark'] .map_error {
   color: #ff8f86;
+
   background: rgba(220, 38, 38, 0.1);
+
   border-color: rgba(220, 38, 38, 0.28);
 }
 
 [data-theme='dark'] .current_location_button:focus-visible,
 [data-theme='dark'] .confirm_location_button:focus-visible {
   outline: 3px solid rgba(22, 128, 58, 0.35);
+
   outline-offset: 2px;
 }

@@ -4,7 +4,6 @@ function ShopSearch({ shopId, onShopIdChange, onSubmit }) {
       <div className="find_shop_section_header">
         <div>
           <span className="find_shop_section_eyebrow">2. KNOW YOUR SHOP?</span>
-
           <h2>Search by Shop ID</h2>
 
           <p>Enter the unique RMA Shop ID shared by your local shop.</p>
