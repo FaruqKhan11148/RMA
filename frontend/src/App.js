@@ -132,7 +132,7 @@ import ShopPromotion from './pages/Owner/OwnerSettings/ShopPromotion/ShopPromoti
 function AppLayout() {
   const location = useLocation();
   const isRMAChatRoute = location.pathname === '/rma-chat';
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [customerLoggedIn, setCustomerLoggedIn] = useState(false);
   const [profileRole, setProfileRole] = useState(null);
 
