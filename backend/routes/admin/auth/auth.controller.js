@@ -61,10 +61,13 @@ const loginAdmin = async (req, res) => {
     //   sameSite: 'none',
     //   maxAge: 8 * 60 * 60 * 1000,
     // });
+    const isProduction = process.env.NODE_ENV === 'production';
+
     res.cookie('admin_token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
+      path: '/',
       maxAge: 8 * 60 * 60 * 1000,
     });
 
@@ -106,6 +109,7 @@ const logoutAdmin = async (req, res) => {
     httpOnly: true,
     secure: true,
     sameSite: 'none',
+    path: '/',
   });
 
   return res.json({
