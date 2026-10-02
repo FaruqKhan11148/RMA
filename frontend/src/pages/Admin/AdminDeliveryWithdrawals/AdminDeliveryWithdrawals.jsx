@@ -1,6 +1,6 @@
 import './AdminDeliveryWithdrawals.css';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function AdminDeliveryWithdrawals() {
@@ -56,7 +56,7 @@ function AdminDeliveryWithdrawals() {
     return matchesSearch && matchesStatus;
   });
 
-  const fetchWithdrawals = async () => {
+  const fetchWithdrawals = useCallback(async () => {
     try {
       setLoading(true);
       setError('');
@@ -88,9 +88,9 @@ function AdminDeliveryWithdrawals() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [navigate]);
 
-  const fetchWithdrawalHistory = async () => {
+  const fetchWithdrawalHistory = useCallback(async () => {
     try {
       setHistoryLoading(true);
 
@@ -121,12 +121,12 @@ function AdminDeliveryWithdrawals() {
     } finally {
       setHistoryLoading(false);
     }
-  };
+  }, [navigate]);
 
   useEffect(() => {
     fetchWithdrawals();
     fetchWithdrawalHistory();
-  }, [navigate]);
+  }, [fetchWithdrawals, fetchWithdrawalHistory]);
 
   const handleComplete = async (withdrawalId) => {
     const confirmed = window.confirm(
