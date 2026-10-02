@@ -1,6 +1,6 @@
 import './AdminDeliveryEarnings.css';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function AdminDeliveryEarnings() {
@@ -16,7 +16,7 @@ function AdminDeliveryEarnings() {
   const [error, setError] = useState('');
   const [processingId, setProcessingId] = useState(null);
 
-  const fetchPendingEarnings = async () => {
+  const fetchPendingEarnings = useCallback(async () => {
     try {
       setLoading(true);
       setError('');
@@ -55,11 +55,11 @@ function AdminDeliveryEarnings() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [navigate]);
 
   useEffect(() => {
     fetchPendingEarnings();
-  }, [navigate]);
+  }, [fetchPendingEarnings]);
 
   const handleRelease = async (transactionId) => {
     const transaction = transactions.find((item) => item._id === transactionId);
