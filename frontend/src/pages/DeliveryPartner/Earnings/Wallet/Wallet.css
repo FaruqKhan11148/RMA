@@ -1,0 +1,324 @@
+.delivery_wallet_page {
+  min-height: 100vh;
+  padding: 20px 16px 90px;
+  background: #f7f8f7;
+}
+
+.delivery_wallet_header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.delivery_wallet_back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  padding: 0;
+  border: 1px solid #eeeeee;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #222222;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.delivery_wallet_header > div {
+  min-width: 0;
+}
+
+.delivery_wallet_header span {
+  display: block;
+  margin-bottom: 3px;
+  color: #777;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.delivery_wallet_header h1 {
+  margin: 0;
+  color: #171717;
+  font-size: 27px;
+  font-weight: 750;
+}
+
+/* =========================================
+   AVAILABLE BALANCE
+========================================= */
+
+.delivery_wallet_balance {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 27px 18px;
+  background: #16803a;
+  border-radius: 20px;
+  color: #ffffff;
+  text-align: center;
+  box-shadow: 0 8px 22px rgba(22, 128, 58, 0.18);
+}
+
+.delivery_wallet_balance_icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.delivery_wallet_balance > span {
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+.delivery_wallet_balance > strong {
+  margin-top: 5px;
+  font-size: 31px;
+  font-weight: 750;
+}
+
+.delivery_wallet_balance > p {
+  margin: 7px 0 0;
+  font-size: 11px;
+  opacity: 0.82;
+}
+
+/* =========================================
+   WALLET SUMMARY
+========================================= */
+
+.delivery_wallet_summary {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.delivery_wallet_summary_card {
+  padding: 16px;
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 16px;
+}
+
+.delivery_wallet_summary_icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 37px;
+  height: 37px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  background: #edf7f0;
+  color: #16803a;
+}
+
+.delivery_wallet_summary_card span {
+  display: block;
+  color: #777;
+  font-size: 11px;
+}
+
+.delivery_wallet_summary_card strong {
+  display: block;
+  margin-top: 4px;
+  color: #202020;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* =========================================
+   WALLET INFO
+========================================= */
+
+.delivery_wallet_info {
+  margin-top: 22px;
+  padding: 16px;
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 16px;
+}
+
+.delivery_wallet_info strong {
+  display: block;
+  color: #222222;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.delivery_wallet_info span {
+  display: block;
+  margin-top: 5px;
+  color: #777;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* =========================================
+   EMPTY / ERROR
+========================================= */
+
+.delivery_wallet_empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 20px;
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 16px;
+  text-align: center;
+}
+
+.delivery_wallet_empty strong {
+  color: #222222;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.delivery_wallet_empty p {
+  margin: 6px 0 0;
+  color: #777;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.delivery_wallet_loader {
+  margin-bottom: 10px;
+  color: #16803a;
+  animation: delivery_wallet_spin 0.9s linear infinite;
+}
+
+.delivery_wallet_retry {
+  margin-top: 14px;
+  padding: 9px 16px;
+  border: none;
+  border-radius: 10px;
+  background: #16803a;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+@keyframes delivery_wallet_spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 380px) {
+  .delivery_wallet_page {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .delivery_wallet_balance {
+    padding: 24px 15px;
+  }
+
+  .delivery_wallet_balance > strong {
+    font-size: 28px;
+  }
+
+  .delivery_wallet_summary_card {
+    padding: 14px;
+  }
+
+  .delivery_wallet_summary_card strong {
+    font-size: 17px;
+  }
+}
+
+/* =========================================
+   DARK MODE — DELIVERY WALLET
+========================================= */
+
+[data-theme='dark'] .delivery_wallet_page {
+  background: var(--rma-bg);
+}
+
+[data-theme='dark'] .delivery_wallet_back {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_wallet_header span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_wallet_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_wallet_balance {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
+  box-shadow: 0 8px 22px rgba(22, 128, 58, 0.22);
+}
+
+[data-theme='dark'] .delivery_wallet_balance > span,
+[data-theme='dark'] .delivery_wallet_balance > strong,
+[data-theme='dark'] .delivery_wallet_balance > p {
+  color: #ffffff;
+}
+
+[data-theme='dark'] .delivery_wallet_summary_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .delivery_wallet_summary_icon {
+  background: var(--rma-primary-light);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .delivery_wallet_summary_card span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_wallet_summary_card strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_wallet_info {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .delivery_wallet_info strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_wallet_info span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_wallet_empty {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .delivery_wallet_empty strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_wallet_empty p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_wallet_loader {
+  color: var(--rma-primary-light);
+}

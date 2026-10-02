@@ -6,37 +6,20 @@ const partnerRoutes = require('./partners/partner.routes');
 const notificationRoutes = require('./notifications/notification.routes');
 const orderRoutes = require('./orders/order.routes');
 const trackingRoutes = require('./tracking/tracking.routes');
+const availabilityRoutes = require('./availability/availability.routes');
+const assignmentRoutes = require('./assignments/assignment.routes');
+const walletRoutes = require('./wallet/wallet.routes');
 
 const router = express.Router();
 
-// ==========================================
-// DELIVERY AUTH
-// ==========================================
 router.use('/', authRoutes);
-
-// ==========================================
-// DELIVERY OWNER
-// ==========================================
 router.use('/', ownerRoutes);
-
-// ==========================================
-// DELIVERY PARTNERS
-// ==========================================
 router.use('/', partnerRoutes);
-
-// ==========================================
-// DELIVERY NOTIFICATIONS
-// ==========================================
 router.use('/', notificationRoutes);
-
-// ==========================================
-// DELIVERY ORDERS
-// ==========================================
 router.use('/', orderRoutes);
-
-// ==========================================
-// DELIVERY TRACKING
-// ==========================================
 router.use('/', trackingRoutes);
+router.use('/', availabilityRoutes);
+router.use('/', assignmentRoutes);
+router.use('/', walletRoutes);
 
 module.exports = router;

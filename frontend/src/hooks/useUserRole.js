@@ -30,8 +30,8 @@ function useUserRole() {
       }
 
       // 2. Delivery Partner
-      const deliveryToken = sessionStorage.getItem('delivery_token');
-      const storedDeliveryPerson = sessionStorage.getItem('delivery_person');
+      const deliveryToken = localStorage.getItem('delivery_token');
+      const storedDeliveryPerson = localStorage.getItem('delivery_person');
 
       if (deliveryToken && storedDeliveryPerson) {
         try {
@@ -46,8 +46,8 @@ function useUserRole() {
         } catch (error) {
           console.error('Invalid delivery session:', error);
 
-          sessionStorage.removeItem('delivery_token');
-          sessionStorage.removeItem('delivery_person');
+          localStorage.removeItem('delivery_token');
+          localStorage.removeItem('delivery_person');
         }
       }
 

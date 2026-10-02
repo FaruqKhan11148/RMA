@@ -1,6 +1,6 @@
 export const getStoredDeliveryPerson = () => {
   try {
-    const storedDeliveryPerson = sessionStorage.getItem('delivery_person');
+    const storedDeliveryPerson = localStorage.getItem('delivery_person');
 
     return storedDeliveryPerson ? JSON.parse(storedDeliveryPerson) : null;
   } catch (error) {
@@ -11,9 +11,9 @@ export const getStoredDeliveryPerson = () => {
 };
 
 export const getInitialLoginStep = () => {
-  const token = sessionStorage.getItem('delivery_token');
+  const token = localStorage.getItem('delivery_token');
 
-  const storedDeliveryPerson = sessionStorage.getItem('delivery_person');
+  const storedDeliveryPerson = localStorage.getItem('delivery_person');
 
   return token && storedDeliveryPerson ? 'dashboard' : 'login';
 };

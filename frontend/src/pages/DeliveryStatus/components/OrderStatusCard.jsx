@@ -9,7 +9,7 @@ function OrderStatusCard({ order, getStatusMessage }) {
 
       <p>{getStatusMessage(order.status)}</p>
 
-      <StatusSteps currentStatus={order.status} />
+      <StatusSteps order={order} />
     </section>
   );
 }

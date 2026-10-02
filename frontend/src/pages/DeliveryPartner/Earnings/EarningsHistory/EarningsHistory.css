@@ -1,0 +1,191 @@
+.delivery_earnings_history_page {
+  min-height: 100vh;
+  padding-bottom: 30px;
+  background: #f7f8fa;
+}
+
+.delivery_earnings_history_header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 16px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.delivery_earnings_history_back {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 10px;
+  background: #f3f4f6;
+  color: #111827;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.delivery_earnings_history_header span {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.delivery_earnings_history_header h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.delivery_earnings_history_content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.delivery_earnings_history_list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.delivery_earnings_history_card {
+  padding: 15px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+}
+
+.delivery_earnings_history_card_top {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.delivery_earnings_history_icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: #f0fdf4;
+  color: #15803d;
+}
+
+.delivery_earnings_history_details {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.delivery_earnings_history_details strong {
+  font-size: 15px;
+  color: #111827;
+}
+
+.delivery_earnings_history_details span {
+  font-size: 13px;
+  color: #4b5563;
+  overflow-wrap: anywhere;
+}
+
+.delivery_earnings_history_details small {
+  margin-top: 3px;
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.delivery_earnings_history_amount {
+  flex-shrink: 0;
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.delivery_earnings_history_amount.positive {
+  color: #15803d;
+}
+
+.delivery_earnings_history_amount.negative {
+  color: #dc2626;
+}
+
+.delivery_earnings_history_status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #f3f4f6;
+  color: #4b5563;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.delivery_earnings_history_empty {
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 30px 20px;
+  text-align: center;
+  color: #6b7280;
+}
+
+.delivery_earnings_history_empty strong {
+  color: #111827;
+  font-size: 15px;
+}
+
+.delivery_earnings_history_empty p {
+  max-width: 360px;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.delivery_earnings_history_loader {
+  animation: delivery_earnings_history_spin 1s linear infinite;
+}
+
+.delivery_earnings_history_retry {
+  margin-top: 8px;
+  padding: 9px 16px;
+  border: none;
+  border-radius: 9px;
+  background: #111827;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@keyframes delivery_earnings_history_spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 480px) {
+  .delivery_earnings_history_content {
+    padding: 12px;
+  }
+
+  .delivery_earnings_history_card {
+    padding: 13px;
+  }
+
+  .delivery_earnings_history_amount {
+    font-size: 14px;
+  }
+}

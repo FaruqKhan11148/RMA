@@ -1,0 +1,528 @@
+/* =========================================================
+   APPLICATION HEADER
+   ========================================================= */
+
+.delivery_application_header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+.delivery_application_header > div:first-child {
+  min-width: 0;
+}
+
+.delivery_application_eyebrow {
+  display: block;
+  margin-bottom: 8px;
+  color: #16803a;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.delivery_application_header h1 {
+  margin: 0;
+  color: #1f2933;
+  font-size: 32px;
+  font-weight: 750;
+  line-height: 1.2;
+}
+
+.delivery_application_header p {
+  max-width: 600px;
+  margin: 10px 0 0;
+  color: #68727d;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.delivery_application_status {
+  flex-shrink: 0;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.delivery_application_status_incomplete {
+  background: #fff4d6;
+  color: #8a5a00;
+}
+
+.delivery_application_status_submitted,
+.delivery_application_status_under_review {
+  background: #e8f1ff;
+  color: #2457a6;
+}
+
+.delivery_application_status_correction_required {
+  background: #fff0d9;
+  color: #9a5b00;
+}
+
+.delivery_application_status_approved {
+  background: #e7f6eb;
+  color: #16803a;
+}
+
+.delivery_application_status_rejected {
+  background: #fff0f0;
+  color: #b42318;
+}
+
+/* =========================================================
+   APPLICATION PROGRESS
+   ========================================================= */
+
+.delivery_application_progress {
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 18px 20px;
+  border: 1px solid #e0e7e2;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.04);
+}
+
+.delivery_application_progress_top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.delivery_application_progress_top > div {
+  min-width: 0;
+}
+
+.delivery_application_progress_top strong {
+  display: block;
+  color: #1f2933;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.delivery_application_progress_top span {
+  display: block;
+  margin-top: 3px;
+  color: #68727d;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.delivery_application_progress_top > strong:last-child {
+  flex-shrink: 0;
+  color: #16803a;
+  font-size: 16px;
+}
+
+.delivery_application_progress_bar {
+  width: 100%;
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e9efeb;
+}
+
+.delivery_application_progress_fill {
+  height: 100%;
+  border-radius: inherit;
+  background: #16803a;
+  transition: width 0.3s ease;
+}
+
+/* =========================================================
+   APPLICATION SECTION CARDS
+   ========================================================= */
+
+.delivery_application_section {
+  width: 100%;
+  min-height: 82px;
+
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 14px 16px;
+
+  border: 1px solid #dfe6e1;
+  border-radius: 12px;
+
+  background: #ffffff;
+
+  color: inherit;
+  text-align: left;
+
+  cursor: pointer;
+
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.035);
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.delivery_application_section:hover {
+  border-color: #b9d7c1;
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+}
+
+.delivery_application_section:active {
+  transform: translateY(0);
+}
+
+/* Number / Tick */
+
+.delivery_application_section_number {
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border: 1px solid #d6dfd9;
+  border-radius: 50%;
+
+  background: #f5f8f6;
+  color: #53605a;
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.delivery_application_section.completed {
+  border-color: #cfe5d5;
+}
+
+.delivery_application_section.completed .delivery_application_section_number {
+  border-color: #d8efdf;
+  background: #e7f6eb;
+  color: #16803a;
+  font-size: 19px;
+}
+
+/* Main content */
+
+.delivery_application_section_content {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+.delivery_application_section_content strong {
+  display: block;
+
+  overflow: hidden;
+
+  color: #1f2933;
+
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.4;
+
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.delivery_application_section_content span {
+  display: block;
+
+  color: #68727d;
+
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.45;
+
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Right-side action */
+
+.delivery_application_section_action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 5px;
+
+  flex-shrink: 0;
+
+  color: #16803a;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+.delivery_application_section_action span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 18px;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.delivery_application_section:hover .delivery_application_section_action span {
+  transform: translateX(2px);
+}
+
+/* =========================================================
+   DARK THEME
+   ========================================================= */
+
+[data-theme='dark'] .delivery_application_header h1 {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery_application_eyebrow {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery_application_header p {
+  color: #aab5ae;
+}
+
+[data-theme='dark'] .delivery_application_status_incomplete {
+  background: #3b321c;
+  color: #f0c96a;
+}
+
+[data-theme='dark'] .delivery_application_status_submitted,
+[data-theme='dark'] .delivery_application_status_under_review {
+  background: #1e2c42;
+  color: #8db7ff;
+}
+
+[data-theme='dark'] .delivery_application_status_correction_required {
+  background: #3a2c1b;
+  color: #e8b45c;
+}
+
+[data-theme='dark'] .delivery_application_status_approved {
+  background: #1c3826;
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery_application_status_rejected {
+  background: #3a2020;
+  color: #ff9b9b;
+}
+
+/* Progress */
+
+[data-theme='dark'] .delivery_application_progress {
+  border-color: #29362e;
+  background: #171c19;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='dark'] .delivery_application_progress_top strong {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery_application_progress_top span {
+  color: #aab5ae;
+}
+
+[data-theme='dark'] .delivery_application_progress_top > strong:last-child {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery_application_progress_bar {
+  background: #29362e;
+}
+
+[data-theme='dark'] .delivery_application_progress_fill {
+  background: var(--rma-primary-light);
+}
+
+/* Section cards */
+
+[data-theme='dark'] .delivery_application_section {
+  border-color: #303a34;
+  background: #171c19;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='dark'] .delivery_application_section:hover {
+  border-color: #45634d;
+  background: #1a211d;
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.25);
+}
+
+[data-theme='dark'] .delivery_application_section_number {
+  border-color: #39443d;
+  background: #202722;
+  color: #aab5ae;
+}
+
+[data-theme='dark']
+  .delivery_application_section.completed
+  .delivery_application_section_number {
+  border-color: #31563b;
+  background: #1c3826;
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery_application_section_content strong {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery_application_section_content span {
+  color: #aab5ae;
+}
+
+[data-theme='dark'] .delivery_application_section_action {
+  color: var(--rma-primary-light);
+}
+
+/* =========================================================
+   MOBILE APPLICATION LAYOUT
+   ========================================================= */
+
+@media (max-width: 480px) {
+  .delivery_application_header {
+    display: block;
+    margin-bottom: 16px;
+  }
+
+  .delivery_application_eyebrow {
+    margin-bottom: 6px;
+    font-size: 13px;
+  }
+
+  .delivery_application_header h1 {
+    font-size: 28px;
+    line-height: 1.25;
+  }
+
+  .delivery_application_header p {
+    margin-top: 8px;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .delivery_application_status {
+    display: inline-flex;
+    margin-top: 12px;
+    font-size: 11px;
+  }
+
+  .delivery_application_progress {
+    margin-bottom: 16px;
+    padding: 15px;
+    border-radius: 12px;
+  }
+
+  .delivery_application_progress_top {
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .delivery_application_progress_top strong {
+    font-size: 14px;
+  }
+
+  .delivery_application_progress_top span {
+    font-size: 12px;
+  }
+
+  .delivery_application_progress_top > strong:last-child {
+    font-size: 15px;
+  }
+
+  .delivery_application_section {
+    min-height: 76px;
+
+    grid-template-columns: 38px minmax(0, 1fr) auto;
+
+    gap: 10px;
+
+    padding: 12px;
+    border-radius: 10px;
+  }
+
+  .delivery_application_section_number {
+    width: 36px;
+    height: 36px;
+    font-size: 13px;
+  }
+
+  .delivery_application_section.completed .delivery_application_section_number {
+    font-size: 17px;
+  }
+
+  .delivery_application_section_content {
+    gap: 3px;
+  }
+
+  .delivery_application_section_content strong {
+    font-size: 14px;
+    line-height: 1.35;
+  }
+
+  .delivery_application_section_content span {
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .delivery_application_section_action {
+    gap: 3px;
+    font-size: 12px;
+  }
+
+  .delivery_application_section_action span {
+    font-size: 16px;
+  }
+}
+
+/* =========================================================
+   VERY SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 360px) {
+  .delivery_application_section {
+    grid-template-columns: 34px minmax(0, 1fr) auto;
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .delivery_application_section_number {
+    width: 32px;
+    height: 32px;
+  }
+
+  .delivery_application_section_content strong {
+    font-size: 13px;
+  }
+
+  .delivery_application_section_content span {
+    font-size: 11px;
+  }
+
+  .delivery_application_section_action {
+    font-size: 11px;
+  }
+}

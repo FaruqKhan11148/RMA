@@ -41,6 +41,147 @@
   white-space: nowrap;
 }
 
+/* ================================
+   DELIVERY PARTNER FILTERS
+================================ */
+
+.admin_delivery_partner_filters {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.admin_delivery_partner_filter {
+  appearance: none;
+  width: 100%;
+  min-height: 82px;
+  padding: 14px 12px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+
+  background: var(--rma-card);
+  border: 1px solid var(--rma-border);
+  border-radius: 12px;
+
+  color: var(--rma-text);
+  font-family: inherit;
+  text-align: left;
+
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.admin_delivery_partner_filter span {
+  display: block;
+  margin-bottom: 5px;
+
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 700;
+
+  color: var(--rma-text);
+}
+
+.admin_delivery_partner_filter small {
+  display: block;
+
+  font-size: 12px;
+  line-height: 1.3;
+  font-weight: 600;
+
+  color: var(--rma-muted);
+}
+
+.admin_delivery_partner_filter:hover {
+  border-color: var(--rma-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.admin_delivery_partner_filter.active {
+  background: var(--rma-primary);
+  border-color: var(--rma-primary);
+  box-shadow: 0 4px 14px rgba(22, 128, 58, 0.18);
+}
+
+.admin_delivery_partner_filter.active span,
+.admin_delivery_partner_filter.active small {
+  color: #ffffff;
+}
+
+/* ================================
+   STATUS-SPECIFIC FILTER COLORS
+================================ */
+
+.admin_delivery_partner_filter:nth-child(2).active {
+  background: #6b7280;
+  border-color: #6b7280;
+}
+
+.admin_delivery_partner_filter:nth-child(3).active {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+.admin_delivery_partner_filter:nth-child(4).active {
+  background: #d97706;
+  border-color: #d97706;
+}
+
+.admin_delivery_partner_filter:nth-child(5).active {
+  background: #dc2626;
+  border-color: #dc2626;
+}
+
+.admin_delivery_partner_filter:nth-child(6).active {
+  background: #16803a;
+  border-color: #16803a;
+}
+
+.admin_delivery_partner_filter:nth-child(7).active {
+  background: #b91c1c;
+  border-color: #b91c1c;
+}
+
+/* ================================
+   MOBILE
+================================ */
+
+@media (max-width: 1000px) {
+  .admin_delivery_partner_filters {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .admin_delivery_partner_filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .admin_delivery_partner_filter {
+    min-height: 72px;
+    padding: 12px;
+  }
+
+  .admin_delivery_partner_filter span {
+    font-size: 20px;
+  }
+
+  .admin_delivery_partner_filter small {
+    font-size: 11px;
+  }
+}
+
 /* =========================
    GRID
 ========================= */
@@ -163,46 +304,37 @@
 ========================= */
 
 .admin_partner_actions {
-  display: flex;
-  gap: 10px;
   margin-top: 20px;
 }
 
-.admin_partner_actions button {
-  height: 42px;
+.admin_review_button {
+  width: 100%;
+  height: 44px;
+  border: 1px solid #16803a;
   border-radius: 9px;
+  background: #16803a;
+  color: #ffffff;
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
   transition:
     background 0.2s ease,
-    transform 0.15s ease;
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
 }
 
-.admin_partner_actions button:active {
+.admin_review_button:hover {
+  background: #126b30;
+  box-shadow: 0 4px 12px rgba(22, 128, 58, 0.18);
+}
+
+.admin_review_button:active {
   transform: scale(0.98);
 }
 
-.admin_reject_button {
-  flex: 1;
-  border: 1px solid #e0e4e1;
-  background: #ffffff;
-  color: #626b65;
-}
-
-.admin_reject_button:hover {
-  background: #f7f8f7;
-}
-
-.admin_approve_button {
-  flex: 1.4;
-  border: 1px solid #16803a;
-  background: #16803a;
-  color: #ffffff;
-}
-
-.admin_approve_button:hover {
-  background: #126b30;
+.admin_review_button:focus-visible {
+  outline: 3px solid rgba(22, 128, 58, 0.25);
+  outline-offset: 2px;
 }
 
 /* =========================
@@ -305,6 +437,10 @@
   .admin_partner_actions {
     margin-top: 17px;
   }
+
+  .admin_review_button {
+    height: 42px;
+  }
 }
 
 /* =========================================================
@@ -392,26 +528,19 @@
    ACTIONS
 ========================================================= */
 
-[data-theme='dark'] .admin_reject_button {
-  border-color: var(--rma-border);
-  background: var(--rma-card);
-  color: var(--rma-text-secondary);
-}
-
-[data-theme='dark'] .admin_reject_button:hover {
-  background: var(--rma-card-hover);
-  border-color: var(--rma-border-dark);
-}
-
-[data-theme='dark'] .admin_approve_button {
+[data-theme='dark'] .admin_review_button {
   border-color: var(--rma-primary);
   background: var(--rma-primary);
   color: var(--rma-text-white);
 }
 
-[data-theme='dark'] .admin_approve_button:hover {
+[data-theme='dark'] .admin_review_button:hover {
   background: var(--rma-primary-dark);
   border-color: var(--rma-primary-dark);
+}
+
+[data-theme='dark'] .admin_review_button:focus-visible {
+  outline-color: rgba(122, 203, 143, 0.35);
 }
 
 /* =========================================================
@@ -437,11 +566,68 @@
   color: var(--rma-text-secondary);
 }
 
-/* =========================================================
-   ACCESSIBILITY
-========================================================= */
+/* =================================
+   DELIVERY PARTNER STATUS BADGES
+================================= */
 
-[data-theme='dark'] .admin_partner_actions button:focus-visible {
-  outline: 3px solid rgba(22, 128, 58, 0.35);
-  outline-offset: 2px;
+.admin_partner_status_incomplete {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+
+.admin_partner_status_submitted {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.admin_partner_status_under-review {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.admin_partner_status_correction-required {
+  background: #ffedd5;
+  color: #c2410c;
+}
+
+.admin_partner_status_approved {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.admin_partner_status_rejected {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/* Dark mode */
+
+[data-theme='dark'] .admin_partner_status_incomplete {
+  background: rgba(156, 163, 175, 0.15);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .admin_partner_status_submitted {
+  background: rgba(59, 130, 246, 0.15);
+  color: #93c5fd;
+}
+
+[data-theme='dark'] .admin_partner_status_under-review {
+  background: rgba(217, 119, 6, 0.15);
+  color: #fbbf24;
+}
+
+[data-theme='dark'] .admin_partner_status_correction-required {
+  background: rgba(234, 88, 12, 0.15);
+  color: #fdba74;
+}
+
+[data-theme='dark'] .admin_partner_status_approved {
+  background: rgba(22, 128, 58, 0.15);
+  color: #86efac;
+}
+
+[data-theme='dark'] .admin_partner_status_rejected {
+  background: rgba(220, 38, 38, 0.15);
+  color: #fca5a5;
 }

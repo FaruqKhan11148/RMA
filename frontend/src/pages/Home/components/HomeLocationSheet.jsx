@@ -1,3 +1,5 @@
+import { useLanguage } from '../../../context/LanguageContext';
+
 function HomeLocationSheet({
   showLocationSheet,
   setShowLocationSheet,
@@ -8,6 +10,8 @@ function HomeLocationSheet({
   savedAddresses,
   handleSavedAddressSelect,
 }) {
+  const { t } = useLanguage();
+
   if (!showLocationSheet) {
     return null;
   }
@@ -24,12 +28,12 @@ function HomeLocationSheet({
         <div className="location_sheet_handle" />
 
         <div className="location_sheet_header">
-          <h2>Select a location</h2>
+          <h2>{t.home.locationSheetTitle}</h2>
 
           <button
             type="button"
             onClick={() => setShowLocationSheet(false)}
-            aria-label="Close"
+            aria-label={t.home.close}
           >
             ×
           </button>
@@ -99,8 +103,8 @@ function HomeLocationSheet({
             </div>
 
             <div className="location_sheet_option_content">
-              <strong>Use current location</strong>
-              <span>Use your device's current location</span>
+              <strong>{t.home.useCurrentLocation}</strong>
+              <span>{t.home.useCurrentLocationDescription}</span>
             </div>
 
             <span className="location_sheet_arrow">›</span>
@@ -130,8 +134,8 @@ function HomeLocationSheet({
             </div>
 
             <div className="location_sheet_option_content">
-              <strong>Add Address</strong>
-              <span>Add a new delivery address</span>
+              <strong>{t.home.addAddress}</strong>
+              <span>{t.home.addAddressDescription}</span>
             </div>
 
             <span className="location_sheet_arrow">›</span>
@@ -139,16 +143,20 @@ function HomeLocationSheet({
         </div>
 
         <div className="location_sheet_saved">
-          <span className="location_sheet_saved_title">SAVED ADDRESSES</span>
+          <span className="location_sheet_saved_title">
+            {t.home.savedAddressesTitle}
+          </span>
 
           {loadingAddresses && (
             <div className="location_sheet_empty">
-              Loading saved addresses...
+              {t.home.loadingSavedAddresses}
             </div>
           )}
 
           {!loadingAddresses && savedAddresses.length === 0 && (
-            <div className="location_sheet_empty">No saved addresses yet.</div>
+            <div className="location_sheet_empty">
+              {t.home.noSavedAddresses}
+            </div>
           )}
 
           {!loadingAddresses && savedAddresses.length > 0 && (
@@ -173,7 +181,9 @@ function HomeLocationSheet({
                       <strong>{savedAddress.label}</strong>
 
                       {savedAddress.isDefault && (
-                        <span className="location_sheet_default">DEFAULT</span>
+                        <span className="location_sheet_default">
+                          {t.home.defaultAddress}
+                        </span>
                       )}
                     </div>
 

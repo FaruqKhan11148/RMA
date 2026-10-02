@@ -23,7 +23,6 @@ const deliveryAuth = async (req, res, next) => {
     const deliveryPerson = await DeliveryPerson.findOne({
       loginToken: token,
       loginTokenExpiresAt: { $gt: new Date() },
-      isActive: true,
     });
 
     if (!deliveryPerson) {
@@ -32,19 +31,14 @@ const deliveryAuth = async (req, res, next) => {
       });
     }
 
-    // Attach delivery person to request
     req.deliveryPerson = deliveryPerson;
-
-    // Delivery type:
-    // SHOP = shop-owned delivery person
-    // RMA = RMA-employed/external delivery partner
     req.deliveryType = deliveryPerson.deliveryType;
 
     next();
   } catch (error) {
     console.error('Delivery authentication failed:', error);
 
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Server error',
     });
   }

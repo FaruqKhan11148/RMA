@@ -1,0 +1,192 @@
+.application_vehicle_page {
+  min-height: 100vh;
+  padding: 24px 16px;
+  background: #f6f8f7;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.application_vehicle_card {
+  width: 100%;
+  max-width: 560px;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+}
+
+.application_vehicle_back {
+  border: none;
+  background: transparent;
+  color: #16803a;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 0;
+  cursor: pointer;
+  margin-bottom: 24px;
+}
+
+.application_vehicle_back:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.application_vehicle_header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.application_vehicle_icon {
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 14px;
+  border-radius: 16px;
+  background: #e9f6ed;
+  color: #16803a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.application_vehicle_header h1 {
+  margin: 0 0 8px;
+  font-size: 25px;
+  color: #17251c;
+}
+
+.application_vehicle_header p {
+  margin: 0;
+  color: #68736c;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.application_vehicle_field {
+  margin-bottom: 18px;
+}
+
+.application_vehicle_field label {
+  display: block;
+  margin-bottom: 7px;
+  color: #26332b;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.application_vehicle_field input,
+.application_vehicle_field select {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid #d8e0db;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #1d2921;
+  font-size: 15px;
+  outline: none;
+}
+
+.application_vehicle_field input:focus,
+.application_vehicle_field select:focus {
+  border-color: #16803a;
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.1);
+}
+
+.application_vehicle_field input:disabled,
+.application_vehicle_field select:disabled {
+  background: #f3f5f4;
+  cursor: not-allowed;
+}
+
+.application_vehicle_preview {
+  margin-top: 10px;
+  border: 1px solid #dce4df;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f7f9f8;
+}
+
+.application_vehicle_preview img {
+  display: block;
+  width: 100%;
+  max-height: 220px;
+  object-fit: contain;
+}
+
+.application_vehicle_error {
+  margin: 12px 0;
+  padding: 11px 13px;
+  border-radius: 9px;
+  background: #fff1f1;
+  color: #c62828;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.application_vehicle_save {
+  width: 100%;
+  min-height: 48px;
+  border: none;
+  border-radius: 10px;
+  background: #16803a;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 4px;
+}
+
+.application_vehicle_save:hover {
+  background: #126b30;
+}
+
+.application_vehicle_save:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.application_vehicle_info {
+  margin-top: 24px;
+  padding: 15px;
+  border-radius: 12px;
+  background: #f4f8f5;
+  color: #5d6961;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.application_vehicle_info strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #26332b;
+}
+
+.application_vehicle_info p {
+  margin: 5px 0;
+}
+
+.application_vehicle_loading {
+  padding: 40px 10px;
+  text-align: center;
+  color: #68736c;
+  font-size: 14px;
+}
+
+@media (max-width: 480px) {
+  .application_vehicle_page {
+    padding: 12px;
+  }
+
+  .application_vehicle_card {
+    padding: 20px 16px;
+    border-radius: 14px;
+  }
+
+  .application_vehicle_header h1 {
+    font-size: 22px;
+  }
+}

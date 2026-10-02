@@ -1,14 +1,81 @@
 import { statusSteps, statusOrder } from '../utils/deliveryStatusHelpers';
 
-function StatusSteps({ currentStatus }) {
-  const currentStatusIndex = statusOrder.indexOf(currentStatus);
+function StatusSteps({ order }) {
+  const currentStatusIndex = statusOrder.indexOf(order.status);
+
+  const formatTimestamp = (timestamp) => {
+    if (!timestamp) return '';
+
+    const date = new Date(timestamp);
+
+    if (Number.isNaN(date.getTime())) return '';
+
+    return date.toLocaleString([], {
+      day: '2-digit',
+      month: 'short',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  const formatEstimatedArrival = (timestamp) => {
+    if (!timestamp) return '';
+
+    const date = new Date(timestamp);
+
+    if (Number.isNaN(date.getTime())) return '';
+
+    return date.toLocaleString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  const getStepTimestamp = (status) => {
+    switch (status) {
+      case 'Pending':
+        return order.createdAt;
+
+      case 'Accepted':
+        return order.acceptedAt;
+
+      case 'Preparing':
+        return order.preparingAt;
+
+      case 'Ready':
+        return order.readyAt;
+
+      case 'OutForDelivery':
+        return order.collectedAt;
+
+      case 'Completed':
+        return order.completedAt;
+
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="status_steps">
       {statusSteps.map((step, index) => {
         const isCompleted = index < currentStatusIndex;
-
         const isCurrent = index === currentStatusIndex;
+
+        const timestamp = getStepTimestamp(step.status);
+
+        const estimatedDeliveryMinutes = Number(
+          order.estimatedDeliveryMinutes || 0,
+        );
+
+        const estimatedDeliveryAt = order.estimatedDeliveryAt;
+
+        const showEstimatedArrival =
+          step.status === 'OutForDelivery' &&
+          order.status === 'OutForDelivery' &&
+          order.deliveryPickupStatus === 'COLLECTED' &&
+          estimatedDeliveryMinutes > 0 &&
+          estimatedDeliveryAt;
 
         return (
           <div
@@ -84,6 +151,24 @@ function StatusSteps({ currentStatus }) {
               <strong>{step.title}</strong>
 
               <p>{step.description}</p>
+
+              {timestamp && (
+                <small className="status_step_timestamp">
+                  {formatTimestamp(timestamp)}
+                </small>
+              )}
+
+              {showEstimatedArrival && (
+                <div className="status_step_eta">
+                  <strong>Estimated arrival</strong>
+
+                  <span>
+                    Around {formatEstimatedArrival(estimatedDeliveryAt)}
+                  </span>
+
+                  <small>About {estimatedDeliveryMinutes} min</small>
+                </div>
+              )}
             </div>
           </div>
         );

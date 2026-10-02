@@ -11,38 +11,26 @@ const {
   requestDeliveryOtp,
   logoutDeliveryPerson,
   verifyDeliveryOtp,
+  getRmaDeliveryApplication,
+  updateRmaDeliveryApplication,
+  submitRmaDeliveryApplication,
 } = require('./auth.controller');
 
 const router = express.Router();
 
-// SHOP DELIVERY PERSON REGISTRATION
 router.post('/register', ownerAuth, registerDeliveryPerson);
-
-// RMA DELIVERY PARTNER REGISTRATION
 router.post('/rma/register', registerRmaDeliveryPartner);
-
-// REQUEST RMA DELIVERY PARTNER OTP
 router.post('/rma/request-otp', requestRmaDeliveryOtp);
-
-// VERIFY RMA DELIVERY PARTNER OTP
 router.post('/rma/verify-otp', verifyRmaDeliveryOtp);
-
-// ==========================================
-// REQUEST DELIVERY LOGIN OTP
-// ==========================================
-
 router.post('/request-otp', requestDeliveryOtp);
-
-// ==========================================
-// LOGOUT DELIVERY PERSON
-// ==========================================
-
 router.post('/logout', deliveryAuth, logoutDeliveryPerson);
-
-// ==========================================
-// VERIFY DELIVERY PERSON LOGIN OTP
-// ==========================================
-
 router.post('/verify-otp', verifyDeliveryOtp);
+router.get('/rma/application', deliveryAuth, getRmaDeliveryApplication);
+router.patch('/rma/application', deliveryAuth, updateRmaDeliveryApplication);
+router.patch(
+  '/rma/application/submit',
+  deliveryAuth,
+  submitRmaDeliveryApplication,
+);
 
 module.exports = router;

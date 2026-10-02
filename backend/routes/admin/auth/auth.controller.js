@@ -55,10 +55,16 @@ const loginAdmin = async (req, res) => {
 
     await admin.save();
 
+    // res.cookie('admin_token', token, {
+    //   httpOnly: true,
+    //   secure: true,
+    //   sameSite: 'none',
+    //   maxAge: 8 * 60 * 60 * 1000,
+    // });
     res.cookie('admin_token', token, {
       httpOnly: true,
-      secure: true,
-      sameSite: 'none',
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
       maxAge: 8 * 60 * 60 * 1000,
     });
 

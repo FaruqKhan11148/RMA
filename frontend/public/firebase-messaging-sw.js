@@ -33,6 +33,30 @@ messaging.onBackgroundMessage((payload) => {
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
+
+  self.clients
+    .matchAll({
+      type: 'window',
+      includeUncontrolled: true,
+    })
+    .then((clientList) => {
+      console.log(
+        '[RMA SERVICE WORKER] Open browser clients:',
+        clientList.length,
+      );
+
+      clientList.forEach((client) => {
+        console.log('[RMA SERVICE WORKER] Sending message to:', client.url);
+
+        client.postMessage({
+          type: 'RMA_FCM_NOTIFICATION',
+          payload,
+        });
+      });
+    })
+    .catch((error) => {
+      console.error('[RMA SERVICE WORKER] Failed to message clients:', error);
+    });
 });
 
 // ==========================================

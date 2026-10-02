@@ -37,7 +37,7 @@ function MonthlyFinanceSummary({ stats, formatCurrency }) {
       </div>
 
       <div className="admin_finance_card admin_rma_fee_card">
-        <span>RMA Fees (1%)</span>
+        <span>RMA Fees (2.5%)</span>
         <strong>{formatCurrency(stats.totalRmaFees)}</strong>
       </div>
     </section>

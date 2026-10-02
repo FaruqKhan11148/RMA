@@ -226,14 +226,30 @@ function OwnerOrders() {
     try {
       setAssigningDelivery(true);
 
-      const data = await updateOwnerOrderStatus(
-        selectedDeliveryOrder.orderId,
-        'OutForDelivery',
+      const ownerToken = localStorage.getItem('rma_owner_token');
+
+      const response = await fetch(
+        `https://rma-backend-bo4a.onrender.com/api/orders/${selectedDeliveryOrder.orderId}/delivery-assignment`,
         {
-          deliveryAssignmentType,
-          deliveryPersonId: selectedDeliveryPersonId,
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${ownerToken}`,
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            deliveryAssignmentType,
+            deliveryPersonId: selectedDeliveryPersonId,
+          }),
         },
       );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.message || 'Failed to assign delivery partner');
+        return;
+      }
 
       setOrders((currentOrders) =>
         currentOrders.map((order) =>
@@ -243,6 +259,7 @@ function OwnerOrders() {
                 status: data.order.status,
                 deliveryAssignmentType: data.order.deliveryAssignmentType,
                 deliveryPersonId: data.order.deliveryPersonId,
+                deliveryAssignmentStatus: data.order.deliveryAssignmentStatus,
               }
             : order,
         ),

@@ -1,12 +1,18 @@
+import { useLanguage } from '../../../context/LanguageContext';
+
 function HomeExploreEnd({ onFindShops, onScanQr }) {
+  const { t } = useLanguage();
+
   return (
     <section className="home_explore_end">
       <div className="home_explore_end_content">
-        <span className="home_explore_end_eyebrow">KEEP EXPLORING</span>
+        <span className="home_explore_end_eyebrow">
+          {t.home.exploreEndEyebrow}
+        </span>
 
-        <h2>Looking for something fresh?</h2>
+        <h2>{t.home.exploreEndTitle}</h2>
 
-        <p>Discover more meat and seafood shops near you.</p>
+        <p>{t.home.exploreEndDescription}</p>
 
         <div className="home_explore_end_actions">
           <button
@@ -14,7 +20,7 @@ function HomeExploreEnd({ onFindShops, onScanQr }) {
             className="home_explore_end_primary"
             onClick={onFindShops}
           >
-            Find More Shops
+            {t.home.findMoreShops}
             <span>→</span>
           </button>
 
@@ -23,7 +29,7 @@ function HomeExploreEnd({ onFindShops, onScanQr }) {
             className="home_explore_end_secondary"
             onClick={onScanQr}
           >
-            Scan Shop QR
+            {t.home.scanShopQr}
           </button>
         </div>
       </div>

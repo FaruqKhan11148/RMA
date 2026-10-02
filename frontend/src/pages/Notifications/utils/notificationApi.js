@@ -7,8 +7,8 @@ export const fetchNotifications = async () => {
   const ownerToken = localStorage.getItem('rma_owner_token');
   const ownerData = localStorage.getItem('rma_owner');
 
-  const deliveryToken = sessionStorage.getItem('delivery_token');
-  const deliveryData = sessionStorage.getItem('delivery_person');
+  const deliveryToken = localStorage.getItem('delivery_token');
+  const deliveryData = localStorage.getItem('delivery_person');
 
   if (ownerToken && ownerData) {
     endpoint = `${API_URL}api/orders/notifications/owner`;
@@ -42,8 +42,8 @@ export const markNotificationAsRead = async (notificationId) => {
   const ownerToken = localStorage.getItem('rma_owner_token');
   const ownerData = localStorage.getItem('rma_owner');
 
-  const deliveryToken = sessionStorage.getItem('delivery_token');
-  const deliveryData = sessionStorage.getItem('delivery_person');
+  const deliveryToken = localStorage.getItem('delivery_token');
+  const deliveryData = localStorage.getItem('delivery_person');
 
   if (ownerToken && ownerData) {
     endpoint = `${API_URL}api/orders/notifications/owner/${notificationId}/read`;

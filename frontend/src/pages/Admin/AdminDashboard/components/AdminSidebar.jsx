@@ -64,6 +64,20 @@ function AdminSidebar({ admin, onNavigate, onLogout }) {
 
         <button
           className="admin-nav-item"
+          onClick={() => onNavigate('/admin/delivery-withdrawals')}
+        >
+          Delivery Withdrawal Requests
+        </button>
+
+        <button
+          className="admin-nav-item"
+          onClick={() => onNavigate('/admin/delivery-earnings')}
+        >
+          Delivery Earning Pendings
+        </button>
+
+        <button
+          className="admin-nav-item"
           onClick={() => onNavigate('/admin/payments')}
         >
           Payments

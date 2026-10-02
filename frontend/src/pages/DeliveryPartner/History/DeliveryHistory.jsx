@@ -19,7 +19,7 @@ function DeliveryHistory() {
   useEffect(() => {
     const loadHistory = async () => {
       try {
-        const token = sessionStorage.getItem('delivery_token');
+        const token = localStorage.getItem('delivery_token');
 
         if (!token) {
           setError('Delivery partner session not found');

@@ -1,4 +1,6 @@
 const Order = require('../../../models/Order');
+const DeliveryPerson = require('../../../models/DeliveryPerson');
+const DeliveryWalletTransaction = require('../../../models/DeliveryWalletTransaction');
 
 const {
   createAndSendNotification,
@@ -41,6 +43,28 @@ async function verifyDeliveryOtp(req, res) {
     order.status = 'Completed';
     order.completedAt = new Date();
 
+    if (order.deliveryPersonId) {
+      const remainingActiveOrders = await Order.countDocuments({
+        deliveryPersonId: order.deliveryPersonId,
+        deliveryAssignmentStatus: 'ACCEPTED',
+        status: 'OutForDelivery',
+        _id: { $ne: order._id },
+      });
+
+      const deliveryPerson = await DeliveryPerson.findById(
+        order.deliveryPersonId,
+      );
+
+      if (deliveryPerson) {
+        if (remainingActiveOrders === 0) {
+          deliveryPerson.availabilityStatus = 'AVAILABLE';
+          deliveryPerson.lastAvailabilityChangedAt = new Date();
+
+          await deliveryPerson.save();
+        }
+      }
+    }
+
     // ==========================================
     // OWNER SETTLEMENT
     // ==========================================
@@ -51,6 +75,40 @@ async function verifyDeliveryOtp(req, res) {
     ) {
       order.settlementStatus = 'Settled';
       order.settledAt = new Date();
+    }
+
+    // ==========================================
+    // DELIVERY PARTNER WALLET EARNING
+    // ==========================================
+
+    const deliveryEarning = Number(
+      Number(order.deliveryRiderAmount || order.deliveryCharge || 0).toFixed(2),
+    );
+
+    if (deliveryEarning > 0) {
+      try {
+        await DeliveryWalletTransaction.create({
+          deliveryPersonId: order.deliveryPersonId,
+          orderId: order.orderId,
+          type: 'ORDER_DELIVERY_EARNING',
+          amount: deliveryEarning,
+          status: 'PENDING',
+          description: `Delivery earning for order ${order.orderId}`,
+          metadata: {
+            deliveryCharge: Number(order.deliveryCharge || 0),
+            deliveryRiderAmount: deliveryEarning,
+          },
+        });
+      } catch (walletError) {
+        // Duplicate transaction means the earning was already created.
+        if (walletError.code !== 11000) {
+          throw walletError;
+        }
+
+        console.log(
+          `Delivery earning already exists for order ${order.orderId}`,
+        );
+      }
     }
 
     await order.save();

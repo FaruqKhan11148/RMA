@@ -1941,3 +1941,40 @@
 [data-theme='dark'] .delivery_status_empty button:focus-visible {
   outline-color: rgba(34, 166, 83, 0.35);
 }
+
+.status_step_timestamp {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #777;
+}
+
+.status_step_eta {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+  padding: 9px 11px;
+  border-radius: 8px;
+  background: #f4fbf7;
+  border: 1px solid #dcefe4;
+}
+
+.status_step_eta strong {
+  margin-bottom: 2px;
+  color: #16803a;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.status_step_eta span {
+  color: #101713;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.status_step_eta small {
+  margin-top: 2px;
+  color: #66736d;
+  font-size: 11px;
+}

@@ -7,7 +7,7 @@ import './DeliveryProfile.css';
 function DeliveryProfile() {
   const navigate = useNavigate();
 
-  const storedPartner = sessionStorage.getItem('delivery_person');
+  const storedPartner = localStorage.getItem('delivery_person');
 
   let deliveryPartner = null;
 
@@ -26,8 +26,8 @@ function DeliveryProfile() {
   const shopId = deliveryPartner?.shopId || '—';
 
   const handleLogout = () => {
-    sessionStorage.removeItem('delivery_token');
-    sessionStorage.removeItem('delivery_person');
+    localStorage.removeItem('delivery_token');
+    localStorage.removeItem('delivery_person');
 
     navigate('/delivery/rma-login');
   };

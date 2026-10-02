@@ -10,7 +10,10 @@ import ActiveDelivery from './components/ActiveDelivery';
 import DeliveryRequests from './components/DeliveryRequests';
 import DeliveryArea from './components/DeliveryArea';
 
-import { fetchDeliveryDashboard } from './utils/deliveryDashboardApi';
+import {
+  fetchDeliveryDashboard,
+  updateDeliveryAvailability,
+} from './utils/deliveryDashboardApi';
 import {
   getPartnerName,
   calculateTodayEarnings,
@@ -43,21 +46,21 @@ function DeliveryDashboard() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const token = sessionStorage.getItem('delivery_token');
+    const token = localStorage.getItem('delivery_token');
 
     if (!token) {
       navigate('/delivery-Partner/login');
       return;
     }
 
-    const storedPartner = sessionStorage.getItem('delivery_person');
+    const storedPartner = localStorage.getItem('delivery_person');
 
     if (storedPartner) {
       try {
         const parsedPartner = JSON.parse(storedPartner);
 
         setDeliveryPartner(parsedPartner);
-        setIsOnline(Boolean(parsedPartner?.isActive));
+        setIsOnline(parsedPartner?.availabilityStatus === 'AVAILABLE');
       } catch (parseError) {
         console.error('Failed to parse delivery partner:', parseError);
       }
@@ -106,8 +109,52 @@ function DeliveryDashboard() {
 
   const todayEarnings = calculateTodayEarnings(dashboard.orders.completedToday);
 
-  const handleToggleOnline = () => {
-    setIsOnline((previous) => !previous);
+  const handleToggleOnline = async () => {
+    const token = localStorage.getItem('delivery_token');
+
+    if (!token) {
+      navigate('/delivery/rma-login');
+      return;
+    }
+
+    const nextStatus = isOnline ? 'OFFLINE' : 'AVAILABLE';
+
+    try {
+      setError('');
+
+      const data = await updateDeliveryAvailability(token, nextStatus);
+
+      setIsOnline(data.availabilityStatus === 'AVAILABLE');
+
+      const storedPartner = localStorage.getItem('delivery_person');
+
+      if (storedPartner) {
+        try {
+          const parsedPartner = JSON.parse(storedPartner);
+
+          const updatedPartner = {
+            ...parsedPartner,
+            availabilityStatus: data.availabilityStatus,
+          };
+
+          localStorage.setItem(
+            'delivery_person',
+            JSON.stringify(updatedPartner),
+          );
+
+          setDeliveryPartner(updatedPartner);
+        } catch (parseError) {
+          console.error(
+            'Failed to update stored delivery partner:',
+            parseError,
+          );
+        }
+      }
+    } catch (toggleError) {
+      console.error('Update delivery availability failed:', toggleError);
+
+      setError(toggleError.message || 'Unable to update availability');
+    }
   };
 
   return (

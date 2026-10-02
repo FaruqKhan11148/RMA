@@ -41,12 +41,12 @@ function HomeHero({
           </span>
 
           <span className="rma_location_content">
-            <span className="rma_location_label">DELIVERING TO</span>
+            <span className="rma_location_label">{t.home.locationLabel}</span>
 
             <span className="rma_location_value">
               {locationLoading
-                ? 'Finding your location...'
-                : 'Your current location'}
+                ? t.home.findingLocation
+                : t.home.currentLocation}
             </span>
 
             {locationName && (
@@ -81,7 +81,7 @@ function HomeHero({
           <div className="hero_image" key={`${image}-${index}`}>
             <img
               src={optimizeCloudinaryImage(image, 1200)}
-              alt={`Fresh meat ${(index % meatImages.length) + 1}`}
+              alt={`${t.home.freshMeatAlt} ${(index % meatImages.length) + 1}`}
               loading={index === 0 ? 'eager' : 'lazy'}
               fetchPriority={index === 0 ? 'high' : 'low'}
               decoding="async"
@@ -97,10 +97,12 @@ function HomeHero({
       {/* Text placed ABOVE the images */}
 
       <div className="home_header">
-        <div className="hero_badge">FRESH • LOCAL • CONVENIENT</div>
+        <div className="hero_badge">{t.home.heroBadge}</div>
 
         <p className="home_greeting">
-          {customerName ? `Hello ${customerName}` : 'Hello!'}
+          {customerName
+            ? `${t.home.greeting} ${customerName}`
+            : t.home.greeting}
         </p>
 
         <h1>{t.home.title}</h1>

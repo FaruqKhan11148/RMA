@@ -1,43 +1,78 @@
 /* =========================================================
-   DELIVERY ORDERS
+   DELIVERY ORDERS — PAGE
    ========================================================= */
 
 .delivery_orders {
   min-height: 100vh;
   box-sizing: border-box;
 
-  padding: 40px 20px 70px;
+  padding: 32px 20px 80px;
 
-  background: #f8faf8;
+  background: #f6f8f6;
+  color: #172018;
 }
 
 /* =========================================================
-   DELIVERY HEADER
+   DELIVERY ORDERS — HEADER
    ========================================================= */
 
 .delivery_orders_header {
-  max-width: 960px;
+  width: 100%;
+  max-width: 1000px;
 
-  margin: 0 auto 28px;
+  margin: 0 auto 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+.delivery_orders_header h1 {
+  margin: 0 0 6px;
+
+  color: #172018;
+
+  font-size: 28px;
+  line-height: 1.25;
+  font-weight: 800;
+
+  letter-spacing: -0.45px;
+}
+
+.delivery_orders_header p {
+  margin: 0;
+
+  color: #68736b;
+
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.delivery_orders_header p strong {
+  color: #16803a;
+  font-weight: 750;
 }
 
 /* =========================================================
-   DELIVERY DASHBOARD TABS
+   DASHBOARD TABS
    ========================================================= */
 
 .delivery_dashboard_tabs {
-  max-width: 960px;
+  width: 100%;
+  max-width: 1000px;
 
-  margin: 0 auto 20px;
+  margin: 0 auto 24px;
 
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 
   gap: 12px;
 }
 
 /* =========================================================
-   TAB
+   DASHBOARD TAB
    ========================================================= */
 
 .delivery_dashboard_tab {
@@ -45,10 +80,12 @@
 
   min-width: 0;
 
-  padding: 15px 16px;
+  box-sizing: border-box;
 
-  border: 1px solid #e1e8e3;
-  border-radius: 13px;
+  padding: 16px 17px;
+
+  border: 1px solid #e1e7e2;
+  border-radius: 14px;
 
   background: #ffffff;
   color: #172018;
@@ -64,7 +101,9 @@
 
   cursor: pointer;
 
-  box-shadow: 0 3px 10px rgba(23, 32, 24, 0.035);
+  box-shadow:
+    0 4px 14px rgba(23, 32, 24, 0.035),
+    0 1px 3px rgba(23, 32, 24, 0.02);
 
   transition:
     border-color 0.2s ease,
@@ -73,32 +112,48 @@
     transform 0.15s ease;
 }
 
+.delivery_dashboard_tab::before {
+  content: '';
+
+  position: absolute;
+
+  top: 14px;
+  right: 14px;
+
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: #d8dfda;
+
+  transition: background-color 0.2s ease;
+}
+
 .delivery_dashboard_tab span {
-  margin-top: 3px;
+  margin: 0;
 
   color: #748078;
 
   font-size: 11px;
   line-height: 1.3;
 
-  font-weight: 600;
+  font-weight: 650;
 
   white-space: nowrap;
 }
 
-/* NUMBER */
-
 .delivery_dashboard_tab strong {
   color: #172018;
 
-  font-size: 23px;
-  line-height: 1.2;
+  font-size: 24px;
+  line-height: 1.15;
 
   font-weight: 800;
 }
 
 /* =========================================================
-   HOVER
+   TAB HOVER
    ========================================================= */
 
 .delivery_dashboard_tab:hover {
@@ -106,7 +161,9 @@
 
   background: #fcfffc;
 
-  box-shadow: 0 6px 16px rgba(23, 32, 24, 0.06);
+  box-shadow:
+    0 8px 20px rgba(23, 32, 24, 0.065),
+    0 2px 5px rgba(23, 32, 24, 0.025);
 
   transform: translateY(-1px);
 }
@@ -116,7 +173,7 @@
 }
 
 /* =========================================================
-   ACTIVE
+   TAB ACTIVE
    ========================================================= */
 
 .delivery_dashboard_tab.active {
@@ -124,7 +181,9 @@
 
   background: #16803a;
 
-  box-shadow: 0 6px 16px rgba(22, 128, 58, 0.15);
+  box-shadow:
+    0 8px 20px rgba(22, 128, 58, 0.17),
+    0 2px 6px rgba(22, 128, 58, 0.08);
 }
 
 .delivery_dashboard_tab.active::before {
@@ -132,7 +191,7 @@
 }
 
 .delivery_dashboard_tab.active span {
-  color: rgba(255, 255, 255, 0.78);
+  color: rgba(255, 255, 255, 0.76);
 }
 
 .delivery_dashboard_tab.active strong {
@@ -140,108 +199,30 @@
 }
 
 /* =========================================================
-   MOBILE
-   ========================================================= */
-
-@media (max-width: 600px) {
-  .delivery_dashboard_tabs {
-    display: grid;
-
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-
-    gap: 8px;
-
-    margin-bottom: 13px;
-
-    padding: 0;
-  }
-
-  .delivery_dashboard_tab {
-    min-width: 0;
-
-    padding: 11px 12px;
-
-    border-radius: 10px;
-
-    gap: 3px;
-
-    box-shadow: 0 2px 7px rgba(23, 32, 24, 0.035);
-  }
-
-  .delivery_dashboard_tab span {
-    margin-top: 2px;
-
-    font-size: 9px;
-  }
-
-  .delivery_dashboard_tab strong {
-    font-size: 19px;
-  }
-}
-
-/* =========================================================
-   VERY SMALL MOBILE
-   ========================================================= */
-
-@media (max-width: 360px) {
-  .delivery_dashboard_tabs {
-    gap: 6px;
-  }
-
-  .delivery_dashboard_tab {
-    padding: 9px 10px;
-
-    border-radius: 9px;
-  }
-
-  .delivery_dashboard_tab span {
-    font-size: 8px;
-  }
-
-  .delivery_dashboard_tab strong {
-    font-size: 17px;
-  }
-}
-
-.delivery_orders_header h1 {
-  margin: 0 0 8px;
-
-  color: #172018;
-
-  font-size: 28px;
-  line-height: 1.3;
-  font-weight: 750;
-
-  letter-spacing: -0.4px;
-}
-
-.delivery_orders_header p {
-  margin: 0;
-
-  color: #68736b;
-
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-.delivery_orders_header p strong {
-  color: #16803a;
-  font-weight: 700;
-}
-
-/* =========================================================
    ORDERS LIST
    ========================================================= */
 
 .delivery_orders_list {
-  max-width: 960px;
+  width: 100%;
+  max-width: 1000px;
 
   margin: 0 auto;
 
   display: flex;
   flex-direction: column;
 
-  gap: 18px;
+  gap: 12px;
+}
+
+.delivery_orders_list_title {
+  margin: 4px 0 4px;
+
+  color: #172018;
+
+  font-size: 19px;
+  line-height: 1.35;
+
+  font-weight: 750;
 }
 
 /* =========================================================
@@ -258,12 +239,12 @@
 
   background: #ffffff;
 
-  border: 1px solid #e3e9e4;
+  border: 1px solid #e2e8e3;
   border-radius: 16px;
 
   box-shadow:
-    0 6px 20px rgba(23, 32, 24, 0.05),
-    0 2px 6px rgba(23, 32, 24, 0.03);
+    0 7px 22px rgba(23, 32, 24, 0.045),
+    0 2px 6px rgba(23, 32, 24, 0.025);
 
   overflow: hidden;
 }
@@ -280,35 +261,43 @@
 
   gap: 16px;
 
-  padding-bottom: 16px;
+  padding-bottom: 15px;
 
-  border-bottom: 1px solid #e3e9e4;
+  border-bottom: 1px solid #e5eae6;
 }
 
 .delivery_order_top strong {
+  min-width: 0;
+
   color: #172018;
 
   font-size: 15px;
+  line-height: 1.4;
+
   font-weight: 750;
 
   overflow-wrap: anywhere;
 }
 
+/* =========================================================
+   ORDER STATUS
+   ========================================================= */
+
 .delivery_order_status {
   flex-shrink: 0;
 
-  padding: 6px 11px;
+  padding: 6px 10px;
 
+  border: 1px solid #f1dfaa;
   border-radius: 999px;
 
-  background: #fff7df;
+  background: #fff8e6;
   color: #946b00;
 
-  border: 1px solid #f3df9e;
+  font-size: 11px;
+  line-height: 1.2;
 
-  font-size: 12px;
-  line-height: 1.3;
-  font-weight: 700;
+  font-weight: 750;
 
   white-space: nowrap;
 }
@@ -318,31 +307,33 @@
    ========================================================= */
 
 .delivery_order_info {
-  padding: 20px 0;
+  padding: 18px 0;
 }
 
 .delivery_order_info h2 {
-  margin: 0 0 8px;
+  margin: 0 0 7px;
 
   color: #172018;
 
   font-size: 20px;
   line-height: 1.35;
-  font-weight: 700;
+
+  font-weight: 750;
 }
 
 .delivery_order_info p {
-  margin: 7px 0;
+  margin: 6px 0;
 
   color: #68736b;
 
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.55;
 }
 
 .delivery_order_info p strong {
   color: #3f4942;
-  font-weight: 650;
+
+  font-weight: 700;
 }
 
 /* =========================================================
@@ -353,14 +344,14 @@
   position: relative;
   z-index: 0;
 
-  margin-top: 16px;
+  margin-top: 12px;
 
   overflow: hidden;
 
-  border: 1px solid #e3e9e4;
+  border: 1px solid #e1e7e2;
   border-radius: 13px;
 
-  background: #f8faf8;
+  background: #f5f8f5;
 }
 
 .delivery_map_container .leaflet-container {
@@ -373,14 +364,14 @@
    ========================================================= */
 
 .delivery_order_items {
-  margin-top: 17px;
+  margin-top: 14px;
 
-  padding: 13px 15px;
+  padding: 12px 14px;
 
-  border: 1px solid #e3e9e4;
+  border: 1px solid #e1e7e2;
   border-radius: 11px;
 
-  background: #f8faf8;
+  background: #f7faf7;
 }
 
 .delivery_order_items p {
@@ -407,43 +398,45 @@
 .delivery_order_total {
   display: block;
 
-  margin-top: 17px;
+  margin-top: 15px;
 
   color: #16803a;
 
   font-size: 21px;
   line-height: 1.3;
+
   font-weight: 800;
 }
 
 /* =========================================================
-   CUSTOMER OTP SECTION
+   CUSTOMER OTP
    ========================================================= */
 
 .delivery_otp_section {
   margin-top: 2px;
 
-  padding-top: 20px;
+  padding-top: 18px;
 
-  border-top: 1px solid #e3e9e4;
+  border-top: 1px solid #e4e9e5;
 }
 
 .delivery_otp_section h3 {
-  margin: 0 0 6px;
+  margin: 0 0 5px;
 
   color: #172018;
 
-  font-size: 17px;
+  font-size: 16px;
   line-height: 1.4;
-  font-weight: 700;
+
+  font-weight: 750;
 }
 
 .delivery_otp_section p {
-  margin: 0 0 14px;
+  margin: 0 0 12px;
 
   color: #68736b;
 
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.5;
 }
 
@@ -454,20 +447,21 @@
 .delivery_otp_section input {
   width: 100%;
 
-  min-height: 50px;
+  min-height: 48px;
 
   box-sizing: border-box;
 
-  padding: 12px 14px;
+  padding: 11px 14px;
 
-  border: 1px solid #d2dbd4;
+  border: 1px solid #d4ddd6;
   border-radius: 10px;
 
   background: #ffffff;
   color: #172018;
 
   font-family: inherit;
-  font-size: 19px;
+
+  font-size: 18px;
   font-weight: 650;
 
   letter-spacing: 6px;
@@ -485,30 +479,28 @@
 .delivery_otp_section input::placeholder {
   color: #a0aaa3;
 
-  letter-spacing: 1px;
-
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 400;
+
+  letter-spacing: 1px;
 }
 
 .delivery_otp_section input:focus {
   border-color: #16803a;
 
-  background: #ffffff;
-
-  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.12);
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.11);
 }
 
 /* =========================================================
-   BUTTON
+   PRIMARY BUTTON
    ========================================================= */
 
 .delivery_complete_button {
   width: 100%;
 
-  min-height: 48px;
+  min-height: 47px;
 
-  margin-top: 12px;
+  margin-top: 11px;
 
   padding: 0 16px;
 
@@ -521,31 +513,32 @@
   color: #ffffff;
 
   font-family: inherit;
-  font-size: 14px;
-  font-weight: 700;
+
+  font-size: 13px;
+  font-weight: 750;
 
   cursor: pointer;
 
   transition:
     background-color 0.2s ease,
     border-color 0.2s ease,
-    transform 0.15s ease,
-    box-shadow 0.2s ease;
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
 }
 
-.delivery_complete_button:hover {
-  background: #0f5c2a;
-  border-color: #0f5c2a;
+.delivery_complete_button:hover:not(:disabled) {
+  background: #126d31;
+  border-color: #126d31;
 
-  box-shadow: 0 5px 14px rgba(15, 92, 42, 0.18);
+  box-shadow: 0 6px 15px rgba(18, 109, 49, 0.17);
 }
 
-.delivery_complete_button:active {
+.delivery_complete_button:active:not(:disabled) {
   transform: translateY(1px);
 }
 
 .delivery_complete_button:focus-visible {
-  outline: 3px solid rgba(22, 128, 58, 0.18);
+  outline: 3px solid rgba(22, 128, 58, 0.16);
   outline-offset: 2px;
 }
 
@@ -558,7 +551,7 @@
 }
 
 /* =========================================================
-   EMPTY / LOADING CARD
+   EMPTY / LOADING / LOGIN CARD
    ========================================================= */
 
 .delivery_no_orders {
@@ -567,28 +560,35 @@
 
   box-sizing: border-box;
 
-  margin: 45px auto;
+  margin: 35px auto;
 
-  padding: 44px 24px;
+  padding: 42px 28px;
 
   text-align: center;
 
   background: #ffffff;
 
-  border: 1px solid #e3e9e4;
+  border: 1px solid #e2e8e3;
   border-radius: 16px;
 
-  box-shadow: 0 6px 20px rgba(23, 32, 24, 0.04);
+  box-shadow: 0 7px 22px rgba(23, 32, 24, 0.04);
 }
 
+.delivery_no_orders h1,
 .delivery_no_orders h2 {
   margin: 0 0 8px;
 
   color: #172018;
 
-  font-size: 21px;
-  line-height: 1.4;
-  font-weight: 700;
+  font-size: 22px;
+  line-height: 1.35;
+
+  font-weight: 800;
+}
+
+.delivery_no_orders h1 {
+  font-size: 27px;
+  letter-spacing: -0.35px;
 }
 
 .delivery_no_orders p {
@@ -596,33 +596,21 @@
 
   color: #68736b;
 
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.6;
 }
 
 /* =========================================================
-   DELIVERY LOGIN / OTP SCREEN
+   LOGIN / OTP CARD
    ========================================================= */
 
 .delivery_orders > .delivery_no_orders {
   max-width: 430px;
 
-  margin-top: 60px;
-  margin-bottom: 60px;
+  margin-top: 55px;
+  margin-bottom: 55px;
 
-  padding: 38px 32px;
-}
-
-.delivery_no_orders h1 {
-  margin: 0 0 9px;
-
-  color: #172018;
-
-  font-size: 28px;
-  line-height: 1.3;
-  font-weight: 750;
-
-  letter-spacing: -0.4px;
+  padding: 38px 30px;
 }
 
 .delivery_no_orders input {
@@ -632,17 +620,18 @@
 
   box-sizing: border-box;
 
-  margin-top: 16px;
+  margin-top: 15px;
 
   padding: 0 14px;
 
-  border: 1px solid #d2dbd4;
+  border: 1px solid #d4ddd6;
   border-radius: 10px;
 
   background: #ffffff;
   color: #172018;
 
   font-family: inherit;
+
   font-size: 14px;
 
   outline: none;
@@ -659,7 +648,7 @@
 .delivery_no_orders input:focus {
   border-color: #16803a;
 
-  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.12);
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.11);
 }
 
 .delivery_no_orders .delivery_complete_button {
@@ -674,30 +663,26 @@
    ========================================================= */
 
 .delivery_error_message {
-  max-width: 960px;
+  width: 100%;
+  max-width: 1000px;
 
-  margin: 14px auto 0 !important;
+  margin: 0 auto 14px !important;
 
   padding: 11px 14px;
 
   box-sizing: border-box;
 
   border: 1px solid #fecaca;
-  border-radius: 9px;
+  border-radius: 10px;
 
-  background: #fef2f2;
+  background: #fff5f5;
 
-  color: #dc2626 !important;
+  color: #c62828 !important;
 
   font-size: 13px !important;
   line-height: 1.5;
 
-  font-weight: 600;
-}
-
-/* Login/OTP error inside card */
-.delivery_no_orders .delivery_error_message {
-  margin-top: 14px !important;
+  font-weight: 650;
 }
 
 /* =========================================================
@@ -705,16 +690,16 @@
    ========================================================= */
 
 .delivery_success_message {
-  margin-top: 15px;
+  margin-top: 13px;
 
   padding: 11px 14px;
 
   box-sizing: border-box;
 
   border: 1px solid #bfe3ca;
-  border-radius: 9px;
+  border-radius: 10px;
 
-  background: #eaf7ee;
+  background: #eef9f1;
 
   color: #0f5c2a;
 
@@ -726,24 +711,15 @@
 }
 
 /* =========================================================
-   OTP SCREEN SECONDARY BUTTON
+   OTP SECONDARY BUTTON
    ========================================================= */
-
-/*
-   The JSX currently uses the same class for both
-   Verify OTP and Back.
-
-   Make the second button slightly quieter when
-   it follows the primary button.
-*/
 
 .delivery_no_orders .delivery_complete_button + .delivery_complete_button {
   margin-top: 9px;
 
-  border-color: #d5ddd7;
+  border-color: #d4ddd6;
 
   background: #ffffff;
-
   color: #3f4942;
 
   box-shadow: none;
@@ -751,16 +727,16 @@
 
 .delivery_no_orders
   .delivery_complete_button
-  + .delivery_complete_button:hover {
-  border-color: #bfcac1;
+  + .delivery_complete_button:hover:not(:disabled) {
+  border-color: #c1ccc4;
 
-  background: #f8faf8;
+  background: #f7faf8;
 
   color: #172018;
 }
 
 /* =========================================================
-   DELIVERY ORDER ROW
+   ORDER ROW
    ========================================================= */
 
 .delivery_order_row {
@@ -768,9 +744,9 @@
 
   box-sizing: border-box;
 
-  padding: 18px 20px;
+  padding: 17px 19px;
 
-  border: 1px solid #e3e9e4;
+  border: 1px solid #e2e8e3;
   border-radius: 14px;
 
   background: #ffffff;
@@ -783,8 +759,8 @@
   cursor: pointer;
 
   box-shadow:
-    0 4px 14px rgba(23, 32, 24, 0.04),
-    0 1px 4px rgba(23, 32, 24, 0.02);
+    0 4px 14px rgba(23, 32, 24, 0.035),
+    0 1px 4px rgba(23, 32, 24, 0.018);
 
   transition:
     border-color 0.2s ease,
@@ -794,13 +770,13 @@
 }
 
 .delivery_order_row:hover {
-  border-color: #bfe0c8;
+  border-color: #bcdcc5;
 
   background: #fcfffc;
 
   box-shadow:
-    0 7px 20px rgba(23, 32, 24, 0.07),
-    0 2px 6px rgba(23, 32, 24, 0.03);
+    0 8px 20px rgba(23, 32, 24, 0.065),
+    0 2px 6px rgba(23, 32, 24, 0.025);
 
   transform: translateY(-1px);
 }
@@ -810,12 +786,12 @@
 }
 
 .delivery_order_row:focus-visible {
-  outline: 3px solid rgba(22, 128, 58, 0.15);
+  outline: 3px solid rgba(22, 128, 58, 0.14);
   outline-offset: 2px;
 }
 
 /* =========================================================
-   ROW HEADER
+   ORDER ROW — MAIN
    ========================================================= */
 
 .delivery_order_row_main {
@@ -824,20 +800,24 @@
   align-items: center;
   justify-content: space-between;
 
-  gap: 16px;
+  gap: 14px;
 }
 
 .delivery_order_row_main strong {
+  min-width: 0;
+
   color: #172018;
 
   font-size: 14px;
+  line-height: 1.4;
+
   font-weight: 750;
 
   overflow-wrap: anywhere;
 }
 
 /* =========================================================
-   ROW INFORMATION
+   ORDER ROW — INFO
    ========================================================= */
 
 .delivery_order_row_info {
@@ -845,15 +825,15 @@
 
   align-items: center;
 
-  gap: 20px;
+  gap: 18px;
 
-  margin-top: 13px;
+  margin-top: 11px;
 }
 
 .delivery_order_row_info span {
   color: #68736b;
 
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.4;
 }
 
@@ -863,11 +843,13 @@
   color: #16803a;
 
   font-size: 16px;
+  line-height: 1.3;
+
   font-weight: 800;
 }
 
 /* =========================================================
-   ROW FOOTER
+   ORDER ROW — FOOTER
    ========================================================= */
 
 .delivery_order_row_footer {
@@ -876,11 +858,11 @@
   align-items: center;
   justify-content: space-between;
 
-  gap: 16px;
+  gap: 14px;
 
-  margin-top: 13px;
+  margin-top: 11px;
 
-  padding-top: 12px;
+  padding-top: 10px;
 
   border-top: 1px solid #edf1ee;
 }
@@ -888,7 +870,7 @@
 .delivery_order_row_footer span {
   color: #68736b;
 
-  font-size: 12px;
+  font-size: 11px;
   line-height: 1.4;
 }
 
@@ -897,849 +879,85 @@
 
   font-weight: 700;
 }
-/* =========================================================
-   DELIVERY ORDER DETAILS
-   ========================================================= */
-
-.delivery_order_details {
-  width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-  padding-bottom: 20px;
-}
 
 /* =========================================================
-   DETAILS HEADER
-   ========================================================= */
-/* =========================================================
-   DELIVERY DETAILS HEADER
+   MOBILE — GENERAL
    ========================================================= */
 
-.delivery_details_header {
-  display: grid;
-
-  grid-template-columns: 1fr auto;
-  grid-template-rows: auto auto;
-
-  align-items: center;
-
-  column-gap: 14px;
-  row-gap: 12px;
-
-  margin-bottom: 18px;
-}
-
-/* BACK BUTTON — FIRST ROW */
-
-.delivery_back_button {
-  grid-column: 1 / -1;
-  grid-row: 1;
-
-  justify-self: flex-start;
-
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-
-  padding: 9px 13px;
-
-  border: 1px solid #dfe6e1;
-  border-radius: 9px;
-
-  background: #ffffff;
-  color: #344039;
-
-  font: inherit;
-  font-size: 12px;
-  font-weight: 650;
-
-  cursor: pointer;
-
-  transition:
-    background-color 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.15s ease;
-}
-
-.delivery_back_button:hover {
-  background: #f7faf8;
-  border-color: #cdd8d0;
-}
-
-.delivery_back_button:active {
-  transform: translateY(1px);
-}
-
-/* ORDER ID — SECOND ROW */
-
-.delivery_details_heading {
-  grid-column: 1;
-  grid-row: 2;
-
-  min-width: 0;
-}
-
-.delivery_details_heading span {
-  display: block;
-
-  margin-bottom: 3px;
-
-  color: #7a847d;
-
-  font-size: 10px;
-  line-height: 1.2;
-
-  font-weight: 600;
-  letter-spacing: 0.8px;
-}
-
-.delivery_details_heading h2 {
-  margin: 0;
-
-  color: #172018;
-
-  font-size: 20px;
-  line-height: 1.2;
-
-  font-weight: 800;
-
-  overflow-wrap: anywhere;
-}
-
-/* STATUS — SAME ROW AS ORDER ID */
-
-.delivery_details_header .delivery_details_status {
-  grid-column: 2;
-  grid-row: 2;
-
-  margin: 0;
-
-  align-self: center;
-}
-
-.delivery_details_status span {
-  display: inline-flex;
-  align-items: center;
-
-  padding: 6px 10px;
-
-  border-radius: 999px;
-
-  background: #eaf7ee;
-  color: #16803a;
-
-  font-size: 11px;
-  line-height: 1.2;
-
-  font-weight: 750;
-
-  white-space: nowrap;
-
-  border: 1px solid #c9e8d3;
-}
-
-/* =========================================================
-   DETAIL CARDS
-   ========================================================= */
-
-.delivery_details_section {
-  margin-bottom: 12px;
-  padding: 17px 18px;
-
-  border: 1px solid #e3e9e4;
-  border-radius: 13px;
-
-  background: #ffffff;
-
-  box-shadow:
-    0 4px 14px rgba(23, 32, 24, 0.035),
-    0 1px 3px rgba(23, 32, 24, 0.02);
-}
-
-.delivery_details_section h3 {
-  margin: 0 0 13px;
-
-  color: #172018;
-
-  font-size: 14px;
-  line-height: 1.35;
-  font-weight: 800;
-}
-
-/* =========================================================
-   CUSTOMER
-   ========================================================= */
-
-.delivery_customer_details {
-  display: grid;
-
-  grid-template-columns: 1fr 1fr;
-
-  gap: 20px;
-}
-
-.delivery_customer_details div {
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 4px;
-
-  min-width: 0;
-}
-
-.delivery_customer_details span {
-  color: #7a857d;
-
-  font-size: 10px;
-  line-height: 1.3;
-}
-
-.delivery_customer_details strong,
-.delivery_customer_details a {
-  color: #172018;
-
-  font-size: 13px;
-  line-height: 1.4;
-  font-weight: 700;
-
-  text-decoration: none;
-
-  overflow-wrap: anywhere;
-}
-
-.delivery_customer_details a {
-  color: #16803a;
-}
-
-/* =========================================================
-   ADDRESS
-   ========================================================= */
-
-.delivery_address {
-  margin: 0;
-
-  color: #4d5951;
-
-  font-size: 13px;
-  line-height: 1.6;
-}
-
-/* =========================================================
-   ROUTE
-   ========================================================= */
-
-.delivery_route_message,
-.delivery_route_error {
-  padding: 14px;
-
-  border-radius: 9px;
-
-  background: #f7faf8;
-
-  color: #68736b;
-
-  font-size: 12px;
-  line-height: 1.5;
-}
-
-.delivery_route_error {
-  background: #fff5f5;
-  color: #b42318;
-}
-
-.delivery_map_container {
-  position: relative;
-  z-index: 0;
-
-  margin-top: 10px;
-
-  overflow: hidden;
-
-  border: 1px solid #e3e9e4;
-  border-radius: 11px;
-
-  background: #f8faf8;
-}
-
-.delivery_map_container .leaflet-container {
-  position: relative;
-  z-index: 0 !important;
-}
-
-.delivery_distance {
-  margin-top: 8px;
-
-  color: #68736b;
-
-  font-size: 11px;
-  font-weight: 650;
-}
-
-/* =========================================================
-   ORDER ITEMS
-   ========================================================= */
-
-.delivery_order_items {
-  margin-top: 6px;
-
-  padding: 7px 12px;
-
-  border: 1px solid #e3e9e4;
-  border-radius: 9px;
-
-  background: #f8faf8;
-}
-
-.delivery_order_item {
-  display: flex;
-
-  align-items: center;
-  justify-content: space-between;
-
-  gap: 12px;
-
-  padding: 10px 0;
-
-  border-bottom: 1px solid #e9eeea;
-}
-
-.delivery_order_item:last-child {
-  border-bottom: none;
-}
-
-.delivery_order_item > div {
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 3px;
-
-  min-width: 0;
-}
-
-.delivery_order_item strong {
-  color: #253029;
-
-  font-size: 12px;
-  line-height: 1.4;
-  font-weight: 700;
-
-  overflow-wrap: anywhere;
-}
-
-.delivery_order_item span {
-  color: #7a847d;
-
-  font-size: 10px;
-}
-
-/* =========================================================
-   TOTAL
-   ========================================================= */
-
-.delivery_details_total {
-  display: flex;
-
-  align-items: center;
-  justify-content: space-between;
-
-  margin-top: 10px;
-  padding-top: 11px;
-
-  border-top: 1px solid #dfe6e1;
-}
-
-.delivery_details_total span {
-  color: #4d5951;
-
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.delivery_details_total strong {
-  color: #16803a;
-
-  font-size: 17px;
-  font-weight: 800;
-}
-
-/* =========================================================
-   OTP
-   ========================================================= */
-
-.delivery_otp_section {
-  margin-bottom: 0;
-}
-
-.delivery_otp_section h3 {
-  margin-bottom: 5px;
-}
-
-.delivery_otp_section p {
-  margin: 0 0 11px;
-
-  color: #68736b;
-
-  font-size: 11px;
-  line-height: 1.5;
-}
-
-.delivery_otp_action {
-  display: flex;
-
-  gap: 9px;
-}
-
-.delivery_otp_action input {
-  flex: 1;
-
-  min-width: 0;
-
-  min-height: 44px;
-
-  padding: 9px 12px;
-
-  box-sizing: border-box;
-
-  border: 1px solid #d7dfd9;
-  border-radius: 9px;
-
-  background: #ffffff;
-  color: #172018;
-
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 650;
-
-  letter-spacing: 3px;
-
-  text-align: center;
-
-  outline: none;
-
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.delivery_otp_action input::placeholder {
-  color: #a0aaa3;
-
-  font-size: 11px;
-  font-weight: 400;
-
-  letter-spacing: 0;
-}
-
-.delivery_otp_action input:focus {
-  border-color: #16803a;
-
-  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.1);
-}
-
-.delivery_otp_action button {
-  min-width: 145px;
-
-  min-height: 44px;
-
-  padding: 0 15px;
-
-  border: 1px solid #16803a;
-  border-radius: 9px;
-
-  background: #16803a;
-  color: #ffffff;
-
-  font-family: inherit;
-  font-size: 12px;
-  font-weight: 750;
-
-  cursor: pointer;
-
-  transition:
-    background-color 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.delivery_otp_action button:hover {
-  background: #126d31;
-
-  box-shadow: 0 5px 14px rgba(22, 128, 58, 0.16);
-}
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
-
-@media (max-width: 600px) {
-  .delivery_order_details {
-    width: 100%;
-    max-width: 100%;
-
-    /*
-      Extra bottom space because your
-      bottom navigation is fixed.
-    */
-    padding-bottom: 75px;
-  }
-
-  /* BACK */
-
-  .delivery_back_button {
-    min-height: 34px;
-
-    padding: 6px 10px;
-
-    border-radius: 8px;
-
-    font-size: 11px;
-  }
-
-  .delivery_back_icon {
-    font-size: 15px;
-  }
-
-  /* HEADER */
-  /* =========================================================
-   DELIVERY DETAILS HEADER — MOBILE
-   ========================================================= */
-
-  @media (max-width: 600px) {
-    .delivery_details_header {
-      grid-template-columns: minmax(0, 1fr) auto;
-
-      column-gap: 10px;
-      row-gap: 11px;
-
-      margin-bottom: 13px;
-    }
-
-    .delivery_back_button {
-      padding: 7px 10px;
-
-      border-radius: 8px;
-
-      font-size: 11px;
-    }
-
-    .delivery_details_heading span {
-      margin-bottom: 2px;
-
-      font-size: 9px;
-      letter-spacing: 0.7px;
-    }
-
-    .delivery_details_heading h2 {
-      font-size: 16px;
-      line-height: 1.2;
-    }
-
-    .delivery_details_header .delivery_details_status {
-      margin: 0;
-    }
-
-    .delivery_details_status span {
-      padding: 5px 8px;
-
-      font-size: 9px;
-    }
-  }
-
-  /* =========================================================
-   VERY SMALL MOBILE
-   ========================================================= */
-
-  @media (max-width: 360px) {
-    .delivery_details_header {
-      column-gap: 7px;
-    }
-
-    .delivery_back_button {
-      padding: 6px 8px;
-      font-size: 10px;
-    }
-
-    .delivery_details_heading h2 {
-      font-size: 14px;
-    }
-
-    .delivery_details_status span {
-      padding: 4px 7px;
-      font-size: 8px;
-    }
-  }
-
-  /* CARDS */
-
-  .delivery_details_section {
-    margin-bottom: 9px;
-
-    padding: 12px;
-
-    border-radius: 10px;
-
-    box-shadow: 0 2px 8px rgba(23, 32, 24, 0.035);
-  }
-
-  .delivery_details_section h3 {
-    margin-bottom: 8px;
-
-    font-size: 12px;
-  }
-
-  /* CUSTOMER */
-
-  .delivery_customer_details {
-    grid-template-columns: 1fr 1fr;
-
-    gap: 8px;
-  }
-
-  .delivery_customer_details div {
-    gap: 3px;
-  }
-
-  .delivery_customer_details span {
-    font-size: 8px;
-  }
-
-  .delivery_customer_details strong,
-  .delivery_customer_details a {
-    font-size: 11px;
-    line-height: 1.35;
-  }
-
-  /* ADDRESS */
-
-  .delivery_address {
-    font-size: 10px;
-    line-height: 1.5;
-  }
-
-  /* ROUTE */
-
-  .delivery_route_message,
-  .delivery_route_error {
-    padding: 10px;
-
-    border-radius: 8px;
-
-    font-size: 10px;
-  }
-
-  .delivery_map_container {
-    margin-top: 7px;
-
-    border-radius: 8px;
-  }
-
-  .delivery_distance {
-    margin-top: 6px;
-
-    font-size: 9px;
-  }
-
-  /* ITEMS */
-
-  .delivery_order_items {
-    margin-top: 5px;
-
-    padding: 5px 9px;
-
-    border-radius: 8px;
-  }
-
-  .delivery_order_item {
-    gap: 8px;
-
-    padding: 8px 0;
-  }
-
-  .delivery_order_item > div {
-    gap: 2px;
-  }
-
-  .delivery_order_item strong {
-    font-size: 10px;
-  }
-
-  .delivery_order_item span {
-    font-size: 8px;
-  }
-
-  /* TOTAL */
-
-  .delivery_details_total {
-    margin-top: 7px;
-
-    padding-top: 7px;
-  }
-
-  .delivery_details_total span {
-    font-size: 10px;
-  }
-
-  .delivery_details_total strong {
-    font-size: 14px;
-  }
-
-  /* OTP */
-
-  .delivery_otp_section p {
-    margin-bottom: 8px;
-
-    font-size: 9px;
-    line-height: 1.45;
-  }
-
-  .delivery_otp_action {
-    flex-direction: column;
-
-    gap: 6px;
-  }
-
-  .delivery_otp_action input {
-    width: 100%;
-
-    min-height: 42px;
-
-    padding: 8px 10px;
-
-    border-radius: 8px;
-
-    font-size: 13px;
-  }
-
-  .delivery_otp_action button {
-    width: 100%;
-
-    min-width: 0;
-
-    min-height: 42px;
-
-    padding: 0 12px;
-
-    border-radius: 8px;
-
-    font-size: 11px;
-  }
-}
-
-/* =========================================================
-   VERY SMALL MOBILE
-   ========================================================= */
-
-@media (max-width: 360px) {
+@media (max-width: 700px) {
   .delivery_orders {
-    padding-left: 9px;
-    padding-right: 9px;
+    padding: 18px 12px 82px;
   }
 
-  .delivery_details_header_main {
-    gap: 6px;
-  }
-
-  .delivery_details_heading h2 {
-    font-size: 14px;
-  }
-
-  .delivery_details_status span {
-    padding: 4px 7px;
-
-    font-size: 8px;
-  }
-
-  .delivery_details_section {
-    padding: 10px;
-  }
-
-  .delivery_customer_details {
-    gap: 6px;
-  }
-
-  .delivery_customer_details strong,
-  .delivery_customer_details a {
-    font-size: 10px;
-  }
-}
-
-/* =========================================================
-   MOBILE — CLEAN COMPACT LAYOUT
-   ========================================================= */
-
-@media (max-width: 600px) {
-  .delivery_orders {
-    padding: 18px 12px 35px;
-  }
-
-  /* HEADER */
   .delivery_orders_header {
-    margin-bottom: 14px;
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 40px;
+    margin-bottom: 18px;
+
+    align-items: flex-start;
+
+    gap: 12px;
   }
 
   .delivery_orders_header h1 {
-    margin-bottom: 5px;
+    margin-bottom: 4px;
+
     font-size: 21px;
+
+    letter-spacing: -0.25px;
   }
 
   .delivery_orders_header p {
-    font-size: 12px;
+    font-size: 11px;
   }
 
-  .delivery_orders_header .delivery_complete_button {
-    min-height: 42px;
-    margin-top: 9px;
-    padding: 0 14px;
-    font-size: 13px;
-  }
-
-  /* DASHBOARD TABS */
   .delivery_dashboard_tabs {
-    gap: 6px;
-    margin-bottom: 13px;
-    padding: 1px 1px 6px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 8px;
+
+    margin-bottom: 18px;
   }
 
   .delivery_dashboard_tab {
-    min-width: 112px;
-    padding: 8px 10px;
-    border-radius: 8px;
-    gap: 2px;
+    padding: 12px 13px;
+
+    border-radius: 11px;
+
+    gap: 4px;
+  }
+
+  .delivery_dashboard_tab::before {
+    top: 11px;
+    right: 11px;
+
+    width: 6px;
+    height: 6px;
   }
 
   .delivery_dashboard_tab span {
-    font-size: 10px;
+    font-size: 9px;
   }
 
   .delivery_dashboard_tab strong {
-    font-size: 18px;
+    font-size: 19px;
   }
 
-  /* ORDERS LIST */
   .delivery_orders_list {
-    gap: 10px;
+    gap: 9px;
   }
 
   .delivery_orders_list_title {
-    margin-bottom: 8px;
-    font-size: 17px;
-    font-weight: 650;
-    margin-top: 20px;
+    margin: 3px 0 5px;
+
+    font-size: 16px;
   }
 
-  /* ORDER ROW */
   .delivery_order_row {
-    padding: 12px 13px;
+    padding: 13px 14px;
+
     border-radius: 11px;
   }
 
   .delivery_order_row_main {
-    align-items: center;
-    flex-direction: row;
     gap: 8px;
   }
 
@@ -1749,16 +967,18 @@
 
   .delivery_order_status {
     padding: 4px 8px;
-    font-size: 10px;
+
+    font-size: 9px;
   }
 
   .delivery_order_row_info {
-    gap: 8px;
-    margin-top: 9px;
+    gap: 9px;
+
+    margin-top: 8px;
   }
 
   .delivery_order_row_info span {
-    font-size: 11px;
+    font-size: 10px;
   }
 
   .delivery_order_row_info strong {
@@ -1767,19 +987,26 @@
 
   .delivery_order_row_footer {
     gap: 8px;
+
     margin-top: 8px;
+
     padding-top: 8px;
   }
 
   .delivery_order_row_footer span {
-    font-size: 10px;
+    font-size: 9px;
   }
 
-  /* EMPTY STATE */
   .delivery_no_orders {
     margin: 25px auto;
-    padding: 28px 16px;
-    border-radius: 12px;
+
+    padding: 30px 17px;
+
+    border-radius: 13px;
+  }
+
+  .delivery_no_orders h1 {
+    font-size: 23px;
   }
 
   .delivery_no_orders h2 {
@@ -1787,394 +1014,84 @@
   }
 
   .delivery_no_orders p {
-    font-size: 12px;
-  }
-
-  /* ORDER DETAILS */
-  .delivery_order_details {
-    width: 100%;
-  }
-
-  .delivery_details_header {
-    gap: 9px;
-    margin-bottom: 12px;
-  }
-
-  .delivery_back_button {
-    padding: 8px 11px;
-    border-radius: 8px;
-    font-size: 12px;
-  }
-
-  .delivery_details_header span {
-    margin-bottom: 2px;
-    font-size: 10px;
-  }
-
-  .delivery_details_header h2 {
-    font-size: 18px;
-  }
-
-  .delivery_details_status {
-    margin-bottom: 12px;
-  }
-
-  .delivery_details_status span {
-    padding: 5px 9px;
-    font-size: 10px;
-  }
-
-  /* DETAIL CARDS */
-  .delivery_details_section {
-    margin-bottom: 10px;
-    padding: 13px;
-    border-radius: 11px;
-  }
-
-  .delivery_details_section h3 {
-    margin-bottom: 10px;
-    font-size: 13px;
-  }
-
-  /* CUSTOMER */
-  .delivery_customer_details {
-    gap: 9px;
-  }
-
-  .delivery_customer_details div {
-    gap: 3px;
-  }
-
-  .delivery_customer_details span {
-    font-size: 10px;
-  }
-
-  .delivery_customer_details strong,
-  .delivery_customer_details a {
-    font-size: 13px;
-  }
-
-  /* ADDRESS */
-  .delivery_address {
-    font-size: 12px;
-    line-height: 1.5;
-  }
-
-  /* MAP */
-  .delivery_map_container {
-    margin-top: 10px;
-    border-radius: 10px;
-  }
-
-  .delivery_distance {
-    margin-top: 8px;
     font-size: 11px;
   }
 
-  /* ITEMS */
-  .delivery_order_items {
-    margin-top: 9px;
-    padding: 9px 11px;
-    border-radius: 9px;
-  }
+  .delivery_error_message {
+    margin-bottom: 11px !important;
 
-  .delivery_order_item {
-    gap: 8px;
-    padding: 9px 0;
-  }
+    padding: 10px 12px;
 
-  .delivery_order_item strong {
-    font-size: 12px;
-  }
-
-  .delivery_order_item span {
-    font-size: 10px;
-  }
-
-  /* TOTAL */
-  .delivery_details_total {
-    margin-top: 9px;
-    padding-top: 9px;
-  }
-
-  .delivery_details_total span {
-    font-size: 12px;
-  }
-
-  .delivery_details_total strong {
-    font-size: 16px;
-  }
-
-  /* OTP */
-  .delivery_otp_section p {
-    margin: -3px 0 10px;
-    font-size: 11px;
-  }
-
-  .delivery_otp_action {
-    flex-direction: column;
-    gap: 7px;
-  }
-
-  .delivery_otp_action input {
-    min-height: 44px;
-    padding: 9px 11px;
-    border-radius: 8px;
-    font-size: 14px;
-  }
-
-  .delivery_complete_button {
-    min-height: 44px;
-    padding: 0 14px;
-    font-size: 12px;
+    font-size: 11px !important;
   }
 }
 
 /* =========================================================
-   DELIVERY ORDER DETAILS — MOBILE POLISH
+   MOBILE — SMALL
    ========================================================= */
 
-@media (max-width: 600px) {
-  .delivery_order_details {
-    width: 100%;
-    max-width: 100%;
+@media (max-width: 380px) {
+  .delivery_orders {
+    padding-left: 9px;
+    padding-right: 9px;
   }
 
-  /* HEADER */
-  .delivery_details_header {
-    flex-direction: column;
-    gap: 10px;
-
-    margin-bottom: 10px;
+  .delivery_dashboard_tabs {
+    gap: 6px;
   }
 
-  .delivery_back_button {
-    flex-shrink: 0;
-    padding: 6px 8px;
-    margin-top: 10px;
-
-    border-radius: 8px;
-
-    font-size: 15px;
-    font-weight: 650;
-  }
-
-  .delivery_details_heading {
-    margin-top: 10px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-  }
-
-  .delivery_details_header > div {
-    min-width: 0;
-  }
-
-  .delivery_details_header span {
-    margin-bottom: 1px;
-
-    font-size: 9px;
-  }
-
-  .delivery_details_header h2 {
-    font-size: 16px;
-
-    overflow-wrap: anywhere;
-  }
-
-  /* STATUS */
-  .delivery_details_status {
-    margin-bottom: 10px;
-  }
-
-  .delivery_details_status span {
-    padding: 5px 9px;
-
-    font-size: 10px;
-  }
-
-  /* ALL DETAIL SECTIONS */
-  .delivery_details_section {
-    margin-bottom: 9px;
-    padding: 12px;
+  .delivery_dashboard_tab {
+    padding: 10px 10px;
 
     border-radius: 10px;
-
-    box-shadow: 0 2px 8px rgba(23, 32, 24, 0.035);
   }
 
-  .delivery_details_section h3 {
-    margin-bottom: 9px;
-
-    font-size: 13px;
+  .delivery_dashboard_tab span {
+    font-size: 8px;
   }
 
-  /* CUSTOMER */
-  .delivery_customer_details {
-    grid-template-columns: 1fr 1fr;
-
-    gap: 10px;
+  .delivery_dashboard_tab strong {
+    font-size: 17px;
   }
 
-  .delivery_customer_details div {
-    gap: 3px;
+  .delivery_order_row {
+    padding: 11px 12px;
   }
 
-  .delivery_customer_details span {
+  .delivery_order_row_main strong {
+    font-size: 11px;
+  }
+
+  .delivery_order_status {
+    padding: 4px 7px;
+
+    font-size: 8px;
+  }
+
+  .delivery_order_row_info span {
     font-size: 9px;
   }
 
-  .delivery_customer_details strong,
-  .delivery_customer_details a {
+  .delivery_order_row_info strong {
     font-size: 12px;
-
-    overflow-wrap: anywhere;
   }
 
-  /* ADDRESS */
-  .delivery_address {
-    font-size: 11px;
-    line-height: 1.5;
-  }
-
-  /* ROUTE */
-  .delivery_route_message,
-  .delivery_route_error {
-    padding: 12px;
-
-    border-radius: 8px;
-
-    font-size: 11px;
-  }
-
-  .delivery_map_container {
-    margin-top: 8px;
-
-    border-radius: 9px;
-  }
-
-  .delivery_distance {
-    margin-top: 7px;
-
-    font-size: 10px;
-  }
-
-  /* ORDER ITEMS */
-  .delivery_order_items {
-    margin-top: 7px;
-
-    padding: 7px 10px;
-
-    border-radius: 8px;
-  }
-
-  .delivery_order_item {
-    gap: 8px;
-
-    padding: 8px 0;
-  }
-
-  .delivery_order_item > div {
-    gap: 2px;
-
-    min-width: 0;
-  }
-
-  .delivery_order_item strong {
-    font-size: 11px;
-
-    overflow-wrap: anywhere;
-  }
-
-  .delivery_order_item span {
-    font-size: 9px;
-  }
-
-  /* TOTAL */
-  .delivery_details_total {
-    margin-top: 8px;
-    padding-top: 8px;
-  }
-
-  .delivery_details_total span {
-    font-size: 11px;
-  }
-
-  .delivery_details_total strong {
-    font-size: 15px;
-  }
-
-  /* OTP */
-  .delivery_otp_section {
-    margin-bottom: 0;
-
-    padding-top: 12px;
-  }
-
-  .delivery_otp_section h3 {
-    margin-bottom: 5px;
-
-    font-size: 13px;
-  }
-
-  .delivery_otp_section p {
-    margin: 0 0 9px;
-
-    font-size: 10px;
-    line-height: 1.45;
-  }
-
-  .delivery_otp_action {
-    display: flex;
-    flex-direction: column;
-
-    gap: 7px;
-  }
-
-  .delivery_otp_action input {
-    width: 100%;
-    min-height: 43px;
-
-    box-sizing: border-box;
-
-    padding: 9px 10px;
-
-    border-radius: 8px;
-
-    font-size: 14px;
-    text-align: center;
-  }
-
-  .delivery_otp_action input::placeholder {
-    font-size: 11px;
-  }
-
-  .delivery_otp_action button {
-    width: 100%;
-    min-height: 43px;
-
-    padding: 0 12px;
-
-    border-radius: 8px;
-
-    font-size: 12px;
+  .delivery_order_row_footer span {
+    font-size: 8px;
   }
 }
 
 /* =========================================================
-   DARK MODE — DELIVERY ORDERS
-   ========================================================= */
-
-/* =========================================================
-   PAGE
+   DARK MODE — PAGE
    ========================================================= */
 
 [data-theme='dark'] .delivery_orders {
   background: var(--rma-bg);
+  color: var(--rma-text);
 }
 
 /* =========================================================
-   HEADER
+   DARK MODE — HEADER
    ========================================================= */
 
 [data-theme='dark'] .delivery_orders_header h1 {
@@ -2186,19 +1103,24 @@
 }
 
 [data-theme='dark'] .delivery_orders_header p strong {
-  color: var(--rma-primary);
+  color: var(--rma-primary-light);
 }
 
 /* =========================================================
-   DASHBOARD TABS
+   DARK MODE — DASHBOARD TABS
    ========================================================= */
 
 [data-theme='dark'] .delivery_dashboard_tab {
   border-color: var(--rma-border);
+
   background: var(--rma-card);
   color: var(--rma-text);
 
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.16);
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.17);
+}
+
+[data-theme='dark'] .delivery_dashboard_tab::before {
+  background: var(--rma-border-dark);
 }
 
 [data-theme='dark'] .delivery_dashboard_tab span {
@@ -2211,22 +1133,22 @@
 
 [data-theme='dark'] .delivery_dashboard_tab:hover {
   border-color: var(--rma-border-dark);
+
   background: var(--rma-card-hover);
 
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.22);
 }
 
 [data-theme='dark'] .delivery_dashboard_tab:hover::before {
-  background: var(--rma-primary);
+  background: var(--rma-primary-light);
 }
-
-/* ACTIVE TAB */
 
 [data-theme='dark'] .delivery_dashboard_tab.active {
   border-color: var(--rma-primary);
+
   background: var(--rma-primary);
 
-  box-shadow: 0 6px 16px rgba(22, 128, 58, 0.22);
+  box-shadow: 0 8px 20px rgba(22, 128, 58, 0.24);
 }
 
 [data-theme='dark'] .delivery_dashboard_tab.active::before {
@@ -2242,29 +1164,30 @@
 }
 
 /* =========================================================
-   ORDER LIST
+   DARK MODE — ORDER LIST
    ========================================================= */
 
 [data-theme='dark'] .delivery_orders_list {
   color: var(--rma-text);
 }
 
+[data-theme='dark'] .delivery_orders_list_title {
+  color: var(--rma-text);
+}
+
 /* =========================================================
-   ORDER CARD
+   DARK MODE — ORDER CARD
    ========================================================= */
 
 [data-theme='dark'] .delivery_order_card {
   background: var(--rma-card);
+
   border-color: var(--rma-border);
 
   box-shadow:
-    0 6px 20px rgba(0, 0, 0, 0.2),
-    0 2px 6px rgba(0, 0, 0, 0.12);
+    0 7px 22px rgba(0, 0, 0, 0.2),
+    0 2px 6px rgba(0, 0, 0, 0.1);
 }
-
-/* =========================================================
-   ORDER TOP
-   ========================================================= */
 
 [data-theme='dark'] .delivery_order_top {
   border-bottom-color: var(--rma-border);
@@ -2276,12 +1199,14 @@
 
 [data-theme='dark'] .delivery_order_status {
   background: var(--rma-warning-light);
+
   color: #f0b94f;
+
   border-color: #66501d;
 }
 
 /* =========================================================
-   CUSTOMER INFORMATION
+   DARK MODE — CUSTOMER
    ========================================================= */
 
 [data-theme='dark'] .delivery_order_info h2 {
@@ -2297,26 +1222,26 @@
 }
 
 /* =========================================================
-   DELIVERY MAP
+   DARK MODE — MAP
    ========================================================= */
 
 [data-theme='dark'] .delivery_map_container {
   border-color: var(--rma-border);
+
   background: var(--rma-bg-secondary);
 }
-
-/* Keep Leaflet stacking behavior */
 
 [data-theme='dark'] .delivery_map_container .leaflet-container {
   background: var(--rma-bg-secondary);
 }
 
 /* =========================================================
-   ORDER ITEMS
+   DARK MODE — ITEMS
    ========================================================= */
 
 [data-theme='dark'] .delivery_order_items {
   border-color: var(--rma-border);
+
   background: var(--rma-bg-secondary);
 }
 
@@ -2325,15 +1250,15 @@
 }
 
 /* =========================================================
-   ORDER TOTAL
+   DARK MODE — TOTAL
    ========================================================= */
 
 [data-theme='dark'] .delivery_order_total {
-  color: var(--rma-primary);
+  color: var(--rma-primary-light);
 }
 
 /* =========================================================
-   OTP SECTION
+   DARK MODE — OTP
    ========================================================= */
 
 [data-theme='dark'] .delivery_otp_section {
@@ -2348,13 +1273,11 @@
   color: var(--rma-text-secondary);
 }
 
-/* =========================================================
-   OTP INPUT
-   ========================================================= */
-
 [data-theme='dark'] .delivery_otp_section input {
   background: var(--rma-card);
+
   border-color: var(--rma-border-dark);
+
   color: var(--rma-text);
 }
 
@@ -2363,42 +1286,41 @@
 }
 
 [data-theme='dark'] .delivery_otp_section input:focus {
-  border-color: var(--rma-primary);
-  background: var(--rma-card);
+  border-color: var(--rma-primary-light);
 
   box-shadow: 0 0 0 3px rgba(34, 166, 83, 0.14);
 }
 
 /* =========================================================
-   COMPLETE BUTTON
+   DARK MODE — BUTTON
    ========================================================= */
 
 [data-theme='dark'] .delivery_complete_button {
   border-color: var(--rma-primary);
+
   background: var(--rma-primary);
+
   color: var(--rma-text-white);
 }
 
 [data-theme='dark'] .delivery_complete_button:hover:not(:disabled) {
-  background: var(--rma-primary-dark);
   border-color: var(--rma-primary-dark);
 
-  box-shadow: 0 5px 14px rgba(22, 128, 58, 0.22);
-}
+  background: var(--rma-primary-dark);
 
-[data-theme='dark'] .delivery_complete_button:focus-visible {
-  outline-color: rgba(34, 166, 83, 0.28);
+  box-shadow: 0 6px 15px rgba(22, 128, 58, 0.22);
 }
 
 /* =========================================================
-   EMPTY / LOGIN / OTP CARD
+   DARK MODE — EMPTY / LOGIN
    ========================================================= */
 
 [data-theme='dark'] .delivery_no_orders {
   background: var(--rma-card);
+
   border-color: var(--rma-border);
 
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 7px 22px rgba(0, 0, 0, 0.18);
 }
 
 [data-theme='dark'] .delivery_no_orders h1,
@@ -2412,7 +1334,9 @@
 
 [data-theme='dark'] .delivery_no_orders input {
   background: var(--rma-card);
+
   border-color: var(--rma-border-dark);
+
   color: var(--rma-text);
 }
 
@@ -2421,33 +1345,37 @@
 }
 
 [data-theme='dark'] .delivery_no_orders input:focus {
-  border-color: var(--rma-primary);
+  border-color: var(--rma-primary-light);
 
   box-shadow: 0 0 0 3px rgba(34, 166, 83, 0.14);
 }
 
 /* =========================================================
-   ERROR MESSAGE
+   DARK MODE — ERROR
    ========================================================= */
 
 [data-theme='dark'] .delivery_error_message {
   border-color: var(--rma-danger);
+
   background: var(--rma-danger-light);
+
   color: #f28b8b !important;
 }
 
 /* =========================================================
-   SUCCESS MESSAGE
+   DARK MODE — SUCCESS
    ========================================================= */
 
 [data-theme='dark'] .delivery_success_message {
   border-color: var(--rma-success);
+
   background: var(--rma-success-light);
+
   color: #72d38f;
 }
 
 /* =========================================================
-   SECONDARY BUTTON
+   DARK MODE — SECONDARY BUTTON
    ========================================================= */
 
 [data-theme='dark']
@@ -2455,44 +1383,42 @@
   .delivery_complete_button
   + .delivery_complete_button {
   border-color: var(--rma-border-dark);
+
   background: var(--rma-bg-secondary);
+
   color: var(--rma-text-primary);
 }
 
 [data-theme='dark']
   .delivery_no_orders
   .delivery_complete_button
-  + .delivery_complete_button:hover {
+  + .delivery_complete_button:hover:not(:disabled) {
   border-color: var(--rma-border-dark);
+
   background: var(--rma-card-hover);
+
   color: var(--rma-text);
 }
 
 /* =========================================================
-   DELIVERY ORDER ROW
+   DARK MODE — ORDER ROW
    ========================================================= */
 
 [data-theme='dark'] .delivery_order_row {
   border-color: var(--rma-border);
+
   background: var(--rma-card);
   color: var(--rma-text);
 
-  box-shadow:
-    0 4px 14px rgba(0, 0, 0, 0.16),
-    0 1px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.17);
 }
 
 [data-theme='dark'] .delivery_order_row:hover {
   border-color: var(--rma-border-dark);
+
   background: var(--rma-card-hover);
 
-  box-shadow:
-    0 7px 20px rgba(0, 0, 0, 0.22),
-    0 2px 6px rgba(0, 0, 0, 0.12);
-}
-
-[data-theme='dark'] .delivery_order_row:focus-visible {
-  outline-color: rgba(34, 166, 83, 0.25);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.23);
 }
 
 [data-theme='dark'] .delivery_order_row_main strong {
@@ -2504,7 +1430,7 @@
 }
 
 [data-theme='dark'] .delivery_order_row_info strong {
-  color: var(--rma-primary);
+  color: var(--rma-primary-light);
 }
 
 [data-theme='dark'] .delivery_order_row_footer {
@@ -2516,173 +1442,3741 @@
 }
 
 [data-theme='dark'] .delivery_order_row_footer span:last-child {
-  color: var(--rma-primary);
+  color: var(--rma-primary-light);
 }
 
 /* =========================================================
-   ORDER DETAILS
+   DELIVERY ORDERS HEADER
    ========================================================= */
 
-[data-theme='dark'] .delivery_order_details {
+.delivery_orders_header {
+  width: 100%;
+  max-width: 960px;
+
+  margin: 0 auto 28px;
+
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 24px;
+}
+
+/* =========================================================
+   HEADER CONTENT
+   ========================================================= */
+
+.delivery_orders_header_sub1 {
+  min-width: 0;
+}
+
+.delivery_orders_header_sub1 h1 {
+  margin: 0 0 7px;
+
+  color: #172018;
+
+  font-size: 28px;
+  line-height: 1.25;
+
+  font-weight: 750;
+
+  letter-spacing: -0.5px;
+
+  overflow-wrap: anywhere;
+}
+
+.delivery_orders_header_sub1 p {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px;
+
+  margin: 0;
+
+  color: #68736b;
+
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.delivery_orders_header_sub1 p strong {
+  display: inline-flex;
+  align-items: center;
+
+  min-height: 25px;
+
+  padding: 3px 9px;
+
+  border: 1px solid #d9e5dc;
+  border-radius: 7px;
+
+  background: #f1f7f3;
+
+  color: #16803a;
+
+  font-size: 11px;
+  line-height: 1.2;
+
+  font-weight: 750;
+
+  letter-spacing: 0.2px;
+
+  white-space: nowrap;
+}
+
+/* =========================================================
+   HEADER ACTION
+   ========================================================= */
+
+.delivery_orders_header_sub2 {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+}
+
+/*
+   Logout uses the existing class name
+   so the JSX does not need to change.
+*/
+
+.delivery_orders_header_sub2 .delivery_complete_button {
+  width: auto;
+
+  min-width: 82px;
+  min-height: 40px;
+
+  margin: 0;
+
+  padding: 0 15px;
+
+  border: 1px solid #d9dfdb;
+  border-radius: 9px;
+
+  background: #ffffff;
+  color: #4d5951;
+
+  font-family: inherit;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  box-shadow: 0 2px 7px rgba(23, 32, 24, 0.035);
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+}
+
+.delivery_orders_header_sub2 .delivery_complete_button:hover {
+  border-color: #e1b9b9;
+
+  background: #fff8f8;
+
+  color: #c43b3b;
+
+  box-shadow: 0 4px 12px rgba(23, 32, 24, 0.06);
+}
+
+.delivery_orders_header_sub2 .delivery_complete_button:active {
+  transform: translateY(1px);
+}
+
+.delivery_orders_header_sub2 .delivery_complete_button:focus-visible {
+  outline: 3px solid rgba(196, 59, 59, 0.13);
+  outline-offset: 2px;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+  .delivery_orders_header {
+    margin: 0 auto 18px;
+
+    gap: 12px;
+
+    align-items: flex-start;
+  }
+
+  .delivery_orders_header_sub1 {
+    flex: 1;
+
+    min-width: 0;
+  }
+
+  .delivery_orders_header_sub1 h1 {
+    margin-bottom: 5px;
+
+    font-size: 20px;
+    line-height: 1.3;
+
+    letter-spacing: -0.25px;
+  }
+
+  .delivery_orders_header_sub1 p {
+    gap: 4px;
+
+    font-size: 10px;
+  }
+
+  .delivery_orders_header_sub1 p strong {
+    min-height: 22px;
+
+    padding: 2px 7px;
+
+    border-radius: 6px;
+
+    font-size: 9px;
+  }
+
+  .delivery_orders_header_sub2 {
+    padding-top: 1px;
+  }
+
+  .delivery_orders_header_sub2 .delivery_complete_button {
+    min-width: 68px;
+
+    min-height: 35px;
+
+    padding: 0 11px;
+
+    border-radius: 8px;
+
+    font-size: 10px;
+  }
+}
+
+/* =========================================================
+   VERY SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 360px) {
+  .delivery_orders_header {
+    gap: 8px;
+
+    margin-bottom: 15px;
+  }
+
+  .delivery_orders_header_sub1 h1 {
+    font-size: 18px;
+  }
+
+  .delivery_orders_header_sub1 p {
+    font-size: 9px;
+  }
+
+  .delivery_orders_header_sub1 p strong {
+    font-size: 8px;
+
+    padding: 2px 6px;
+  }
+
+  .delivery_orders_header_sub2 .delivery_complete_button {
+    min-width: 62px;
+
+    min-height: 33px;
+
+    padding: 0 9px;
+
+    font-size: 9px;
+  }
+}
+
+/* =========================================================
+   DARK MODE — DELIVERY ORDERS HEADER
+   ========================================================= */
+
+[data-theme='dark'] .delivery_orders_header_sub1 h1 {
   color: var(--rma-text);
 }
 
-/* =========================================================
-   BACK BUTTON
-   ========================================================= */
-
-[data-theme='dark'] .delivery_back_button {
-  border-color: var(--rma-border);
-  background: var(--rma-card);
-  color: var(--rma-text-primary);
+[data-theme='dark'] .delivery_orders_header_sub1 p {
+  color: var(--rma-text-secondary);
 }
 
-[data-theme='dark'] .delivery_back_button:hover {
-  background: var(--rma-card-hover);
+[data-theme='dark'] .delivery_orders_header_sub1 p strong {
   border-color: var(--rma-border-dark);
-}
 
-/* =========================================================
-   DETAILS HEADER
-   ========================================================= */
-
-[data-theme='dark'] .delivery_details_heading span {
-  color: var(--rma-text-muted);
-}
-
-[data-theme='dark'] .delivery_details_heading h2 {
-  color: var(--rma-text);
-}
-
-/* =========================================================
-   DETAILS STATUS
-   ========================================================= */
-
-[data-theme='dark'] .delivery_details_status span {
   background: var(--rma-primary-light);
+
   color: var(--rma-primary);
-  border-color: var(--rma-border-dark);
+}
+
+[data-theme='dark'] .delivery_orders_header_sub2 .delivery_complete_button {
+  border-color: var(--rma-border);
+
+  background: var(--rma-card);
+
+  color: var(--rma-text-secondary);
+
+  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.16);
+}
+
+[data-theme='dark']
+  .delivery_orders_header_sub2
+  .delivery_complete_button:hover {
+  border-color: #633737;
+
+  background: #251919;
+
+  color: #f28b8b;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22);
+}
+
+[data-theme='dark']
+  .delivery_orders_header_sub2
+  .delivery_complete_button:focus-visible {
+  outline-color: rgba(242, 139, 139, 0.2);
 }
 
 /* =========================================================
-   DETAIL CARDS
+   DELIVERY ASSIGNMENT REQUESTS
    ========================================================= */
 
-[data-theme='dark'] .delivery_details_section {
+.delivery_assignment_requests {
+  width: 100%;
+  max-width: 960px;
+
+  margin: 22px auto 0;
+}
+
+/* =========================================================
+   REQUESTS HEADER
+   ========================================================= */
+
+.delivery_assignment_requests_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  margin-bottom: 12px;
+}
+
+.delivery_assignment_requests_header h2 {
+  margin: 0;
+
+  color: #172018;
+
+  font-size: 19px;
+  line-height: 1.3;
+
+  font-weight: 750;
+
+  letter-spacing: -0.2px;
+}
+
+/* =========================================================
+   REQUEST COUNT
+   ========================================================= */
+
+.delivery_assignment_count {
+  min-width: 28px;
+  height: 28px;
+
+  padding: 0 8px;
+
+  box-sizing: border-box;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 999px;
+
+  background: #eaf7ee;
+  color: #16803a;
+
+  border: 1px solid #c9e8d3;
+
+  font-size: 12px;
+  line-height: 1;
+
+  font-weight: 800;
+
+  flex-shrink: 0;
+}
+
+/* =========================================================
+   LOADING / ERROR MESSAGE
+   ========================================================= */
+
+.delivery_assignment_message {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 20px;
+
+  border: 1px solid #e3e9e4;
+  border-radius: 13px;
+
+  background: #ffffff;
+
+  color: #68736b;
+
+  font-size: 13px;
+  line-height: 1.5;
+
+  text-align: center;
+
+  box-shadow:
+    0 4px 14px rgba(23, 32, 24, 0.035),
+    0 1px 3px rgba(23, 32, 24, 0.02);
+}
+
+.delivery_assignment_error {
+  border-color: #f0c9c9;
+
+  background: #fff7f7;
+
+  color: #c43b3b;
+
+  text-align: left;
+
+  font-weight: 600;
+}
+
+/* =========================================================
+   REQUEST LIST
+   ========================================================= */
+
+.delivery_assignment_list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+/* =========================================================
+   REQUEST CARD
+   ========================================================= */
+
+.delivery_assignment_card {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 18px;
+
+  border: 1px solid #e3e9e4;
+  border-radius: 15px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 5px 16px rgba(23, 32, 24, 0.045),
+    0 1px 4px rgba(23, 32, 24, 0.02);
+
+  overflow: hidden;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+}
+
+.delivery_assignment_card:hover {
+  border-color: #c9dfcf;
+
+  box-shadow:
+    0 8px 22px rgba(23, 32, 24, 0.065),
+    0 2px 6px rgba(23, 32, 24, 0.025);
+
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   CARD TOP
+   ========================================================= */
+
+.delivery_assignment_card_top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  padding-bottom: 15px;
+
+  border-bottom: 1px solid #edf1ee;
+}
+
+.delivery_assignment_card_top > div {
+  min-width: 0;
+}
+
+/* =========================================================
+   NEW DELIVERY LABEL
+   ========================================================= */
+
+.delivery_assignment_label {
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  margin: 0 0 5px;
+
+  color: #16803a;
+
+  font-size: 10px;
+  line-height: 1.3;
+
+  font-weight: 800;
+
+  letter-spacing: 0.08em;
+
+  text-transform: uppercase;
+}
+
+.delivery_assignment_label::before {
+  content: '';
+
+  width: 6px;
+  height: 6px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: #16803a;
+
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.1);
+}
+
+/* =========================================================
+   ORDER ID
+   ========================================================= */
+
+.delivery_assignment_card_top h3 {
+  margin: 0;
+
+  color: #172018;
+
+  font-size: 17px;
+  line-height: 1.3;
+
+  font-weight: 800;
+
+  letter-spacing: -0.15px;
+
+  overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   DELIVERY TYPE
+   ========================================================= */
+
+.delivery_assignment_status {
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 27px;
+
+  padding: 5px 9px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #c9e8d3;
+  border-radius: 999px;
+
+  background: #f0f9f3;
+  color: #16803a;
+
+  font-size: 10px;
+  line-height: 1.2;
+
+  font-weight: 750;
+
+  white-space: nowrap;
+}
+
+/* =========================================================
+   REQUEST DETAILS
+   ========================================================= */
+
+.delivery_assignment_details {
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 14px 18px;
+
+  padding: 17px 0;
+}
+
+.delivery_assignment_detail {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+.delivery_assignment_detail span {
+  color: #7a857d;
+
+  font-size: 9px;
+  line-height: 1.3;
+
+  font-weight: 700;
+
+  letter-spacing: 0.07em;
+
+  text-transform: uppercase;
+}
+
+.delivery_assignment_detail strong {
+  color: #253029;
+
+  font-size: 13px;
+  line-height: 1.45;
+
+  font-weight: 650;
+
+  overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   DELIVERY CHARGE
+   ========================================================= */
+
+.delivery_assignment_detail:last-child {
+  padding: 10px 12px;
+
+  border: 1px solid #dcebe0;
+  border-radius: 10px;
+
+  background: #f7fbf8;
+}
+
+.delivery_assignment_detail:last-child span {
+  color: #68736b;
+}
+
+.delivery_assignment_detail:last-child strong {
+  color: #16803a;
+
+  font-size: 18px;
+  line-height: 1.25;
+
+  font-weight: 800;
+}
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.delivery_assignment_actions {
+  display: grid;
+
+  grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+
+  gap: 9px;
+
+  padding-top: 15px;
+
+  border-top: 1px solid #edf1ee;
+}
+
+.delivery_assignment_actions button {
+  width: 100%;
+
+  min-height: 44px;
+
+  box-sizing: border-box;
+
+  padding: 0 14px;
+
+  border-radius: 9px;
+
+  font-family: inherit;
+
+  font-size: 12px;
+  line-height: 1.2;
+
+  font-weight: 750;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease,
+    opacity 0.2s ease;
+}
+
+.delivery_assignment_actions button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.delivery_assignment_actions button:disabled {
+  opacity: 0.55;
+
+  cursor: not-allowed;
+
+  box-shadow: none;
+}
+
+/* =========================================================
+   REJECT
+   ========================================================= */
+
+.delivery_assignment_reject {
+  border: 1px solid #dfe5e1;
+
+  background: #ffffff;
+
+  color: #59635c;
+}
+
+.delivery_assignment_reject:hover:not(:disabled) {
+  border-color: #e1b9b9;
+
+  background: #fff8f8;
+
+  color: #c43b3b;
+
+  box-shadow: 0 4px 10px rgba(196, 59, 59, 0.08);
+}
+
+/* =========================================================
+   ACCEPT
+   ========================================================= */
+
+.delivery_assignment_accept {
+  border: 1px solid #16803a;
+
+  background: #16803a;
+
+  color: #ffffff;
+
+  box-shadow: 0 3px 8px rgba(22, 128, 58, 0.12);
+}
+
+.delivery_assignment_accept:hover:not(:disabled) {
+  border-color: #0f5c2a;
+
+  background: #0f5c2a;
+
+  box-shadow: 0 5px 13px rgba(22, 128, 58, 0.18);
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+  .delivery_assignment_requests {
+    margin-top: 17px;
+  }
+
+  /* HEADER */
+
+  .delivery_assignment_requests_header {
+    margin-bottom: 9px;
+  }
+
+  .delivery_assignment_requests_header h2 {
+    font-size: 16px;
+  }
+
+  .delivery_assignment_count {
+    min-width: 25px;
+    height: 25px;
+
+    padding: 0 7px;
+
+    font-size: 10px;
+  }
+
+  /* MESSAGES */
+
+  .delivery_assignment_message {
+    padding: 15px;
+
+    border-radius: 11px;
+
+    font-size: 11px;
+  }
+
+  /* LIST */
+
+  .delivery_assignment_list {
+    gap: 9px;
+  }
+
+  /* CARD */
+
+  .delivery_assignment_card {
+    padding: 13px;
+
+    border-radius: 11px;
+
+    box-shadow:
+      0 3px 10px rgba(23, 32, 24, 0.04),
+      0 1px 3px rgba(23, 32, 24, 0.02);
+  }
+
+  .delivery_assignment_card:hover {
+    transform: none;
+  }
+
+  /* CARD TOP */
+
+  .delivery_assignment_card_top {
+    gap: 9px;
+
+    padding-bottom: 11px;
+  }
+
+  .delivery_assignment_label {
+    margin-bottom: 4px;
+
+    font-size: 8px;
+
+    letter-spacing: 0.06em;
+  }
+
+  .delivery_assignment_label::before {
+    width: 5px;
+    height: 5px;
+
+    box-shadow: 0 0 0 2px rgba(22, 128, 58, 0.1);
+  }
+
+  .delivery_assignment_card_top h3 {
+    font-size: 13px;
+  }
+
+  /* BADGE */
+
+  .delivery_assignment_status {
+    min-height: 23px;
+
+    padding: 4px 7px;
+
+    border-radius: 999px;
+
+    font-size: 8px;
+  }
+
+  /* DETAILS */
+
+  .delivery_assignment_details {
+    grid-template-columns: 1fr 1fr;
+
+    gap: 10px 12px;
+
+    padding: 12px 0;
+  }
+
+  .delivery_assignment_detail {
+    gap: 3px;
+  }
+
+  .delivery_assignment_detail span {
+    font-size: 8px;
+  }
+
+  .delivery_assignment_detail strong {
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  /* DELIVERY CHARGE */
+
+  .delivery_assignment_detail:last-child {
+    padding: 8px 9px;
+
+    border-radius: 8px;
+  }
+
+  .delivery_assignment_detail:last-child strong {
+    font-size: 15px;
+  }
+
+  /* ACTIONS */
+
+  .delivery_assignment_actions {
+    gap: 7px;
+
+    padding-top: 11px;
+  }
+
+  .delivery_assignment_actions button {
+    min-height: 41px;
+
+    padding: 0 10px;
+
+    border-radius: 8px;
+
+    font-size: 10px;
+  }
+}
+
+/* =========================================================
+   VERY SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 360px) {
+  .delivery_assignment_requests {
+    margin-top: 14px;
+  }
+
+  .delivery_assignment_card {
+    padding: 11px;
+
+    border-radius: 10px;
+  }
+
+  .delivery_assignment_card_top {
+    gap: 7px;
+
+    padding-bottom: 10px;
+  }
+
+  .delivery_assignment_card_top h3 {
+    font-size: 12px;
+  }
+
+  .delivery_assignment_status {
+    padding: 3px 6px;
+
+    font-size: 7px;
+  }
+
+  .delivery_assignment_details {
+    gap: 9px 8px;
+
+    padding: 10px 0;
+  }
+
+  .delivery_assignment_detail span {
+    font-size: 7px;
+  }
+
+  .delivery_assignment_detail strong {
+    font-size: 10px;
+  }
+
+  .delivery_assignment_detail:last-child {
+    padding: 7px 8px;
+  }
+
+  .delivery_assignment_detail:last-child strong {
+    font-size: 14px;
+  }
+
+  .delivery_assignment_actions {
+    gap: 6px;
+
+    padding-top: 10px;
+  }
+
+  .delivery_assignment_actions button {
+    min-height: 39px;
+
+    padding: 0 8px;
+
+    font-size: 9px;
+  }
+}
+
+/* =========================================================
+   DARK MODE — DELIVERY ASSIGNMENT REQUESTS
+   ========================================================= */
+
+/* HEADER */
+
+[data-theme='dark'] .delivery_assignment_requests_header h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_assignment_count {
+  border-color: var(--rma-border-dark);
+
+  background: var(--rma-primary-light);
+
+  color: var(--rma-primary);
+}
+
+/* MESSAGES */
+
+[data-theme='dark'] .delivery_assignment_message {
   border-color: var(--rma-border);
+
+  background: var(--rma-card);
+
+  color: var(--rma-text-secondary);
+
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+}
+
+[data-theme='dark'] .delivery_assignment_error {
+  border-color: #4a2927;
+
+  background: var(--rma-danger-light);
+
+  color: #f28b8b;
+}
+
+/* CARD */
+
+[data-theme='dark'] .delivery_assignment_card {
+  border-color: var(--rma-border);
+
   background: var(--rma-card);
 
   box-shadow:
-    0 4px 14px rgba(0, 0, 0, 0.16),
-    0 1px 3px rgba(0, 0, 0, 0.1);
+    0 5px 16px rgba(0, 0, 0, 0.18),
+    0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
-[data-theme='dark'] .delivery_details_section h3 {
+[data-theme='dark'] .delivery_assignment_card:hover {
+  border-color: var(--rma-border-dark);
+
+  box-shadow:
+    0 8px 22px rgba(0, 0, 0, 0.23),
+    0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+/* TOP */
+
+[data-theme='dark'] .delivery_assignment_card_top {
+  border-bottom-color: var(--rma-border-light);
+}
+
+[data-theme='dark'] .delivery_assignment_label {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery_assignment_label::before {
+  background: var(--rma-primary);
+}
+
+[data-theme='dark'] .delivery_assignment_card_top h3 {
   color: var(--rma-text);
 }
 
-/* =========================================================
-   CUSTOMER DETAILS
-   ========================================================= */
+/* TYPE */
 
-[data-theme='dark'] .delivery_customer_details span {
+[data-theme='dark'] .delivery_assignment_status {
+  border-color: var(--rma-border-dark);
+
+  background: var(--rma-primary-light);
+
+  color: var(--rma-primary);
+}
+
+/* DETAILS */
+
+[data-theme='dark'] .delivery_assignment_detail span {
   color: var(--rma-text-muted);
 }
 
-[data-theme='dark'] .delivery_customer_details strong {
+[data-theme='dark'] .delivery_assignment_detail strong {
   color: var(--rma-text);
 }
 
-[data-theme='dark'] .delivery_customer_details a {
-  color: var(--rma-primary);
+/* CHARGE */
+
+[data-theme='dark'] .delivery_assignment_detail:last-child {
+  border-color: var(--rma-border);
+
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .delivery_assignment_detail:last-child span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_assignment_detail:last-child strong {
+  color: var(--rma-primary-light);
+}
+
+/* ACTION BORDER */
+
+[data-theme='dark'] .delivery_assignment_actions {
+  border-top-color: var(--rma-border-light);
+}
+
+/* REJECT */
+
+[data-theme='dark'] .delivery_assignment_reject {
+  border-color: var(--rma-border);
+
+  background: var(--rma-card);
+
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_assignment_reject:hover:not(:disabled) {
+  border-color: #633737;
+
+  background: #251919;
+
+  color: #f28b8b;
+
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* ACCEPT */
+
+[data-theme='dark'] .delivery_assignment_accept {
+  border-color: var(--rma-primary);
+
+  background: var(--rma-primary);
+
+  color: var(--rma-text-white);
+
+  box-shadow: 0 3px 8px rgba(22, 128, 58, 0.18);
+}
+
+[data-theme='dark'] .delivery_assignment_accept:hover:not(:disabled) {
+  border-color: var(--rma-primary-dark);
+
+  background: var(--rma-primary-dark);
+
+  box-shadow: 0 5px 13px rgba(22, 128, 58, 0.24);
+}
+
+/* =========================================================
+   DELIVERY DASHBOARD TABS
+   ========================================================= */
+
+.delivery_dashboard_tabs {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.delivery_dashboard_tab {
+  position: relative;
+  width: 100%;
+  min-height: 72px;
+  padding: 13px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 7px;
+
+  border: 1px solid #e4e8e5;
+  border-radius: 15px;
+  background: #ffffff;
+
+  color: #66706a;
+  font-family: inherit;
+  text-align: left;
+
+  cursor: pointer;
+
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.045);
+
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.15s ease;
+}
+
+.delivery_dashboard_tab:hover {
+  border-color: rgba(22, 128, 58, 0.35);
+  box-shadow: 0 5px 16px rgba(22, 128, 58, 0.08);
+}
+
+.delivery_dashboard_tab:active {
+  transform: scale(0.985);
+}
+
+.delivery_dashboard_tab span {
+  display: block;
+
+  font-size: 12px;
+  line-height: 1.3;
+  font-weight: 600;
+
+  color: #737c76;
+}
+
+.delivery_dashboard_tab strong {
+  display: block;
+
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 750;
+
+  color: #202722;
+}
+
+/* Active tab */
+
+.delivery_dashboard_tab.active {
+  border-color: var(--rma-primary-light, #16803a);
+  background: rgb(52 119 75);
+  box-shadow:
+    0 4px 15px #87978d,
+    inset 0 0 0 1px rgba(22, 128, 58, 0.05);
+}
+
+.delivery_dashboard_tab.active::before {
+  content: '';
+
+  position: absolute;
+  top: 0;
+  left: 14px;
+  right: 14px;
+
+  height: 3px;
+
+  border-radius: 0 0 6px 6px;
+
+  background: var(--rma-primary-light, #16803a);
+}
+
+.delivery_dashboard_tab.active span {
+  color: var(--rma-primary-light, #16803a);
+}
+
+.delivery_dashboard_tab.active strong {
+  color: var(--rma-primary-light, #16803a);
+}
+
+/* Keyboard accessibility */
+
+.delivery_dashboard_tab:focus-visible {
+  outline: 3px solid rgba(22, 128, 58, 0.18);
+  outline-offset: 2px;
+}
+
+/* Small mobile */
+
+@media (max-width: 380px) {
+  .delivery_dashboard_tabs {
+    gap: 8px;
+    margin-top: 15px;
+  }
+
+  .delivery_dashboard_tab {
+    min-height: 67px;
+    padding: 11px 12px;
+    border-radius: 13px;
+  }
+
+  .delivery_dashboard_tab span {
+    font-size: 11px;
+  }
+
+  .delivery_dashboard_tab strong {
+    font-size: 20px;
+  }
+
+  .delivery_dashboard_tab.active::before {
+    left: 12px;
+    right: 12px;
+  }
+}
+
+/* Larger screens */
+
+@media (min-width: 600px) {
+  .delivery_dashboard_tabs {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .delivery_dashboard_tab {
+    min-height: 82px;
+    padding: 15px 16px;
+  }
+
+  .delivery_dashboard_tab span {
+    font-size: 12px;
+  }
+
+  .delivery_dashboard_tab strong {
+    font-size: 24px;
+  }
+}
+
+/* =========================================================
+   DARK MODE
+   ========================================================= */
+
+[data-theme='dark'] .delivery_dashboard_tab {
+  background: #151a17;
+  border-color: #29332d;
+  box-shadow: none;
+}
+
+[data-theme='dark'] .delivery_dashboard_tab:hover {
+  border-color: rgba(22, 128, 58, 0.45);
+  background: #19201b;
+  box-shadow: none;
+}
+
+[data-theme='dark'] .delivery_dashboard_tab span {
+  color: #929d96;
+}
+
+[data-theme='dark'] .delivery_dashboard_tab strong {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery_dashboard_tab.active {
+  background: rgba(22, 128, 58, 0.12);
+  border-color: var(--rma-primary-light);
+  box-shadow: inset 0 0 0 1px rgba(22, 128, 58, 0.08);
+}
+
+[data-theme='dark'] .delivery_dashboard_tab.active span,
+[data-theme='dark'] .delivery_dashboard_tab.active strong {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery_dashboard_tab:focus-visible {
+  outline-color: rgba(22, 128, 58, 0.35);
+}
+
+/* =========================================================
+   DELIVERY LOGIN
+   ========================================================= */
+
+.delivery_orders:has(.delivery_no_orders) {
+  min-height: 100%;
+}
+
+.delivery_no_orders:has(input) {
+  width: 100%;
+  max-width: 430px;
+  margin: 32px auto 0;
+  padding: 26px 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+
+  background: #ffffff;
+  border: 1px solid #e4e8e5;
+  border-radius: 20px;
+
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.06);
+}
+
+.delivery_no_orders:has(input) h1 {
+  margin: 0;
+  font-size: 26px;
+  line-height: 1.2;
+  font-weight: 750;
+  text-align: center;
+  color: var(--rma-primary-light, #16803a);
+}
+
+.delivery_no_orders:has(input) > p:not(.delivery_error_message) {
+  margin: 8px 0 24px;
+
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: center;
+  color: #6d7670;
+}
+
+/* Login inputs */
+
+.delivery_no_orders:has(input) input {
+  width: 100%;
+  min-height: 48px;
+  margin-bottom: 12px;
+  padding: 0 14px;
+
+  border: 1px solid #dfe4e1;
+  border-radius: 12px;
+  outline: none;
+
+  background: #f9faf9;
+
+  color: #202722;
+  font-family: inherit;
+  font-size: 14px;
+
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.delivery_no_orders:has(input) input::placeholder {
+  color: #969e99;
+}
+
+.delivery_no_orders:has(input) input:hover {
+  border-color: #cbd3ce;
+}
+
+.delivery_no_orders:has(input) input:focus {
+  border-color: var(--rma-primary-light, #16803a);
+  background: #ffffff;
+
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.1);
+}
+
+/* Login button */
+
+.delivery_no_orders:has(input) .delivery_complete_button {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 4px;
+
+  border: 1px solid var(--rma-primary-light, #16803a);
+  border-radius: 12px;
+
+  background: var(--rma-primary-light, #16803a);
+  color: #ffffff;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.18s ease,
+    opacity 0.18s ease,
+    transform 0.15s ease,
+    box-shadow 0.18s ease;
+}
+
+.delivery_no_orders:has(input) .delivery_complete_button:hover:not(:disabled) {
+  background: #126c31;
+  box-shadow: 0 5px 14px rgba(22, 128, 58, 0.2);
+}
+
+.delivery_no_orders:has(input) .delivery_complete_button:active:not(:disabled) {
+  transform: scale(0.985);
+}
+
+.delivery_no_orders:has(input) .delivery_complete_button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Error */
+
+.delivery_no_orders:has(input) .delivery_error_message {
+  width: 100%;
+  margin: 14px 0 0;
+  padding: 11px 12px;
+
+  border: 1px solid #f0c8c5;
+  border-radius: 10px;
+
+  background: #fff7f7;
+  color: #b42318;
+
+  font-size: 13px;
+  line-height: 1.45;
+  text-align: center;
+}
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 380px) {
+  .delivery_no_orders:has(input) {
+    margin-top: 22px;
+    padding: 22px 16px;
+    border-radius: 17px;
+  }
+
+  .delivery_no_orders:has(input) h1 {
+    font-size: 23px;
+  }
+
+  .delivery_no_orders:has(input) > p:not(.delivery_error_message) {
+    margin-bottom: 20px;
+    font-size: 13px;
+  }
+
+  .delivery_no_orders:has(input) input,
+  .delivery_no_orders:has(input) .delivery_complete_button {
+    min-height: 46px;
+  }
+}
+
+/* =========================================================
+   TABLET / DESKTOP
+   ========================================================= */
+
+@media (min-width: 600px) {
+  .delivery_no_orders:has(input) {
+    margin-top: 50px;
+    padding: 30px 28px;
+  }
+
+  .delivery_no_orders:has(input) h1 {
+    font-size: 28px;
+  }
+}
+
+/* =========================================================
+   DARK MODE
+   ========================================================= */
+
+[data-theme='dark'] .delivery_no_orders:has(input) {
+  background: #151a17;
+  border-color: #29332d;
+  box-shadow: none;
+}
+
+[data-theme='dark'] .delivery_no_orders:has(input) h1 {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark']
+  .delivery_no_orders:has(input)
+  > p:not(.delivery_error_message) {
+  color: #9ba59f;
+}
+
+[data-theme='dark'] .delivery_no_orders:has(input) input {
+  background: #1b211e;
+  border-color: #303a34;
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery_no_orders:has(input) input::placeholder {
+  color: #7f8983;
+}
+
+[data-theme='dark'] .delivery_no_orders:has(input) input:hover {
+  border-color: #3d4941;
+}
+
+[data-theme='dark'] .delivery_no_orders:has(input) input:focus {
+  background: #1d241f;
+  border-color: var(--rma-primary-light);
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.16);
+}
+
+[data-theme='dark'] .delivery_no_orders:has(input) .delivery_complete_button {
+  background: var(--rma-primary-light);
+  border-color: var(--rma-primary-light);
+  color: #ffffff;
+}
+
+[data-theme='dark']
+  .delivery_no_orders:has(input)
+  .delivery_complete_button:hover:not(:disabled) {
+  background: #1a9144;
+}
+
+[data-theme='dark'] .delivery_no_orders:has(input) .delivery_error_message {
+  background: #241817;
+  border-color: #4a2927;
+  color: #ff8f8f;
+}
+
+/* =========================================================
+   DELIVERY ORDER DETAILS — COLOR / VISUAL POLISH
+   ========================================================= */
+
+.delivery_order_details_page {
+  width: 100%;
+  min-height: 100vh;
+  background: #f3f5f4;
+  color: #17201b;
+}
+
+.delivery_order_details {
+  width: 100%;
+  max-width: 900px;
+  min-height: 100vh;
+  margin: 0 auto;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.delivery_details_header {
+  margin-bottom: 24px;
+}
+
+.delivery_back_button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 0;
+  margin: 0 0 24px;
+
+  border: none;
+  background: transparent;
+
+  color: #52615a;
+  font-size: 15px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.delivery_back_button:hover {
+  color: #0a9f4a;
+}
+
+.delivery_back_icon {
+  font-size: 21px;
+  line-height: 1;
+  font-weight: 400;
+}
+
+.delivery_details_header_main {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.delivery_details_heading {
+  min-width: 0;
+}
+
+.delivery_details_heading > span {
+  display: block;
+  margin-bottom: 7px;
+
+  color: #6c7a73;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+
+.delivery_details_heading h2 {
+  margin-top: 30px;
+  color: #101713;
+  font-size: 23px;
+  font-weight: 800;
+  line-height: 1.2;
+  word-break: break-word;
+  width: 260px;
+}
+
+.delivery_details_status {
+  flex-shrink: 0;
+}
+
+.delivery_details_status span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 34px;
+  padding: 7px 12px;
+
+  border: 1px solid #9bd9b6;
+  border-radius: 999px;
+
+  background: #e5f7ec;
+  color: #087c3a;
+
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   SECTION CARDS
+   ========================================================= */
+
+.delivery_details_section {
+  margin-bottom: 14px;
+  padding: 20px;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8e4;
+  border-radius: 18px;
+
+  box-shadow:
+    0 2px 5px rgba(23, 32, 27, 0.025),
+    0 8px 24px rgba(23, 32, 27, 0.035);
+}
+
+.delivery_details_section h3 {
+  margin: 0 0 16px;
+
+  color: #121914;
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+/* =========================================================
+   CUSTOMER
+   ========================================================= */
+
+.delivery_customer_details {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.delivery_customer_details > div {
+  min-width: 0;
+}
+
+.delivery_customer_details span {
+  display: block;
+  margin-bottom: 7px;
+
+  color: #7a8781;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.delivery_customer_details strong,
+.delivery_customer_details a {
+  display: block;
+
+  color: #18201b;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.4;
+
+  text-decoration: none;
+}
+
+.delivery_customer_details a {
+  color: #087c3a;
+}
+
+.delivery_customer_details a:hover {
+  color: #05662f;
 }
 
 /* =========================================================
    ADDRESS
    ========================================================= */
 
-[data-theme='dark'] .delivery_address {
-  color: var(--rma-text-secondary);
+.delivery_address {
+  margin: 0;
+  padding: 14px 15px;
+
+  background: #f7f9f8;
+
+  border: 1px solid #e2e8e4;
+  border-radius: 14px;
+
+  color: #45534c;
+  font-size: 14px;
+  line-height: 1.55;
 }
 
 /* =========================================================
    ROUTE
    ========================================================= */
 
-[data-theme='dark'] .delivery_route_message {
-  background: var(--rma-bg-secondary);
-  color: var(--rma-text-secondary);
+.delivery_map_container {
+  width: 100%;
+  height: 310px;
+
+  overflow: hidden;
+
+  background: #eef2ef;
+
+  border: 1px solid #dce4df;
+  border-radius: 15px;
 }
 
-[data-theme='dark'] .delivery_route_error {
-  background: var(--rma-danger-light);
-  color: #f28b8b;
+.delivery_route_message,
+.delivery_route_error {
+  padding: 15px;
+
+  border-radius: 14px;
+
+  background: #f7f9f8;
+  border: 1px solid #e2e8e4;
+
+  color: #637069;
+  font-size: 14px;
+  line-height: 1.5;
 }
 
-[data-theme='dark'] .delivery_distance {
-  color: var(--rma-text-secondary);
+.delivery_route_error {
+  background: #fff7f7;
+  border-color: #f0d8d8;
+  color: #a33a3a;
+}
+
+.delivery_distance {
+  margin-top: 12px;
+  padding: 11px 13px;
+
+  border-radius: 10px;
+
+  background: #f0f8f3;
+  color: #087c3a;
+
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
 }
 
 /* =========================================================
-   DETAIL ORDER ITEMS
+   ORDER ITEMS
    ========================================================= */
 
+.delivery_order_items {
+  display: flex;
+  flex-direction: column;
+}
+
+.delivery_order_item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  padding: 13px 0;
+
+  border-bottom: 1px solid #edf0ee;
+}
+
+.delivery_order_item:last-child {
+  border-bottom: none;
+}
+
+.delivery_order_item > div {
+  min-width: 0;
+}
+
+.delivery_order_item strong {
+  display: block;
+
+  color: #18201b;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.delivery_order_item span {
+  display: block;
+  margin-top: 4px;
+
+  color: #7a8781;
+  font-size: 12px;
+}
+
+.delivery_order_item > strong {
+  flex-shrink: 0;
+  color: #087c3a;
+}
+
+.delivery_details_total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-top: 8px;
+  padding-top: 16px;
+
+  border-top: 1px solid #e2e8e4;
+}
+
+.delivery_details_total span {
+  color: #59675f;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.delivery_details_total strong {
+  color: #101713;
+  font-size: 19px;
+  font-weight: 800;
+}
+
+/* =========================================================
+   OTP
+   ========================================================= */
+
+.delivery_otp_section {
+  border-color: #b9dfc7;
+  background: #fbfefc;
+}
+
+.delivery_otp_section p {
+  margin: -5px 0 16px;
+
+  color: #65736b;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.delivery_otp_action {
+  display: flex;
+  gap: 10px;
+}
+
+.delivery_otp_action input {
+  flex: 1;
+  min-width: 0;
+  height: 46px;
+
+  padding: 0 14px;
+
+  background: #ffffff;
+  border: 1px solid #d7e0da;
+  border-radius: 11px;
+
+  color: #18201b;
+  font-size: 15px;
+  outline: none;
+}
+
+.delivery_otp_action input:focus {
+  border-color: #0a9f4a;
+  box-shadow: 0 0 0 3px rgba(10, 159, 74, 0.1);
+}
+
+.delivery_otp_action button {
+  min-height: 46px;
+  padding: 0 17px;
+
+  border: none;
+  border-radius: 11px;
+
+  background: #0a9f4a;
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.delivery_otp_action button:hover {
+  background: #078b40;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (min-width: 480px) {
+  .delivery_order_details {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .delivery_details_section {
+    padding: 22px;
+  }
+
+  .delivery_map_container {
+    height: 340px;
+  }
+}
+
+@media (min-width: 600px) {
+  .delivery_customer_details {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .delivery_map_container {
+    height: 360px;
+  }
+}
+
+@media (min-width: 800px) {
+  .delivery_order_details {
+    padding-top: 36px;
+  }
+
+  .delivery_details_heading h2 {
+    font-size: 26px;
+  }
+
+  .delivery_details_section {
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+
+  .delivery_map_container {
+    height: 400px;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 380px) {
+  .delivery_order_details {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .delivery_details_header_main {
+    gap: 8px;
+  }
+
+  .delivery_details_heading h2 {
+    font-size: 19px;
+  }
+
+  .delivery_details_status span {
+    padding: 6px 9px;
+    font-size: 11px;
+  }
+
+  .delivery_details_section {
+    padding: 17px;
+    border-radius: 16px;
+  }
+
+  .delivery_otp_action {
+    flex-direction: column;
+  }
+
+  .delivery_otp_action button {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   DARK MODE
+   ========================================================= */
+
+[data-theme='dark'] .delivery_order_details_page {
+  background: #101512;
+  color: #edf4ef;
+}
+
+[data-theme='dark'] .delivery_details_heading > span {
+  color: #89968f;
+}
+
+[data-theme='dark'] .delivery_details_heading h2 {
+  color: #f4f8f5;
+}
+
+[data-theme='dark'] .delivery_back_button {
+  color: #a8b5ae;
+}
+
+[data-theme='dark'] .delivery_back_button:hover {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery_details_section {
+  background: #171d19;
+  border-color: #29332d;
+  box-shadow: none;
+}
+
+[data-theme='dark'] .delivery_details_section h3 {
+  color: #f2f6f3;
+}
+
+[data-theme='dark'] .delivery_customer_details span {
+  color: #89968f;
+}
+
+[data-theme='dark'] .delivery_customer_details strong {
+  color: #edf4ef;
+}
+
+[data-theme='dark'] .delivery_customer_details a {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery_address {
+  background: #121713;
+  border-color: #29332d;
+  color: #b9c4bd;
+}
+
+[data-theme='dark'] .delivery_map_container {
+  background: #121713;
+  border-color: #29332d;
+}
+
+[data-theme='dark'] .delivery_route_message,
+[data-theme='dark'] .delivery_route_error {
+  background: #121713;
+  border-color: #29332d;
+  color: #aebbb3;
+}
+
 [data-theme='dark'] .delivery_order_item {
-  border-bottom-color: var(--rma-border-light);
+  border-color: #29332d;
 }
 
 [data-theme='dark'] .delivery_order_item strong {
-  color: var(--rma-text-primary);
+  color: #edf4ef;
 }
 
 [data-theme='dark'] .delivery_order_item span {
-  color: var(--rma-text-muted);
+  color: #89968f;
 }
 
-/* =========================================================
-   DETAIL TOTAL
-   ========================================================= */
-
 [data-theme='dark'] .delivery_details_total {
-  border-top-color: var(--rma-border-dark);
+  border-color: #29332d;
 }
 
 [data-theme='dark'] .delivery_details_total span {
-  color: var(--rma-text-secondary);
+  color: #aebbb3;
 }
 
 [data-theme='dark'] .delivery_details_total strong {
-  color: var(--rma-primary);
+  color: #f2f6f3;
+}
+
+[data-theme='dark'] .delivery_otp_section {
+  background: #141c17;
+  border-color: #315d42;
+}
+
+[data-theme='dark'] .delivery_otp_section p {
+  color: #9eaba3;
+}
+
+[data-theme='dark'] .delivery_otp_action input {
+  background: #101512;
+  border-color: #344039;
+  color: #edf4ef;
+}
+
+[data-theme='dark'] .delivery_details_status span {
+  background: #183525;
+  border-color: #326b49;
+  color: #a8e0bc;
+}
+
+[data-theme='dark'] .delivery_distance {
+  background: #183525;
+  color: var(--rma-primary-light);
 }
 
 /* =========================================================
-   DETAIL OTP
+   DELIVERY ORDER ROW
    ========================================================= */
 
-[data-theme='dark'] .delivery_otp_action input {
-  background: var(--rma-card);
-  border-color: var(--rma-border-dark);
-  color: var(--rma-text);
+.delivery_order_row {
+  width: 100%;
+  display: block;
+
+  padding: 17px 16px;
+  margin: 0 0 12px;
+
+  background: #ffffff;
+  border: 1px solid #e2e8e4;
+  border-radius: 17px;
+
+  color: #17201b;
+  text-align: left;
+
+  box-shadow:
+    0 2px 5px rgba(23, 32, 27, 0.025),
+    0 7px 20px rgba(23, 32, 27, 0.035);
+
+  cursor: pointer;
+
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease;
 }
 
-[data-theme='dark'] .delivery_otp_action input::placeholder {
-  color: var(--rma-text-muted);
+.delivery_order_row:hover {
+  border-color: #cddbd3;
+
+  box-shadow:
+    0 4px 8px rgba(23, 32, 27, 0.035),
+    0 10px 26px rgba(23, 32, 27, 0.05);
 }
 
-[data-theme='dark'] .delivery_otp_action input:focus {
-  border-color: var(--rma-primary);
-
-  box-shadow: 0 0 0 3px rgba(34, 166, 83, 0.12);
+.delivery_order_row:active {
+  transform: scale(0.99);
 }
 
-[data-theme='dark'] .delivery_otp_action button {
-  border-color: var(--rma-primary);
-  background: var(--rma-primary);
-  color: var(--rma-text-white);
+/* =========================================================
+   TOP — ORDER ID + STATUS
+   ========================================================= */
+
+.delivery_order_row_main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  margin-bottom: 15px;
 }
 
-[data-theme='dark'] .delivery_otp_action button:hover {
-  background: var(--rma-primary-dark);
+.delivery_order_row_main > strong {
+  min-width: 0;
 
-  box-shadow: 0 5px 14px rgba(22, 128, 58, 0.2);
+  color: #111813;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.3;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.delivery_order_status {
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 30px;
+  padding: 6px 10px;
+
+  border: 1px solid #b9dfc7;
+  border-radius: 999px;
+
+  background: #eaf8ef;
+  color: #087c3a;
+
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   ORDER INFORMATION
+   ========================================================= */
+
+.delivery_order_row_info {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 10px;
+
+  padding: 13px 0;
+
+  border-top: 1px solid #edf1ee;
+  border-bottom: 1px solid #edf1ee;
+}
+
+.delivery_order_row_info > span:first-child {
+  min-width: 0;
+
+  color: #26322c;
+  font-size: 14px;
+  font-weight: 700;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.delivery_order_row_info > span:nth-child(2) {
+  color: #7a8781;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.delivery_order_row_info > strong {
+  color: #087c3a;
+  font-size: 15px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.delivery_order_row_footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding-top: 13px;
+}
+
+.delivery_order_row_footer > span:first-child {
+  display: inline-flex;
+  align-items: center;
+
+  color: #65736b;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.delivery_order_row_footer > span:last-child {
+  color: #087c3a;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   TABLET / DESKTOP
+   ========================================================= */
+
+@media (min-width: 600px) {
+  .delivery_order_row {
+    padding: 18px 19px;
+    border-radius: 18px;
+  }
+
+  .delivery_order_row_main > strong {
+    font-size: 16px;
+  }
+
+  .delivery_order_status {
+    min-height: 32px;
+    padding: 7px 11px;
+    font-size: 12px;
+  }
+
+  .delivery_order_row_info > span:first-child {
+    font-size: 15px;
+  }
+
+  .delivery_order_row_info > strong {
+    font-size: 16px;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 380px) {
+  .delivery_order_row {
+    padding: 15px 14px;
+    border-radius: 15px;
+  }
+
+  .delivery_order_row_main {
+    gap: 8px;
+    margin-bottom: 13px;
+  }
+
+  .delivery_order_row_main > strong {
+    font-size: 14px;
+  }
+
+  .delivery_order_status {
+    min-height: 28px;
+    padding: 5px 8px;
+    font-size: 10px;
+  }
+
+  .delivery_order_row_info {
+    gap: 7px;
+  }
+
+  .delivery_order_row_info > span:first-child {
+    font-size: 13px;
+  }
+
+  .delivery_order_row_info > span:nth-child(2),
+  .delivery_order_row_footer > span:first-child,
+  .delivery_order_row_footer > span:last-child {
+    font-size: 11px;
+  }
+
+  .delivery_order_row_info > strong {
+    font-size: 14px;
+  }
+}
+
+/* =========================================================
+   DARK MODE
+   ========================================================= */
+
+[data-theme='dark'] .delivery_order_row {
+  background: #171d19;
+  border-color: #29332d;
+  color: #edf4ef;
+
+  box-shadow: none;
+}
+
+[data-theme='dark'] .delivery_order_row:hover {
+  border-color: #3b4b41;
+  box-shadow: none;
+}
+
+[data-theme='dark'] .delivery_order_row_main > strong {
+  color: #f2f6f3;
+}
+
+[data-theme='dark'] .delivery_order_status {
+  background: #183525;
+  border-color: #326b49;
+  color: #a8e0bc;
+}
+
+[data-theme='dark'] .delivery_order_row_info {
+  border-color: #29332d;
+}
+
+[data-theme='dark'] .delivery_order_row_info > span:first-child {
+  color: #edf4ef;
+}
+
+[data-theme='dark'] .delivery_order_row_info > span:nth-child(2) {
+  color: #89968f;
+}
+
+[data-theme='dark'] .delivery_order_row_info > strong {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery_order_row_footer > span:first-child {
+  color: #9eaba3;
+}
+
+[data-theme='dark'] .delivery_order_row_footer > span:last-child {
+  color: var(--rma-primary-light);
+}
+
+/* =========================================================
+   DELIVERY ORDERS HEADER
+   ========================================================= */
+
+.delivery_orders_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  width: 100%;
+  max-width: 900px;
+
+  margin: 0 auto;
+  padding: 20px 16px 18px;
+
+  background: #ffffff;
+
+  border-bottom: 1px solid #e7ece9;
+}
+
+/* =========================================================
+   HEADER TEXT
+   ========================================================= */
+
+.delivery_orders_header_sub1 {
+  min-width: 0;
+}
+
+.delivery_orders_header_sub1 h1 {
+  margin: 0;
+
+  color: #111813;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.25;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.delivery_orders_header_sub1 p {
+  margin: 6px 0 0;
+
+  color: #78857e;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.delivery_orders_header_sub1 p strong {
+  color: #087c3a;
+  font-weight: 800;
+}
+
+/* =========================================================
+   LOGOUT BUTTON
+   ========================================================= */
+
+.delivery_orders_header_sub2 {
+  flex-shrink: 0;
+}
+
+.delivery_orders_header_sub2 .delivery_complete_button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 38px;
+  padding: 0 14px;
+
+  border: 1px solid #d9e2dc;
+  border-radius: 10px;
+
+  background: #ffffff;
+  color: #59675f;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.delivery_orders_header_sub2 .delivery_complete_button:hover {
+  background: #f7f9f8;
+  border-color: #c9d5ce;
+  color: #c0392b;
+}
+
+.delivery_orders_header_sub2 .delivery_complete_button:active {
+  transform: scale(0.97);
+}
+
+/* =========================================================
+   TABLET / DESKTOP
+   ========================================================= */
+
+@media (min-width: 600px) {
+  .delivery_orders_header {
+    padding: 22px 20px 20px;
+  }
+
+  .delivery_orders_header_sub1 h1 {
+    font-size: 22px;
+  }
+
+  .delivery_orders_header_sub1 p {
+    font-size: 13px;
+  }
+
+  .delivery_orders_header_sub2 .delivery_complete_button {
+    min-height: 40px;
+    padding: 0 16px;
+    font-size: 13px;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 380px) {
+  .delivery_orders_header {
+    gap: 10px;
+    padding: 17px 13px 16px;
+  }
+
+  .delivery_orders_header_sub1 h1 {
+    font-size: 17px;
+  }
+
+  .delivery_orders_header_sub1 p {
+    margin-top: 4px;
+    font-size: 11px;
+  }
+
+  .delivery_orders_header_sub2 .delivery_complete_button {
+    min-height: 34px;
+    padding: 0 10px;
+    border-radius: 9px;
+    font-size: 11px;
+  }
+}
+
+/* =========================================================
+   DARK MODE
+   ========================================================= */
+
+[data-theme='dark'] .delivery_orders_header {
+  background: #121713;
+  border-bottom-color: #29332d;
+}
+
+[data-theme='dark'] .delivery_orders_header_sub1 h1 {
+  color: #f2f6f3;
+}
+
+[data-theme='dark'] .delivery_orders_header_sub1 p {
+  color: #89968f;
+}
+
+[data-theme='dark'] .delivery_orders_header_sub1 p strong {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery_orders_header_sub2 .delivery_complete_button {
+  background: #171d19;
+  border-color: #344039;
+  color: #aebbb3;
+}
+
+[data-theme='dark']
+  .delivery_orders_header_sub2
+  .delivery_complete_button:hover {
+  background: #1c2420;
+  border-color: #4a5950;
+  color: #ff8f84;
+}
+
+/* =========================================================
+   DELIVERY ORDERS LIST
+   ========================================================= */
+
+.delivery_orders_list {
+  width: 100%;
+  max-width: 900px;
+
+  margin: 0 auto;
+  padding: 22px 16px 110px;
+}
+
+/* =========================================================
+   SECTION TITLE
+   ========================================================= */
+
+.delivery_orders_list_title {
+  margin: 0 0 14px;
+
+  color: #17201b;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+/* =========================================================
+   EMPTY ORDERS STATE
+   ========================================================= */
+
+.delivery_orders_list .delivery_no_orders {
+  width: 100%;
+
+  padding: 34px 20px;
+  margin-top: 4px;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8e4;
+  border-radius: 17px;
+
+  text-align: center;
+
+  box-shadow:
+    0 2px 5px rgba(23, 32, 27, 0.025),
+    0 7px 20px rgba(23, 32, 27, 0.035);
+}
+
+.delivery_orders_list .delivery_no_orders h2 {
+  margin: 0 0 8px;
+
+  color: #202a24;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.delivery_orders_list .delivery_no_orders p {
+  max-width: 360px;
+
+  margin: 0 auto;
+
+  color: #78857e;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.55;
+}
+
+/* =========================================================
+   ORDER ROW SPACING
+   ========================================================= */
+
+.delivery_orders_list > .delivery_order_row {
+  margin-bottom: 12px;
+}
+
+.delivery_orders_list > .delivery_order_row:last-child {
+  margin-bottom: 0;
+}
+
+/* =========================================================
+   TABLET / DESKTOP
+   ========================================================= */
+
+@media (min-width: 600px) {
+  .delivery_orders_list {
+    padding: 25px 20px 110px;
+  }
+
+  .delivery_orders_list_title {
+    margin-bottom: 16px;
+    font-size: 20px;
+  }
+
+  .delivery_orders_list .delivery_no_orders {
+    padding: 42px 24px;
+  }
+
+  .delivery_orders_list .delivery_no_orders h2 {
+    font-size: 17px;
+  }
+
+  .delivery_orders_list .delivery_no_orders p {
+    font-size: 14px;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 380px) {
+  .delivery_orders_list {
+    padding: 19px 13px 105px;
+  }
+
+  .delivery_orders_list_title {
+    margin-bottom: 12px;
+    font-size: 17px;
+  }
+
+  .delivery_orders_list .delivery_no_orders {
+    padding: 30px 16px;
+    border-radius: 15px;
+  }
+
+  .delivery_orders_list .delivery_no_orders h2 {
+    font-size: 15px;
+  }
+
+  .delivery_orders_list .delivery_no_orders p {
+    font-size: 12px;
+  }
+}
+
+/* =========================================================
+   DARK MODE
+   ========================================================= */
+
+[data-theme='dark'] .delivery_orders_list_title {
+  color: #f2f6f3;
+}
+
+[data-theme='dark'] .delivery_orders_list .delivery_no_orders {
+  background: #171d19;
+  border-color: #29332d;
+  box-shadow: none;
+}
+
+[data-theme='dark'] .delivery_orders_list .delivery_no_orders h2 {
+  color: #edf4ef;
+}
+
+[data-theme='dark'] .delivery_orders_list .delivery_no_orders p {
+  color: #89968f;
+}
+
+/* =========================================================
+   DELIVERY OTP LOGIN
+   ========================================================= */
+
+.delivery_orders:has(.delivery_no_orders h1) {
+  width: 100%;
+  min-height: 100vh;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+
+  padding: 70px 16px 110px;
+
+  background: #f3f5f4;
+}
+
+/* =========================================================
+   OTP CARD
+   ========================================================= */
+
+.delivery_orders:has(.delivery_no_orders h1) .delivery_no_orders {
+  width: 100%;
+  max-width: 430px;
+
+  padding: 28px 20px;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8e4;
+  border-radius: 20px;
+
+  text-align: center;
+
+  box-shadow:
+    0 3px 8px rgba(23, 32, 27, 0.025),
+    0 12px 30px rgba(23, 32, 27, 0.05);
+}
+
+/* =========================================================
+   TITLE
+   ========================================================= */
+
+.delivery_orders:has(.delivery_no_orders h1) .delivery_no_orders h1 {
+  margin: 0 0 9px;
+
+  color: #111813;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+/* =========================================================
+   DESCRIPTION
+   ========================================================= */
+
+.delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  > p:first-of-type {
+  margin: 0 auto 22px;
+
+  max-width: 330px;
+
+  color: #78857e;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.55;
+}
+
+/* =========================================================
+   OTP INPUT
+   ========================================================= */
+
+.delivery_orders:has(.delivery_no_orders h1) .delivery_no_orders input {
+  width: 100%;
+  height: 52px;
+
+  padding: 0 16px;
+
+  background: #f8faf9;
+
+  border: 1px solid #d8e1db;
+  border-radius: 12px;
+
+  color: #17201b;
+
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 5px;
+  text-align: center;
+
+  outline: none;
+
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  input::placeholder {
+  color: #9aa59f;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.delivery_orders:has(.delivery_no_orders h1) .delivery_no_orders input:focus {
+  background: #ffffff;
+  border-color: #0a9f4a;
+  box-shadow: 0 0 0 3px rgba(10, 159, 74, 0.1);
+}
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  .delivery_complete_button {
+  width: 100%;
+  min-height: 46px;
+
+  margin-top: 12px;
+
+  border: none;
+  border-radius: 11px;
+
+  background: #0a9f4a;
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.18s ease,
+    transform 0.18s ease;
+}
+
+.delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  .delivery_complete_button:hover {
+  background: #078b40;
+}
+
+.delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  .delivery_complete_button:active {
+  transform: scale(0.98);
+}
+
+.delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  .delivery_complete_button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   BACK BUTTON
+   ========================================================= */
+
+.delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  .delivery_complete_button:nth-of-type(2) {
+  margin-top: 8px;
+
+  background: #f3f6f4;
+  border: 1px solid #dce4df;
+
+  color: #59675f;
+}
+
+.delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  .delivery_complete_button:nth-of-type(2):hover {
+  background: #eaf0ec;
+  color: #26322c;
+}
+
+/* =========================================================
+   SUCCESS MESSAGE
+   ========================================================= */
+
+.delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  .delivery_success_message {
+  margin: 14px 0 0;
+  padding: 11px 12px;
+
+  background: #eaf8ef;
+  border: 1px solid #b9dfc7;
+  border-radius: 10px;
+
+  color: #087c3a;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+/* =========================================================
+   ERROR MESSAGE
+   ========================================================= */
+
+.delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  .delivery_error_message {
+  margin: 14px 0 0;
+  padding: 11px 12px;
+
+  background: #fff6f6;
+  border: 1px solid #efd6d6;
+  border-radius: 10px;
+
+  color: #b23b3b;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+/* =========================================================
+   TABLET / DESKTOP
+   ========================================================= */
+
+@media (min-width: 600px) {
+  .delivery_orders:has(.delivery_no_orders h1) {
+    padding-top: 100px;
+  }
+
+  .delivery_orders:has(.delivery_no_orders h1) .delivery_no_orders {
+    padding: 34px 28px;
+  }
+
+  .delivery_orders:has(.delivery_no_orders h1) .delivery_no_orders h1 {
+    font-size: 26px;
+  }
+
+  .delivery_orders:has(.delivery_no_orders h1)
+    .delivery_no_orders
+    > p:first-of-type {
+    font-size: 14px;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 380px) {
+  .delivery_orders:has(.delivery_no_orders h1) {
+    padding: 45px 12px 105px;
+  }
+
+  .delivery_orders:has(.delivery_no_orders h1) .delivery_no_orders {
+    padding: 24px 16px;
+    border-radius: 17px;
+  }
+
+  .delivery_orders:has(.delivery_no_orders h1) .delivery_no_orders h1 {
+    font-size: 21px;
+  }
+
+  .delivery_orders:has(.delivery_no_orders h1) .delivery_no_orders input {
+    height: 49px;
+  }
+}
+
+/* =========================================================
+   DARK MODE
+   ========================================================= */
+
+[data-theme='dark'] .delivery_orders:has(.delivery_no_orders h1) {
+  background: #101512;
+}
+
+[data-theme='dark']
+  .delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders {
+  background: #171d19;
+  border-color: #29332d;
+  box-shadow: none;
+}
+
+[data-theme='dark']
+  .delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  h1 {
+  color: #f2f6f3;
+}
+
+[data-theme='dark']
+  .delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  > p:first-of-type {
+  color: #89968f;
+}
+
+[data-theme='dark']
+  .delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  input {
+  background: #101512;
+  border-color: #344039;
+  color: #edf4ef;
+}
+
+[data-theme='dark']
+  .delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  input:focus {
+  background: #121713;
+  border-color: var(--rma-primary-light);
+  box-shadow: 0 0 0 3px rgba(10, 159, 74, 0.14);
+}
+
+[data-theme='dark']
+  .delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  .delivery_complete_button:nth-of-type(2) {
+  background: #1c2420;
+  border-color: #344039;
+  color: #aebbb3;
+}
+
+[data-theme='dark']
+  .delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  .delivery_success_message {
+  background: #183525;
+  border-color: #326b49;
+  color: #a8e0bc;
+}
+
+[data-theme='dark']
+  .delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  .delivery_error_message {
+  background: #291818;
+  border-color: #533131;
+  color: #ff9b94;
+}
+
+/* =========================================================
+   DELIVERY OTP LOGIN
+   ========================================================= */
+
+.delivery_orders:has(.delivery_no_orders h1) {
+  width: 100%;
+  min-height: 100vh;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+
+  padding: 70px 16px 110px;
+
+  background: #f3f5f4;
+}
+
+/* =========================================================
+   OTP CARD
+   ========================================================= */
+
+.delivery_orders:has(.delivery_no_orders h1) .delivery_no_orders {
+  width: 100%;
+  max-width: 430px;
+
+  padding: 28px 20px;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8e4;
+  border-radius: 20px;
+
+  text-align: center;
+
+  box-shadow:
+    0 3px 8px rgba(23, 32, 27, 0.025),
+    0 12px 30px rgba(23, 32, 27, 0.05);
+}
+
+/* =========================================================
+   TITLE
+   ========================================================= */
+
+.delivery_orders:has(.delivery_no_orders h1) .delivery_no_orders h1 {
+  margin: 0 0 9px;
+
+  color: #111813;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+/* =========================================================
+   DESCRIPTION
+   ========================================================= */
+
+.delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  > p:first-of-type {
+  margin: 0 auto 22px;
+
+  max-width: 330px;
+
+  color: #78857e;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.55;
+}
+
+/* =========================================================
+   OTP INPUT
+   ========================================================= */
+
+.delivery_orders:has(.delivery_no_orders h1) .delivery_no_orders input {
+  width: 100%;
+  height: 52px;
+
+  padding: 0 16px;
+
+  background: #f8faf9;
+
+  border: 1px solid #d8e1db;
+  border-radius: 12px;
+
+  color: #17201b;
+
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 5px;
+  text-align: center;
+
+  outline: none;
+
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  input::placeholder {
+  color: #9aa59f;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.delivery_orders:has(.delivery_no_orders h1) .delivery_no_orders input:focus {
+  background: #ffffff;
+  border-color: #0a9f4a;
+  box-shadow: 0 0 0 3px rgba(10, 159, 74, 0.1);
+}
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  .delivery_complete_button {
+  width: 100%;
+  min-height: 46px;
+
+  margin-top: 12px;
+
+  border: none;
+  border-radius: 11px;
+
+  background: #0a9f4a;
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.18s ease,
+    transform 0.18s ease;
+}
+
+.delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  .delivery_complete_button:hover {
+  background: #078b40;
+}
+
+.delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  .delivery_complete_button:active {
+  transform: scale(0.98);
+}
+
+.delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  .delivery_complete_button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   BACK BUTTON
+   ========================================================= */
+
+.delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  .delivery_complete_button:nth-of-type(2) {
+  margin-top: 8px;
+
+  background: #f3f6f4;
+  border: 1px solid #dce4df;
+
+  color: #59675f;
+}
+
+.delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  .delivery_complete_button:nth-of-type(2):hover {
+  background: #eaf0ec;
+  color: #26322c;
+}
+
+/* =========================================================
+   SUCCESS MESSAGE
+   ========================================================= */
+
+.delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  .delivery_success_message {
+  margin: 14px 0 0;
+  padding: 11px 12px;
+
+  background: #eaf8ef;
+  border: 1px solid #b9dfc7;
+  border-radius: 10px;
+
+  color: #087c3a;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+/* =========================================================
+   ERROR MESSAGE
+   ========================================================= */
+
+.delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  .delivery_error_message {
+  margin: 14px 0 0;
+  padding: 11px 12px;
+
+  background: #fff6f6;
+  border: 1px solid #efd6d6;
+  border-radius: 10px;
+
+  color: #b23b3b;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+/* =========================================================
+   TABLET / DESKTOP
+   ========================================================= */
+
+@media (min-width: 600px) {
+  .delivery_orders:has(.delivery_no_orders h1) {
+    padding-top: 100px;
+  }
+
+  .delivery_orders:has(.delivery_no_orders h1) .delivery_no_orders {
+    padding: 34px 28px;
+  }
+
+  .delivery_orders:has(.delivery_no_orders h1) .delivery_no_orders h1 {
+    font-size: 26px;
+  }
+
+  .delivery_orders:has(.delivery_no_orders h1)
+    .delivery_no_orders
+    > p:first-of-type {
+    font-size: 14px;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 380px) {
+  .delivery_orders:has(.delivery_no_orders h1) {
+    padding: 45px 12px 105px;
+  }
+
+  .delivery_orders:has(.delivery_no_orders h1) .delivery_no_orders {
+    padding: 24px 16px;
+    border-radius: 17px;
+  }
+
+  .delivery_orders:has(.delivery_no_orders h1) .delivery_no_orders h1 {
+    font-size: 21px;
+  }
+
+  .delivery_orders:has(.delivery_no_orders h1) .delivery_no_orders input {
+    height: 49px;
+  }
+}
+
+/* =========================================================
+   DARK MODE
+   ========================================================= */
+
+[data-theme='dark'] .delivery_orders:has(.delivery_no_orders h1) {
+  background: #101512;
+}
+
+[data-theme='dark']
+  .delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders {
+  background: #171d19;
+  border-color: #29332d;
+  box-shadow: none;
+}
+
+[data-theme='dark']
+  .delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  h1 {
+  color: #f2f6f3;
+}
+
+[data-theme='dark']
+  .delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  > p:first-of-type {
+  color: #89968f;
+}
+
+[data-theme='dark']
+  .delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  input {
+  background: #101512;
+  border-color: #344039;
+  color: #edf4ef;
+}
+
+[data-theme='dark']
+  .delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  input:focus {
+  background: #121713;
+  border-color: var(--rma-primary-light);
+  box-shadow: 0 0 0 3px rgba(10, 159, 74, 0.14);
+}
+
+[data-theme='dark']
+  .delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  .delivery_complete_button:nth-of-type(2) {
+  background: #1c2420;
+  border-color: #344039;
+  color: #aebbb3;
+}
+
+[data-theme='dark']
+  .delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  .delivery_success_message {
+  background: #183525;
+  border-color: #326b49;
+  color: #a8e0bc;
+}
+
+[data-theme='dark']
+  .delivery_orders:has(.delivery_no_orders h1)
+  .delivery_no_orders
+  .delivery_error_message {
+  background: #291818;
+  border-color: #533131;
+  color: #ff9b94;
+}
+
+/* =========================================================
+   MAP PREVIEW
+   ========================================================= */
+
+.delivery_map_container {
+  position: relative;
+
+  width: 100%;
+  height: 310px;
+
+  overflow: hidden;
+
+  background: #eef2ef;
+  border: 1px solid #dce4df;
+  border-radius: 15px;
+
+  cursor: pointer;
+}
+
+.delivery_map_container .order_location_map {
+  width: 100%;
+  height: 100%;
+}
+
+.delivery_map_container .order_location_leaflet_map {
+  min-height: 100%;
+}
+
+/* =========================================================
+   OPEN MAP HINT
+   ========================================================= */
+
+.delivery_map_expand_hint {
+  position: absolute;
+
+  right: 12px;
+  bottom: 12px;
+
+  z-index: 500;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 8px 11px;
+
+  border-radius: 9px;
+
+  background: rgba(255, 255, 255, 0.94);
+
+  color: #26322c;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+  pointer-events: none;
+}
+
+/* =========================================================
+   FULLSCREEN MAP
+   ========================================================= */
+
+.delivery_fullscreen_map {
+  position: fixed;
+
+  inset: 0;
+
+  width: 100vw;
+  height: 100vh;
+
+  background: #ffffff;
+
+  z-index: 10000;
+}
+
+.delivery_fullscreen_map .order_location_map {
+  width: 100%;
+  height: 100vh;
+
+  min-height: 100vh;
+
+  border-radius: 0;
+}
+
+/* =========================================================
+   CLOSE BUTTON
+   ========================================================= */
+
+.delivery_fullscreen_map_close {
+  position: absolute;
+
+  top: max(16px, env(safe-area-inset-top));
+  left: 16px;
+
+  z-index: 11000;
+
+  width: 44px;
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  border-radius: 50%;
+
+  background: #ffffff;
+  color: #17201b;
+
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 1;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.18),
+    0 5px 16px rgba(0, 0, 0, 0.1);
+}
+
+.delivery_fullscreen_map_close:hover {
+  background: #f3f5f4;
+}
+
+/* =========================================================
+   FULLSCREEN MAP INFO
+   ========================================================= */
+
+.delivery_fullscreen_map_info {
+  position: absolute;
+
+  left: 16px;
+  right: 16px;
+  bottom: max(18px, env(safe-area-inset-bottom));
+
+  z-index: 11000;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+
+  padding: 14px 16px;
+
+  background: rgba(255, 255, 255, 0.96);
+
+  border-radius: 14px;
+
+  box-shadow:
+    0 3px 12px rgba(0, 0, 0, 0.15),
+    0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.delivery_fullscreen_map_info strong {
+  color: #17201b;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.delivery_fullscreen_map_info span {
+  color: #087c3a;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+/* =========================================================
+   TABLET / DESKTOP
+   ========================================================= */
+
+@media (min-width: 600px) {
+  .delivery_map_container {
+    height: 360px;
+  }
+
+  .delivery_fullscreen_map_info {
+    left: 24px;
+    right: 24px;
+    bottom: 24px;
+
+    max-width: 500px;
+    margin: 0 auto;
+  }
+}
+
+/* =========================================================
+   DARK MODE
+   ========================================================= */
+
+[data-theme='dark'] .delivery_map_container {
+  background: #151b17;
+  border-color: #29332d;
+}
+
+[data-theme='dark'] .delivery_map_expand_hint {
+  background: rgba(23, 29, 25, 0.95);
+  color: #edf4ef;
+}
+
+[data-theme='dark'] .delivery_fullscreen_map {
+  background: #101512;
+}
+
+[data-theme='dark'] .delivery_fullscreen_map_close {
+  background: #171d19;
+  color: #edf4ef;
+}
+
+[data-theme='dark'] .delivery_fullscreen_map_close:hover {
+  background: #202923;
+}
+
+[data-theme='dark'] .delivery_fullscreen_map_info {
+  background: rgba(23, 29, 25, 0.96);
+}
+
+[data-theme='dark'] .delivery_fullscreen_map_info strong {
+  color: #edf4ef;
+}
+
+[data-theme='dark'] .delivery_fullscreen_map_info span {
+  color: var(--rma-primary-light);
+}
+
+/* ==========================================
+   PICKUP / COLLECT ORDER
+========================================== */
+
+.delivery_pickup_section {
+  border: 1px solid #dcefe4;
+  background: #f4fbf7;
+}
+
+.delivery_pickup_content {
+  display: flex;
+  flex-direction: column;
+}
+
+.delivery_pickup_section h3 {
+  margin: 0 0 8px;
+  color: #101713;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.delivery_pickup_section p {
+  margin: 0 0 16px;
+  color: #66736d;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.delivery_collect_button {
+  width: 100%;
+  min-height: 48px;
+  border: none;
+  border-radius: 10px;
+  background: #0a9f4a;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease,
+    opacity 0.2s ease;
+}
+
+.delivery_collect_button:hover {
+  background: #087c3a;
+}
+
+.delivery_collect_button:active {
+  transform: scale(0.98);
+}
+
+.delivery_collect_button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
 }

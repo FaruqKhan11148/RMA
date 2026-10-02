@@ -378,3 +378,152 @@
 [data-theme='dark'] .delivery_recent_earning > strong {
   color: var(--rma-primary);
 }
+
+/* =========================================
+   EARNINGS OPTIONS
+========================================= */
+
+.delivery_earnings_options {
+  margin-top: 26px;
+}
+
+.delivery_earnings_options > h2 {
+  margin: 0 0 12px;
+  color: #202020;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.delivery_earnings_option_group {
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #e1e5e2;
+  border-radius: 16px;
+}
+
+.delivery_earnings_option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px 18px;
+  border: none;
+  border-bottom: 1px solid #e1e5e2;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.delivery_earnings_option:last-child {
+  border-bottom: none;
+}
+
+.delivery_earnings_option:active {
+  background: #f7faf8;
+}
+
+.delivery_earnings_option_left {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.delivery_earnings_option_icon {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  color: #16803a;
+  stroke-width: 1.9;
+}
+
+.delivery_earnings_option_left > div {
+  min-width: 0;
+}
+
+.delivery_earnings_option_left strong {
+  display: block;
+  color: #202020;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.delivery_earnings_option_left span {
+  display: block;
+  margin-top: 3px;
+  color: #888;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.delivery_earnings_option_arrow {
+  flex-shrink: 0;
+  color: #16803a;
+  font-size: 25px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 380px) {
+  .delivery_earnings_option {
+    padding: 15px 14px;
+  }
+
+  .delivery_earnings_option_left {
+    gap: 13px;
+  }
+
+  .delivery_earnings_option_left strong {
+    font-size: 14px;
+  }
+
+  .delivery_earnings_option_left span {
+    font-size: 10px;
+  }
+}
+
+/* =========================================
+   DARK MODE — EARNINGS OPTIONS
+========================================= */
+
+[data-theme='dark'] .delivery_earnings_options > h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_earnings_option_group {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .delivery_earnings_option {
+  border-bottom-color: var(--rma-border);
+}
+
+[data-theme='dark'] .delivery_earnings_option:active {
+  background: var(--rma-bg);
+}
+
+[data-theme='dark'] .delivery_earnings_option_icon {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery_earnings_option_left strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_earnings_option_left span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_earnings_option_arrow {
+  color: var(--rma-primary-light);
+}

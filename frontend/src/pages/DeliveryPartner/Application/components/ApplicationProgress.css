@@ -1,0 +1,143 @@
+/* =========================================================
+   RMA APPLICATION PROGRESS
+   ========================================================= */
+
+.delivery_application_progress {
+  margin-top: 16px;
+  padding: 18px 20px;
+  border: 1px solid #e1e8e3;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.035);
+}
+
+/* =========================================================
+   PROGRESS TOP
+   ========================================================= */
+
+.delivery_application_progress_top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.delivery_application_progress_top > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.delivery_application_progress_top strong {
+  color: #202824;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.delivery_application_progress_top span {
+  color: #748079;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.delivery_application_progress_top > strong:last-child {
+  flex-shrink: 0;
+  color: #16803a;
+  font-size: 18px;
+  font-weight: 750;
+}
+
+/* =========================================================
+   PROGRESS BAR
+   ========================================================= */
+
+.delivery_application_progress_bar {
+  width: 100%;
+  height: 8px;
+  margin-top: 14px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e9eeeb;
+}
+
+.delivery_application_progress_fill {
+  height: 100%;
+  min-width: 0;
+  border-radius: inherit;
+  background: #16803a;
+  transition: width 0.35s ease;
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 700px) {
+  .delivery_application_progress {
+    padding: 17px 18px;
+  }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+  .delivery_application_progress {
+    margin-top: 12px;
+    padding: 15px 14px;
+    border-radius: 12px;
+  }
+
+  .delivery_application_progress_top {
+    gap: 12px;
+  }
+
+  .delivery_application_progress_top strong {
+    font-size: 13px;
+  }
+
+  .delivery_application_progress_top span {
+    font-size: 11px;
+  }
+
+  .delivery_application_progress_top > strong:last-child {
+    font-size: 16px;
+  }
+
+  .delivery_application_progress_bar {
+    height: 7px;
+    margin-top: 12px;
+  }
+}
+
+/* =========================================================
+   DARK THEME
+   ========================================================= */
+
+[data-theme='dark'] .delivery_application_progress {
+  border-color: #29352e;
+  background: #171c19;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='dark'] .delivery_application_progress_top strong {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery_application_progress_top span {
+  color: #aab5ae;
+}
+
+[data-theme='dark'] .delivery_application_progress_top > strong:last-child {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery_application_progress_bar {
+  background: #29332e;
+}
+
+[data-theme='dark'] .delivery_application_progress_fill {
+  background: var(--rma-primary-light);
+}

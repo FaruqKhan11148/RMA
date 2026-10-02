@@ -1,6 +1,5 @@
 const DeliveryPerson = require('../../../models/DeliveryPerson');
 const Order = require('../../../models/Order');
-
 // ==========================================
 // GET ROAD ROUTE FOR A DELIVERY ORDER
 // ==========================================
@@ -12,8 +11,11 @@ const getDeliveryRoute = async (req, res) => {
     const order = await Order.findOne({
       orderId,
       deliveryPersonId: deliveryPerson._id,
-      status: 'OutForDelivery',
       orderType: 'delivery',
+      deliveryAssignmentStatus: 'ACCEPTED',
+      deliveryPickupStatus: {
+        $in: ['PENDING', 'COLLECTED'],
+      },
     }).populate('ownerId', 'ownerName shopName phone shopId location');
 
     if (!order) {
@@ -23,8 +25,6 @@ const getDeliveryRoute = async (req, res) => {
     }
 
     const deliveryPersonLocation = deliveryPerson.currentLocation;
-
-    const customerLocation = order.deliveryLocation;
 
     if (
       !deliveryPersonLocation ||
@@ -36,17 +36,35 @@ const getDeliveryRoute = async (req, res) => {
       });
     }
 
-    if (
-      !customerLocation ||
-      customerLocation.latitude == null ||
-      customerLocation.longitude == null
-    ) {
+    // ==========================================
+    // DESTINATION DEPENDS ON COLLECTION STATUS
+    // ==========================================
+    const isCollected = order.deliveryPickupStatus === 'COLLECTED';
+
+    const destination = isCollected
+      ? order.deliveryLocation
+      : order.pickupLocation;
+
+    if (!destination) {
       return res.status(400).json({
-        message: 'Customer delivery location is not available',
+        message: isCollected
+          ? 'Customer delivery location is not available'
+          : 'Shop pickup location is not available',
       });
     }
 
-    // GET REAL ROAD ROUTE FROM HEIGIT / OPENROUTESERVICE
+    if (destination.latitude == null || destination.longitude == null) {
+      return res.status(400).json({
+        message: isCollected
+          ? 'Customer delivery location is not available'
+          : 'Shop pickup location is not available',
+      });
+    }
+
+    // ==========================================
+    // GET REAL ROAD ROUTE FROM HEIGIT /
+    // OPENROUTESERVICE
+    // ==========================================
     const routingResponse = await fetch(
       'https://api.heigit.org/openrouteservice/v2/directions/driving-car/geojson',
       {
@@ -60,7 +78,7 @@ const getDeliveryRoute = async (req, res) => {
         body: JSON.stringify({
           coordinates: [
             [deliveryPersonLocation.longitude, deliveryPersonLocation.latitude],
-            [customerLocation.longitude, customerLocation.latitude],
+            [destination.longitude, destination.latitude],
           ],
         }),
       },
@@ -99,10 +117,14 @@ const getDeliveryRoute = async (req, res) => {
     const durationMinutes = durationSeconds / 60;
 
     res.status(200).json({
-      message: 'Delivery route calculated successfully',
+      message: isCollected
+        ? 'Route to customer calculated successfully'
+        : 'Route to pickup shop calculated successfully',
 
       route: {
         orderId: order.orderId,
+
+        destinationType: isCollected ? 'customer' : 'pickup',
 
         origin: {
           latitude: deliveryPersonLocation.latitude,
@@ -110,8 +132,8 @@ const getDeliveryRoute = async (req, res) => {
         },
 
         destination: {
-          latitude: customerLocation.latitude,
-          longitude: customerLocation.longitude,
+          latitude: destination.latitude,
+          longitude: destination.longitude,
         },
 
         distance: {

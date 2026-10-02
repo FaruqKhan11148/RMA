@@ -14,7 +14,7 @@ function HomeActions({ onScanQr, onFindShop }) {
         </div>
 
         <div className="action_content">
-          <span className="action_badge">FASTEST WAY</span>
+          <span className="action_badge">{t.home.scanQrBadge}</span>
 
           <h2>{t.home.scanQr}</h2>
 
@@ -32,13 +32,11 @@ function HomeActions({ onScanQr, onFindShop }) {
         </div>
 
         <div className="find_content">
-          <span className="find_badge">EXPLORE SHOPS</span>
+          <span className="find_badge">{t.home.findShopBadge}</span>
 
           <span className="find_title">{t.home.findShop}</span>
 
-          <span className="find_description">
-            Discover nearby meat and seafood shops
-          </span>
+          <span className="find_description">{t.home.findShopDescription}</span>
         </div>
 
         <span className="find_arrow">→</span>

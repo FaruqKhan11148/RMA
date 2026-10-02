@@ -1,0 +1,565 @@
+/* =========================================================
+   ADMIN DELIVERY WITHDRAWALS
+   ========================================================= */
+
+.admin-delivery-withdrawals-page {
+  min-height: 100vh;
+  padding: 24px;
+  background: #f5f7f6;
+  color: #17201a;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.admin-delivery-withdrawals-header {
+  max-width: 1400px;
+  margin: 0 auto 24px;
+}
+
+.admin-delivery-withdrawals-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 16px;
+  padding: 8px 13px;
+  border: 1px solid #dce4de;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #34423a;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-delivery-withdrawals-back:hover {
+  background: #f0f6f2;
+  border-color: #b8cbbd;
+  transform: translateX(-2px);
+}
+
+.admin-delivery-withdrawals-header h1 {
+  margin: 0;
+  color: #142019;
+  font-size: 30px;
+  font-weight: 750;
+  letter-spacing: -0.5px;
+}
+
+.admin-delivery-withdrawals-header p {
+  margin: 7px 0 0;
+  color: #6b756f;
+  font-size: 14px;
+}
+
+/* =========================================================
+   STATS
+   ========================================================= */
+
+.admin-delivery-withdrawals-stats {
+  max-width: 1400px;
+  margin: 0 auto 24px;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.admin-delivery-withdrawals-stat-card {
+  position: relative;
+  overflow: hidden;
+  padding: 17px;
+  border: 1px solid #e0e7e2;
+  border-radius: 13px;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(20, 32, 25, 0.04);
+}
+
+.admin-delivery-withdrawals-stat-card::after {
+  content: '';
+  position: absolute;
+  right: -30px;
+  bottom: -35px;
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+  background: rgba(22, 128, 58, 0.05);
+}
+
+.admin-delivery-withdrawals-stat-card span {
+  display: block;
+  margin-bottom: 8px;
+  color: #737d77;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.admin-delivery-withdrawals-stat-card strong {
+  display: block;
+  color: #18231c;
+  font-size: 23px;
+  font-weight: 750;
+  line-height: 1.2;
+}
+
+/* Give the first/amount cards subtle semantic colors */
+
+.admin-delivery-withdrawals-stat-card:nth-child(1) strong,
+.admin-delivery-withdrawals-stat-card:nth-child(2) strong {
+  color: #c27a00;
+}
+
+.admin-delivery-withdrawals-stat-card:nth-child(3) strong,
+.admin-delivery-withdrawals-stat-card:nth-child(4) strong {
+  color: #16803a;
+}
+
+.admin-delivery-withdrawals-stat-card:nth-child(5) strong,
+.admin-delivery-withdrawals-stat-card:nth-child(6) strong {
+  color: #c0392b;
+}
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+.admin-delivery-withdrawals-error {
+  max-width: 1400px;
+  margin: 0 auto 18px;
+  padding: 12px 15px;
+  border: 1px solid #f0c8c4;
+  border-radius: 9px;
+  background: #fff2f1;
+  color: #b83226;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* =========================================================
+   PENDING REQUESTS CONTENT
+   ========================================================= */
+
+.admin-delivery-withdrawals-content {
+  max-width: 1400px;
+  margin: 0 auto 26px;
+  padding: 22px;
+  border: 1px solid #e0e7e2;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 2px 10px rgba(20, 32, 25, 0.04);
+}
+
+/* =========================================================
+   LOADING / EMPTY
+   ========================================================= */
+
+.admin-delivery-withdrawals-loading,
+.admin-delivery-withdrawals-empty {
+  padding: 40px 20px;
+  border: 1px dashed #ccd7cf;
+  border-radius: 11px;
+  background: #fafcfb;
+  color: #6f7973;
+  text-align: center;
+  font-size: 14px;
+}
+
+.admin-delivery-withdrawals-empty {
+  color: #5f6b64;
+  font-weight: 600;
+}
+
+/* =========================================================
+   WITHDRAWAL LIST
+   ========================================================= */
+
+.admin-delivery-withdrawals-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
+}
+
+/* =========================================================
+   WITHDRAWAL CARD
+   ========================================================= */
+
+.admin-delivery-withdrawal-card {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px;
+  border: 1px solid #e1e8e3;
+  border-radius: 13px;
+  background: #fbfdfc;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-delivery-withdrawal-card:hover {
+  border-color: #bfd1c4;
+  box-shadow: 0 6px 18px rgba(20, 32, 25, 0.07);
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   WITHDRAWAL INFO
+   ========================================================= */
+
+.admin-delivery-withdrawal-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.admin-delivery-withdrawal-info h3 {
+  margin: 0 0 9px;
+  color: #1c2921;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.admin-delivery-withdrawal-info p {
+  margin: 5px 0;
+  color: #68736c;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.admin-delivery-withdrawal-info p:nth-of-type(2) {
+  color: #16803a;
+  font-size: 18px;
+  font-weight: 750;
+}
+
+.admin-delivery-withdrawal-info p:nth-of-type(3) {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #fff4dc;
+  color: #a56700;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.admin-delivery-withdrawal-actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  width: 175px;
+  flex-shrink: 0;
+}
+
+.admin-delivery-withdrawal-complete,
+.admin-delivery-withdrawal-reject {
+  min-height: 40px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    opacity 0.2s ease,
+    transform 0.15s ease,
+    background 0.2s ease;
+}
+
+.admin-delivery-withdrawal-complete {
+  border: 1px solid #16803a;
+  background: #16803a;
+  color: #ffffff;
+}
+
+.admin-delivery-withdrawal-complete:hover {
+  background: #126c30;
+}
+
+.admin-delivery-withdrawal-reject {
+  border: 1px solid #edc5c1;
+  background: #fff3f2;
+  color: #c0392b;
+}
+
+.admin-delivery-withdrawal-reject:hover {
+  background: #ffe7e4;
+}
+
+.admin-delivery-withdrawal-complete:hover,
+.admin-delivery-withdrawal-reject:hover {
+  transform: translateY(-1px);
+}
+
+.admin-delivery-withdrawal-complete:disabled,
+.admin-delivery-withdrawal-reject:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* =========================================================
+   HISTORY
+   ========================================================= */
+
+.admin-delivery-withdrawals-history {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 22px;
+  border: 1px solid #e0e7e2;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 2px 10px rgba(20, 32, 25, 0.04);
+}
+
+.admin-delivery-withdrawals-history-header {
+  margin-bottom: 18px;
+}
+
+.admin-delivery-withdrawals-history-header h2 {
+  margin: 0;
+  color: #18231c;
+  font-size: 21px;
+  font-weight: 720;
+}
+
+.admin-delivery-withdrawals-history-header p {
+  margin: 5px 0 0;
+  color: #737d77;
+  font-size: 13px;
+}
+
+/* =========================================================
+   FILTERS
+   ========================================================= */
+
+.admin-delivery-withdrawals-filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.admin-delivery-withdrawals-filters input,
+.admin-delivery-withdrawals-filters select {
+  height: 42px;
+  border: 1px solid #d8e1db;
+  border-radius: 9px;
+  outline: none;
+  background: #ffffff;
+  color: #28352d;
+  font-size: 13px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.admin-delivery-withdrawals-filters input {
+  flex: 1;
+  min-width: 0;
+  padding: 0 13px;
+}
+
+.admin-delivery-withdrawals-filters select {
+  width: 155px;
+  padding: 0 11px;
+  cursor: pointer;
+}
+
+.admin-delivery-withdrawals-filters input:focus,
+.admin-delivery-withdrawals-filters select:focus {
+  border-color: #16803a;
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.09);
+}
+
+/* =========================================================
+   HISTORY CARDS
+   ========================================================= */
+
+.admin-delivery-withdrawals-history .admin-delivery-withdrawals-list {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.admin-delivery-withdrawals-history .admin-delivery-withdrawal-card {
+  display: block;
+}
+
+.admin-delivery-withdrawals-history .admin-delivery-withdrawal-actions {
+  display: none;
+}
+
+/* Completed / failed status inside history */
+
+.admin-delivery-withdrawals-history
+  .admin-delivery-withdrawal-info
+  p:nth-of-type(3) {
+  background: #e8f6ec;
+  color: #16803a;
+}
+
+.admin-delivery-withdrawals-history
+  .admin-delivery-withdrawal-info
+  p:nth-of-type(3) {
+  text-transform: uppercase;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1200px) {
+  .admin-delivery-withdrawals-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .admin-delivery-withdrawals-history .admin-delivery-withdrawals-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .admin-delivery-withdrawals-page {
+    padding: 18px;
+  }
+
+  .admin-delivery-withdrawals-list {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-delivery-withdrawals-history .admin-delivery-withdrawals-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 650px) {
+  .admin-delivery-withdrawals-page {
+    padding: 15px 12px 80px;
+  }
+
+  .admin-delivery-withdrawals-header h1 {
+    font-size: 25px;
+  }
+
+  .admin-delivery-withdrawals-header p {
+    font-size: 13px;
+  }
+
+  .admin-delivery-withdrawals-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+  }
+
+  .admin-delivery-withdrawals-stat-card {
+    padding: 13px;
+    border-radius: 11px;
+  }
+
+  .admin-delivery-withdrawals-stat-card span {
+    font-size: 10px;
+  }
+
+  .admin-delivery-withdrawals-stat-card strong {
+    font-size: 19px;
+  }
+
+  .admin-delivery-withdrawals-content,
+  .admin-delivery-withdrawals-history {
+    padding: 15px;
+    border-radius: 13px;
+  }
+
+  .admin-delivery-withdrawal-card {
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px;
+  }
+
+  .admin-delivery-withdrawal-actions {
+    width: 100%;
+    flex-direction: row;
+  }
+
+  .admin-delivery-withdrawal-complete,
+  .admin-delivery-withdrawal-reject {
+    flex: 1;
+  }
+
+  .admin-delivery-withdrawals-filters {
+    flex-direction: column;
+  }
+
+  .admin-delivery-withdrawals-filters select {
+    width: 100%;
+  }
+}
+
+@media (max-width: 380px) {
+  .admin-delivery-withdrawals-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-delivery-withdrawal-actions {
+    flex-direction: column;
+  }
+}
+
+.admin-delivery-withdrawal-bank {
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #f9fafb;
+}
+
+.admin-delivery-withdrawal-bank h4 {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.admin-delivery-withdrawal-bank-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.admin-delivery-withdrawal-bank-grid > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.admin-delivery-withdrawal-bank-grid span {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.admin-delivery-withdrawal-bank-grid strong {
+  font-size: 14px;
+  color: #111827;
+  word-break: break-word;
+}
+
+.admin-delivery-withdrawal-bank-verified {
+  color: #15803d !important;
+}
+
+.admin-delivery-withdrawal-bank-unverified {
+  color: #b45309 !important;
+}
+
+@media (max-width: 600px) {
+  .admin-delivery-withdrawal-bank-grid {
+    grid-template-columns: 1fr;
+  }
+}

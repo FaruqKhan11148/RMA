@@ -116,40 +116,6 @@
   line-height: 1.55;
 }
 
-.owner_location_current {
-  width: 100%;
-  min-height: 44px;
-
-  border: 1px solid #16803a;
-  border-radius: 10px;
-
-  background: #ffffff;
-  color: #16803a;
-
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 700;
-
-  cursor: pointer;
-
-  transition:
-    background 0.2s ease,
-    transform 0.15s ease;
-}
-
-.owner_location_current:hover {
-  background: #f1faf4;
-}
-
-.owner_location_current:active {
-  transform: scale(0.99);
-}
-
-.owner_location_current:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
 /* MAP */
 
 .owner_location_map {
@@ -179,7 +145,7 @@
 /* Confirmation */
 
 .owner_location_confirmation {
-  display: flex;
+  display: none;
   flex-direction: column;
   gap: 5px;
 
@@ -409,23 +375,117 @@
   color: var(--rma-text-secondary);
 }
 
-/* CURRENT LOCATION BUTTON */
+/* =========================================================
+   SHOP LOCATION PICKER
+   ========================================================= */
 
-[data-theme='dark'] .owner_location_current {
-  background: var(--rma-card);
-  border-color: var(--rma-primary);
-  color: var(--rma-primary-light);
+.owner_location_picker {
+  width: 100%;
 }
 
-[data-theme='dark'] .owner_location_current:hover {
-  background: var(--rma-bg-secondary);
+.owner_location_choose {
+  width: 100%;
+  min-height: 48px;
+
+  padding: 12px 16px;
+
+  border: 1px solid #16803a;
+  border-radius: 10px;
+
+  background: #ffffff;
+  color: #16803a;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease;
 }
 
-/* MAP */
+.owner_location_choose:hover {
+  background: #f1faf4;
+}
 
-[data-theme='dark'] .owner_location_map {
-  background: var(--rma-bg-secondary);
-  border-color: var(--rma-border);
+.owner_location_choose:active {
+  transform: scale(0.99);
+}
+
+.owner_location_selected {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  padding: 15px;
+
+  border: 1px solid #cde8d5;
+  border-radius: 12px;
+
+  background: linear-gradient(135deg, #f3faf5, #ebf7ef);
+}
+
+.owner_location_selected_content {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 5px;
+}
+
+.owner_location_selected_content strong {
+  color: #0f5c2a;
+
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.owner_location_selected_content span {
+  color: #59655d;
+
+  font-size: 12px;
+  line-height: 1.5;
+
+  word-break: break-word;
+}
+
+.owner_location_selected_content small {
+  color: #68736b;
+
+  font-family: monospace;
+  font-size: 11px;
+}
+
+.owner_location_change {
+  flex-shrink: 0;
+
+  padding: 9px 13px;
+
+  border: 1px solid #16803a;
+  border-radius: 9px;
+
+  background: #ffffff;
+  color: #16803a;
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.owner_location_change:hover {
+  background: #16803a;
+  color: #ffffff;
 }
 
 /* REQUIRED */
@@ -504,4 +564,47 @@
 
 [data-theme='dark'] .owner_setting_loading {
   color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .owner_location_choose {
+  background: var(--rma-card);
+  border-color: var(--rma-primary);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .owner_location_choose:hover {
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .owner_location_selected {
+  background: linear-gradient(
+    135deg,
+    rgba(22, 128, 58, 0.12),
+    rgba(22, 128, 58, 0.06)
+  );
+
+  border-color: rgba(22, 128, 58, 0.28);
+}
+
+[data-theme='dark'] .owner_location_selected_content strong {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .owner_location_selected_content span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .owner_location_selected_content small {
+  color: var(--rma-text-muted);
+}
+
+[data-theme='dark'] .owner_location_change {
+  background: var(--rma-card);
+  border-color: var(--rma-primary);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .owner_location_change:hover {
+  background: var(--rma-primary);
+  color: var(--rma-text-white);
 }

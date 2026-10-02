@@ -1,23 +1,43 @@
-const DeliveryPerson = require('../../../models/DeliveryPerson');
 const Order = require('../../../models/Order');
+const Owner = require('../../../models/Owner');
+const DeliveryPerson = require('../../../models/DeliveryPerson');
 
-// ==========================================
-// GET AVAILABLE DELIVERY PARTNERS
-// FOR AN OWNER'S ORDER
-// ==========================================
+const getDistanceInKm = (lat1, lon1, lat2, lon2) => {
+  const earthRadiusKm = 6371;
+
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  return earthRadiusKm * c;
+};
+
 const getAvailableDeliveryPartners = async (req, res) => {
   try {
     const { orderId } = req.params;
 
     const owner = req.owner;
 
-    // FIND THE ORDER
+    if (!owner) {
+      return res.status(401).json({
+        message: 'Owner authentication required',
+      });
+    }
+
     const order = await Order.findOne({
       orderId,
       ownerId: owner._id,
-      orderType: 'delivery',
       status: 'Ready',
-    }).populate('ownerId', 'ownerName shopName phone shopId location');
+      orderType: 'delivery',
+    });
 
     if (!order) {
       return res.status(404).json({
@@ -25,92 +45,98 @@ const getAvailableDeliveryPartners = async (req, res) => {
       });
     }
 
-    // GET SHOP LOCATION
-    const shopLocation = order.ownerId?.location;
+    const shop = await Owner.findById(owner._id).select(
+      'shopName shopAddress location latitude longitude',
+    );
+
+    if (!shop) {
+      return res.status(404).json({
+        message: 'Shop not found',
+      });
+    }
+
+    let shopLatitude = null;
+    let shopLongitude = null;
 
     if (
-      !shopLocation ||
-      shopLocation.latitude == null ||
-      shopLocation.longitude == null
+      shop.location &&
+      typeof shop.location.latitude === 'number' &&
+      typeof shop.location.longitude === 'number'
     ) {
+      shopLatitude = shop.location.latitude;
+      shopLongitude = shop.location.longitude;
+    } else if (
+      typeof shop.latitude === 'number' &&
+      typeof shop.longitude === 'number'
+    ) {
+      shopLatitude = shop.latitude;
+      shopLongitude = shop.longitude;
+    }
+
+    if (typeof shopLatitude !== 'number' || typeof shopLongitude !== 'number') {
       return res.status(400).json({
         message: 'Shop location is not available',
       });
     }
 
-    const shopLatitude = Number(shopLocation.latitude);
-    const shopLongitude = Number(shopLocation.longitude);
-
-    // --------------------------------------------------
-    // SHOP DELIVERY PARTNERS
-    // --------------------------------------------------
-
+    /*
+     * SHOP DELIVERY PARTNERS
+     *
+     * These belong directly to this owner/shop.
+     */
     const shopPartners = await DeliveryPerson.find({
       deliveryType: 'SHOP',
       ownerId: owner._id,
       isActive: true,
-    }).select('name phone shopId deliveryType isActive currentLocation');
+    })
+      .select(
+        'name phone deliveryType isActive availabilityStatus currentLocation',
+      )
+      .lean();
 
-    // --------------------------------------------------
-    // RMA DELIVERY PARTNERS
-    // --------------------------------------------------
+    /*
+     * RMA DELIVERY PARTNERS
+     *
+     * Only partners who are:
+     * - RMA partners
+     * - active account
+     * - application approved
+     * - currently available
+     * - have a valid current location
+     * - location updated within the last 10 minutes
+     */
+    const locationCutoff = new Date(Date.now() - 10 * 60 * 1000);
 
     const rmaPartners = await DeliveryPerson.find({
       deliveryType: 'RMA',
       isActive: true,
-      'currentLocation.latitude': { $ne: null },
-      'currentLocation.longitude': { $ne: null },
-      'currentLocation.updatedAt': {
-        $gte: new Date(Date.now() - 10 * 60 * 1000),
+      applicationStatus: 'APPROVED',
+      availabilityStatus: 'AVAILABLE',
+      'currentLocation.latitude': {
+        $ne: null,
       },
-    }).select('name phone deliveryType isActive currentLocation');
+      'currentLocation.longitude': {
+        $ne: null,
+      },
+      'currentLocation.updatedAt': {
+        $gte: locationCutoff,
+      },
+    })
+      .select(
+        'name phone deliveryType isActive applicationStatus availabilityStatus currentLocation',
+      )
+      .lean();
 
-    // --------------------------------------------------
-    // HAVERSINE DISTANCE FUNCTION
-    // --------------------------------------------------
-
-    const calculateDistanceKm = (
-      latitude1,
-      longitude1,
-      latitude2,
-      longitude2,
-    ) => {
-      const earthRadiusKm = 6371;
-
-      const lat1 = (latitude1 * Math.PI) / 180;
-      const lat2 = (latitude2 * Math.PI) / 180;
-
-      const deltaLat = ((latitude2 - latitude1) * Math.PI) / 180;
-
-      const deltaLongitude = ((longitude2 - longitude1) * Math.PI) / 180;
-
-      const a =
-        Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
-        Math.cos(lat1) *
-          Math.cos(lat2) *
-          Math.sin(deltaLongitude / 2) *
-          Math.sin(deltaLongitude / 2);
-
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-      return earthRadiusKm * c;
-    };
-
-    // --------------------------------------------------
-    // CALCULATE RMA RIDER DISTANCE FROM SHOP
-    // --------------------------------------------------
-
-    const nearbyRmaPartners = rmaPartners
+    /*
+     * Calculate distance from shop to each RMA partner.
+     */
+    const eligibleRmaPartners = rmaPartners
       .map((partner) => {
-        const latitude = Number(partner.currentLocation?.latitude);
-
-        const longitude = Number(partner.currentLocation?.longitude);
-
-        const distance = calculateDistanceKm(
+        const distance = getDistanceInKm(
           shopLatitude,
           shopLongitude,
-          latitude,
-          longitude,
+          partner.currentLocation.latitude,
+          partner.currentLocation.longitude,
         );
 
         return {
@@ -119,32 +145,29 @@ const getAvailableDeliveryPartners = async (req, res) => {
           phone: partner.phone,
           deliveryType: partner.deliveryType,
           isActive: partner.isActive,
-          distance: Number(distance.toFixed(2)),
+          applicationStatus: partner.applicationStatus,
+          availabilityStatus: partner.availabilityStatus,
+          distance: Number(distance.toFixed(4)),
+          currentLocation: partner.currentLocation,
         };
       })
-      // Only riders within 5 KM
       .filter((partner) => partner.distance <= 5)
-      // Nearest rider first
       .sort((a, b) => a.distance - b.distance)
-      // Maximum 5 riders
       .slice(0, 5);
 
-    // --------------------------------------------------
-    // RESPONSE
-    // --------------------------------------------------
-
     return res.status(200).json({
+      success: true,
+
       order: {
         orderId: order.orderId,
+        status: order.status,
+        orderType: order.orderType,
       },
 
       shop: {
-        shopId: order.ownerId.shopId,
-        shopName: order.ownerId.shopName,
-        location: {
-          latitude: shopLatitude,
-          longitude: shopLongitude,
-        },
+        shopName: shop.shopName,
+        latitude: shopLatitude,
+        longitude: shopLongitude,
       },
 
       shopPartners: shopPartners.map((partner) => ({
@@ -153,15 +176,16 @@ const getAvailableDeliveryPartners = async (req, res) => {
         phone: partner.phone,
         deliveryType: partner.deliveryType,
         isActive: partner.isActive,
+        availabilityStatus: partner.availabilityStatus,
       })),
 
-      rmaPartners: nearbyRmaPartners,
+      rmaPartners: eligibleRmaPartners,
     });
   } catch (error) {
-    console.error('Get available delivery partners failed:', error);
+    console.error('Get available delivery partners error:', error);
 
     return res.status(500).json({
-      message: 'Server error',
+      message: 'Unable to fetch available delivery partners',
     });
   }
 };

@@ -1,0 +1,264 @@
+/* =========================================================
+   RMA APPLICATION SECTION CARD
+   ========================================================= */
+
+.delivery_application_section {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid #e1e8e3;
+  border-radius: 14px;
+  background: #ffffff;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.035);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+/* =========================================================
+   HOVER / ACTIVE
+   ========================================================= */
+
+.delivery_application_section:hover {
+  border-color: #b8d8c1;
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+}
+
+.delivery_application_section:active {
+  transform: translateY(0);
+}
+
+/* =========================================================
+   NUMBER / COMPLETED ICON
+   ========================================================= */
+
+.delivery_application_section_number {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d5ded8;
+  border-radius: 50%;
+  background: #f5f8f6;
+  color: #5d6962;
+  font-size: 14px;
+  font-weight: 750;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+/* =========================================================
+   CONTENT
+   ========================================================= */
+
+.delivery_application_section_content {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.delivery_application_section_content strong {
+  overflow: hidden;
+  color: #202824;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.delivery_application_section_content span {
+  overflow: hidden;
+  color: #748079;
+  font-size: 12px;
+  line-height: 1.45;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   ACTION
+   ========================================================= */
+
+.delivery_application_section_action {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  color: #16803a;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.delivery_application_section_action span {
+  color: #7c8780;
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.delivery_application_section:hover .delivery_application_section_action span {
+  transform: translateX(2px);
+}
+
+/* =========================================================
+   COMPLETED CARD
+   ========================================================= */
+
+.delivery_application_section.completed {
+  border-color: #cfe4d5;
+  background: #fbfefc;
+}
+
+.delivery_application_section.completed .delivery_application_section_number {
+  border-color: #16803a;
+  background: #16803a;
+  color: #ffffff;
+}
+
+.delivery_application_section.completed
+  .delivery_application_section_content
+  strong {
+  color: #1f3b28;
+}
+
+.delivery_application_section.completed .delivery_application_section_action {
+  color: #16803a;
+}
+
+/* =========================================================
+   FOCUS ACCESSIBILITY
+   ========================================================= */
+
+.delivery_application_section:focus-visible {
+  outline: 3px solid rgba(22, 128, 58, 0.2);
+  outline-offset: 2px;
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 700px) {
+  .delivery_application_section {
+    padding: 15px;
+    gap: 13px;
+  }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+  .delivery_application_section {
+    gap: 11px;
+    padding: 13px 12px;
+    border-radius: 12px;
+  }
+
+  .delivery_application_section_number {
+    width: 36px;
+    height: 36px;
+    font-size: 13px;
+  }
+
+  .delivery_application_section_content {
+    gap: 3px;
+  }
+
+  .delivery_application_section_content strong {
+    font-size: 14px;
+  }
+
+  .delivery_application_section_content span {
+    font-size: 11px;
+  }
+
+  .delivery_application_section_action {
+    font-size: 11px;
+  }
+
+  .delivery_application_section_action span {
+    font-size: 20px;
+  }
+}
+
+/* =========================================================
+   DARK THEME
+   ========================================================= */
+
+[data-theme='dark'] .delivery_application_section {
+  border-color: #29352e;
+  background: #171c19;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='dark'] .delivery_application_section:hover {
+  border-color: #3d6249;
+  background: #19201c;
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.25);
+}
+
+[data-theme='dark'] .delivery_application_section_number {
+  border-color: #39453e;
+  background: #202722;
+  color: #aab5ae;
+}
+
+[data-theme='dark'] .delivery_application_section_content strong {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery_application_section_content span {
+  color: #aab5ae;
+}
+
+[data-theme='dark'] .delivery_application_section_action {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery_application_section_action span {
+  color: #8f9b94;
+}
+
+[data-theme='dark'] .delivery_application_section.completed {
+  border-color: #31533c;
+  background: #151d18;
+}
+
+[data-theme='dark']
+  .delivery_application_section.completed
+  .delivery_application_section_number {
+  border-color: var(--rma-primary-light);
+  background: var(--rma-primary-light);
+  color: #102016;
+}
+
+[data-theme='dark']
+  .delivery_application_section.completed
+  .delivery_application_section_content
+  strong {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark']
+  .delivery_application_section.completed
+  .delivery_application_section_action {
+  color: var(--rma-primary-light);
+}

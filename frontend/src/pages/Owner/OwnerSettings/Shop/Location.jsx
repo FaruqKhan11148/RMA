@@ -4,15 +4,15 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import LocationHeader from './components/Location/LocationHeader';
-import LocationControls from './components/Location/LocationControls';
-import LocationMap from './components/Location/LocationMap';
 import LocationConfirmation from './components/Location/LocationConfirmation';
 import LocationActions from './components/Location/LocationActions';
+import MapPicker from '../../../../components/map/MapPicker';
 
 function Location() {
   const navigate = useNavigate();
 
   const [shopLocation, setShopLocation] = useState(null);
+  const [showMap, setShowMap] = useState(false);
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -79,39 +79,8 @@ function Location() {
       longitude: Number(location.longitude),
       address: location.address || '',
     });
-  };
 
-  const handleUseCurrentLocation = () => {
-    setError('');
-    setSuccessMessage('');
-
-    if (!navigator.geolocation) {
-      setError('Geolocation is not supported by your browser');
-      return;
-    }
-
-    setSuccessMessage('Getting your current location...');
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setShopLocation({
-          latitude: Number(position.coords.latitude),
-          longitude: Number(position.coords.longitude),
-        });
-
-        setSuccessMessage('Current location detected');
-      },
-      () => {
-        setError('Unable to get your location. Please allow location access.');
-
-        setSuccessMessage('');
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0,
-      },
-    );
+    setShowMap(false);
   };
 
   const handleSubmit = async (event) => {
@@ -198,15 +167,47 @@ function Location() {
         <LocationHeader navigate={navigate} />
 
         <form className="owner_location_form" onSubmit={handleSubmit}>
-          <LocationControls
-            handleUseCurrentLocation={handleUseCurrentLocation}
-            saving={saving}
-          />
+          <div className="owner_location_picker">
+            {!showMap && (
+              <>
+                {shopLocation ? (
+                  <div className="owner_location_selected">
+                    <div className="owner_location_selected_content">
+                      <strong>Shop location selected</strong>
 
-          <LocationMap
-            shopLocation={shopLocation}
-            handleLocationSelect={handleLocationSelect}
-          />
+                      <span>
+                        {shopLocation.address ||
+                          'Location coordinates selected'}
+                      </span>
+
+                      <small>
+                        {shopLocation.latitude.toFixed(6)},{' '}
+                        {shopLocation.longitude.toFixed(6)}
+                      </small>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="owner_location_change"
+                      onClick={() => setShowMap(true)}
+                    >
+                      Change Location
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    className="owner_location_choose"
+                    onClick={() => setShowMap(true)}
+                  >
+                    Choose Shop Location
+                  </button>
+                )}
+              </>
+            )}
+
+            {showMap && <MapPicker onLocationSelect={handleLocationSelect} />}
+          </div>
 
           <LocationConfirmation shopLocation={shopLocation} />
 

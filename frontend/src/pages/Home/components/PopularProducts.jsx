@@ -1,3 +1,5 @@
+import { useLanguage } from '../../../context/LanguageContext';
+
 function PopularProducts({
   userLocation,
   nearbyShops,
@@ -8,6 +10,8 @@ function PopularProducts({
   onExplore,
   onProductClick,
 }) {
+  const { t } = useLanguage();
+
   return (
     userLocation &&
     nearbyShops.length > 0 && (
@@ -15,16 +19,16 @@ function PopularProducts({
         <div className="popular_products_header">
           <div>
             <span className="popular_products_eyebrow">
-              CUSTOMER FAVOURITES
+              {t.home.customerFavourites}
             </span>
 
-            <h2>Popular Near You</h2>
+            <h2>{t.home.popularNearYou}</h2>
 
-            <p>Fresh picks from nearby shops</p>
+            <p>{t.home.freshPicksNearby}</p>
           </div>
 
           <button className="popular_products_see_all" onClick={onExplore}>
-            Explore
+            {t.home.explore}
             <span>→</span>
           </button>
         </div>
@@ -46,7 +50,10 @@ function PopularProducts({
                       loading="lazy"
                       decoding="async"
                     />
-                    <span className="popular_product_tag">POPULAR</span>
+
+                    <span className="popular_product_tag">
+                      {t.home.popular}
+                    </span>
                   </div>
 
                   <div className="popular_product_content">
@@ -72,7 +79,7 @@ function PopularProducts({
           !nearbyShopsError &&
           popularProducts.length === 0 && (
             <div className="popular_products_empty">
-              Popular products will appear here as shops add their products.
+              {t.home.popularProductsEmpty}
             </div>
           )}
       </section>

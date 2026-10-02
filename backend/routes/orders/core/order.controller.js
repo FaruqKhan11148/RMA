@@ -260,6 +260,12 @@ async function createOrder(req, res) {
     let deliveryDistance = 0;
     let deliveryCharge = 0;
 
+    let pickupLocation = {
+      latitude: null,
+      longitude: null,
+      address: '',
+    };
+
     if (orderType === 'delivery') {
       const shopLatitude = owner.location?.latitude;
       const shopLongitude = owner.location?.longitude;
@@ -269,14 +275,28 @@ async function createOrder(req, res) {
 
       if (
         shopLatitude === undefined ||
+        shopLatitude === null ||
         shopLongitude === undefined ||
+        shopLongitude === null ||
         customerLatitude === undefined ||
-        customerLongitude === undefined
+        customerLatitude === null ||
+        customerLongitude === undefined ||
+        customerLongitude === null
       ) {
         return res.status(400).json({
           message: 'Valid shop and delivery locations are required',
         });
       }
+
+      // ==========================================
+      // SNAPSHOT SHOP PICKUP LOCATION
+      // ==========================================
+
+      pickupLocation = {
+        latitude: Number(shopLatitude),
+        longitude: Number(shopLongitude),
+        address: owner.address || '',
+      };
 
       deliveryDistance = calculateDistanceKm(
         shopLatitude,
@@ -294,37 +314,32 @@ async function createOrder(req, res) {
     // RMA PRODUCT FEE
     // ==========================================
 
-    // RMA gets 1.5% of PRODUCT SUBTOTAL only.
-    const rmaFee = Number((subtotal * 0.015).toFixed(2));
+    // RMA gets 2.5% of PRODUCT SUBTOTAL only.
+    const rmaFee = Number((subtotal * 0.025).toFixed(2));
 
     // ==========================================
     // DELIVERY SPLIT
     // ==========================================
 
-    // Delivery charge is split:
-    // 88% -> Rider
-    // 6%  -> RMA
-    // 6%  -> Shop Owner
+    // Full delivery charge belongs to the assigned
+    // delivery partner.
+    // 100% -> Rider / Delivery Partner
+    // 0%   -> RMA
+    // 0%   -> Shop Owner
 
-    const deliveryRiderAmount = Number((deliveryCharge * 0.88).toFixed(2));
+    const deliveryRiderAmount = Number(deliveryCharge.toFixed(2));
 
-    const deliveryRmaAmount = Number((deliveryCharge * 0.06).toFixed(2));
+    const deliveryRmaAmount = 0;
 
-    // Calculate owner share as the remaining amount.
-    // This guarantees all three shares add up exactly
-    // to the original delivery charge even after rounding.
-    const deliveryOwnerAmount = Number(
-      (deliveryCharge - deliveryRiderAmount - deliveryRmaAmount).toFixed(2),
-    );
+    const deliveryOwnerAmount = 0;
 
     // ==========================================
     // TOTAL RMA AMOUNT
     // ==========================================
 
-    // RMA earns:
-    // 1.5% product fee
-    // +
-    // 6% delivery share
+    // RMA earns only the 2.5% product fee.
+    // Delivery charge does not belong to RMA.
+
     const rmaAmount = Number((rmaFee + deliveryRmaAmount).toFixed(2));
 
     // ==========================================
@@ -333,8 +348,8 @@ async function createOrder(req, res) {
 
     // Owner earns:
     // Product subtotal - RMA product fee
-    // +
-    // 6% delivery share
+    // Delivery charge is not included.
+
     const ownerAmount = Number(
       (subtotal - rmaFee + deliveryOwnerAmount).toFixed(2),
     );
@@ -377,6 +392,11 @@ async function createOrder(req, res) {
       customerId,
       customer,
       orderType,
+
+      // Pickup location
+      pickupLocation,
+
+      // Customer delivery location
       deliveryLocation,
 
       items: calculatedItems,
@@ -408,6 +428,11 @@ async function createOrder(req, res) {
       ownerId,
       customer,
       orderType,
+
+      // Snapshot shop pickup location
+      pickupLocation,
+
+      // Customer delivery location
       deliveryLocation,
 
       // Backend-calculated product data
@@ -475,13 +500,7 @@ async function createOrder(req, res) {
 async function updateOrderStatus(req, res) {
   try {
     const { orderId } = req.params;
-    const {
-      status,
-      rejectionReason,
-      rejectionDescription,
-      deliveryAssignmentType,
-      deliveryPersonId,
-    } = req.body;
+    const { status, rejectionReason, rejectionDescription } = req.body;
 
     const allowedStatuses = [
       'Pending',
@@ -518,43 +537,85 @@ async function updateOrderStatus(req, res) {
     // ==========================================
 
     if (status === 'OutForDelivery') {
-      if (!['SHOP', 'RMA'].includes(deliveryAssignmentType)) {
+      // Delivery must already have been assigned and accepted.
+      if (order.deliveryAssignmentStatus !== 'ACCEPTED') {
         return res.status(400).json({
-          message: 'Delivery assignment type is required',
+          message:
+            'Delivery partner must accept the delivery assignment before the order can go OutForDelivery',
         });
       }
 
-      if (!deliveryPersonId) {
+      if (!order.deliveryAssignmentType) {
         return res.status(400).json({
-          message: 'Delivery person is required',
+          message: 'Delivery assignment type is missing',
         });
       }
 
-      const selectedDeliveryPerson = await DeliveryPerson.findOne({
-        _id: deliveryPersonId,
-        deliveryType: deliveryAssignmentType,
-        isActive: true,
-      });
+      if (!order.deliveryPersonId) {
+        return res.status(400).json({
+          message: 'Delivery person is missing',
+        });
+      }
+
+      const selectedDeliveryPerson = await DeliveryPerson.findById(
+        order.deliveryPersonId,
+      );
 
       if (!selectedDeliveryPerson) {
         return res.status(400).json({
-          message: 'Selected delivery person is not available',
+          message: 'Assigned delivery person was not found',
         });
       }
 
-      // SHOP rider must belong to this shop
-      if (
-        deliveryAssignmentType === 'SHOP' &&
-        String(selectedDeliveryPerson.ownerId) !== String(order.ownerId)
-      ) {
+      if (!selectedDeliveryPerson.isActive) {
         return res.status(400).json({
-          message: 'Selected delivery person does not belong to this shop',
+          message: 'Assigned delivery person is inactive',
         });
       }
 
-      // Save assignment
-      order.deliveryAssignmentType = deliveryAssignmentType;
-      order.deliveryPersonId = selectedDeliveryPerson._id;
+      // ==========================================
+      // RMA DELIVERY PARTNER VALIDATION
+      // ==========================================
+
+      if (order.deliveryAssignmentType === 'RMA') {
+        if (selectedDeliveryPerson.deliveryType !== 'RMA') {
+          return res.status(400).json({
+            message: 'Assigned delivery person is not an RMA delivery partner',
+          });
+        }
+
+        if (selectedDeliveryPerson.applicationStatus !== 'APPROVED') {
+          return res.status(400).json({
+            message: 'Assigned RMA delivery partner is not approved',
+          });
+        }
+
+        // After accepting the assignment, the DP should be BUSY.
+        if (selectedDeliveryPerson.availabilityStatus !== 'BUSY') {
+          return res.status(400).json({
+            message:
+              'Assigned RMA delivery partner is not currently handling this delivery',
+          });
+        }
+      }
+
+      // ==========================================
+      // SHOP DELIVERY PARTNER VALIDATION
+      // ==========================================
+
+      if (order.deliveryAssignmentType === 'SHOP') {
+        if (selectedDeliveryPerson.deliveryType !== 'SHOP') {
+          return res.status(400).json({
+            message: 'Assigned delivery person is not a shop delivery partner',
+          });
+        }
+
+        if (String(selectedDeliveryPerson.ownerId) !== String(order.ownerId)) {
+          return res.status(400).json({
+            message: 'Assigned delivery person does not belong to this shop',
+          });
+        }
+      }
     }
 
     // ==========================================
@@ -741,30 +802,6 @@ async function updateOrderStatus(req, res) {
 
     await order.save();
 
-    if (status === 'OutForDelivery') {
-      try {
-        if (order.deliveryPersonId) {
-          await createAndSendNotification({
-            recipientType: 'delivery',
-            recipientId: order.deliveryPersonId,
-            type: 'DELIVERY_ASSIGNED',
-            title: 'New Delivery Assigned',
-            message: `Order ${order.orderId} has been assigned to you.`,
-            orderId: order.orderId,
-            data: {
-              screen: 'delivery-orders',
-              orderId: order.orderId,
-            },
-          });
-        }
-      } catch (notificationError) {
-        console.error(
-          'Delivery assignment notification failed:',
-          notificationError,
-        );
-      }
-    }
-
     // ==========================================
     // CUSTOMER ORDER STATUS NOTIFICATION
     // ==========================================
@@ -843,6 +880,167 @@ async function updateOrderStatus(req, res) {
     });
   } catch (error) {
     console.error('Update order status failed:', error.message);
+
+    return res.status(500).json({
+      message: 'Server error',
+    });
+  }
+}
+
+async function createDeliveryAssignment(req, res) {
+  try {
+    const { orderId } = req.params;
+    const { deliveryAssignmentType, deliveryPersonId } = req.body;
+
+    if (!['SHOP', 'RMA'].includes(deliveryAssignmentType)) {
+      return res.status(400).json({
+        message: 'Delivery assignment type is required',
+      });
+    }
+
+    if (!deliveryPersonId) {
+      return res.status(400).json({
+        message: 'Delivery person is required',
+      });
+    }
+
+    const order = await Order.findOne({ orderId });
+
+    if (!order) {
+      return res.status(404).json({
+        message: 'Order not found',
+      });
+    }
+
+    // Assignment is only allowed when the order is ready.
+    if (order.status !== 'Ready') {
+      return res.status(400).json({
+        message: `Delivery can only be assigned when order is Ready. Current status: ${order.status}`,
+      });
+    }
+
+    // Only delivery orders can have a delivery partner.
+    if (order.orderType !== 'delivery') {
+      return res.status(400).json({
+        message: 'Delivery partner cannot be assigned to a pickup order',
+      });
+    }
+
+    // Prevent assigning another partner while an assignment
+    // is already waiting for a response.
+    if (order.deliveryAssignmentStatus === 'PENDING') {
+      return res.status(400).json({
+        message: 'This order already has a pending delivery assignment',
+      });
+    }
+
+    const selectedDeliveryPerson = await DeliveryPerson.findOne({
+      _id: deliveryPersonId,
+      deliveryType: deliveryAssignmentType,
+      isActive: true,
+    });
+
+    if (!selectedDeliveryPerson) {
+      return res.status(400).json({
+        message: 'Selected delivery person is not available',
+      });
+    }
+
+    // ==========================================
+    // RMA DELIVERY PARTNER VALIDATION
+    // ==========================================
+
+    if (deliveryAssignmentType === 'RMA') {
+      if (selectedDeliveryPerson.applicationStatus !== 'APPROVED') {
+        return res.status(400).json({
+          message: 'Selected RMA delivery partner is not approved',
+        });
+      }
+
+      if (selectedDeliveryPerson.availabilityStatus !== 'AVAILABLE') {
+        return res.status(400).json({
+          message: 'Selected RMA delivery partner is no longer available',
+        });
+      }
+
+      const latitude = selectedDeliveryPerson.currentLocation?.latitude;
+      const longitude = selectedDeliveryPerson.currentLocation?.longitude;
+      const locationUpdatedAt =
+        selectedDeliveryPerson.currentLocation?.updatedAt;
+
+      if (typeof latitude !== 'number' || typeof longitude !== 'number') {
+        return res.status(400).json({
+          message: 'Selected RMA delivery partner location is unavailable',
+        });
+      }
+
+      if (
+        !locationUpdatedAt ||
+        Date.now() - new Date(locationUpdatedAt).getTime() > 10 * 60 * 1000
+      ) {
+        return res.status(400).json({
+          message: 'Selected RMA delivery partner location is outdated',
+        });
+      }
+    }
+
+    // ==========================================
+    // SHOP DELIVERY PARTNER VALIDATION
+    // ==========================================
+
+    if (
+      deliveryAssignmentType === 'SHOP' &&
+      String(selectedDeliveryPerson.ownerId) !== String(order.ownerId)
+    ) {
+      return res.status(400).json({
+        message: 'Selected delivery person does not belong to this shop',
+      });
+    }
+
+    // ==========================================
+    // SAVE PENDING ASSIGNMENT
+    // ==========================================
+
+    order.deliveryAssignmentType = deliveryAssignmentType;
+    order.deliveryPersonId = selectedDeliveryPerson._id;
+    order.deliveryAssignmentStatus = 'PENDING';
+
+    await order.save();
+
+    // ==========================================
+    // NOTIFY DELIVERY PARTNER
+    // ==========================================
+
+    try {
+      await createAndSendNotification({
+        recipientType: 'delivery',
+        recipientId: selectedDeliveryPerson._id,
+        type: 'DELIVERY_ASSIGNMENT_REQUEST',
+        title: 'New Delivery Request',
+        message: `Order ${order.orderId} is waiting for your response.`,
+        orderId: order.orderId,
+        data: {
+          screen: 'delivery-orders',
+          orderId: order.orderId,
+          assignmentStatus: 'PENDING',
+        },
+      });
+    } catch (notificationError) {
+      console.error(
+        'Delivery assignment request notification failed:',
+        notificationError,
+      );
+    }
+
+    await order.populate('ownerId', 'ownerName shopName phone');
+
+    return res.status(200).json({
+      success: true,
+      message: 'Delivery assignment request sent successfully',
+      order,
+    });
+  } catch (error) {
+    console.error('Create delivery assignment failed:', error.message);
 
     return res.status(500).json({
       message: 'Server error',
@@ -984,4 +1182,5 @@ module.exports = {
   getOrderById,
   createOrder,
   updateOrderStatus,
+  createDeliveryAssignment,
 };

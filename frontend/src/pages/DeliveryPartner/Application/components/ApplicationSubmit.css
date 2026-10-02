@@ -1,0 +1,298 @@
+/* =========================================================
+   RMA APPLICATION SUBMIT
+   ========================================================= */
+
+.application_submit_card {
+  margin-top: 18px;
+  padding: 22px;
+  border: 1px solid #e1e8e3;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.application_submit_header h2 {
+  margin: 0;
+  color: #202824;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.application_submit_header p {
+  margin: 7px 0 0;
+  color: #748079;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+/* =========================================================
+   CORRECTION REQUIRED
+   ========================================================= */
+
+.application_submit_correction {
+  margin-top: 16px;
+  padding: 13px 14px;
+  border: 1px solid #f0d0a8;
+  border-radius: 10px;
+  background: #fff8ed;
+}
+
+.application_submit_correction strong {
+  display: block;
+  color: #9a5b0b;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.application_submit_correction p {
+  margin: 5px 0 0;
+  color: #76582f;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+.application_submit_error {
+  margin-top: 16px;
+  padding: 13px 14px;
+  border: 1px solid #efc5c5;
+  border-radius: 10px;
+  background: #fff3f3;
+  color: #b42318;
+}
+
+.application_submit_error strong {
+  display: block;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.application_submit_error ul {
+  margin: 9px 0 0;
+  padding-left: 18px;
+}
+
+.application_submit_error li {
+  margin-bottom: 4px;
+  color: #9f2921;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* =========================================================
+   PRIMARY BUTTON
+   ========================================================= */
+
+.application_submit_primary {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 18px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 10px;
+  background: #16803a;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.application_submit_primary:hover:not(:disabled) {
+  background: #126d31;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(22, 128, 58, 0.2);
+}
+
+.application_submit_primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.application_submit_primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   SUBMITTED / REVIEW / APPROVED CARD
+   ========================================================= */
+
+.application_submit_review,
+.application_submit_approved {
+  text-align: center;
+}
+
+.application_submit_icon {
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #e7f6eb;
+  color: #16803a;
+  font-size: 27px;
+  font-weight: 700;
+}
+
+.application_submit_review h2,
+.application_submit_approved h2 {
+  margin: 0;
+  color: #202824;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.application_submit_review p,
+.application_submit_approved p {
+  max-width: 500px;
+  margin: 8px auto 0;
+  color: #748079;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 700px) {
+  .application_submit_card {
+    padding: 20px;
+  }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+  .application_submit_card {
+    margin-top: 14px;
+    padding: 18px 14px;
+    border-radius: 13px;
+  }
+
+  .application_submit_header h2 {
+    font-size: 17px;
+  }
+
+  .application_submit_header p {
+    font-size: 12px;
+  }
+
+  .application_submit_correction,
+  .application_submit_error {
+    margin-top: 13px;
+    padding: 11px 12px;
+  }
+
+  .application_submit_correction strong,
+  .application_submit_error strong {
+    font-size: 12px;
+  }
+
+  .application_submit_correction p,
+  .application_submit_error li {
+    font-size: 11px;
+  }
+
+  .application_submit_primary {
+    min-height: 46px;
+    margin-top: 15px;
+    font-size: 13px;
+  }
+
+  .application_submit_icon {
+    width: 48px;
+    height: 48px;
+    font-size: 24px;
+  }
+
+  .application_submit_review h2,
+  .application_submit_approved h2 {
+    font-size: 18px;
+  }
+
+  .application_submit_review p,
+  .application_submit_approved p {
+    font-size: 12px;
+  }
+}
+
+/* =========================================================
+   DARK THEME
+   ========================================================= */
+
+[data-theme='dark'] .application_submit_card {
+  border-color: #29352e;
+  background: #171c19;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='dark'] .application_submit_header h2 {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .application_submit_header p {
+  color: #aab5ae;
+}
+
+[data-theme='dark'] .application_submit_correction {
+  border-color: #604322;
+  background: #2d2217;
+}
+
+[data-theme='dark'] .application_submit_correction strong {
+  color: #e9ae68;
+}
+
+[data-theme='dark'] .application_submit_correction p {
+  color: #c7a878;
+}
+
+[data-theme='dark'] .application_submit_error {
+  border-color: #633737;
+  background: #291919;
+}
+
+[data-theme='dark'] .application_submit_error strong,
+[data-theme='dark'] .application_submit_error li {
+  color: #ff9b9b;
+}
+
+[data-theme='dark'] .application_submit_primary {
+  background: var(--rma-primary-light);
+  color: #102016;
+}
+
+[data-theme='dark'] .application_submit_primary:hover:not(:disabled) {
+  background: var(--rma-primary-light);
+  box-shadow: 0 6px 16px rgba(122, 203, 143, 0.15);
+}
+
+[data-theme='dark'] .application_submit_icon {
+  background: #1c3826;
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .application_submit_review h2,
+[data-theme='dark'] .application_submit_approved h2 {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .application_submit_review p,
+[data-theme='dark'] .application_submit_approved p {
+  color: #aab5ae;
+}

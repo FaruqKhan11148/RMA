@@ -15,3 +15,24 @@ export const fetchDeliveryDashboard = async (token) => {
 
   return data;
 };
+
+export const updateDeliveryAvailability = async (token, availabilityStatus) => {
+  const response = await fetch(`${API_URL}api/delivery/availability`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      availabilityStatus,
+    }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Unable to update availability');
+  }
+
+  return data;
+};

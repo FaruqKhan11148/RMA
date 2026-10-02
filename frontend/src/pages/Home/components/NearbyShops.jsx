@@ -1,5 +1,7 @@
 import NearbyShopImageSlider from '../../../components/NearbyShopImageSlider/NearbyShopImageSlider';
 
+import { useLanguage } from '../../../context/LanguageContext';
+
 function NearbyShops({
   userLocation,
   nearbyShops,
@@ -10,25 +12,27 @@ function NearbyShops({
   onChangeLocation,
   onShopClick,
 }) {
+  const { t } = useLanguage();
+
   return (
     <section className="nearby_shops">
       <div className="nearby_shops_header">
         <div>
-          <span className="nearby_shops_eyebrow">NEAR YOU</span>
+          <span className="nearby_shops_eyebrow">{t.home.nearYou}</span>
 
-          <h2>Nearby Shops</h2>
+          <h2>{t.home.nearbyShops}</h2>
 
-          <p>Fresh meat and seafood from shops around you</p>
+          <p>{t.home.nearbyShopsDescription}</p>
         </div>
 
         <button className="nearby_shops_see_all" onClick={onSeeAll}>
-          See all
+          {t.home.seeAll}
           <span>→</span>
         </button>
       </div>
 
       {loadingNearbyShops && (
-        <div className="nearby_shops_loading">Loading nearby shops...</div>
+        <div className="nearby_shops_loading">{t.home.loadingNearbyShops}</div>
       )}
 
       {!loadingNearbyShops && nearbyShopsError && (
@@ -39,11 +43,9 @@ function NearbyShops({
         <div className="nearby_shops_empty">
           {!userLocation ? (
             <>
-              <h3>Select your location</h3>
+              <h3>{t.home.selectYourLocation}</h3>
 
-              <p>
-                Choose your location to discover nearby meat and seafood shops.
-              </p>
+              <p>{t.home.selectLocationDescription}</p>
 
               <button
                 style={{
@@ -77,7 +79,7 @@ function NearbyShops({
                     strokeWidth="2"
                   />
                 </svg>
-                Select Your Location
+                {t.home.selectLocation}
               </button>
 
               <button
@@ -90,14 +92,14 @@ function NearbyShops({
                 }}
                 onClick={onSeeAll}
               >
-                Explore Shops
+                {t.home.exploreShops}
               </button>
             </>
           ) : (
             <>
-              <h3>No nearby shops found</h3>
+              <h3>{t.home.noNearbyShops}</h3>
 
-              <p>We couldn't find any shops within 5 km of your location.</p>
+              <p>{t.home.noNearbyShopsDescription}</p>
 
               <button
                 style={{
@@ -109,7 +111,7 @@ function NearbyShops({
                 }}
                 onClick={onChangeLocation}
               >
-                Change Location
+                {t.home.changeLocation}
               </button>
 
               <button
@@ -122,7 +124,7 @@ function NearbyShops({
                 }}
                 onClick={onSeeAll}
               >
-                Explore Shops
+                {t.home.exploreShops}
               </button>
             </>
           )}
@@ -147,7 +149,7 @@ function NearbyShops({
                 </div>
 
                 <p className="nearby_shop_description">
-                  {shop.description || 'Fresh meat and seafood'}
+                  {shop.description || t.home.freshMeatSeafood}
                 </p>
 
                 <div className="nearby_shop_meta">
@@ -155,7 +157,7 @@ function NearbyShops({
 
                   <span>•</span>
 
-                  <span>{shop.delivery ? 'Delivery' : 'Pickup'}</span>
+                  <span>{shop.delivery ? t.home.delivery : t.home.pickup}</span>
 
                   <span>•</span>
 
@@ -164,7 +166,7 @@ function NearbyShops({
                       shop.isOpen ? 'shop_status_open' : 'shop_status_closed'
                     }
                   >
-                    {shop.isOpen ? 'Open' : 'Closed'}
+                    {shop.isOpen ? t.home.open : t.home.closed}
                   </span>
                 </div>
               </div>

@@ -6,7 +6,10 @@ import PhoneLoginForm from './components/PhoneLoginForm';
 import OtpVerificationForm from './components/OtpVerificationForm';
 import DeliveryLoginMessages from './components/DeliveryLoginMessages';
 
-import { requestDeliveryOtp, verifyDeliveryOtp } from './utils/deliveryAuthApi';
+import {
+  requestRmaDeliveryOtp,
+  verifyRmaDeliveryOtp,
+} from './utils/deliveryAuthApi';
 
 function RMADeliveryLogin() {
   const navigate = useNavigate();
@@ -36,7 +39,7 @@ function RMADeliveryLogin() {
       setError('');
       setSuccessMessage('');
 
-      const data = await requestDeliveryOtp(phone.trim());
+      const data = await requestRmaDeliveryOtp(phone.trim());
 
       setGeneratedOtp(data.otp || '');
 
@@ -63,16 +66,20 @@ function RMADeliveryLogin() {
       setLoading(true);
       setError('');
 
-      const data = await verifyDeliveryOtp(phone.trim(), otp);
+      const data = await verifyRmaDeliveryOtp(phone.trim(), otp);
 
-      sessionStorage.setItem('delivery_token', data.token);
+      localStorage.setItem('delivery_token', data.token);
 
-      sessionStorage.setItem(
+      localStorage.setItem(
         'delivery_person',
         JSON.stringify(data.deliveryPerson),
       );
 
-      navigate('/delivery/orders-delivery');
+      if (data.deliveryPerson.applicationStatus === 'APPROVED') {
+        navigate('/delivery/dashboard');
+      } else {
+        navigate('/delivery/rma/application');
+      }
     } catch (error) {
       console.error('RMA delivery OTP verification failed:', error);
       setError(error.message || 'Unable to connect to server');

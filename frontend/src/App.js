@@ -13,10 +13,10 @@ import {
   Routes,
   Route,
   useLocation,
-  useNavigate,
+  // useNavigate,
 } from 'react-router-dom';
 
-import FlashMessage from './components/FlashMessage/FlashMessage';
+// import FlashMessage from './components/FlashMessage/FlashMessage';
 
 import About from './pages/About/About';
 import PrivacyPolicy from './pages/PrivacyPolicy/PrivacyPolicy';
@@ -25,10 +25,23 @@ import TermsConditions from './pages/TermsConditions/TermsConditions';
 import OwnerProtectedRoute from './pages/Owner/OwnerProtectedRoute/OwnerProtectedRoute';
 import ScrollToTop from './components/ScrollToTop/ScrollToTop';
 import DeliveryPartnerRegister from './pages/DeliveryPartner/DeliveryPartnerRegister/DeliveryPartnerRegister';
+import DeliveryApplication from './pages/DeliveryPartner/Application/DeliveryApplication';
+import ApplicationProfile from './pages/DeliveryPartner/Application/Profile/ApplicationProfile';
+import ApplicationAddress from './pages/DeliveryPartner/Application/Address/ApplicationAddress';
+import ApplicationKyc from './pages/DeliveryPartner/Application/Kyc/ApplicationKyc';
+import ApplicationDrivingLicence from './pages/DeliveryPartner/Application/DrivingLicence/ApplicationDrivingLicence';
+import ApplicationVehicle from './pages/DeliveryPartner/Application/Vehicle/ApplicationVehicle';
+import ApplicationBank from './pages/DeliveryPartner/Application/Bank/ApplicationBank';
+import RmaApplicationProtectedRoute from './pages/DeliveryPartner/Application/RmaApplicationProtectedRoute';
+
 import RMADeliveryLogin from './pages/delivery/RMADeliveryLogin/RMADeliveryLogin';
 import DeliveryDashboard from './pages/DeliveryPartner/Dashboard/DeliveryDashboard';
 import DeliveryOrdersDelivery from './pages/DeliveryPartner/Orders/DeliveryOrders';
 import DeliveryEarnings from './pages/DeliveryPartner/Earnings/DeliveryEarnings';
+import Wallet from './pages/DeliveryPartner/Earnings/Wallet/Wallet';
+import Withdraw from './pages/DeliveryPartner/Earnings/Withdraw/Withdraw';
+import WithdrawalHistory from './pages/DeliveryPartner/Earnings/WithdrawalHistory/WithdrawalHistory';
+import EarningsHistory from './pages/DeliveryPartner/Earnings/EarningsHistory/EarningsHistory';
 import DeliveryProfile from './pages/DeliveryPartner/Profile/DeliveryProfile';
 import DeliveryHistory from './pages/DeliveryPartner/History/DeliveryHistory';
 
@@ -111,6 +124,8 @@ import AdminShopDetails from './pages/Admin/Shops/AdminShopDetails';
 import AdminOrderDetails from './pages/Admin/AdminOrders/AdminOrderDetails';
 import AdminDailyOrders from './pages/Admin/AdminOrders/AdminDailyOrders';
 import AdminMonthlyFinance from './pages/Admin/AdminFinance/AdminMonthlyFinance';
+import AdminDeliveryWithdrawals from './pages/Admin/AdminDeliveryWithdrawals/AdminDeliveryWithdrawals';
+import AdminDeliveryEarnings from './pages/Admin/AdminDeliveryEarnings/AdminDeliveryEarnings';
 
 import DeliveryPartners from './pages/Admin/DeliveryPartners/DeliveryPartners';
 
@@ -132,29 +147,29 @@ import ShopPromotion from './pages/Owner/OwnerSettings/ShopPromotion/ShopPromoti
 function AppLayout() {
   const location = useLocation();
   const isRMAChatRoute = location.pathname === '/rma-chat';
-  const navigate = useNavigate();
   const [customerLoggedIn, setCustomerLoggedIn] = useState(false);
   const [profileRole, setProfileRole] = useState(null);
+  // const navigate = useNavigate();
 
-  const [flashMessage, setFlashMessage] = useState('');
+  // const [flashMessage, setFlashMessage] = useState('');
 
-  const maintenanceRoutes = ['/owner', '/delivery', '/admin'];
+  // const maintenanceRoutes = ['/owner', '/delivery', '/admin'];
 
-  const isMaintenanceRoute = maintenanceRoutes.some((route) =>
-    location.pathname.startsWith(route),
-  );
+  // const isMaintenanceRoute = maintenanceRoutes.some((route) =>
+  //   location.pathname.startsWith(route),
+  // );
 
-  useEffect(() => {
-    if (!isMaintenanceRoute) {
-      return;
-    }
+  // useEffect(() => {
+  //   if (!isMaintenanceRoute) {
+  //     return;
+  //   }
 
-    setFlashMessage(
-      'This section is currently under maintenance. Please check back soon.',
-    );
+  //   setFlashMessage(
+  //     'This section is currently under maintenance. Please check back soon.',
+  //   );
 
-    navigate('/', { replace: true });
-  }, [isMaintenanceRoute, navigate]);
+  //   navigate('/', { replace: true });
+  // }, [isMaintenanceRoute, navigate]);
 
   useEffect(() => {
     const checkCustomerLogin = async () => {
@@ -262,8 +277,8 @@ function AppLayout() {
   const isAdminRoute = location.pathname.startsWith('/admin/');
 
   const hasDeliverySession =
-    Boolean(sessionStorage.getItem('delivery_token')) &&
-    Boolean(sessionStorage.getItem('delivery_person'));
+    Boolean(localStorage.getItem('delivery_token')) &&
+    Boolean(localStorage.getItem('delivery_person'));
 
   const showOwnerFooter =
     !isAdminRoute &&
@@ -288,10 +303,10 @@ function AppLayout() {
   return (
     <>
       <ScrollToTop />
-      <FlashMessage
+      {/* <FlashMessage
         message={flashMessage}
         onClose={() => setFlashMessage('')}
-      />
+      /> */}
 
       {!isRMAChatRoute && <Navbar />}
 
@@ -449,12 +464,56 @@ function AppLayout() {
 
           {/* ==================== DELIVERY ROUTES ==================== */}
 
+          {/* ==================== RMA DELIVERY APPLICATION ==================== */}
+
           <Route
             path="/delivery-partner/register"
             element={<DeliveryPartnerRegister />}
           />
 
           <Route path="/delivery/rma-login" element={<RMADeliveryLogin />} />
+
+          <Route element={<RmaApplicationProtectedRoute />}>
+            <Route
+              path="/delivery-partner/application"
+              element={<DeliveryApplication />}
+            />
+
+            <Route
+              path="/delivery/rma/application"
+              element={<DeliveryApplication />}
+            />
+
+            <Route
+              path="/delivery-partner/application/profile"
+              element={<ApplicationProfile />}
+            />
+
+            <Route
+              path="/delivery-partner/application/address"
+              element={<ApplicationAddress />}
+            />
+
+            <Route
+              path="/delivery-partner/application/kyc"
+              element={<ApplicationKyc />}
+            />
+
+            <Route
+              path="/delivery-partner/application/driving-licence"
+              element={<ApplicationDrivingLicence />}
+            />
+
+            <Route
+              path="/delivery-partner/application/vehicle"
+              element={<ApplicationVehicle />}
+            />
+
+            <Route
+              path="/delivery-partner/application/bank"
+              element={<ApplicationBank />}
+            />
+          </Route>
 
           <Route
             path="/delivery-partner/login"
@@ -469,6 +528,18 @@ function AppLayout() {
           />
 
           <Route path="/delivery/earnings" element={<DeliveryEarnings />} />
+          <Route path="/delivery/earnings/wallet" element={<Wallet />} />
+
+          <Route path="/delivery/earnings/withdraw" element={<Withdraw />} />
+          <Route
+            path="/delivery/earnings/withdrawals"
+            element={<WithdrawalHistory />}
+          />
+
+          <Route
+            path="/delivery/earnings/history"
+            element={<EarningsHistory />}
+          />
 
           <Route path="/delivery/profile" element={<DeliveryProfile />} />
 
@@ -498,6 +569,16 @@ function AppLayout() {
           <Route path="/admin/payments" element={<AdminPayments />} />
 
           <Route path="/admin/finance" element={<AdminFinance />} />
+
+          <Route
+            path="/admin/delivery-withdrawals"
+            element={<AdminDeliveryWithdrawals />}
+          />
+
+          <Route
+            path="/admin/delivery-earnings"
+            element={<AdminDeliveryEarnings />}
+          />
 
           <Route path="/admin/shops" element={<AdminShops />} />
           <Route path="/admin/shops/:shopId" element={<AdminShopDetails />} />

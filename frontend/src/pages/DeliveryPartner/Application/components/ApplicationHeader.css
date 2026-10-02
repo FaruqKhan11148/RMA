@@ -1,0 +1,224 @@
+/* =========================================================
+   RMA APPLICATION HEADER
+   ========================================================= */
+
+.delivery_application_header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 24px;
+  border: 1px solid #e1e8e3;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+}
+
+/* =========================================================
+   HEADER CONTENT
+   ========================================================= */
+
+.delivery_application_header > div:first-child {
+  min-width: 0;
+  flex: 1;
+}
+
+.delivery_application_eyebrow {
+  display: inline-block;
+  margin-bottom: 7px;
+  color: #16803a;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.delivery_application_header h1 {
+  margin: 0;
+  color: #202824;
+  font-size: 26px;
+  line-height: 1.25;
+  font-weight: 750;
+}
+
+.delivery_application_header p {
+  max-width: 540px;
+  margin: 9px 0 0;
+  color: #68736d;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* =========================================================
+   APPLICATION STATUS
+   ========================================================= */
+
+.delivery_application_status {
+  flex-shrink: 0;
+  padding: 8px 12px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 12px;
+  line-height: 1.2;
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Incomplete */
+
+.delivery_application_status_incomplete {
+  border-color: #e4d8b8;
+  background: #fff9e8;
+  color: #8a6811;
+}
+
+/* Submitted */
+
+.delivery_application_status_submitted {
+  border-color: #cbdcf3;
+  background: #f0f6ff;
+  color: #275d96;
+}
+
+/* Under review */
+
+.delivery_application_status_under_review {
+  border-color: #d8c9ed;
+  background: #f7f1ff;
+  color: #7046a0;
+}
+
+/* Correction required */
+
+.delivery_application_status_correction_required {
+  border-color: #f0d0a8;
+  background: #fff5e8;
+  color: #a15c08;
+}
+
+/* Approved */
+
+.delivery_application_status_approved {
+  border-color: #bfe2ca;
+  background: #edf9f0;
+  color: #16803a;
+}
+
+/* Rejected */
+
+.delivery_application_status_rejected {
+  border-color: #efc5c5;
+  background: #fff1f1;
+  color: #b42318;
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 700px) {
+  .delivery_application_header {
+    gap: 18px;
+    padding: 20px;
+  }
+
+  .delivery_application_header h1 {
+    font-size: 23px;
+  }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+  .delivery_application_header {
+    flex-direction: column;
+    gap: 14px;
+    padding: 18px 16px;
+    border-radius: 14px;
+  }
+
+  .delivery_application_eyebrow {
+    margin-bottom: 6px;
+    font-size: 11px;
+  }
+
+  .delivery_application_header h1 {
+    font-size: 21px;
+    line-height: 1.3;
+  }
+
+  .delivery_application_header p {
+    margin-top: 7px;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .delivery_application_status {
+    align-self: flex-start;
+    padding: 7px 11px;
+    font-size: 11px;
+  }
+}
+
+/* =========================================================
+   DARK THEME
+   ========================================================= */
+
+[data-theme='dark'] .delivery_application_header {
+  border-color: #29352e;
+  background: #171c19;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='dark'] .delivery_application_eyebrow {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery_application_header h1 {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery_application_header p {
+  color: #aab5ae;
+}
+
+/* Dark status badges */
+
+[data-theme='dark'] .delivery_application_status_incomplete {
+  border-color: #594d29;
+  background: #2b2617;
+  color: #e4c96f;
+}
+
+[data-theme='dark'] .delivery_application_status_submitted {
+  border-color: #294563;
+  background: #172434;
+  color: #8eb9e7;
+}
+
+[data-theme='dark'] .delivery_application_status_under_review {
+  border-color: #4a3760;
+  background: #251d30;
+  color: #c2a1e5;
+}
+
+[data-theme='dark'] .delivery_application_status_correction_required {
+  border-color: #604322;
+  background: #2d2217;
+  color: #e9ae68;
+}
+
+[data-theme='dark'] .delivery_application_status_approved {
+  border-color: #285439;
+  background: #18291f;
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery_application_status_rejected {
+  border-color: #633737;
+  background: #291919;
+  color: #ff9b9b;
+}

@@ -16,8 +16,8 @@ function DeliveryFooter() {
   const [flashMessage, setFlashMessage] = useState('');
 
   const isAuthenticated =
-    Boolean(sessionStorage.getItem('delivery_token')) &&
-    Boolean(sessionStorage.getItem('delivery_person'));
+    Boolean(localStorage.getItem('delivery_token')) &&
+    Boolean(localStorage.getItem('delivery_person'));
 
   const handleProtectedNavigation = (event) => {
     if (isAuthenticated) {

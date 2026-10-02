@@ -306,13 +306,13 @@ function MapPicker({ onLocationSelect }) {
           <div className="map_back_button">←</div>
 
           <div className="map_top_title">
-            <h4>Choose delivery location</h4>
+            <h4>Choose your location</h4>
           </div>
         </div>
 
         {!position && (
           <div className="map_instruction">
-            Tap the map to select your delivery location
+            Tap the map to select your location
           </div>
         )}
 

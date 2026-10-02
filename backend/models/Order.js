@@ -102,6 +102,74 @@ const orderSchema = new mongoose.Schema(
       default: null,
     },
 
+    // Delivery assignment state
+    // PENDING = owner assigned a DP, waiting for DP response
+    // ACCEPTED = DP accepted the delivery
+    // REJECTED = DP rejected the delivery
+    // CANCELLED = assignment cancelled before completion
+    deliveryAssignmentStatus: {
+      type: String,
+      enum: ['PENDING', 'ACCEPTED', 'REJECTED', 'CANCELLED'],
+      default: null,
+    },
+
+    // Delivery pickup / collection state
+    // PENDING = DP has not collected the order yet
+    // COLLECTED = DP has collected the order from the shop
+    deliveryPickupStatus: {
+      type: String,
+      enum: ['PENDING', 'COLLECTED'],
+      default: 'PENDING',
+    },
+
+    // When the delivery partner collected the order from the shop
+    collectedAt: {
+      type: Date,
+      default: null,
+    },
+
+    estimatedDeliveryMinutes: {
+      type: Number,
+      default: null,
+    },
+
+    estimatedDeliveryAt: {
+      type: Date,
+      default: null,
+    },
+
+    // =========================
+    // DELIVERY PICKUP LOCATION
+    // =========================
+
+    // Snapshot of the shop location at the time the order is created.
+    // This is where the delivery partner must collect the order.
+    pickupLocation: {
+      latitude: {
+        type: Number,
+        required: function () {
+          return this.orderType === 'delivery';
+        },
+      },
+
+      longitude: {
+        type: Number,
+        required: function () {
+          return this.orderType === 'delivery';
+        },
+      },
+
+      address: {
+        type: String,
+        default: '',
+        trim: true,
+      },
+    },
+
+    // =========================
+    // CUSTOMER DELIVERY LOCATION
+    // =========================
+
     deliveryLocation: {
       latitude: {
         type: Number,
@@ -170,21 +238,21 @@ const orderSchema = new mongoose.Schema(
       min: 0,
     },
 
-    // Delivery amount given to rider = 88% of delivery charge
+    // Full delivery charge belongs to the assigned delivery partner
     deliveryRiderAmount: {
       type: Number,
       default: 0,
       min: 0,
     },
 
-    // RMA delivery share = 6% of delivery charge
+    // RMA gets no share from the delivery charge
     deliveryRmaAmount: {
       type: Number,
       default: 0,
       min: 0,
     },
 
-    // Owner delivery share = 6% of delivery charge
+    // Owner gets no share from the delivery charge
     deliveryOwnerAmount: {
       type: Number,
       default: 0,

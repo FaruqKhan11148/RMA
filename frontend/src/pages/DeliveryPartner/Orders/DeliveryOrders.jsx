@@ -1,6 +1,5 @@
 import './DeliveryOrders.css';
-
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import DeliveryLogin from './components/DeliveryLogin';
 import DeliveryOtpLogin from './components/DeliveryOtpLogin';
@@ -8,12 +7,16 @@ import DeliveryOrdersHeader from './components/DeliveryOrdersHeader';
 import DeliveryDashboardTabs from './components/DeliveryDashboardTabs';
 import DeliveryOrdersList from './components/DeliveryOrdersList';
 import DeliveryOrderDetails from './components/DeliveryOrderDetails';
+import DeliveryAssignmentRequests from './components/DeliveryAssignmentRequests';
 
 import {
   requestDeliveryOtp,
   verifyDeliveryLoginOtp,
   fetchDeliveryDashboard,
   verifyCustomerDeliveryOtp,
+  fetchPendingDeliveryAssignments,
+  acceptDeliveryAssignment,
+  rejectDeliveryAssignment,
 } from './utils/deliveryOrdersApi';
 
 import {
@@ -41,6 +44,11 @@ function DeliveryOrders() {
   const [dashboardStats, setDashboardStats] = useState(null);
   const [activeSection, setActiveSection] = useState('today');
 
+  const [pendingAssignments, setPendingAssignments] = useState([]);
+  const [loadingAssignments, setLoadingAssignments] = useState(false);
+  const [assignmentError, setAssignmentError] = useState('');
+
+  const [processingAssignmentId, setProcessingAssignmentId] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const [error, setError] = useState('');
@@ -58,7 +66,7 @@ function DeliveryOrders() {
       return;
     }
 
-    const token = sessionStorage.getItem('delivery_token');
+    const token = localStorage.getItem('delivery_token');
 
     if (!token) {
       setError('Delivery login session not found.');
@@ -122,10 +130,79 @@ function DeliveryOrders() {
     };
   }, [loginStep]);
 
-  // DELIVERY NOTIFICATIONS
+  // GET PENDING DELIVERY ASSIGNMENTS
+
+  const loadPendingAssignments = useCallback(async () => {
+    try {
+      setLoadingAssignments(true);
+      setAssignmentError('');
+
+      const token = localStorage.getItem('delivery_token');
+
+      if (!token) {
+        return;
+      }
+
+      const data = await fetchPendingDeliveryAssignments(token);
+
+      console.log('Pending delivery assignments:', data.assignments || []);
+
+      setPendingAssignments(data.assignments || []);
+    } catch (assignmentFetchError) {
+      console.error(
+        'Fetch pending delivery assignments failed:',
+        assignmentFetchError,
+      );
+
+      setAssignmentError(
+        assignmentFetchError.message || 'Unable to load delivery requests',
+      );
+    } finally {
+      setLoadingAssignments(false);
+    }
+  }, []);
 
   useEffect(() => {
-    const deliveryToken = sessionStorage.getItem('delivery_token');
+    const handleServiceWorkerMessage = (event) => {
+      const message = event.data;
+
+      if (!message || message.type !== 'RMA_FCM_NOTIFICATION') {
+        return;
+      }
+
+      console.log('DELIVERY SERVICE WORKER MESSAGE:', message.payload);
+
+      const notificationType = message.payload?.data?.type;
+
+      if (notificationType === 'DELIVERY_ASSIGNMENT_REQUEST') {
+        console.log(
+          'New delivery assignment received from service worker. Refreshing assignments...',
+        );
+
+        loadPendingAssignments();
+      }
+    };
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.addEventListener(
+        'message',
+        handleServiceWorkerMessage,
+      );
+    }
+
+    return () => {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.removeEventListener(
+          'message',
+          handleServiceWorkerMessage,
+        );
+      }
+    };
+  }, [loadPendingAssignments]);
+
+  // DELIVERY NOTIFICATIONS
+  useEffect(() => {
+    const deliveryToken = localStorage.getItem('delivery_token');
 
     if (!deliveryToken) {
       return undefined;
@@ -136,7 +213,19 @@ function DeliveryOrders() {
     const setupNotifications = async () => {
       await requestDeliveryNotificationPermission(deliveryToken);
 
-      unsubscribe = await listenForDeliveryNotifications();
+      unsubscribe = await listenForDeliveryNotifications((payload) => {
+        console.log('DELIVERY NOTIFICATION RECEIVED:', payload);
+
+        const notificationType = payload?.data?.type;
+
+        if (notificationType === 'DELIVERY_ASSIGNMENT_REQUEST') {
+          console.log(
+            'New delivery assignment received. Refreshing assignments...',
+          );
+
+          loadPendingAssignments();
+        }
+      });
     };
 
     setupNotifications();
@@ -146,7 +235,7 @@ function DeliveryOrders() {
         unsubscribe();
       }
     };
-  }, []);
+  }, [loginStep, loadPendingAssignments]);
 
   // REQUEST DELIVERY LOGIN OTP
 
@@ -201,9 +290,9 @@ function DeliveryOrders() {
 
       console.log('Delivery login successful:', data);
 
-      sessionStorage.setItem('delivery_token', data.token);
+      localStorage.setItem('delivery_token', data.token);
 
-      sessionStorage.setItem(
+      localStorage.setItem(
         'delivery_person',
         JSON.stringify(data.deliveryPerson),
       );
@@ -230,7 +319,7 @@ function DeliveryOrders() {
 
     const loadDashboard = async () => {
       try {
-        const token = sessionStorage.getItem('delivery_token');
+        const token = localStorage.getItem('delivery_token');
 
         if (!token) {
           return;
@@ -239,6 +328,21 @@ function DeliveryOrders() {
         const data = await fetchDeliveryDashboard(token);
 
         console.log('Delivery dashboard stats:', data);
+
+        console.log(
+          'DELIVERY TODAY ORDER STATUS:',
+          JSON.stringify(
+            data.orders?.today?.map((order) => ({
+              orderId: order.orderId,
+              status: order.status,
+              deliveryAssignmentStatus: order.deliveryAssignmentStatus,
+              deliveryAssignmentType: order.deliveryAssignmentType,
+              deliveryPersonId: order.deliveryPersonId,
+            })),
+            null,
+            2,
+          ),
+        );
 
         setDashboardStats(data);
       } catch (dashboardError) {
@@ -249,11 +353,19 @@ function DeliveryOrders() {
     loadDashboard();
   }, [loginStep]);
 
+  useEffect(() => {
+    if (loginStep !== 'dashboard') {
+      return;
+    }
+
+    loadPendingAssignments();
+  }, [loginStep, loadPendingAssignments]);
+
   // VERIFY CUSTOMER DELIVERY OTP
 
   const handleVerifyOtp = async (orderId, deliveryOtp) => {
     try {
-      const token = sessionStorage.getItem('delivery_token');
+      const token = localStorage.getItem('delivery_token');
 
       const data = await verifyCustomerDeliveryOtp(token, orderId, deliveryOtp);
 
@@ -275,11 +387,83 @@ function DeliveryOrders() {
     }
   };
 
+  // ACCEPT DELIVERY ASSIGNMENT
+
+  const handleAcceptAssignment = async (orderId) => {
+    try {
+      const token = localStorage.getItem('delivery_token');
+
+      if (!token) {
+        setError('Delivery login session not found.');
+        return;
+      }
+
+      setProcessingAssignmentId(orderId);
+      setAssignmentError('');
+
+      const data = await acceptDeliveryAssignment(token, orderId);
+
+      console.log('Delivery assignment accepted:', data);
+
+      setPendingAssignments((currentAssignments) =>
+        currentAssignments.filter(
+          (assignment) => assignment.orderId !== orderId,
+        ),
+      );
+
+      setSuccessMessage(data.message || 'Delivery accepted successfully');
+
+      const dashboardData = await fetchDeliveryDashboard(token);
+
+      setDashboardStats(dashboardData);
+    } catch (acceptError) {
+      console.error('Accept delivery assignment failed:', acceptError);
+
+      setAssignmentError(acceptError.message || 'Unable to accept delivery');
+    } finally {
+      setProcessingAssignmentId(null);
+    }
+  };
+
+  // REJECT DELIVERY ASSIGNMENT
+
+  const handleRejectAssignment = async (orderId) => {
+    try {
+      const token = localStorage.getItem('delivery_token');
+
+      if (!token) {
+        setError('Delivery login session not found.');
+        return;
+      }
+
+      setProcessingAssignmentId(orderId);
+      setAssignmentError('');
+
+      const data = await rejectDeliveryAssignment(token, orderId);
+
+      console.log('Delivery assignment rejected:', data);
+
+      setPendingAssignments((currentAssignments) =>
+        currentAssignments.filter(
+          (assignment) => assignment.orderId !== orderId,
+        ),
+      );
+
+      setSuccessMessage(data.message || 'Delivery assignment rejected');
+    } catch (rejectError) {
+      console.error('Reject delivery assignment failed:', rejectError);
+
+      setAssignmentError(rejectError.message || 'Unable to reject delivery');
+    } finally {
+      setProcessingAssignmentId(null);
+    }
+  };
+
   // DELIVERY LOGOUT
 
   const handleLogout = () => {
-    sessionStorage.removeItem('delivery_token');
-    sessionStorage.removeItem('delivery_person');
+    localStorage.removeItem('delivery_token');
+    localStorage.removeItem('delivery_person');
 
     setCurrentLocation(null);
     setDeliveryPerson(null);
@@ -289,6 +473,9 @@ function DeliveryOrders() {
     setPhone('');
     setOtp('');
     setDashboardStats(null);
+    setPendingAssignments([]);
+    setAssignmentError('');
+    setLoadingAssignments(false);
     setSelectedOrder(null);
     setActiveSection('today');
 
@@ -342,6 +529,28 @@ function DeliveryOrders() {
 
   const activeOrders = getActiveOrders(dashboardStats, activeSection);
 
+  // ORDER DETAILS SCREEN
+  //
+  // When an order is selected, show the order details as its own
+  // full-page experience. Do not render the dashboard header,
+  // tabs, assignment requests, or order list above it.
+
+  if (selectedOrder) {
+    return (
+      <main className="delivery_orders delivery_order_details_page">
+        <DeliveryOrderDetails
+          order={selectedOrder}
+          onBack={() => setSelectedOrder(null)}
+          onVerifyOtp={handleVerifyOtp}
+          onCollected={(updatedOrder) => {
+            setSelectedOrder(updatedOrder);
+          }}
+          currentLocation={currentLocation}
+        />
+      </main>
+    );
+  }
+
   // DELIVERY DASHBOARD
 
   return (
@@ -362,20 +571,20 @@ function DeliveryOrders() {
 
       {error && <p className="delivery_error_message">{error}</p>}
 
-      {selectedOrder ? (
-        <DeliveryOrderDetails
-          order={selectedOrder}
-          onBack={() => setSelectedOrder(null)}
-          onVerifyOtp={handleVerifyOtp}
-          currentLocation={currentLocation}
-        />
-      ) : (
-        <DeliveryOrdersList
-          orders={activeOrders}
-          activeSection={activeSection}
-          onSelectOrder={setSelectedOrder}
-        />
-      )}
+      <DeliveryAssignmentRequests
+        assignments={pendingAssignments}
+        loading={loadingAssignments}
+        error={assignmentError}
+        processingAssignmentId={processingAssignmentId}
+        onAccept={handleAcceptAssignment}
+        onReject={handleRejectAssignment}
+      />
+
+      <DeliveryOrdersList
+        orders={activeOrders}
+        activeSection={activeSection}
+        onSelectOrder={setSelectedOrder}
+      />
     </main>
   );
 }

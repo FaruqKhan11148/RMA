@@ -92,7 +92,6 @@
    ========================================================= */
 
 .owner_nav_item.active {
-  background: #eaf7ee;
   color: #16803a;
 }
 
@@ -122,12 +121,7 @@
    ========================================================= */
 
 .owner_nav_item:hover {
-  background: #f3f8f4;
   color: #16803a;
-}
-
-.owner_nav_item.active:hover {
-  background: #e4f4e9;
 }
 
 /* =========================================================
@@ -258,17 +252,11 @@
 }
 
 [data-theme='dark'] .owner_nav_item:hover {
-  background: var(--rma-card-hover);
   color: var(--rma-primary-light);
 }
 
 [data-theme='dark'] .owner_nav_item.active {
-  background: rgba(22, 128, 58, 0.14);
   color: var(--rma-primary-light);
-}
-
-[data-theme='dark'] .owner_nav_item.active:hover {
-  background: rgba(22, 128, 58, 0.18);
 }
 
 [data-theme='dark'] .owner_nav_item.active::before {

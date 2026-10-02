@@ -1,0 +1,432 @@
+/* =========================================================
+   RMA APPLICATION - PROFILE
+   ========================================================= */
+
+.delivery_application_profile_page {
+  min-height: 100vh;
+  background: #f7f9f8;
+  padding: 24px 16px 40px;
+}
+
+.delivery_application_profile_container {
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* =========================================================
+   BACK BUTTON
+   ========================================================= */
+
+.delivery_application_profile_back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 18px;
+  padding: 6px 0;
+  border: none;
+  background: transparent;
+  color: #59655e;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.delivery_application_profile_back:hover {
+  color: #16803a;
+  transform: translateX(-2px);
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.delivery_application_profile_header {
+  margin-bottom: 18px;
+}
+
+.delivery_application_profile_header span {
+  display: inline-block;
+  margin-bottom: 7px;
+  color: #16803a;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.delivery_application_profile_header h1 {
+  margin: 0;
+  color: #202824;
+  font-size: 26px;
+  line-height: 1.25;
+  font-weight: 750;
+}
+
+.delivery_application_profile_header p {
+  max-width: 620px;
+  margin: 8px 0 0;
+  color: #6d7871;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* =========================================================
+   FORM CARD
+   ========================================================= */
+
+.delivery_application_profile_card {
+  padding: 22px;
+  border: 1px solid #e1e8e3;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+}
+
+/* =========================================================
+   FIELD
+   ========================================================= */
+
+.delivery_application_profile_field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 18px;
+}
+
+.delivery_application_profile_field label {
+  margin-bottom: 7px;
+  color: #303a34;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.delivery_application_profile_field input {
+  width: 100%;
+  height: 46px;
+  box-sizing: border-box;
+  padding: 0 13px;
+  border: 1px solid #d5ded8;
+  border-radius: 9px;
+  outline: none;
+  background: #ffffff;
+  color: #202824;
+  font-family: inherit;
+  font-size: 14px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.delivery_application_profile_field input::placeholder {
+  color: #9aa49e;
+}
+
+.delivery_application_profile_field input:focus {
+  border-color: #16803a;
+  box-shadow: 0 0 0 3px rgba(22, 128, 58, 0.1);
+}
+
+.delivery_application_profile_field input:disabled {
+  background: #f3f5f4;
+  color: #7d8781;
+  cursor: not-allowed;
+}
+
+.delivery_application_profile_field small {
+  margin-top: 7px;
+  color: #8a958e;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   PROFILE PHOTO PREVIEW
+   ========================================================= */
+
+.delivery_application_profile_preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  height: 150px;
+  margin: 2px auto 20px;
+  overflow: hidden;
+  border: 1px solid #dbe3de;
+  border-radius: 50%;
+  background: #f4f7f5;
+}
+
+.delivery_application_profile_preview img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+.delivery_application_profile_error {
+  margin-top: 4px;
+  padding: 12px 13px;
+  border: 1px solid #efc5c5;
+  border-radius: 9px;
+  background: #fff3f3;
+  color: #b42318;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   SUCCESS
+   ========================================================= */
+
+.delivery_application_profile_success {
+  margin-top: 4px;
+  padding: 12px 13px;
+  border: 1px solid #c5e2cc;
+  border-radius: 9px;
+  background: #edf9f0;
+  color: #16803a;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   BUTTON
+   ========================================================= */
+
+.delivery_application_profile_button {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 18px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 10px;
+  background: #16803a;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.delivery_application_profile_button:hover:not(:disabled) {
+  background: #126d31;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(22, 128, 58, 0.18);
+}
+
+.delivery_application_profile_button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.delivery_application_profile_button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.delivery_application_profile_loading {
+  width: 100%;
+  max-width: 700px;
+  margin: 80px auto;
+  color: #6d7871;
+  font-size: 15px;
+  text-align: center;
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 700px) {
+  .delivery_application_profile_page {
+    padding: 22px 16px 36px;
+  }
+
+  .delivery_application_profile_card {
+    padding: 20px;
+  }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+  .delivery_application_profile_page {
+    padding: 14px 12px 30px;
+  }
+
+  .delivery_application_profile_back {
+    margin-bottom: 14px;
+    font-size: 13px;
+  }
+
+  .delivery_application_profile_header {
+    margin-bottom: 14px;
+  }
+
+  .delivery_application_profile_header span {
+    margin-bottom: 5px;
+    font-size: 11px;
+  }
+
+  .delivery_application_profile_header h1 {
+    font-size: 21px;
+  }
+
+  .delivery_application_profile_header p {
+    margin-top: 7px;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .delivery_application_profile_card {
+    padding: 16px 14px;
+    border-radius: 13px;
+  }
+
+  .delivery_application_profile_field {
+    margin-bottom: 15px;
+  }
+
+  .delivery_application_profile_field label {
+    margin-bottom: 6px;
+    font-size: 12px;
+  }
+
+  .delivery_application_profile_field input {
+    height: 44px;
+    padding: 0 12px;
+    font-size: 13px;
+  }
+
+  .delivery_application_profile_field small {
+    font-size: 10px;
+  }
+
+  .delivery_application_profile_preview {
+    width: 130px;
+    height: 130px;
+    margin-bottom: 17px;
+  }
+
+  .delivery_application_profile_error,
+  .delivery_application_profile_success {
+    padding: 10px 11px;
+    font-size: 12px;
+  }
+
+  .delivery_application_profile_button {
+    min-height: 46px;
+    margin-top: 15px;
+    font-size: 13px;
+  }
+}
+
+/* =========================================================
+   DARK THEME
+   ========================================================= */
+
+[data-theme='dark'] .delivery_application_profile_page {
+  background: #101412;
+}
+
+[data-theme='dark'] .delivery_application_profile_back {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery_application_profile_back:hover {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery_application_profile_header span {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery_application_profile_header h1 {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery_application_profile_header p {
+  color: #aab5ae;
+}
+
+[data-theme='dark'] .delivery_application_profile_card {
+  border-color: #29352e;
+  background: #171c19;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='dark'] .delivery_application_profile_field label {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery_application_profile_field input {
+  border-color: #39453e;
+  background: #121713;
+  color: #edf5ef;
+}
+
+[data-theme='dark'] .delivery_application_profile_field input::placeholder {
+  color: #707c74;
+}
+
+[data-theme='dark'] .delivery_application_profile_field input:focus {
+  border-color: var(--rma-primary-light);
+  box-shadow: 0 0 0 3px rgba(122, 203, 143, 0.1);
+}
+
+[data-theme='dark'] .delivery_application_profile_field input:disabled {
+  background: #202621;
+  color: #7f8a83;
+}
+
+[data-theme='dark'] .delivery_application_profile_field small {
+  color: #7f8a83;
+}
+
+[data-theme='dark'] .delivery_application_profile_preview {
+  border-color: #39453e;
+  background: #121713;
+}
+
+[data-theme='dark'] .delivery_application_profile_error {
+  border-color: #633737;
+  background: #291919;
+  color: #ff9b9b;
+}
+
+[data-theme='dark'] .delivery_application_profile_success {
+  border-color: #31533c;
+  background: #18291f;
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery_application_profile_button {
+  background: var(--rma-primary-light);
+  color: #102016;
+}
+
+[data-theme='dark'] .delivery_application_profile_button:hover:not(:disabled) {
+  background: var(--rma-primary-light);
+  box-shadow: 0 6px 16px rgba(122, 203, 143, 0.15);
+}
+
+[data-theme='dark'] .delivery_application_profile_loading {
+  color: #aab5ae;
+}

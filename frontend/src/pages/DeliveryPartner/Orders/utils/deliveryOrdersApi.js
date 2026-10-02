@@ -95,3 +95,79 @@ export const fetchDeliveryRoute = async (token, orderId) => {
 
   return data;
 };
+
+export const fetchPendingDeliveryAssignments = async (token) => {
+  const response = await fetch(`${API_URL}api/delivery/assignments/pending`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Failed to load delivery assignments');
+  }
+
+  return data;
+};
+
+export const acceptDeliveryAssignment = async (token, orderId) => {
+  const response = await fetch(
+    `${API_URL}api/delivery/assignments/${orderId}/accept`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Failed to accept delivery assignment');
+  }
+
+  return data;
+};
+
+export const rejectDeliveryAssignment = async (token, orderId) => {
+  const response = await fetch(
+    `${API_URL}api/delivery/assignments/${orderId}/reject`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Failed to reject delivery assignment');
+  }
+
+  return data;
+};
+
+export const collectDeliveryOrder = async (token, orderId) => {
+  const response = await fetch(
+    `${API_URL}api/delivery/orders/${orderId}/collect`,
+    {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Failed to collect delivery order');
+  }
+
+  return data;
+};

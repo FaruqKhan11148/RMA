@@ -2287,7 +2287,9 @@
 /* STATUS MESSAGES */
 
 [data-theme='dark'] .order_delivery_message {
-  color: #79a9e8;
+  color: #73c1c1;
+  background-color: #172b2b;
+  border-color: #356060;
 }
 
 [data-theme='dark'] .order_completed_message {

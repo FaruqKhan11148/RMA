@@ -6,6 +6,7 @@ import EarningsHeader from './components/EarningsHeader';
 import TotalEarnings from './components/TotalEarnings';
 import EarningsSummary from './components/EarningsSummary';
 import RecentEarnings from './components/RecentEarnings';
+import EarningsOptions from './components/EarningsOptions';
 
 import { fetchEarnings } from './utils/earningsApi';
 
@@ -23,7 +24,7 @@ function DeliveryEarnings() {
   useEffect(() => {
     const loadEarnings = async () => {
       try {
-        const token = sessionStorage.getItem('delivery_token');
+        const token = localStorage.getItem('delivery_token');
 
         if (!token) {
           setError('Delivery partner session not found');
@@ -75,6 +76,8 @@ function DeliveryEarnings() {
             todayEarnings={earnings.todayEarnings}
             weekEarnings={earnings.weekEarnings}
           />
+
+          <EarningsOptions />
 
           <RecentEarnings recentEarnings={earnings.recentEarnings} />
         </>

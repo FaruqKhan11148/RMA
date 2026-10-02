@@ -1,0 +1,219 @@
+.admin-delivery-earnings-page {
+  min-height: 100vh;
+  padding: 24px;
+  background: #f7f8fa;
+}
+
+.admin-delivery-earnings-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: 1200px;
+  margin: 0 auto 24px;
+}
+
+.admin-delivery-earnings-back {
+  padding: 9px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #111827;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.admin-delivery-earnings-header h1 {
+  margin: 0;
+  color: #111827;
+  font-size: 24px;
+}
+
+.admin-delivery-earnings-header p {
+  margin: 4px 0 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.admin-delivery-earnings-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  max-width: 1200px;
+  margin: 0 auto 24px;
+}
+
+.admin-delivery-earnings-stat-card {
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.admin-delivery-earnings-stat-card span {
+  display: block;
+  margin-bottom: 8px;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.admin-delivery-earnings-stat-card strong {
+  color: #111827;
+  font-size: 24px;
+}
+
+.admin-delivery-earnings-error {
+  max-width: 1200px;
+  margin: 0 auto 20px;
+  padding: 12px 14px;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 14px;
+}
+
+.admin-delivery-earnings-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.admin-delivery-earnings-loading,
+.admin-delivery-earnings-empty {
+  padding: 50px 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: #ffffff;
+  text-align: center;
+}
+
+.admin-delivery-earnings-empty h3 {
+  margin: 0 0 6px;
+  color: #111827;
+}
+
+.admin-delivery-earnings-empty p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.admin-delivery-earnings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.admin-delivery-earning-card {
+  padding: 18px;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.admin-delivery-earning-main {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.admin-delivery-earning-info h3 {
+  margin: 0 0 10px;
+  color: #111827;
+  font-size: 17px;
+}
+
+.admin-delivery-earning-info p {
+  margin: 5px 0;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.admin-delivery-earning-amount {
+  min-width: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+.admin-delivery-earning-amount span {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.admin-delivery-earning-amount strong {
+  color: #15803d;
+  font-size: 22px;
+}
+
+.admin-delivery-earning-amount small {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #fff7ed;
+  color: #c2410c;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.admin-delivery-earning-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.admin-delivery-earning-release {
+  min-width: 160px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 9px;
+  background: #15803d;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.admin-delivery-earning-release:hover {
+  background: #166534;
+}
+
+.admin-delivery-earning-release:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 700px) {
+  .admin-delivery-earnings-page {
+    padding: 16px;
+  }
+
+  .admin-delivery-earnings-header {
+    align-items: flex-start;
+  }
+
+  .admin-delivery-earnings-header h1 {
+    font-size: 21px;
+  }
+
+  .admin-delivery-earnings-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-delivery-earning-main {
+    flex-direction: column;
+  }
+
+  .admin-delivery-earning-amount {
+    align-items: flex-start;
+  }
+
+  .admin-delivery-earning-actions {
+    justify-content: stretch;
+  }
+
+  .admin-delivery-earning-release {
+    width: 100%;
+  }
+}

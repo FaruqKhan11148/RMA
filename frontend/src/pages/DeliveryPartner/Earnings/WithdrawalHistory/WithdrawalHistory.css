@@ -1,0 +1,389 @@
+.delivery_withdrawal_history_page {
+  min-height: 100vh;
+  padding: 20px 16px 90px;
+  background: #f7f8f7;
+}
+
+.delivery_withdrawal_history_header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.delivery_withdrawal_history_back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  padding: 0;
+  border: 1px solid #eeeeee;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #222222;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.delivery_withdrawal_history_header > div {
+  min-width: 0;
+}
+
+.delivery_withdrawal_history_header span {
+  display: block;
+  margin-bottom: 3px;
+  color: #777;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.delivery_withdrawal_history_header h1 {
+  margin: 0;
+  color: #171717;
+  font-size: 27px;
+  font-weight: 750;
+}
+
+/* =========================================
+   SECTION
+========================================= */
+
+.delivery_withdrawal_history_section {
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 16px;
+}
+
+.delivery_withdrawal_history_section_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 17px 16px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.delivery_withdrawal_history_section_header h2 {
+  margin: 0;
+  color: #202020;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.delivery_withdrawal_history_section_header span {
+  display: block;
+  margin-top: 3px;
+  color: #888888;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.delivery_withdrawal_history_section_header > svg {
+  flex-shrink: 0;
+  color: #16803a;
+}
+
+/* =========================================
+   LIST
+========================================= */
+
+.delivery_withdrawal_history_item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 15px 16px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.delivery_withdrawal_history_item:last-child {
+  border-bottom: none;
+}
+
+.delivery_withdrawal_history_item_left {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.delivery_withdrawal_history_item_left > div:last-child {
+  min-width: 0;
+}
+
+.delivery_withdrawal_history_item_left strong {
+  display: block;
+  color: #202020;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.delivery_withdrawal_history_item_left span {
+  display: block;
+  margin-top: 3px;
+  color: #888888;
+  font-size: 10px;
+}
+
+/* =========================================
+   STATUS ICON
+========================================= */
+
+.delivery_withdrawal_history_status_icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+
+.delivery_withdrawal_history_status_icon.completed {
+  background: #edf7f0;
+  color: #16803a;
+}
+
+.delivery_withdrawal_history_status_icon.failed {
+  background: #fff1f1;
+  color: #c62828;
+}
+
+.delivery_withdrawal_history_status_icon.unknown {
+  background: #f1f1f1;
+  color: #777777;
+}
+
+/* =========================================
+   STATUS BADGE
+========================================= */
+
+.delivery_withdrawal_history_status {
+  flex-shrink: 0;
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.delivery_withdrawal_history_status.completed {
+  background: #edf7f0;
+  color: #16803a;
+}
+
+.delivery_withdrawal_history_status.failed {
+  background: #fff1f1;
+  color: #c62828;
+}
+
+.delivery_withdrawal_history_status.unknown {
+  background: #f1f1f1;
+  color: #777777;
+}
+
+/* =========================================
+   EMPTY / LOADING
+========================================= */
+
+.delivery_withdrawal_history_empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 20px;
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 16px;
+  text-align: center;
+}
+
+.delivery_withdrawal_history_empty_icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 11px;
+  border-radius: 50%;
+  background: #edf7f0;
+  color: #16803a;
+}
+
+.delivery_withdrawal_history_empty strong {
+  color: #222222;
+  font-size: 14px;
+}
+
+.delivery_withdrawal_history_empty p {
+  max-width: 280px;
+  margin: 6px 0 0;
+  color: #777777;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.delivery_withdrawal_history_loader {
+  margin-bottom: 10px;
+  color: #16803a;
+  animation: delivery_withdrawal_history_spin 0.9s linear infinite;
+}
+
+.delivery_withdrawal_history_retry {
+  margin-top: 14px;
+  padding: 9px 16px;
+  border: none;
+  border-radius: 10px;
+  background: #16803a;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+@keyframes delivery_withdrawal_history_spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 380px) {
+  .delivery_withdrawal_history_page {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .delivery_withdrawal_history_item {
+    padding: 14px;
+  }
+
+  .delivery_withdrawal_history_item_left {
+    gap: 10px;
+  }
+
+  .delivery_withdrawal_history_status_icon {
+    width: 35px;
+    height: 35px;
+  }
+
+  .delivery_withdrawal_history_item_left strong {
+    font-size: 14px;
+  }
+
+  .delivery_withdrawal_history_status {
+    padding: 4px 7px;
+    font-size: 9px;
+  }
+}
+
+/* =========================================
+   DARK MODE
+========================================= */
+
+[data-theme='dark'] .delivery_withdrawal_history_page {
+  background: var(--rma-bg);
+}
+
+[data-theme='dark'] .delivery_withdrawal_history_back {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_withdrawal_history_header span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_withdrawal_history_header h1 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_withdrawal_history_section {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .delivery_withdrawal_history_section_header {
+  border-bottom-color: var(--rma-border);
+}
+
+[data-theme='dark'] .delivery_withdrawal_history_section_header h2 {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_withdrawal_history_section_header span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_withdrawal_history_section_header > svg {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery_withdrawal_history_item {
+  border-bottom-color: var(--rma-border);
+}
+
+[data-theme='dark'] .delivery_withdrawal_history_item_left strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_withdrawal_history_item_left span {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_withdrawal_history_status_icon.completed {
+  background: var(--rma-primary-light);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .delivery_withdrawal_history_status_icon.failed {
+  background: rgba(198, 40, 40, 0.16);
+  color: #ff8a80;
+}
+
+[data-theme='dark'] .delivery_withdrawal_history_status.completed {
+  background: var(--rma-primary-light);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .delivery_withdrawal_history_status.failed {
+  background: rgba(198, 40, 40, 0.16);
+  color: #ff8a80;
+}
+
+[data-theme='dark'] .delivery_withdrawal_history_status.unknown {
+  background: var(--rma-bg);
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_withdrawal_history_empty {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .delivery_withdrawal_history_empty strong {
+  color: var(--rma-text);
+}
+
+[data-theme='dark'] .delivery_withdrawal_history_empty p {
+  color: var(--rma-text-secondary);
+}
+
+[data-theme='dark'] .delivery_withdrawal_history_empty_icon {
+  background: var(--rma-primary-light);
+  color: var(--rma-primary);
+}
+
+[data-theme='dark'] .delivery_withdrawal_history_loader {
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .delivery_withdrawal_history_retry {
+  background: var(--rma-primary);
+}

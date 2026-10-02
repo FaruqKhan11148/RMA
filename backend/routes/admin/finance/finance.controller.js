@@ -1,4 +1,5 @@
 const Order = require('../../../models/Order');
+const DeliveryWalletTransaction = require('../../../models/DeliveryWalletTransaction');
 
 // ============================================================
 // GET TODAY'S ORDERS FOR ADMIN
@@ -61,6 +62,17 @@ const getDailyOrders = async (req, res) => {
           'completedAt',
           'rejectedAt',
 
+          'rmaFee',
+          'rmaAmount',
+          'ownerAmount',
+          'deliveryRiderAmount',
+          'deliveryRmaAmount',
+          'deliveryOwnerAmount',
+          'payuFee',
+          'payuGst',
+          'payuCharges',
+          'customerPayableAmount',
+
           // Mongo timestamps
           'createdAt',
           'updatedAt',
@@ -95,7 +107,7 @@ const getDailyOrders = async (req, res) => {
 
       if (order.status === 'Completed' && order.paymentStatus === 'Paid') {
         completedTransactionValue += amount;
-        totalRmaFees += amount * 0.01;
+        totalRmaFees += Number(order.rmaFee || 0);
       }
 
       const shopId = order.ownerId?.shopId || 'UNKNOWN';
@@ -117,7 +129,7 @@ const getDailyOrders = async (req, res) => {
 
       if (order.status === 'Completed' && order.paymentStatus === 'Paid') {
         shopStats[shopId].completedOrders += 1;
-        shopStats[shopId].rmaFees += amount * 0.01;
+        shopStats[shopId].rmaFees += Number(order.rmaFee || 0);
       }
     }
 
@@ -264,6 +276,17 @@ const getMonthlyFinance = async (req, res) => {
           'completedAt',
           'rejectedAt',
 
+          'rmaFee',
+          'rmaAmount',
+          'ownerAmount',
+          'deliveryRiderAmount',
+          'deliveryRmaAmount',
+          'deliveryOwnerAmount',
+          'payuFee',
+          'payuGst',
+          'payuCharges',
+          'customerPayableAmount',
+
           // Mongo timestamps
           'createdAt',
           'updatedAt',
@@ -324,7 +347,7 @@ const getMonthlyFinance = async (req, res) => {
 
         completedTransactionValue += amount;
 
-        totalRmaFees += amount * 0.01;
+        totalRmaFees += Number(order.rmaFee || 0);
       }
 
       const shopId = order.ownerId?.shopId || 'UNKNOWN';
@@ -348,7 +371,7 @@ const getMonthlyFinance = async (req, res) => {
       if (order.status === 'Completed' && order.paymentStatus === 'Paid') {
         shopStats[shopId].completedOrders += 1;
         shopStats[shopId].completedTransactionValue += amount;
-        shopStats[shopId].rmaFees += amount * 0.01;
+        shopStats[shopId].rmaFees += Number(order.rmaFee || 0);
       }
     }
 
@@ -405,7 +428,207 @@ const getMonthlyFinance = async (req, res) => {
   }
 };
 
+async function getPendingDeliveryEarnings(req, res) {
+  try {
+    const transactions = await DeliveryWalletTransaction.find({
+      type: 'ORDER_DELIVERY_EARNING',
+      status: 'PENDING',
+    })
+      .populate(
+        'deliveryPersonId',
+        'name phone email deliveryType isActive applicationStatus',
+      )
+      .sort({ createdAt: -1 });
+
+    const pendingAmount = transactions.reduce(
+      (total, transaction) => total + Number(transaction.amount || 0),
+      0,
+    );
+
+    return res.status(200).json({
+      transactions,
+      stats: {
+        pendingCount: transactions.length,
+        pendingAmount: Number(pendingAmount.toFixed(2)),
+      },
+    });
+  } catch (error) {
+    console.error('Get pending delivery earnings failed:', error);
+
+    return res.status(500).json({
+      message: 'Server error',
+    });
+  }
+}
+
+async function releaseDeliveryEarning(req, res) {
+  try {
+    const { transactionId } = req.params;
+
+    const transaction = await DeliveryWalletTransaction.findOne({
+      _id: transactionId,
+      type: 'ORDER_DELIVERY_EARNING',
+      status: 'PENDING',
+    });
+
+    if (!transaction) {
+      return res.status(404).json({
+        message: 'Pending delivery earning not found',
+      });
+    }
+
+    transaction.status = 'AVAILABLE';
+    transaction.availableAt = new Date();
+
+    await transaction.save();
+
+    return res.status(200).json({
+      message: 'Delivery earning released successfully',
+      transaction,
+    });
+  } catch (error) {
+    console.error('Release delivery earning failed:', error);
+
+    return res.status(500).json({
+      message: 'Server error',
+    });
+  }
+}
+
+async function getDeliveryWithdrawalRequests(req, res) {
+  try {
+    const withdrawals = await DeliveryWalletTransaction.find({
+      type: 'WITHDRAWAL_REQUEST',
+      status: 'PROCESSING',
+    })
+      .populate(
+        'deliveryPersonId',
+        'name phone email deliveryType isActive applicationStatus bankAccount',
+      )
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      withdrawals,
+    });
+  } catch (error) {
+    console.error('Get delivery withdrawal requests failed:', error);
+
+    return res.status(500).json({
+      message: 'Server error',
+    });
+  }
+}
+
+async function getDeliveryWithdrawalHistory(req, res) {
+  try {
+    const withdrawals = await DeliveryWalletTransaction.find({
+      type: {
+        $in: ['WITHDRAWAL_COMPLETED', 'WITHDRAWAL_FAILED'],
+      },
+      status: {
+        $in: ['COMPLETED', 'FAILED'],
+      },
+    })
+      .populate(
+        'deliveryPersonId',
+        'name phone email deliveryType isActive applicationStatus',
+      )
+      .sort({ processedAt: -1, createdAt: -1 });
+
+    return res.status(200).json({
+      withdrawals,
+    });
+  } catch (error) {
+    console.error('Get delivery withdrawal history failed:', error);
+
+    return res.status(500).json({
+      message: 'Server error',
+    });
+  }
+}
+
+async function completeDeliveryWithdrawal(req, res) {
+  try {
+    const { transactionId } = req.params;
+
+    const withdrawal = await DeliveryWalletTransaction.findOne({
+      _id: transactionId,
+      type: 'WITHDRAWAL_REQUEST',
+      status: 'PROCESSING',
+    });
+
+    if (!withdrawal) {
+      return res.status(404).json({
+        message: 'Processing withdrawal request not found',
+      });
+    }
+
+    withdrawal.type = 'WITHDRAWAL_COMPLETED';
+    withdrawal.status = 'COMPLETED';
+    withdrawal.processedAt = new Date();
+
+    await withdrawal.save();
+
+    return res.status(200).json({
+      message: 'Delivery withdrawal completed successfully',
+      withdrawal,
+    });
+  } catch (error) {
+    console.error('Complete delivery withdrawal failed:', error);
+
+    return res.status(500).json({
+      message: 'Server error',
+    });
+  }
+}
+
+async function rejectDeliveryWithdrawal(req, res) {
+  try {
+    const { transactionId } = req.params;
+
+    const withdrawal = await DeliveryWalletTransaction.findOne({
+      _id: transactionId,
+      type: 'WITHDRAWAL_REQUEST',
+      status: 'PROCESSING',
+    });
+
+    if (!withdrawal) {
+      return res.status(404).json({
+        message: 'Processing withdrawal request not found',
+      });
+    }
+
+    withdrawal.type = 'WITHDRAWAL_FAILED';
+    withdrawal.status = 'FAILED';
+    withdrawal.processedAt = new Date();
+
+    withdrawal.metadata = {
+      ...withdrawal.metadata,
+      rejectedBy: 'ADMIN',
+    };
+
+    await withdrawal.save();
+
+    return res.status(200).json({
+      message: 'Delivery withdrawal rejected successfully',
+      withdrawal,
+    });
+  } catch (error) {
+    console.error('Reject delivery withdrawal failed:', error);
+
+    return res.status(500).json({
+      message: 'Server error',
+    });
+  }
+}
+
 module.exports = {
   getDailyOrders,
   getMonthlyFinance,
+  releaseDeliveryEarning,
+  getDeliveryWithdrawalRequests,
+  getDeliveryWithdrawalHistory,
+  completeDeliveryWithdrawal,
+  rejectDeliveryWithdrawal,
+  getPendingDeliveryEarnings,
 };

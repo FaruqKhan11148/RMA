@@ -2,23 +2,51 @@ import { useEffect, useState } from 'react';
 
 import OrderLocationMap from '../../../../components/map/OrderLocationMap';
 
-import { fetchDeliveryRoute } from '../utils/deliveryOrdersApi';
+import {
+  fetchDeliveryRoute,
+  collectDeliveryOrder,
+} from '../utils/deliveryOrdersApi';
 
-function DeliveryOrderDetails({ order, onBack, onVerifyOtp, currentLocation }) {
+function DeliveryOrderDetails({
+  order,
+  onBack,
+  onVerifyOtp,
+  onCollected,
+  currentLocation,
+}) {
   const [otp, setOtp] = useState('');
   const [route, setRoute] = useState(null);
   const [routeLoading, setRouteLoading] = useState(true);
   const [routeError, setRouteError] = useState('');
+  const [isMapFullscreen, setIsMapFullscreen] = useState(false);
+  const [collecting, setCollecting] = useState(false);
+
+  const isCollected = order.deliveryPickupStatus === 'COLLECTED';
+
+  const destination = isCollected
+    ? order.deliveryLocation
+    : order.pickupLocation;
+
+  const destinationTitle = isCollected
+    ? 'Delivery Address'
+    : 'Pickup From Shop';
+
+  const routeTitle = isCollected ? 'Route to Customer' : 'Route to Shop';
+
+  const distance = isCollected ? order.deliveryDistance : null;
 
   useEffect(() => {
     const loadRoute = async () => {
       try {
         setRouteLoading(true);
         setRouteError('');
+        setRoute(null);
 
-        const token = sessionStorage.getItem('delivery_token');
+        const token = localStorage.getItem('delivery_token');
 
-        const data = await fetchDeliveryRoute(token, order.orderId);
+        const data = await fetchDeliveryRoute(token, order.orderId, {
+          destinationType: isCollected ? 'customer' : 'pickup',
+        });
 
         setRoute(data.route);
       } catch (error) {
@@ -30,8 +58,52 @@ function DeliveryOrderDetails({ order, onBack, onVerifyOtp, currentLocation }) {
       }
     };
 
-    loadRoute();
-  }, [order.orderId]);
+    if (
+      destination?.latitude !== undefined &&
+      destination?.longitude !== undefined
+    ) {
+      loadRoute();
+    } else {
+      setRouteLoading(false);
+      setRouteError(
+        isCollected
+          ? 'Customer delivery location is not available for this order.'
+          : 'Shop pickup location is not available for this order.',
+      );
+    }
+  }, [
+    order.orderId,
+    order.deliveryPickupStatus,
+    isCollected,
+    destination?.latitude,
+    destination?.longitude,
+  ]);
+
+  const handleCollectOrder = async () => {
+    if (collecting) {
+      return;
+    }
+
+    try {
+      setCollecting(true);
+
+      const token = localStorage.getItem('delivery_token');
+
+      const data = await collectDeliveryOrder(token, order.orderId);
+
+      if (data?.order) {
+        if (onCollected) {
+          onCollected(data.order);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to collect delivery order:', error);
+
+      alert(error.message || 'Failed to collect order.');
+    } finally {
+      setCollecting(false);
+    }
+  };
 
   const handleSubmitOtp = () => {
     if (!otp.trim()) {
@@ -91,20 +163,21 @@ function DeliveryOrderDetails({ order, onBack, onVerifyOtp, currentLocation }) {
       </section>
 
       <section className="delivery_details_section">
-        <h3>Delivery Address</h3>
+        <h3>{destinationTitle}</h3>
 
         <p className="delivery_address">
-          {order.deliveryAddress || order.address || 'Address not available'}
+          {destination?.address || 'Address not available'}
         </p>
       </section>
 
       <section className="delivery_details_section">
-        <h3>Route</h3>
+        <h3>{routeTitle}</h3>
 
-        {!order.deliveryLocation?.latitude ||
-        !order.deliveryLocation?.longitude ? (
+        {!destination?.latitude || !destination?.longitude ? (
           <div className="delivery_route_error">
-            Delivery location is not available for this order.
+            {isCollected
+              ? 'Customer delivery location is not available for this order.'
+              : 'Shop pickup location is not available for this order.'}
           </div>
         ) : routeLoading ? (
           <div className="delivery_route_message">Loading route...</div>
@@ -112,23 +185,64 @@ function DeliveryOrderDetails({ order, onBack, onVerifyOtp, currentLocation }) {
           <div className="delivery_route_error">{routeError}</div>
         ) : (
           <>
-            <div className="delivery_map_container">
+            <div
+              className="delivery_map_container"
+              onClick={() => setIsMapFullscreen(true)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  setIsMapFullscreen(true);
+                }
+              }}
+            >
               <OrderLocationMap
-                latitude={order.deliveryLocation.latitude}
-                longitude={order.deliveryLocation.longitude}
+                latitude={destination.latitude}
+                longitude={destination.longitude}
                 route={route}
                 currentLocation={currentLocation}
               />
+
+              <div className="delivery_map_expand_hint">
+                <span>Open full map</span>
+              </div>
             </div>
 
-            {order.deliveryDistance && (
+            {distance && (
               <div className="delivery_distance">
-                Distance: {Number(order.deliveryDistance).toFixed(2)} km
+                Distance: {Number(distance).toFixed(2)} km
               </div>
             )}
           </>
         )}
       </section>
+
+      {isMapFullscreen && (
+        <div className="delivery_fullscreen_map">
+          <button
+            type="button"
+            className="delivery_fullscreen_map_close"
+            onClick={() => setIsMapFullscreen(false)}
+            aria-label="Close full screen map"
+          >
+            ×
+          </button>
+
+          <OrderLocationMap
+            latitude={destination.latitude}
+            longitude={destination.longitude}
+            route={route}
+            currentLocation={currentLocation}
+            fullscreen
+          />
+
+          <div className="delivery_fullscreen_map_info">
+            <strong>{routeTitle}</strong>
+
+            {distance && <span>{Number(distance).toFixed(2)} km</span>}
+          </div>
+        </div>
+      )}
 
       <section className="delivery_details_section">
         <h3>Order Items</h3>
@@ -162,7 +276,32 @@ function DeliveryOrderDetails({ order, onBack, onVerifyOtp, currentLocation }) {
         </div>
       </section>
 
-      {order.status === 'OutForDelivery' && (
+      {!isCollected &&
+        order.deliveryAssignmentStatus === 'ACCEPTED' &&
+        order.deliveryPickupStatus === 'PENDING' &&
+        order.status === 'Ready' && (
+          <section className="delivery_details_section delivery_pickup_section">
+            <div className="delivery_pickup_content">
+              <h3>Pickup</h3>
+
+              <p>
+                Go to the shop and collect the order before starting the
+                customer delivery.
+              </p>
+
+              <button
+                type="button"
+                className="delivery_collect_button"
+                onClick={handleCollectOrder}
+                disabled={collecting}
+              >
+                {collecting ? 'Collecting...' : "I've Collected"}
+              </button>
+            </div>
+          </section>
+        )}
+
+      {isCollected && order.status === 'OutForDelivery' && (
         <section className="delivery_details_section delivery_otp_section">
           <h3>Customer OTP</h3>
 
