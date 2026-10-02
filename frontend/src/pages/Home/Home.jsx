@@ -2,7 +2,6 @@ import './Home.css';
 
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useLanguage } from '../../context/LanguageContext';
 
 import HomeHero from './components/HomeHero';
 import HomeActions from './components/HomeActions';
