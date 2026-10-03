@@ -5,6 +5,10 @@ const {
   createAndSendNotification,
 } = require('../../../services/notificationService');
 
+const {
+  offerRmaOrderToNextPartner,
+} = require('../../../services/rmaDispatchService');
+
 // ==========================================
 // COLLECT DELIVERY ORDER
 // ==========================================
@@ -428,16 +432,33 @@ const acceptDeliveryAssignment = async (req, res) => {
 const rejectDeliveryAssignment = async (req, res) => {
   try {
     const { orderId } = req.params;
+    const deliveryPerson = req.deliveryPerson;
 
-    const deliveryPerson = await DeliveryPerson.findById(
-      req.deliveryPerson._id,
-    );
+    // ==========================================
+    // VERIFY DELIVERY PARTNER
+    // ==========================================
 
     if (!deliveryPerson) {
-      return res.status(404).json({
-        message: 'Delivery partner not found',
+      return res.status(401).json({
+        message: 'Delivery partner authentication required',
       });
     }
+
+    if (!deliveryPerson.isActive) {
+      return res.status(403).json({
+        message: 'Your delivery partner account is inactive',
+      });
+    }
+
+    if (deliveryPerson.applicationStatus !== 'APPROVED') {
+      return res.status(403).json({
+        message: 'Your delivery partner application is not approved',
+      });
+    }
+
+    // ==========================================
+    // FIND ORDER
+    // ==========================================
 
     const order = await Order.findOne({ orderId });
 
@@ -446,6 +467,10 @@ const rejectDeliveryAssignment = async (req, res) => {
         message: 'Order not found',
       });
     }
+
+    // ==========================================
+    // VERIFY ASSIGNMENT
+    // ==========================================
 
     if (
       !order.deliveryPersonId ||
@@ -462,52 +487,124 @@ const rejectDeliveryAssignment = async (req, res) => {
       });
     }
 
+    if (order.deliveryAssignmentType !== deliveryPerson.deliveryType) {
+      return res.status(403).json({
+        message: 'This delivery assignment is not valid for your delivery type',
+      });
+    }
+
+    if (order.status !== 'Ready') {
+      return res.status(400).json({
+        message: `This order is no longer ready for delivery. Current status: ${order.status}`,
+      });
+    }
+
     // ==========================================
-    // REJECT ASSIGNMENT
+    // CHECK DELIVERY TYPE
     // ==========================================
 
-    const now = new Date();
+    const isRmaAssignment = order.deliveryAssignmentType === 'RMA';
+
+    // ==========================================
+    // REJECT CURRENT ASSIGNMENT
+    // ==========================================
 
     order.deliveryAssignmentStatus = 'REJECTED';
 
-    // Release the delivery partner.
-    deliveryPerson.availabilityStatus = 'AVAILABLE';
-    deliveryPerson.lastAvailabilityChangedAt = now;
+    // Clear the current DP so the order is not
+    // still considered assigned to this partner.
+    order.deliveryPersonId = null;
+
+    // No collection happened.
+    order.deliveryPickupStatus = 'PENDING';
+
+    // Keep order Ready because it still needs
+    // another delivery partner.
+    order.status = 'Ready';
 
     await order.save();
+
+    // ==========================================
+    // MAKE CURRENT DP AVAILABLE AGAIN
+    // ==========================================
+
+    if (isRmaAssignment) {
+      deliveryPerson.availabilityStatus = 'AVAILABLE';
+      deliveryPerson.lastAvailabilityChangedAt = new Date();
+
+      await deliveryPerson.save();
+
+      // ==========================================
+      // FIND NEXT RMA PARTNER
+      // ==========================================
+
+      const dispatchResult = await offerRmaOrderToNextPartner(order, [
+        deliveryPerson._id,
+      ]);
+
+      // ==========================================
+      // NEXT PARTNER FOUND
+      // ==========================================
+
+      if (dispatchResult.success) {
+        return res.status(200).json({
+          success: true,
+          message: 'Delivery assignment rejected. Finding another partner.',
+          dispatchStatus: dispatchResult.status,
+        });
+      }
+
+      // ==========================================
+      // NO PARTNER AVAILABLE
+      // ==========================================
+
+      return res.status(200).json({
+        success: true,
+        message:
+          'Delivery assignment rejected. No other RMA delivery partner is currently available.',
+        dispatchStatus: dispatchResult.status,
+      });
+    }
+
+    // ==========================================
+    // SHOP DELIVERY REJECTION
+    // ==========================================
+
+    deliveryPerson.availabilityStatus = 'AVAILABLE';
+    deliveryPerson.lastAvailabilityChangedAt = new Date();
+
     await deliveryPerson.save();
 
-    // ==========================================
-    // NOTIFY OWNER
-    // ==========================================
-
+    // Notify owner only for SHOP delivery.
     try {
       await createAndSendNotification({
         recipientType: 'owner',
         recipientId: order.ownerId,
         type: 'DELIVERY_ASSIGNMENT_REJECTED',
-        title: 'Delivery Request Rejected',
-        message: `Delivery partner rejected delivery for order ${order.orderId}.`,
+        title: 'Delivery Assignment Rejected',
+        message: `Delivery partner rejected order ${order.orderId}.`,
         orderId: order.orderId,
         data: {
-          screen: 'orders',
+          screen: 'owner-orders',
           orderId: order.orderId,
+          assignmentStatus: 'REJECTED',
+          deliveryAssignmentType: 'SHOP',
         },
       });
     } catch (notificationError) {
       console.error(
-        'Owner delivery rejection notification failed:',
+        'Shop delivery rejection notification failed:',
         notificationError,
       );
     }
 
     return res.status(200).json({
       success: true,
-      message: 'Delivery assignment rejected',
-      availabilityStatus: deliveryPerson.availabilityStatus,
+      message: 'Delivery assignment rejected successfully',
+      dispatchStatus: 'REJECTED',
     });
   } catch (error) {
-    console.error('Reject delivery assignment failed:', error.message);
+    console.error('Reject delivery assignment failed:', error);
 
     return res.status(500).json({
       message: 'Server error',

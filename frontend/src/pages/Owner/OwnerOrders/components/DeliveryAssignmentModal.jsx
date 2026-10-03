@@ -8,18 +8,25 @@ function DeliveryAssignmentModal({
   setSelectedDeliveryPersonId,
   loadingDeliveryPartners,
   assigningDelivery,
+  startingRmaDispatch,
+  rmaDispatchStatus,
   setShowDeliveryModal,
   assignDeliveryPartner,
+  startRmaDelivery,
 }) {
   if (!showDeliveryModal) {
     return null;
   }
 
+  const isRma = deliveryAssignmentType === 'RMA';
+
+  const isBusy = assigningDelivery || startingRmaDispatch;
+
   return (
     <div
       className="delivery_assignment_overlay"
       onClick={() => {
-        if (!assigningDelivery) {
+        if (!isBusy) {
           setShowDeliveryModal(false);
         }
       }}
@@ -30,7 +37,7 @@ function DeliveryAssignmentModal({
       >
         <div className="delivery_assignment_header">
           <div>
-            <h2>Assign Delivery Partner</h2>
+            <h2>Send for Delivery</h2>
 
             <p>Order #{selectedDeliveryOrder?.orderId}</p>
           </div>
@@ -39,10 +46,11 @@ function DeliveryAssignmentModal({
             type="button"
             className="delivery_assignment_close"
             onClick={() => {
-              if (!assigningDelivery) {
+              if (!isBusy) {
                 setShowDeliveryModal(false);
               }
             }}
+            disabled={isBusy}
           >
             ×
           </button>
@@ -60,9 +68,14 @@ function DeliveryAssignmentModal({
                   : 'delivery_type_option'
               }
               onClick={() => {
+                if (isBusy) {
+                  return;
+                }
+
                 setDeliveryAssignmentType('SHOP');
                 setSelectedDeliveryPersonId('');
               }}
+              disabled={isBusy}
             >
               <span className="delivery_radio">
                 {deliveryAssignmentType === 'SHOP' ? '●' : '○'}
@@ -82,9 +95,14 @@ function DeliveryAssignmentModal({
                   : 'delivery_type_option'
               }
               onClick={() => {
+                if (isBusy) {
+                  return;
+                }
+
                 setDeliveryAssignmentType('RMA');
                 setSelectedDeliveryPersonId('');
               }}
+              disabled={isBusy}
             >
               <span className="delivery_radio">
                 {deliveryAssignmentType === 'RMA' ? '●' : '○'}
@@ -92,99 +110,125 @@ function DeliveryAssignmentModal({
 
               <span>
                 <strong>RMA Delivery Partner</strong>
-                <small>Nearby RMA delivery partners</small>
+                <small>Automatically assigned by RMA</small>
               </span>
             </button>
           </div>
         </div>
 
-        <div className="delivery_partner_list">
-          <div className="delivery_partner_list_header">
-            <h3>
-              {deliveryAssignmentType === 'RMA'
-                ? 'Nearby RMA Partners'
-                : 'Shop Delivery Partners'}
-            </h3>
-
-            {deliveryAssignmentType === 'RMA' && <span>Nearest 5</span>}
-          </div>
-
-          {loadingDeliveryPartners ? (
-            <div className="delivery_partner_loading">
-              Loading delivery partners...
+        {isRma ? (
+          <div className="delivery_rma_dispatch">
+            <div className="delivery_partner_list_header">
+              <h3>RMA Delivery</h3>
             </div>
-          ) : deliveryPartners[deliveryAssignmentType]?.length === 0 ? (
-            <div className="delivery_partner_empty">
+
+            <div className="delivery_rma_dispatch_info">
               <strong>
-                {deliveryAssignmentType === 'RMA'
-                  ? 'No nearby RMA partners available'
-                  : 'No shop delivery partner available'}
+                RMA will automatically find a nearby delivery partner for this
+                order.
               </strong>
 
               <p>
-                {deliveryAssignmentType === 'RMA'
-                  ? 'There are currently no approved RMA delivery partners nearby.'
-                  : 'Your shop does not have an active delivery partner.'}
+                You do not need to select a delivery partner. RMA will offer the
+                order to an eligible nearby partner.
               </p>
             </div>
-          ) : (
-            deliveryPartners[deliveryAssignmentType].map((partner) => (
-              <button
-                type="button"
-                key={partner.id}
-                className={
-                  selectedDeliveryPersonId === partner.id
-                    ? 'delivery_partner_card selected'
-                    : 'delivery_partner_card'
-                }
-                onClick={() => setSelectedDeliveryPersonId(partner.id)}
-              >
-                <span className="delivery_partner_radio">
-                  {selectedDeliveryPersonId === partner.id ? '●' : '○'}
-                </span>
 
-                <span className="delivery_partner_details">
-                  <strong>{partner.name}</strong>
+            {rmaDispatchStatus && (
+              <div className="delivery_rma_dispatch_status">
+                {rmaDispatchStatus}
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="delivery_partner_list">
+            <div className="delivery_partner_list_header">
+              <h3>Shop Delivery Partners</h3>
+            </div>
 
-                  <span>{partner.phone}</span>
+            {loadingDeliveryPartners ? (
+              <div className="delivery_partner_loading">
+                Loading delivery partners...
+              </div>
+            ) : deliveryPartners.SHOP?.length === 0 ? (
+              <div className="delivery_partner_empty">
+                <strong>No shop delivery partner available</strong>
 
-                  {deliveryAssignmentType === 'RMA' && (
-                    <span className="delivery_partner_distance">
-                      {partner.distance} km away
-                    </span>
-                  )}
-                </span>
-              </button>
-            ))
-          )}
-        </div>
+                <p>Your shop does not have an active delivery partner.</p>
+              </div>
+            ) : (
+              deliveryPartners.SHOP.map((partner) => (
+                <button
+                  type="button"
+                  key={partner.id}
+                  className={
+                    selectedDeliveryPersonId === partner.id
+                      ? 'delivery_partner_card selected'
+                      : 'delivery_partner_card'
+                  }
+                  onClick={() => setSelectedDeliveryPersonId(partner.id)}
+                  disabled={isBusy}
+                >
+                  <span className="delivery_partner_radio">
+                    {selectedDeliveryPersonId === partner.id ? '●' : '○'}
+                  </span>
+
+                  <span className="delivery_partner_details">
+                    <strong>{partner.name}</strong>
+
+                    <span>{partner.phone}</span>
+                  </span>
+                </button>
+              ))
+            )}
+          </div>
+        )}
 
         <div className="delivery_assignment_actions">
           <button
             type="button"
             className="delivery_cancel_button"
             onClick={() => {
-              if (!assigningDelivery) {
+              if (!isBusy) {
                 setShowDeliveryModal(false);
               }
             }}
-            disabled={assigningDelivery}
+            disabled={isBusy}
           >
             Cancel
           </button>
 
-          <button
-            type="button"
-            className="delivery_assign_button"
-            onClick={assignDeliveryPartner}
-            disabled={
-              assigningDelivery ||
-              !selectedDeliveryPersonId ||
-              loadingDeliveryPartners
-            }
-          >
-            {assigningDelivery ? 'Assigning...' : 'Assign Delivery'}
-          </button>
+          {isRma ? (
+            <button
+              type="button"
+              className="delivery_assign_button"
+              onClick={startRmaDelivery}
+              disabled={
+                startingRmaDispatch ||
+                assigningDelivery ||
+                Boolean(rmaDispatchStatus)
+              }
+            >
+              {startingRmaDispatch
+                ? 'Finding Partner...'
+                : rmaDispatchStatus
+                  ? 'Dispatch Started'
+                  : 'Start RMA Delivery'}
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="delivery_assign_button"
+              onClick={assignDeliveryPartner}
+              disabled={
+                assigningDelivery ||
+                !selectedDeliveryPersonId ||
+                loadingDeliveryPartners
+              }
+            >
+              {assigningDelivery ? 'Assigning...' : 'Assign Delivery'}
+            </button>
+          )}
         </div>
       </section>
     </div>

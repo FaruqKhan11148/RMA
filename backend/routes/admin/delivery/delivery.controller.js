@@ -4,18 +4,20 @@ const Order = require('../../../models/Order');
 // ============================================================
 // GET ALL DELIVERY PERSONS
 // ============================================================
-
 const getAllDeliveryPersons = async (req, res) => {
   try {
-    const deliveryPersons = await DeliveryPerson.find()
-      .populate('ownerId', 'ownerName shopName phone shopId')
+    const deliveryPersons = await DeliveryPerson.find({
+      deliveryType: 'RMA',
+    })
       .select(
         [
-          'ownerId',
-          'shopId',
           'name',
           'phone',
+          'deliveryType',
+          'applicationStatus',
           'isActive',
+          'availabilityStatus',
+          'currentLocation',
           'createdAt',
           'updatedAt',
         ].join(' '),
@@ -26,24 +28,25 @@ const getAllDeliveryPersons = async (req, res) => {
       deliveryPersons.map(async (deliveryPerson) => {
         const person = deliveryPerson.toObject();
 
-        // Currently out for delivery
+        // Currently active deliveries assigned to this RMA partner
         const activeOrders = await Order.countDocuments({
-          ownerId: deliveryPerson.ownerId?._id,
-          status: 'OutForDelivery',
+          deliveryPersonId: deliveryPerson._id,
           orderType: 'delivery',
+          status: 'OutForDelivery',
+          deliveryAssignmentStatus: 'ACCEPTED',
         });
 
-        // Completed deliveries
+        // Completed deliveries assigned to this RMA partner
         const completedOrders = await Order.countDocuments({
-          ownerId: deliveryPerson.ownerId?._id,
-          status: 'Completed',
+          deliveryPersonId: deliveryPerson._id,
           orderType: 'delivery',
+          status: 'Completed',
           otpVerified: true,
         });
 
-        // Total delivery orders
+        // Total delivery orders assigned to this RMA partner
         const totalDeliveryOrders = await Order.countDocuments({
-          ownerId: deliveryPerson.ownerId?._id,
+          deliveryPersonId: deliveryPerson._id,
           orderType: 'delivery',
         });
 
@@ -62,35 +65,37 @@ const getAllDeliveryPersons = async (req, res) => {
       deliveryPersons: deliveryData,
     });
   } catch (error) {
-    console.error('Admin delivery persons fetch error:', error);
+    console.error('Admin RMA delivery partners fetch error:', error);
 
     return res.status(500).json({
-      message: 'Failed to fetch delivery persons',
+      message: 'Failed to fetch RMA delivery partners',
     });
   }
 };
-
 // ============================================================
-// GET SINGLE DELIVERY PERSON
+// GET SINGLE RMA DELIVERY PARTNER
 // ============================================================
 
 const getDeliveryPerson = async (req, res) => {
   try {
-    const { shopId } = req.params;
+    const { deliveryPersonId } = req.params;
 
-    const deliveryPerson = await DeliveryPerson.findOne({ shopId })
-      .populate('ownerId', 'ownerName shopName phone shopId')
-      .select(
-        [
-          'ownerId',
-          'shopId',
-          'name',
-          'phone',
-          'isActive',
-          'createdAt',
-          'updatedAt',
-        ].join(' '),
-      );
+    const deliveryPerson = await DeliveryPerson.findOne({
+      _id: deliveryPersonId,
+      deliveryType: 'RMA',
+    }).select(
+      [
+        'name',
+        'phone',
+        'deliveryType',
+        'applicationStatus',
+        'isActive',
+        'availabilityStatus',
+        'currentLocation',
+        'createdAt',
+        'updatedAt',
+      ].join(' '),
+    );
 
     if (!deliveryPerson) {
       return res.status(404).json({
@@ -98,9 +103,9 @@ const getDeliveryPerson = async (req, res) => {
       });
     }
 
-    // Get all delivery orders for this shop
+    // Get orders actually assigned to this delivery partner
     const orders = await Order.find({
-      ownerId: deliveryPerson.ownerId?._id,
+      deliveryPersonId: deliveryPerson._id,
       orderType: 'delivery',
     })
       .select(
@@ -111,12 +116,17 @@ const getDeliveryPerson = async (req, res) => {
           'status',
           'paymentStatus',
           'paymentMethod',
+          'deliveryCharge',
+          'deliveryRiderAmount',
+          'deliveryAssignmentStatus',
+          'deliveryPickupStatus',
           'otpVerified',
           'deliveryOtpGeneratedAt',
           'createdAt',
           'acceptedAt',
           'preparingAt',
           'readyAt',
+          'collectedAt',
           'outForDeliveryAt',
           'completedAt',
           'rejectedAt',
@@ -144,7 +154,7 @@ const getDeliveryPerson = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error('Admin delivery person fetch error:', error);
+    console.error('Admin RMA delivery person fetch error:', error);
 
     return res.status(500).json({
       message: 'Failed to fetch delivery person',

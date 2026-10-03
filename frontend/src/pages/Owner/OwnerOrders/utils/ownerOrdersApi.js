@@ -56,3 +56,26 @@ export const fetchDeliveryPartners = async (orderId, ownerToken) => {
 
   return data;
 };
+
+export const startRmaDispatch = async (orderId, ownerToken) => {
+  const response = await fetch(`${API_URL}api/orders/${orderId}/rma-dispatch`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${ownerToken}`,
+    },
+    credentials: 'include',
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    const error = new Error(data.message || 'Failed to start RMA delivery');
+
+    error.status = response.status;
+    error.code = data.code;
+
+    throw error;
+  }
+
+  return data;
+};

@@ -123,7 +123,8 @@ const registerRmaDeliveryPartner = async (req, res) => {
 
       isActive: false,
 
-      applicationStatus: 'SUBMITTED',
+      // Application is immediately available for admin review
+      applicationStatus: 'UNDER_REVIEW',
       submittedAt: new Date(),
 
       availabilityStatus: 'OFFLINE',

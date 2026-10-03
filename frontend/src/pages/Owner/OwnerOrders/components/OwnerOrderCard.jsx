@@ -5,6 +5,31 @@ function OwnerOrderCard({
   openDeliveryAssignment,
   openRejectionModal,
 }) {
+  const hasActiveDeliveryAssignment =
+    order.orderType === 'delivery' &&
+    order.deliveryPersonId &&
+    ['PENDING', 'ACCEPTED'].includes(order.deliveryAssignmentStatus);
+
+  const getDeliveryPartnerStatus = () => {
+    if (!order.deliveryPersonId) {
+      return null;
+    }
+
+    if (order.deliveryAssignmentStatus === 'PENDING') {
+      return 'Waiting for acceptance';
+    }
+
+    if (order.deliveryAssignmentStatus === 'ACCEPTED') {
+      return order.status === 'OutForDelivery'
+        ? 'Out for delivery'
+        : 'Assigned';
+    }
+
+    return null;
+  };
+
+  const deliveryPartnerStatus = getDeliveryPartnerStatus();
+
   return (
     <div className="owner_order_card" onClick={() => setSelectedOrder(order)}>
       {/* TOP */}
@@ -62,17 +87,19 @@ function OwnerOrderCard({
 
       {/* DELIVERY PARTNER */}
 
-      {order.orderType === 'delivery' && order.deliveryAssignmentType && (
-        <div className="owner_order_delivery_partner">
-          <span>
-            {order.deliveryAssignmentType === 'RMA'
-              ? 'RMA Delivery Partner'
-              : 'Shop Delivery Partner'}
-          </span>
+      {order.orderType === 'delivery' &&
+        order.deliveryAssignmentType &&
+        order.deliveryPersonId && (
+          <div className="owner_order_delivery_partner">
+            <span>
+              {order.deliveryAssignmentType === 'RMA'
+                ? 'RMA Delivery Partner'
+                : 'Shop Delivery Partner'}
+            </span>
 
-          {order.deliveryPersonId && <span>Assigned</span>}
-        </div>
-      )}
+            <span>{deliveryPartnerStatus}</span>
+          </div>
+        )}
 
       {/* ACTIONS */}
 
@@ -119,12 +146,20 @@ function OwnerOrderCard({
         {order.status === 'Ready' && (
           <>
             {order.orderType === 'delivery' ? (
-              <button
-                className="accept_order_button"
-                onClick={() => openDeliveryAssignment(order)}
-              >
-                Send for Delivery
-              </button>
+              hasActiveDeliveryAssignment ? (
+                <span className="order_delivery_message">
+                  {order.deliveryAssignmentStatus === 'PENDING'
+                    ? 'Waiting for delivery partner acceptance'
+                    : 'Delivery partner assigned'}
+                </span>
+              ) : (
+                <button
+                  className="accept_order_button"
+                  onClick={() => openDeliveryAssignment(order)}
+                >
+                  Send for Delivery
+                </button>
+              )
             ) : (
               <button
                 className="accept_order_button"

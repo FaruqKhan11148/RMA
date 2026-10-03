@@ -1,5 +1,5 @@
 import './Checkout.css';
-
+  
 import FlashMessage from '../../components/FlashMessage/FlashMessage';
 
 import { useEffect, useState } from 'react';
@@ -145,7 +145,16 @@ function Checkout() {
 
         setDeliveryCharge(0);
 
-        setError(error.message || 'Unable to calculate delivery charge');
+        if (
+          error.message?.toLowerCase().includes('within 5 km') ||
+          error.message?.toLowerCase().includes('5 km')
+        ) {
+          setFlashMessage(
+            'Delivery is available only within 5 km of this shop.',
+          );
+        } else {
+          setError(error.message || 'Unable to calculate delivery charge');
+        }
       } finally {
         setDeliveryLoading(false);
       }
@@ -318,9 +327,17 @@ function Checkout() {
     } catch (error) {
       console.error('Payment process failed:', error);
 
-      setError(
-        error.message || 'Something went wrong while processing your payment.',
-      );
+      if (
+        error.message?.toLowerCase().includes('within 5 km') ||
+        error.message?.toLowerCase().includes('5 km')
+      ) {
+        setFlashMessage('Delivery is available only within 5 km of this shop.');
+      } else {
+        setError(
+          error.message ||
+            'Something went wrong while processing your payment.',
+        );
+      }
 
       setLoading(false);
     }

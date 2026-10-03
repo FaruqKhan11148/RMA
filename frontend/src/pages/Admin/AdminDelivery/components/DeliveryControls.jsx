@@ -8,7 +8,7 @@ function DeliveryControls({
     <div className="delivery-controls">
       <input
         type="text"
-        placeholder="Search delivery person, shop, owner, phone..."
+        placeholder="Search delivery partner, phone..."
         value={search}
         onChange={(event) => onSearchChange(event.target.value)}
       />
@@ -17,9 +17,12 @@ function DeliveryControls({
         value={statusFilter}
         onChange={(event) => onStatusFilterChange(event.target.value)}
       >
-        <option value="ALL">All Persons</option>
-        <option value="ACTIVE">Active</option>
-        <option value="INACTIVE">Inactive</option>
+        <option value="ALL">All Partners</option>
+        <option value="AVAILABLE">Available</option>
+        <option value="BUSY">Busy</option>
+        <option value="OFFLINE">Offline</option>
+        <option value="ACTIVE">Active Account</option>
+        <option value="INACTIVE">Inactive Account</option>
       </select>
     </div>
   );

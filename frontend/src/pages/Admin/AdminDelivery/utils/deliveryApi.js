@@ -20,9 +20,9 @@ export async function fetchDeliveryPersons() {
   return data.deliveryPersons || [];
 }
 
-export async function fetchDeliveryPersonDetails(shopId) {
+export async function fetchDeliveryPersonDetails(deliveryPersonId) {
   const response = await fetch(
-    `https://rma-backend-bo4a.onrender.com/api/admin/delivery/${shopId}`,
+    `https://rma-backend-bo4a.onrender.com/api/admin/delivery/${deliveryPersonId}`,
     {
       method: 'GET',
       credentials: 'include',

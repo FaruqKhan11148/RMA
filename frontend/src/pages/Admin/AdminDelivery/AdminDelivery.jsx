@@ -75,7 +75,16 @@ function AdminDelivery() {
       const matchesStatus =
         statusFilter === 'ALL' ||
         (statusFilter === 'ACTIVE' && person.isActive) ||
-        (statusFilter === 'INACTIVE' && !person.isActive);
+        (statusFilter === 'INACTIVE' && !person.isActive) ||
+        (statusFilter === 'AVAILABLE' &&
+          person.isActive &&
+          person.availabilityStatus === 'AVAILABLE') ||
+        (statusFilter === 'BUSY' &&
+          person.isActive &&
+          person.availabilityStatus === 'BUSY') ||
+        (statusFilter === 'OFFLINE' &&
+          person.isActive &&
+          person.availabilityStatus === 'OFFLINE');
 
       return matchesSearch && matchesStatus;
     });
@@ -89,6 +98,18 @@ function AdminDelivery() {
 
   const inactiveDeliveryPersons = deliveryPersons.filter(
     (person) => !person.isActive,
+  ).length;
+
+  const availableDeliveryPersons = deliveryPersons.filter(
+    (person) => person.isActive && person.availabilityStatus === 'AVAILABLE',
+  ).length;
+
+  const busyDeliveryPersons = deliveryPersons.filter(
+    (person) => person.isActive && person.availabilityStatus === 'BUSY',
+  ).length;
+
+  const offlineDeliveryPersons = deliveryPersons.filter(
+    (person) => person.isActive && person.availabilityStatus === 'OFFLINE',
   ).length;
 
   const totalDeliveryOrders = deliveryPersons.reduce(
@@ -110,7 +131,7 @@ function AdminDelivery() {
     try {
       setError('');
 
-      const deliveryPerson = await fetchDeliveryPersonDetails(person.shopId);
+      const deliveryPerson = await fetchDeliveryPersonDetails(person._id);
 
       setSelectedPerson(deliveryPerson);
       setShowModal(true);

@@ -16,6 +16,7 @@ import {
   fetchOwnerOrders,
   updateOwnerOrderStatus,
   fetchDeliveryPartners,
+  startRmaDispatch,
 } from './utils/ownerOrdersApi';
 
 function OwnerOrders() {
@@ -42,6 +43,9 @@ function OwnerOrders() {
   const [loadingDeliveryPartners, setLoadingDeliveryPartners] = useState(false);
 
   const [assigningDelivery, setAssigningDelivery] = useState(false);
+
+  const [startingRmaDispatch, setStartingRmaDispatch] = useState(false);
+  const [rmaDispatchStatus, setRmaDispatchStatus] = useState('');
 
   const ownerData = localStorage.getItem('rma_owner');
 
@@ -192,6 +196,7 @@ function OwnerOrders() {
         SHOP: [],
         RMA: [],
       });
+      setRmaDispatchStatus('');
       setShowDeliveryModal(true);
       setLoadingDeliveryPartners(true);
 
@@ -201,7 +206,7 @@ function OwnerOrders() {
 
       setDeliveryPartners({
         SHOP: data.shopPartners || [],
-        RMA: data.rmaPartners || [],
+        RMA: [],
       });
     } catch (error) {
       console.error('Load delivery partners failed:', error);
@@ -210,6 +215,55 @@ function OwnerOrders() {
       setShowDeliveryModal(false);
     } finally {
       setLoadingDeliveryPartners(false);
+    }
+  };
+
+  const startRmaDelivery = async () => {
+    if (!selectedDeliveryOrder) {
+      return;
+    }
+
+    try {
+      setStartingRmaDispatch(true);
+      setRmaDispatchStatus('Finding a delivery partner...');
+
+      const ownerToken = localStorage.getItem('rma_owner_token');
+
+      const data = await startRmaDispatch(
+        selectedDeliveryOrder.orderId,
+        ownerToken,
+      );
+
+      setOrders((currentOrders) =>
+        currentOrders.map((order) =>
+          order.orderId === selectedDeliveryOrder.orderId
+            ? {
+                ...order,
+                status: data.order?.status || order.status,
+                deliveryAssignmentType:
+                  data.order?.deliveryAssignmentType || 'RMA',
+                deliveryPersonId: data.order?.deliveryPersonId || null,
+                deliveryAssignmentStatus:
+                  data.order?.deliveryAssignmentStatus || 'PENDING',
+              }
+            : order,
+        ),
+      );
+
+      setRmaDispatchStatus('Delivery partner found. Waiting for acceptance...');
+
+      console.log('RMA delivery dispatch started:', data);
+    } catch (error) {
+      console.error('Start RMA delivery failed:', error);
+
+      if (error.status === 409 && error.code === 'NO_PARTNER_AVAILABLE') {
+        setRmaDispatchStatus('No delivery partner is currently available.');
+        return;
+      }
+
+      alert(error.message || 'Unable to start RMA delivery');
+    } finally {
+      setStartingRmaDispatch(false);
     }
   };
 
@@ -350,6 +404,7 @@ function OwnerOrders() {
           </section>
         </>
       )}
+
       <DeliveryAssignmentModal
         showDeliveryModal={showDeliveryModal}
         selectedDeliveryOrder={selectedDeliveryOrder}
@@ -360,8 +415,11 @@ function OwnerOrders() {
         setSelectedDeliveryPersonId={setSelectedDeliveryPersonId}
         loadingDeliveryPartners={loadingDeliveryPartners}
         assigningDelivery={assigningDelivery}
+        startingRmaDispatch={startingRmaDispatch}
+        rmaDispatchStatus={rmaDispatchStatus}
         setShowDeliveryModal={setShowDeliveryModal}
         assignDeliveryPartner={assignDeliveryPartner}
+        startRmaDelivery={startRmaDelivery}
       />
 
       <RejectionReasonModal

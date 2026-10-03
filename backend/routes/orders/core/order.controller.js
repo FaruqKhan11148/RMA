@@ -10,6 +10,10 @@ const {
   createAndSendNotification,
 } = require('../../../services/notificationService');
 
+const {
+  offerRmaOrderToNextPartner,
+} = require('../../../services/rmaDispatchService');
+
 // ==========================================
 // PAYU REFUND
 // ==========================================
@@ -305,8 +309,17 @@ async function createOrder(req, res) {
         customerLongitude,
       );
 
-      // RMA delivery pricing:
-      // ₹18 base + ₹8 per kilometre
+      // ============================================================
+      // RMA DELIVERY SERVICE AREA
+      // Shop → Customer must be within 5 km
+      // ============================================================
+
+      if (deliveryDistance > 5) {
+        return res.status(400).json({
+          message: 'Delivery is available only within 5 km of this shop',
+        });
+      }
+
       deliveryCharge = Number((18 + 8 * deliveryDistance).toFixed(2));
     }
 
@@ -1049,6 +1062,263 @@ async function createDeliveryAssignment(req, res) {
 }
 
 // ==========================================
+// START RMA AUTOMATIC DISPATCH
+// ==========================================
+
+async function startRmaDispatch(req, res) {
+  try {
+    const { orderId } = req.params;
+
+    const order = await Order.findOne({ orderId });
+
+    if (!order) {
+      return res.status(404).json({
+        message: 'Order not found',
+      });
+    }
+
+    // ==========================================
+    // ORDER VALIDATION
+    // ==========================================
+
+    if (order.status !== 'Ready') {
+      return res.status(400).json({
+        message: `RMA delivery can only be started when order is Ready. Current status: ${order.status}`,
+      });
+    }
+
+    if (order.orderType !== 'delivery') {
+      return res.status(400).json({
+        message: 'RMA delivery is only available for delivery orders',
+      });
+    }
+
+    if (!order.pickupLocation?.latitude || !order.pickupLocation?.longitude) {
+      return res.status(400).json({
+        message: 'Shop pickup location is unavailable',
+      });
+    }
+
+    if (
+      !order.deliveryLocation?.latitude ||
+      !order.deliveryLocation?.longitude
+    ) {
+      return res.status(400).json({
+        message: 'Customer delivery location is unavailable',
+      });
+    }
+
+    // ==========================================
+    // EXISTING ASSIGNMENT VALIDATION
+    // ==========================================
+
+    if (order.deliveryAssignmentStatus === 'ACCEPTED') {
+      return res.status(400).json({
+        message: 'A delivery partner has already accepted this order',
+      });
+    }
+
+    if (order.deliveryAssignmentStatus === 'PENDING') {
+      return res.status(400).json({
+        message: 'RMA delivery dispatch is already in progress',
+      });
+    }
+
+    // ==========================================
+    // FIND ELIGIBLE RMA DELIVERY PARTNERS
+    // ==========================================
+
+    const locationCutoff = new Date(Date.now() - 10 * 60 * 1000);
+
+    const rmaPartners = await DeliveryPerson.find({
+      deliveryType: 'RMA',
+      applicationStatus: 'APPROVED',
+      isActive: true,
+      availabilityStatus: 'AVAILABLE',
+
+      'currentLocation.latitude': {
+        $ne: null,
+      },
+
+      'currentLocation.longitude': {
+        $ne: null,
+      },
+
+      'currentLocation.updatedAt': {
+        $gte: locationCutoff,
+      },
+    })
+      .select(
+        'name phone deliveryType applicationStatus isActive availabilityStatus currentLocation',
+      )
+      .lean();
+
+    // ==========================================
+    // REMOVE PARTNERS ALREADY HANDLING ORDERS
+    //
+    // V1:
+    // One active delivery order per DP.
+    //
+    // IMPORTANT:
+    // This is only a V1 dispatch restriction.
+    // The architecture will later support multiple
+    // compatible orders in one delivery trip.
+    // ==========================================
+
+    const activeOrders = await Order.find({
+      deliveryPersonId: {
+        $in: rmaPartners.map((partner) => partner._id),
+      },
+
+      deliveryAssignmentType: 'RMA',
+
+      deliveryAssignmentStatus: 'ACCEPTED',
+
+      status: 'OutForDelivery',
+    })
+      .select('deliveryPersonId')
+      .lean();
+
+    const busyPartnerIds = new Set(
+      activeOrders.map((activeOrder) => String(activeOrder.deliveryPersonId)),
+    );
+
+    // ==========================================
+    // CALCULATE DP → SHOP DISTANCE
+    // ==========================================
+
+    const eligiblePartners = rmaPartners
+      .filter((partner) => !busyPartnerIds.has(String(partner._id)))
+      .map((partner) => {
+        const distance = calculateDistanceKm(
+          Number(partner.currentLocation.latitude),
+          Number(partner.currentLocation.longitude),
+          Number(order.pickupLocation.latitude),
+          Number(order.pickupLocation.longitude),
+        );
+
+        return {
+          partner,
+          distance,
+        };
+      })
+      .filter((candidate) => candidate.distance <= 5)
+      .sort((a, b) => a.distance - b.distance);
+
+    // ==========================================
+    // NO PARTNER AVAILABLE
+    // ==========================================
+
+    if (eligiblePartners.length === 0) {
+      return res.status(409).json({
+        success: false,
+        code: 'NO_RMA_DELIVERY_PARTNER',
+        message: 'No RMA delivery partner is currently available nearby',
+      });
+    }
+
+    // ==========================================
+    // SELECT NEAREST ELIGIBLE PARTNER
+    //
+    // This is intentionally simple for V1.
+    //
+    // Later this selection will consider:
+    // - workload
+    // - route compatibility
+    // - existing batches
+    // - delivery area
+    // - estimated detour
+    // - recent assignment frequency
+    // - capacity
+    // ==========================================
+
+    const selectedCandidate = eligiblePartners[0];
+
+    const selectedDeliveryPerson = await DeliveryPerson.findById(
+      selectedCandidate.partner._id,
+    );
+
+    if (!selectedDeliveryPerson) {
+      return res.status(409).json({
+        message: 'Selected delivery partner is no longer available',
+      });
+    }
+
+    // Re-check availability immediately before assignment.
+    if (
+      selectedDeliveryPerson.applicationStatus !== 'APPROVED' ||
+      !selectedDeliveryPerson.isActive ||
+      selectedDeliveryPerson.availabilityStatus !== 'AVAILABLE'
+    ) {
+      return res.status(409).json({
+        message: 'Selected delivery partner is no longer available',
+      });
+    }
+
+    // ==========================================
+    // SAVE RMA ASSIGNMENT
+    // ==========================================
+
+    order.deliveryAssignmentType = 'RMA';
+
+    order.deliveryPersonId = selectedDeliveryPerson._id;
+
+    order.deliveryAssignmentStatus = 'PENDING';
+
+    order.deliveryPickupStatus = 'PENDING';
+
+    order.deliveryOtp = null;
+
+    order.deliveryOtpGeneratedAt = null;
+
+    order.otpVerified = false;
+
+    await order.save();
+
+    // ==========================================
+    // NOTIFY DELIVERY PARTNER
+    // ==========================================
+
+    try {
+      await createAndSendNotification({
+        recipientType: 'delivery',
+        recipientId: selectedDeliveryPerson._id,
+        type: 'DELIVERY_ASSIGNMENT_REQUEST',
+        title: 'New Delivery Request',
+        message: `Order ${order.orderId} is waiting for your response.`,
+        orderId: order.orderId,
+        data: {
+          screen: 'delivery-orders',
+          orderId: order.orderId,
+          assignmentStatus: 'PENDING',
+          deliveryAssignmentType: 'RMA',
+        },
+      });
+    } catch (notificationError) {
+      console.error(
+        'RMA delivery assignment notification failed:',
+        notificationError,
+      );
+    }
+
+    await order.populate('ownerId', 'ownerName shopName phone');
+
+    return res.status(200).json({
+      success: true,
+      message: 'RMA delivery partner search started',
+      dispatchStatus: 'WAITING_FOR_ACCEPTANCE',
+      order,
+    });
+  } catch (error) {
+    console.error('Start RMA dispatch failed:', error);
+
+    return res.status(500).json({
+      message: 'Failed to start RMA delivery dispatch',
+    });
+  }
+}
+
+// ==========================================
 // PREVIEW DELIVERY CHARGE
 // ==========================================
 
@@ -1183,4 +1453,5 @@ module.exports = {
   createOrder,
   updateOrderStatus,
   createDeliveryAssignment,
+  startRmaDispatch,
 };

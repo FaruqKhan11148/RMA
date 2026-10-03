@@ -1,9 +1,23 @@
+import { useState } from 'react';
+
+import {
+  fetchEligibleRmaDeliveryPartners,
+  assignRmaDeliveryPartner,
+} from '../../utils/Orders/ordersApi';
+
 function OrderDetailsModal({
   selectedOrder,
   onClose,
   formatDate,
   getStatusClass,
+  onOrderUpdated,
 }) {
+  const [showRmaPartners, setShowRmaPartners] = useState(false);
+  const [rmaPartners, setRmaPartners] = useState([]);
+  const [rmaPartnersLoading, setRmaPartnersLoading] = useState(false);
+  const [rmaPartnersError, setRmaPartnersError] = useState('');
+  const [assigningPartnerId, setAssigningPartnerId] = useState(null);
+
   if (!selectedOrder) {
     return null;
   }
@@ -12,6 +26,101 @@ function OrderDetailsModal({
   const customer = order.customer || {};
   const owner = order.ownerId || {};
   const delivery = order.delivery || {};
+  const deliveryPerson = order.deliveryPersonId || {};
+
+  const isDeliveryOrder = order.orderType === 'delivery';
+
+  const isReadyForAssignment =
+    isDeliveryOrder &&
+    order.status === 'Ready' &&
+    order.deliveryAssignmentType !== 'SHOP' &&
+    order.deliveryAssignmentStatus !== 'ACCEPTED';
+
+  const getAssignmentTypeLabel = () => {
+    if (order.deliveryAssignmentType === 'SHOP') {
+      return 'Shop Delivery';
+    }
+
+    if (order.deliveryAssignmentType === 'RMA') {
+      return 'RMA Delivery';
+    }
+
+    return 'Not Assigned';
+  };
+
+  const getAssignmentStatusLabel = () => {
+    if (order.deliveryAssignmentStatus === 'ACCEPTED') {
+      return 'Accepted';
+    }
+
+    if (order.deliveryAssignmentStatus === 'PENDING') {
+      return 'Pending';
+    }
+
+    if (order.deliveryAssignmentStatus === 'REJECTED') {
+      return 'Rejected';
+    }
+
+    if (order.deliveryAssignmentStatus === 'CANCELLED') {
+      return 'Cancelled';
+    }
+
+    return 'Not Assigned';
+  };
+
+  const getPickupStatusLabel = () => {
+    if (order.deliveryPickupStatus === 'COLLECTED') {
+      return 'Collected';
+    }
+
+    return 'Pending';
+  };
+
+  const handleLoadRmaPartners = async () => {
+    try {
+      setShowRmaPartners(true);
+      setRmaPartnersLoading(true);
+      setRmaPartnersError('');
+
+      const data = await fetchEligibleRmaDeliveryPartners(order.orderId);
+
+      setRmaPartners(data.partners || []);
+    } catch (error) {
+      console.error('Failed to load RMA delivery partners:', error);
+
+      setRmaPartnersError(
+        error.message || 'Failed to load RMA delivery partners',
+      );
+    } finally {
+      setRmaPartnersLoading(false);
+    }
+  };
+
+  const handleAssignRmaPartner = async (partner) => {
+    try {
+      setAssigningPartnerId(partner._id);
+      setRmaPartnersError('');
+
+      const data = await assignRmaDeliveryPartner(order.orderId, partner._id);
+
+      if (data.order) {
+        setRmaPartners([]);
+        setShowRmaPartners(false);
+
+        if (onOrderUpdated) {
+          onOrderUpdated(data.order);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to assign RMA delivery partner:', error);
+
+      setRmaPartnersError(
+        error.message || 'Failed to assign RMA delivery partner',
+      );
+    } finally {
+      setAssigningPartnerId(null);
+    }
+  };
 
   return (
     <div className="admin-order-modal-overlay">
@@ -261,7 +370,8 @@ function OrderDetailsModal({
               <label>Address</label>
 
               <p>
-                {delivery.address ||
+                {order.deliveryLocation?.address ||
+                  delivery.address ||
                   order.deliveryAddress ||
                   order.address ||
                   '-'}
@@ -271,20 +381,30 @@ function OrderDetailsModal({
             <div>
               <label>Latitude</label>
 
-              <p>{delivery.latitude ?? order.latitude ?? '-'}</p>
+              <p>
+                {order.deliveryLocation?.latitude ??
+                  delivery.latitude ??
+                  order.latitude ??
+                  '-'}
+              </p>
             </div>
 
             <div>
               <label>Longitude</label>
 
-              <p>{delivery.longitude ?? order.longitude ?? '-'}</p>
+              <p>
+                {order.deliveryLocation?.longitude ??
+                  delivery.longitude ??
+                  order.longitude ??
+                  '-'}
+              </p>
             </div>
 
-            {order.distance !== undefined && (
+            {order.deliveryDistance !== undefined && (
               <div>
                 <label>Distance</label>
 
-                <p>{order.distance} KM</p>
+                <p>{Number(order.deliveryDistance || 0).toFixed(2)} KM</p>
               </div>
             )}
 
@@ -297,6 +417,167 @@ function OrderDetailsModal({
             )}
           </div>
         </div>
+
+        {/* DELIVERY ASSIGNMENT */}
+        {isDeliveryOrder && (
+          <div className="order-detail-section">
+            <h3>Delivery Assignment</h3>
+
+            <div className="order-detail-grid">
+              <div>
+                <label>Delivery Method</label>
+
+                <p>{getAssignmentTypeLabel()}</p>
+              </div>
+
+              <div>
+                <label>Assignment Status</label>
+
+                <p>{getAssignmentStatusLabel()}</p>
+              </div>
+
+              <div>
+                <label>Pickup Status</label>
+
+                <p>{getPickupStatusLabel()}</p>
+              </div>
+
+              <div>
+                <label>Delivery Partner</label>
+
+                <p>{deliveryPerson.name || 'Not Assigned'}</p>
+              </div>
+
+              {deliveryPerson.phone && (
+                <div>
+                  <label>Partner Phone</label>
+
+                  <p>{deliveryPerson.phone}</p>
+                </div>
+              )}
+
+              {deliveryPerson.deliveryType && (
+                <div>
+                  <label>Partner Type</label>
+
+                  <p>{deliveryPerson.deliveryType}</p>
+                </div>
+              )}
+
+              {deliveryPerson.availabilityStatus && (
+                <div>
+                  <label>Partner Availability</label>
+
+                  <p>{deliveryPerson.availabilityStatus}</p>
+                </div>
+              )}
+            </div>
+
+            {isReadyForAssignment && (
+              <div
+                style={{
+                  marginTop: '16px',
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                }}
+              >
+                <button type="button" onClick={handleLoadRmaPartners}>
+                  Assign RMA Partner
+                </button>
+
+                {showRmaPartners && (
+                  <div
+                    style={{
+                      marginTop: '16px',
+                      borderTop: '1px solid #ddd',
+                      paddingTop: '16px',
+                    }}
+                  >
+                    <h4>Available RMA Delivery Partners</h4>
+
+                    {rmaPartnersLoading && (
+                      <p>Loading available delivery partners...</p>
+                    )}
+
+                    {rmaPartnersError && <p>{rmaPartnersError}</p>}
+
+                    {!rmaPartnersLoading &&
+                      !rmaPartnersError &&
+                      rmaPartners.length === 0 && (
+                        <p>
+                          No eligible RMA delivery partners are currently
+                          available.
+                        </p>
+                      )}
+
+                    {!rmaPartnersLoading &&
+                      !rmaPartnersError &&
+                      rmaPartners.length > 0 && (
+                        <div>
+                          {rmaPartners.map((partner) => (
+                            <div
+                              key={partner._id}
+                              style={{
+                                border: '1px solid #ddd',
+                                borderRadius: '8px',
+                                padding: '12px',
+                                marginTop: '10px',
+                              }}
+                            >
+                              <div>
+                                <strong>{partner.name}</strong>
+                              </div>
+
+                              <div>
+                                <span>{partner.phone}</span>
+                              </div>
+
+                              <div>
+                                <span>
+                                  Distance to shop:{' '}
+                                  {Number(partner.distanceToShop || 0).toFixed(
+                                    2,
+                                  )}{' '}
+                                  KM
+                                </span>
+                              </div>
+
+                              <div>
+                                <span>
+                                  Status: {partner.availabilityStatus}
+                                </span>
+                              </div>
+
+                              <div>
+                                <span>
+                                  GPS updated:{' '}
+                                  {partner.currentLocation?.updatedAt
+                                    ? formatDate(
+                                        partner.currentLocation.updatedAt,
+                                      )
+                                    : '-'}
+                                </span>
+                              </div>
+
+                              <button
+                                type="button"
+                                onClick={() => handleAssignRmaPartner(partner)}
+                                disabled={assigningPartnerId === partner._id}
+                              >
+                                {assigningPartnerId === partner._id
+                                  ? 'Assigning...'
+                                  : 'Select Partner'}
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* PAYMENT */}
         <div className="order-detail-section">

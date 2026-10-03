@@ -1,5 +1,7 @@
 const express = require('express');
 
+const ownerAuth = require('../../../middleware/ownerAuth');
+
 const {
   previewDeliveryCharge,
   getAllOrders,
@@ -7,6 +9,7 @@ const {
   createOrder,
   updateOrderStatus,
   createDeliveryAssignment,
+  startRmaDispatch,
 } = require('./order.controller');
 
 const router = express.Router();
@@ -17,7 +20,13 @@ router.get('/', getAllOrders);
 
 router.post('/', createOrder);
 
-router.post('/:orderId/delivery-assignment', createDeliveryAssignment);
+router.post(
+  '/:orderId/delivery-assignment',
+  ownerAuth,
+  createDeliveryAssignment,
+);
+
+router.post('/:orderId/rma-dispatch', ownerAuth, startRmaDispatch);
 
 router.patch('/:orderId/status', updateOrderStatus);
 

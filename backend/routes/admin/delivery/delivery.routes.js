@@ -19,6 +19,6 @@ router.get('/', adminAuth, getAllDeliveryPersons);
 // GET SINGLE DELIVERY PERSON
 // ============================================================
 
-router.get('/:shopId', adminAuth, getDeliveryPerson);
+router.get('/:deliveryPersonId', adminAuth, getDeliveryPerson);
 
 module.exports = router;

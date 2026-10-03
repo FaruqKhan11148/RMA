@@ -2639,3 +2639,104 @@
 [data-theme='dark'] .owner_orders button:focus-visible {
   outline-color: rgba(22, 128, 58, 0.35);
 }
+
+/* ============================================================
+   RMA DELIVERY DISPATCH
+   ============================================================ */
+
+.delivery_rma_dispatch {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.delivery_rma_dispatch .delivery_partner_list_header {
+  margin-bottom: 12px;
+}
+
+/* RMA information card */
+
+.delivery_rma_dispatch_info {
+  width: 100%;
+  padding: 18px;
+  border: 1px solid #dce9df;
+  border-radius: 14px;
+  background: #f6faf7;
+  box-sizing: border-box;
+}
+
+.delivery_rma_dispatch_info strong {
+  display: block;
+  margin: 0 0 8px;
+  color: #173d25;
+  font-size: 15px;
+  line-height: 1.45;
+  font-weight: 700;
+}
+
+.delivery_rma_dispatch_info p {
+  margin: 0;
+  color: #68736c;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+/* Dispatch status */
+
+.delivery_rma_dispatch_status {
+  width: 100%;
+  margin-top: 12px;
+  padding: 13px 15px;
+  border: 1px solid #cce5d3;
+  border-radius: 12px;
+  background: #eef8f1;
+  color: #16803a;
+  font-size: 13px;
+  line-height: 1.45;
+  font-weight: 700;
+  box-sizing: border-box;
+}
+
+/* ============================================================
+   RMA TYPE OPTION
+   ============================================================ */
+
+.delivery_type_option.active {
+  border-color: #16803a;
+  background: #f3faf5;
+}
+
+.delivery_type_option:disabled {
+  cursor: default;
+}
+
+/* ============================================================
+   RMA DISPATCH BUTTON
+   ============================================================ */
+
+.delivery_assign_button:disabled {
+  cursor: not-allowed;
+}
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+
+@media (max-width: 600px) {
+  .delivery_rma_dispatch_info {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .delivery_rma_dispatch_info strong {
+    font-size: 14px;
+  }
+
+  .delivery_rma_dispatch_info p {
+    font-size: 12.5px;
+  }
+
+  .delivery_rma_dispatch_status {
+    padding: 12px 14px;
+    font-size: 12.5px;
+  }
+}

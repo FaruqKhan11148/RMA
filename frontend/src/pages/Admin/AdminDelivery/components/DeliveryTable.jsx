@@ -12,41 +12,85 @@ function DeliveryTable({ loading, filteredDeliveryPersons, onViewDetails }) {
     );
   }
 
+  const getAvailabilityLabel = (person) => {
+    if (!person.isActive) {
+      return 'Inactive';
+    }
+
+    switch (person.availabilityStatus) {
+      case 'AVAILABLE':
+        return 'Available';
+
+      case 'BUSY':
+        return 'Busy';
+
+      case 'OFFLINE':
+      default:
+        return 'Offline';
+    }
+  };
+
+  const getAvailabilityClass = (person) => {
+    if (!person.isActive) {
+      return 'inactive';
+    }
+
+    switch (person.availabilityStatus) {
+      case 'AVAILABLE':
+        return 'available';
+
+      case 'BUSY':
+        return 'busy';
+
+      case 'OFFLINE':
+      default:
+        return 'offline';
+    }
+  };
+
   return (
     <div className="delivery-table-wrapper">
       <table className="delivery-table">
         <thead>
           <tr>
             <th>Delivery Person</th>
-            <th>Shop</th>
-            <th>Owner</th>
             <th>Phone</th>
+            <th>Availability</th>
             <th>Active Orders</th>
             <th>Completed</th>
             <th>Total Orders</th>
-            <th>Status</th>
+            <th>Application</th>
             <th>Action</th>
           </tr>
         </thead>
 
         <tbody>
           {filteredDeliveryPersons.map((person) => {
-            const owner = person.ownerId || {};
-
             return (
               <tr key={person._id}>
                 <td>
                   <div className="delivery-person-cell">
                     <strong>{person.name}</strong>
-                    <span>{person.shopId}</span>
+
+                    <span>
+                      {person.deliveryType === 'RMA'
+                        ? 'RMA Delivery Partner'
+                        : person.shopId || '—'}
+                    </span>
                   </div>
                 </td>
 
-                <td>{owner.shopName || '—'}</td>
-
-                <td>{owner.ownerName || '—'}</td>
-
                 <td>{person.phone || '—'}</td>
+
+                <td>
+                  <span
+                    className={`delivery-status ${getAvailabilityClass(
+                      person,
+                    )}`}
+                  >
+                    {getAvailabilityLabel(person)}
+                  </span>
+                </td>
 
                 <td>
                   <span className="order-count active">
@@ -64,13 +108,11 @@ function DeliveryTable({ loading, filteredDeliveryPersons, onViewDetails }) {
 
                 <td>
                   <span
-                    className={
-                      person.isActive
-                        ? 'delivery-status active'
-                        : 'delivery-status inactive'
-                    }
+                    className={`delivery-status ${
+                      person.applicationStatus?.toLowerCase() || ''
+                    }`}
                   >
-                    {person.isActive ? 'Active' : 'Inactive'}
+                    {person.applicationStatus || '—'}
                   </span>
                 </td>
 

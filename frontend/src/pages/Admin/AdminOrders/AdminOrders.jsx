@@ -156,6 +156,16 @@ function AdminOrders() {
     window.location.reload();
   };
 
+  const handleOrderUpdated = (updatedOrder) => {
+    setSelectedOrder(updatedOrder);
+
+    setOrders((prevOrders) =>
+      prevOrders.map((order) =>
+        order.orderId === updatedOrder.orderId ? updatedOrder : order,
+      ),
+    );
+  };
+
   return (
     <div className="admin-orders-page">
       <OrdersHeader onBack={() => navigate('/admin/dashboard')} />
@@ -206,6 +216,7 @@ function AdminOrders() {
         onClose={handleCloseOrder}
         formatDate={formatDate}
         getStatusClass={getStatusClass}
+        onOrderUpdated={handleOrderUpdated}
       />
     </div>
   );
