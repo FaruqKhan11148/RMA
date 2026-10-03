@@ -100,17 +100,17 @@ function AdminDelivery() {
     (person) => !person.isActive,
   ).length;
 
-  const availableDeliveryPersons = deliveryPersons.filter(
-    (person) => person.isActive && person.availabilityStatus === 'AVAILABLE',
-  ).length;
+  // const availableDeliveryPersons = deliveryPersons.filter(
+  //   (person) => person.isActive && person.availabilityStatus === 'AVAILABLE',
+  // ).length;
 
-  const busyDeliveryPersons = deliveryPersons.filter(
-    (person) => person.isActive && person.availabilityStatus === 'BUSY',
-  ).length;
+  // const busyDeliveryPersons = deliveryPersons.filter(
+  //   (person) => person.isActive && person.availabilityStatus === 'BUSY',
+  // ).length;
 
-  const offlineDeliveryPersons = deliveryPersons.filter(
-    (person) => person.isActive && person.availabilityStatus === 'OFFLINE',
-  ).length;
+  // const offlineDeliveryPersons = deliveryPersons.filter(
+  //   (person) => person.isActive && person.availabilityStatus === 'OFFLINE',
+  // ).length;
 
   const totalDeliveryOrders = deliveryPersons.reduce(
     (total, person) => total + (person.totalDeliveryOrders || 0),
