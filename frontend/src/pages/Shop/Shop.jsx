@@ -66,7 +66,7 @@ function Shop() {
     };
 
     fetchShop();
-  }, [shopId]);
+  }, [shopId, navigate]);
 
   if (loading) {
     return (

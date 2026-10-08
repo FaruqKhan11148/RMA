@@ -1,6 +1,6 @@
 import './FinanceWithdrawals.css';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import {
   fetchFinanceWithdrawals,
@@ -24,7 +24,7 @@ function FinanceWithdrawals() {
   const [actionLoading, setActionLoading] = useState(null);
   const [error, setError] = useState('');
 
-  const loadWithdrawals = async () => {
+  const loadWithdrawals = useCallback(async () => {
     try {
       setLoading(true);
       setError('');
@@ -52,11 +52,11 @@ function FinanceWithdrawals() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [status, pagination.page, pagination.limit]);
 
   useEffect(() => {
     loadWithdrawals();
-  }, [status, pagination.page, pagination.limit]);
+  }, [loadWithdrawals]);
 
   const handleComplete = async (transactionId) => {
     const confirmed = window.confirm(
