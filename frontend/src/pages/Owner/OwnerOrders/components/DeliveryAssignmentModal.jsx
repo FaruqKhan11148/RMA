@@ -10,6 +10,7 @@ function DeliveryAssignmentModal({
   assigningDelivery,
   startingRmaDispatch,
   rmaDispatchStatus,
+  acceptedDeliveryPartner,
   setShowDeliveryModal,
   assignDeliveryPartner,
   startRmaDelivery,
@@ -122,21 +123,61 @@ function DeliveryAssignmentModal({
               <h3>RMA Delivery</h3>
             </div>
 
-            <div className="delivery_rma_dispatch_info">
-              <strong>
-                RMA will automatically find a nearby delivery partner for this
-                order.
-              </strong>
+            {!acceptedDeliveryPartner ? (
+              <>
+                <div className="delivery_rma_dispatch_info">
+                  <strong>
+                    RMA will automatically find a nearby delivery partner for
+                    this order.
+                  </strong>
 
-              <p>
-                You do not need to select a delivery partner. RMA will offer the
-                order to an eligible nearby partner.
-              </p>
-            </div>
+                  <p>
+                    You do not need to select a delivery partner. RMA will offer
+                    the order to an eligible nearby partner.
+                  </p>
+                </div>
 
-            {rmaDispatchStatus && (
-              <div className="delivery_rma_dispatch_status">
-                {rmaDispatchStatus}
+                {rmaDispatchStatus && (
+                  <div className="delivery_rma_dispatch_status">
+                    {rmaDispatchStatus}
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="delivery_rma_accepted">
+                <div className="delivery_rma_accepted_header">
+                  <strong>Delivery Partner Accepted</strong>
+
+                  <span>✓ Accepted</span>
+                </div>
+
+                <div className="delivery_rma_partner_details">
+                  <div className="delivery_rma_partner_row">
+                    <span>Name</span>
+                    <strong>
+                      {acceptedDeliveryPartner.name || 'Not available'}
+                    </strong>
+                  </div>
+
+                  <div className="delivery_rma_partner_row">
+                    <span>Phone</span>
+                    <strong>
+                      {acceptedDeliveryPartner.phone || 'Not available'}
+                    </strong>
+                  </div>
+
+                  <div className="delivery_rma_partner_row">
+                    <span>Delivery Partner ID</span>
+                    <strong>
+                      {acceptedDeliveryPartner.id || 'Not available'}
+                    </strong>
+                  </div>
+                </div>
+
+                <p className="delivery_rma_accepted_message">
+                  The delivery partner has accepted the order and is ready to
+                  collect it from your shop.
+                </p>
               </div>
             )}
           </div>

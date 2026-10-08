@@ -71,9 +71,11 @@ import OwnerLogin from './pages/Owner/OwnerLogin/OwnerLogin';
 import OwnerDashboard from './pages/Owner/OwnerDashboard/OwnerDashboard';
 import OwnerOrders from './pages/Owner/OwnerOrders/OwnerOrders';
 import Offers from './pages/Owner/Offers/Offers';
+import ReferralDetails from './pages/Owner/Offers/ReferralDetails';
 import ShopCreated from './pages/Owner/ShopCreated/ShopCreated';
 import Location from './pages/Owner/OwnerSettings/Shop/Location';
 import OpenClosed from './pages/Owner/OwnerSettings/Shop/OpenClosed';
+import ShopClosed from './pages/ShopClosed/ShopClosed';
 
 import DeliveryAvailable from './pages/Owner/OwnerSettings/Delivery/DeliveryAvailable';
 import PickupAvailable from './pages/Owner/OwnerSettings/Delivery/PickupAvailable';
@@ -348,6 +350,8 @@ function AppLayout() {
             element={<Profile onRoleChange={setProfileRole} />}
           />
 
+          <Route path="/shop-closed" element={<ShopClosed />} />
+
           {/* ==================== OWNER PUBLIC ROUTES ==================== */}
 
           <Route path="/owner/register/step-1" element={<OwnerStep1 />} />
@@ -370,7 +374,10 @@ function AppLayout() {
             <Route path="/owner/earnings" element={<OwnerEarnings />} />
             <Route path="/owner/offers" element={<Offers />} />
             <Route path="/owner/shop" element={<OwnerShop />} />
-
+            <Route
+              path="/owner/offers/referrals"
+              element={<ReferralDetails />}
+            />
             {/* ---------- ACCOUNT SETTINGS ---------- */}
 
             <Route path="/owner/settings/account" element={<OwnerSettings />} />

@@ -375,6 +375,11 @@ const acceptDeliveryAssignment = async (req, res) => {
         data: {
           screen: 'orders',
           orderId: order.orderId,
+          assignmentStatus: 'ACCEPTED',
+          deliveryAssignmentType: order.deliveryAssignmentType,
+          deliveryPersonId: deliveryPerson.deliveryPersonId,
+          deliveryPersonName: deliveryPerson.name,
+          deliveryPersonPhone: deliveryPerson.phone,
         },
       });
     } catch (notificationError) {

@@ -1,4 +1,7 @@
 const Order = require('../../../models/Order');
+const {
+  recordCustomerPayment,
+} = require('../../../services/testBank/testBankSettlement.service');
 
 const {
   createAndSendNotification,
@@ -131,6 +134,67 @@ async function handlePayUSuccess(req, res) {
     order.refundCompletedAt = null;
 
     await order.save();
+
+    // ---------------------------------------------------------
+    // RECORD CUSTOMER PAYMENT IN TESTBANK
+    // ---------------------------------------------------------
+    //
+    // PayU payment is now verified and actually successful.
+    // Record the full amount paid by the customer in the
+    // PayU TestBank account.
+    //
+    // IMPORTANT:
+    // This does NOT settle Owner / RMA / DP yet.
+    // That happens later when the order is completed.
+    // ---------------------------------------------------------
+
+    try {
+      const TestBankAccount = require('../../../models/TestBankAccount');
+
+      const payuAccount = await TestBankAccount.findOne({
+        accountType: 'PAYU',
+        status: 'ACTIVE',
+      });
+
+      if (!payuAccount) {
+        throw new Error('Active PayU TestBank account not found');
+      }
+
+      const customerPaymentAmount = Number(order.customerPayableAmount);
+
+      if (
+        !Number.isFinite(customerPaymentAmount) ||
+        customerPaymentAmount <= 0
+      ) {
+        throw new Error(`Invalid customer payable amount for ${order.orderId}`);
+      }
+
+      await recordCustomerPayment({
+        orderId: order.orderId,
+        payuAccountId: payuAccount._id,
+        amount: customerPaymentAmount,
+        metadata: {
+          paymentId: data.mihpayid,
+          paymentOrderId: data.txnid,
+          baseAmount: order.totalPrice,
+          payuFee: order.payuFee,
+          payuGst: order.payuGst,
+          payuCharges: order.payuCharges,
+          customerPayableAmount: order.customerPayableAmount,
+        },
+      });
+
+      console.log('TestBank customer payment recorded:', {
+        orderId: order.orderId,
+        amount: customerPaymentAmount,
+        payuAccount: payuAccount.accountNumber,
+      });
+    } catch (testBankError) {
+      console.error(
+        `TestBank customer payment recording failed for ${order.orderId}:`,
+        testBankError,
+      );
+    }
 
     if (!wasAlreadyPaid) {
       try {

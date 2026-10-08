@@ -1319,7 +1319,9 @@
 }
 
 .order_delivery_message {
-  color: #2563eb;
+  color: #157318;
+  background-color: white;
+  border-color: black;
 }
 
 .order_completed_message {
@@ -1723,6 +1725,105 @@
   .owner_order_card:active {
     outline: none;
     box-shadow: none;
+  }
+}
+
+/* =========================================================
+   DELIVERY STATUS
+   ========================================================= */
+
+.owner_order_delivery_partner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 12px;
+  padding: 12px 13px;
+  border: 1px solid #e5e7eb;
+  border-radius: 11px;
+  background: #f8fafc;
+}
+
+.owner_order_delivery_partner_info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.owner_order_delivery_partner_info strong {
+  color: #111827;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.owner_order_delivery_partner_info span {
+  color: #64748b;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.owner_order_delivery_partner_status {
+  flex-shrink: 0;
+  color: #16803a;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* RMA */
+
+.owner_order_delivery_partner.rma {
+  background: #f8fafc;
+  border-color: #dbe3ea;
+}
+
+/* Waiting */
+
+.owner_order_delivery_partner.pending {
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+.owner_order_delivery_partner.pending .owner_order_delivery_partner_status {
+  color: #a16207;
+}
+
+/* Accepted */
+
+.owner_order_delivery_partner.accepted {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.owner_order_delivery_partner.accepted .owner_order_delivery_partner_status {
+  color: #15803d;
+}
+
+/* Out for delivery */
+
+.owner_order_delivery_partner.out-for-delivery {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.owner_order_delivery_partner.out-for-delivery
+  .owner_order_delivery_partner_status {
+  color: #2563eb;
+}
+
+@media (max-width: 600px) {
+  .owner_order_delivery_partner {
+    align-items: flex-start;
+    padding: 11px 12px;
+  }
+
+  .owner_order_delivery_partner_status {
+    font-size: 10px;
+  }
+
+  .owner_order_delivery_partner_info span {
+    font-size: 10px;
   }
 }
 

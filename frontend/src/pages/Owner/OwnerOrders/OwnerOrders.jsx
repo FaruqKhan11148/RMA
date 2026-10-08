@@ -19,6 +19,8 @@ import {
   startRmaDispatch,
 } from './utils/ownerOrdersApi';
 
+import { listenForOwnerNotifications } from '../../../firebase/ownerNotifications';
+
 function OwnerOrders() {
   const navigate = useNavigate();
 
@@ -46,6 +48,7 @@ function OwnerOrders() {
 
   const [startingRmaDispatch, setStartingRmaDispatch] = useState(false);
   const [rmaDispatchStatus, setRmaDispatchStatus] = useState('');
+  const [acceptedDeliveryPartner, setAcceptedDeliveryPartner] = useState(null);
 
   const ownerData = localStorage.getItem('rma_owner');
 
@@ -197,6 +200,7 @@ function OwnerOrders() {
         RMA: [],
       });
       setRmaDispatchStatus('');
+      setAcceptedDeliveryPartner(null);
       setShowDeliveryModal(true);
       setLoadingDeliveryPartners(true);
 
@@ -225,7 +229,6 @@ function OwnerOrders() {
 
     try {
       setStartingRmaDispatch(true);
-      setRmaDispatchStatus('Finding a delivery partner...');
 
       const ownerToken = localStorage.getItem('rma_owner_token');
 
@@ -234,30 +237,42 @@ function OwnerOrders() {
         ownerToken,
       );
 
+      const updatedOrder = {
+        ...selectedDeliveryOrder,
+        status: data.order?.status || selectedDeliveryOrder.status,
+        deliveryAssignmentType: data.order?.deliveryAssignmentType || 'RMA',
+        deliveryPersonId: data.order?.deliveryPersonId || null,
+        deliveryAssignmentStatus:
+          data.order?.deliveryAssignmentStatus || 'PENDING',
+      };
+
       setOrders((currentOrders) =>
         currentOrders.map((order) =>
           order.orderId === selectedDeliveryOrder.orderId
-            ? {
-                ...order,
-                status: data.order?.status || order.status,
-                deliveryAssignmentType:
-                  data.order?.deliveryAssignmentType || 'RMA',
-                deliveryPersonId: data.order?.deliveryPersonId || null,
-                deliveryAssignmentStatus:
-                  data.order?.deliveryAssignmentStatus || 'PENDING',
-              }
+            ? updatedOrder
             : order,
         ),
       );
 
-      setRmaDispatchStatus('Delivery partner found. Waiting for acceptance...');
+      // Close the assignment popup immediately.
+      setShowDeliveryModal(false);
+      setSelectedDeliveryOrder(null);
+
+      // Clear modal-related state.
+      setSelectedDeliveryPersonId('');
+      setDeliveryPartners({
+        SHOP: [],
+        RMA: [],
+      });
+      setRmaDispatchStatus('');
+      setAcceptedDeliveryPartner(null);
 
       console.log('RMA delivery dispatch started:', data);
     } catch (error) {
       console.error('Start RMA delivery failed:', error);
 
       if (error.status === 409 && error.code === 'NO_PARTNER_AVAILABLE') {
-        setRmaDispatchStatus('No delivery partner is currently available.');
+        alert('No delivery partner is currently available.');
         return;
       }
 
@@ -336,6 +351,120 @@ function OwnerOrders() {
       setAssigningDelivery(false);
     }
   };
+
+  useEffect(() => {
+    if (!shopOwner) return;
+
+    let unsubscribe;
+    let cancelled = false;
+
+    const setupOwnerNotifications = async () => {
+      unsubscribe = await listenForOwnerNotifications(async (payload) => {
+        console.log(
+          '🔥 OWNER FCM RECEIVED IN BROWSER:',
+          JSON.stringify(payload, null, 2),
+        );
+
+        try {
+          const notificationType = payload?.data?.type;
+          const orderId = payload?.data?.orderId;
+
+          if (!orderId) {
+            return;
+          }
+
+          // ==========================================
+          // DELIVERY ASSIGNMENT ACCEPTED
+          // ==========================================
+
+          if (notificationType === 'DELIVERY_ASSIGNMENT_ACCEPTED') {
+            console.log('OWNER: Delivery assignment accepted:', orderId);
+
+            const acceptedPartner = {
+              id: payload?.data?.deliveryPersonId || '',
+              name: payload?.data?.deliveryPersonName || 'Delivery Partner',
+              phone: payload?.data?.deliveryPersonPhone || '',
+            };
+
+            setAcceptedDeliveryPartner(acceptedPartner);
+
+            setRmaDispatchStatus('Delivery partner accepted the order.');
+
+            const data = await fetchOwnerOrders(shopOwner.id);
+
+            if (!data?.orders) {
+              return;
+            }
+
+            setOrders(data.orders);
+
+            setSelectedOrder((currentSelectedOrder) => {
+              if (!currentSelectedOrder) {
+                return currentSelectedOrder;
+              }
+
+              const updatedSelectedOrder = data.orders.find(
+                (order) => order.orderId === currentSelectedOrder.orderId,
+              );
+
+              return updatedSelectedOrder || currentSelectedOrder;
+            });
+
+            return;
+          }
+
+          // ==========================================
+          // ORDER COMPLETED
+          // ==========================================
+
+          if (notificationType === 'ORDER_COMPLETED') {
+            console.log('OWNER: Order completed:', orderId);
+
+            const data = await fetchOwnerOrders(shopOwner.id);
+
+            if (!data?.orders) {
+              return;
+            }
+
+            setOrders(data.orders);
+
+            setSelectedOrder((currentSelectedOrder) => {
+              if (!currentSelectedOrder) {
+                return currentSelectedOrder;
+              }
+
+              const updatedSelectedOrder = data.orders.find(
+                (order) => order.orderId === currentSelectedOrder.orderId,
+              );
+
+              return updatedSelectedOrder || currentSelectedOrder;
+            });
+
+            return;
+          }
+        } catch (error) {
+          console.error(
+            'OWNER: Failed to handle delivery notification:',
+            error,
+          );
+        }
+      });
+
+      if (cancelled && unsubscribe) {
+        unsubscribe();
+      }
+    };
+
+    setupOwnerNotifications();
+
+    return () => {
+      cancelled = true;
+
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [shopOwner]);
 
   const filteredOrders =
     activeFilter === 'All'
@@ -417,6 +546,7 @@ function OwnerOrders() {
         assigningDelivery={assigningDelivery}
         startingRmaDispatch={startingRmaDispatch}
         rmaDispatchStatus={rmaDispatchStatus}
+        acceptedDeliveryPartner={acceptedDeliveryPartner}
         setShowDeliveryModal={setShowDeliveryModal}
         assignDeliveryPartner={assignDeliveryPartner}
         startRmaDelivery={startRmaDelivery}

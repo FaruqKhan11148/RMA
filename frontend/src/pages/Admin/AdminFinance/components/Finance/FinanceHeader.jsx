@@ -16,7 +16,7 @@ function FinanceHeader({ onBack }) {
 
       <div className="finance-fee-info">
         <span>RMA Platform Fee</span>
-        <strong>1%</strong>
+        <strong>2.5%</strong>
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ export function calculateFinanceSummary(orders) {
   let grossOrderValue = 0;
   let totalRmaRevenue = 0;
   let totalOwnerSettlement = 0;
+  let totalPayuCharges = 0;
 
   let paidRevenue = 0;
   let pendingPaymentValue = 0;
@@ -15,12 +16,26 @@ export function calculateFinanceSummary(orders) {
 
   orders.forEach((order) => {
     const total = Number(order.totalPrice || 0);
-    const rmaFee = Number(order.rmaFee || total * 0.01);
-    const ownerAmount = Number(order.ownerAmount ?? total - rmaFee);
+
+    const productSubtotal = Number(
+      order.productSubtotal || order.subtotal || 0,
+    );
+
+    const rmaFee = Number(
+      order.rmaFee || order.rmaAmount || productSubtotal * 0.025 || 0,
+    );
+
+    const ownerAmount = Number(order.ownerAmount ?? productSubtotal - rmaFee);
+
+    const payuFee = Number(order.payuFee || 0);
+    const payuGst = Number(order.payuGst || 0);
+
+    const payuCharges = Number(order.payuCharges ?? payuFee + payuGst);
 
     grossOrderValue += total;
     totalRmaRevenue += rmaFee;
     totalOwnerSettlement += ownerAmount;
+    totalPayuCharges += payuCharges;
 
     if (order.paymentStatus === 'Paid') {
       paidRevenue += total;
@@ -47,6 +62,7 @@ export function calculateFinanceSummary(orders) {
     grossOrderValue,
     totalRmaRevenue,
     totalOwnerSettlement,
+    totalPayuCharges,
 
     paidRevenue,
     pendingPaymentValue,

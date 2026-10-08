@@ -22,13 +22,32 @@ function OwnerOrderCard({
     if (order.deliveryAssignmentStatus === 'ACCEPTED') {
       return order.status === 'OutForDelivery'
         ? 'Out for delivery'
-        : 'Assigned';
+        : 'Accepted';
     }
 
     return null;
   };
 
   const deliveryPartnerStatus = getDeliveryPartnerStatus();
+
+  const isRma =
+    order.orderType === 'delivery' &&
+    order.deliveryAssignmentType === 'RMA' &&
+    order.deliveryPersonId;
+
+  const getDeliveryStatusClass = () => {
+    if (order.deliveryAssignmentStatus === 'PENDING') {
+      return 'pending';
+    }
+
+    if (order.deliveryAssignmentStatus === 'ACCEPTED') {
+      return order.status === 'OutForDelivery'
+        ? 'out-for-delivery'
+        : 'accepted';
+    }
+
+    return '';
+  };
 
   return (
     <div className="owner_order_card" onClick={() => setSelectedOrder(order)}>
@@ -75,7 +94,7 @@ function OwnerOrderCard({
         </div>
       </div>
 
-      {/* ORDER TYPE */}
+      {/* ORDER META */}
 
       <div className="owner_order_meta">
         <span>{order.orderType === 'delivery' ? 'Delivery' : 'Pickup'}</span>
@@ -85,19 +104,29 @@ function OwnerOrderCard({
         )}
       </div>
 
-      {/* DELIVERY PARTNER */}
+      {/* DELIVERY STATUS */}
 
       {order.orderType === 'delivery' &&
         order.deliveryAssignmentType &&
         order.deliveryPersonId && (
-          <div className="owner_order_delivery_partner">
-            <span>
-              {order.deliveryAssignmentType === 'RMA'
-                ? 'RMA Delivery Partner'
-                : 'Shop Delivery Partner'}
-            </span>
+          <div
+            className={`owner_order_delivery_partner ${isRma ? 'rma' : 'shop'} ${getDeliveryStatusClass()}`}
+          >
+            <div className="owner_order_delivery_partner_info">
+              <strong>{isRma ? 'RMA Delivery' : 'Shop Delivery'}</strong>
 
-            <span>{deliveryPartnerStatus}</span>
+              <span>
+                {order.deliveryAssignmentStatus === 'PENDING'
+                  ? 'Delivery partner is being contacted'
+                  : order.status === 'OutForDelivery'
+                    ? 'Delivery partner is out for delivery'
+                    : 'Delivery partner accepted the order'}
+              </span>
+            </div>
+
+            <span className="owner_order_delivery_partner_status">
+              {deliveryPartnerStatus}
+            </span>
           </div>
         )}
 

@@ -14,6 +14,10 @@ const {
   offerRmaOrderToNextPartner,
 } = require('../../../services/rmaDispatchService');
 
+const {
+  settleCompletedOrder,
+} = require('../../../services/orders/settlement.service');
+
 // ==========================================
 // PAYU REFUND
 // ==========================================
@@ -672,19 +676,63 @@ async function updateOrderStatus(req, res) {
       order.completedAt = new Date();
 
       // ==========================================
-      // OWNER SETTLEMENT
+      // COMPLETE ORDER FIRST
+      // ==========================================
+
+      order.status = 'Completed';
+
+      await order.save();
+
+      // ==========================================
+      // REAL TESTBANK SETTLEMENT
       // ==========================================
 
       if (
         order.paymentStatus === 'Paid' &&
-        order.settlementStatus === 'Pending'
+        ['Pending', 'Processing', 'Failed'].includes(order.settlementStatus)
       ) {
-        order.settlementStatus = 'Processing';
+        try {
+          order.settlementStatus = 'Processing';
 
-        await order.save();
+          await order.save();
 
-        order.settlementStatus = 'Settled';
-        order.settledAt = new Date();
+          const settlementResult = await settleCompletedOrder(order.orderId);
+
+          console.log('========== ORDER SETTLEMENT SUCCESS ==========');
+          console.log({
+            orderId: order.orderId,
+            alreadySettled: settlementResult.alreadySettled,
+            settlementStatus: settlementResult.order.settlementStatus,
+            settledAt: settlementResult.order.settledAt,
+          });
+          console.log('===============================================');
+
+          // Refresh the order after settlement.
+          const settledOrder = await Order.findOne({
+            orderId: order.orderId,
+          });
+
+          if (settledOrder) {
+            order.settlementStatus = settledOrder.settlementStatus;
+            order.settledAt = settledOrder.settledAt;
+          }
+        } catch (settlementError) {
+          console.error(
+            `Settlement failed for ${order.orderId}:`,
+            settlementError,
+          );
+
+          order.settlementStatus = 'Failed';
+
+          await order.save();
+
+          return res.status(502).json({
+            message:
+              'Order was completed, but financial settlement could not be completed',
+            error: settlementError.message,
+            order,
+          });
+        }
       }
     }
 

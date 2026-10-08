@@ -5,32 +5,42 @@ function OrderRewardCard({
   progress,
   remainingOrders,
   rewardUnlocked,
+  rewardTransferred,
+  rewardAmount,
+  rewardRate,
+  shopClosed,
+  businessDate,
+  openingTime,
+  closingTime,
   ordersError,
   getProgressMessage,
   navigate,
 }) {
+  const displayReward = Number(rewardAmount || 0).toFixed(2);
+
   return (
     <section className="offer_card order_reward_card">
       <div className="offer_card_top">
         <div>
           <span className="offer_badge">1. ORDER REWARD</span>
 
-          <h2>Complete 60 orders</h2>
+          <h2>Complete {targetOrders} orders</h2>
 
           <p>
-            Complete 60 orders and earn
-            <strong> ₹100</strong>.
+            Complete at least <strong>{targetOrders} orders</strong> in your
+            business day and earn <strong>₹{rewardRate.toFixed(2)}</strong> for
+            every completed order.
           </p>
         </div>
 
-        <div className="offer_reward_amount">₹100</div>
+        <div className="offer_reward_amount">₹{displayReward}</div>
       </div>
 
       <div className="order_progress_section">
         <div
           className="circular_progress"
           style={{
-            '--progress': `${progress * 3.6}deg`,
+            '--progress': `${Math.min(progress, 100) * 3.6}deg`,
           }}
         >
           <div className="circular_progress_inner">
@@ -59,9 +69,11 @@ function OrderRewardCard({
           <h3>
             {loadingOrders
               ? 'Checking today’s progress...'
-              : rewardUnlocked
-                ? 'Reward unlocked!'
-                : `${remainingOrders} more to go`}
+              : rewardTransferred
+                ? `₹${displayReward} reward transferred`
+                : rewardUnlocked
+                  ? `₹${displayReward} reward unlocked`
+                  : `${remainingOrders} more to go`}
           </h3>
 
           <p>
@@ -74,13 +86,14 @@ function OrderRewardCard({
             <div
               className="order_progress_bar_fill"
               style={{
-                width: `${progress}%`,
+                width: `${Math.min(progress, 100)}%`,
               }}
             />
           </div>
 
           <span className="progress_hint">
-            Keep completing orders to reach ₹100.
+            Earn ₹{rewardRate.toFixed(2)} for every completed order once you
+            reach {targetOrders} orders.
           </span>
 
           {ordersError && <span className="progress_error">{ordersError}</span>}
@@ -89,21 +102,41 @@ function OrderRewardCard({
 
       <div className="offer_status">
         <div className="offer_status_icon">
-          {completedOrders >= targetOrders ? '✓' : '↗'}
+          {rewardTransferred ? '✓' : rewardUnlocked ? '✓' : '↗'}
         </div>
 
         <div>
           <strong>
-            {completedOrders >= targetOrders
-              ? '₹100 Reward Unlocked'
-              : '₹100 Reward in Progress'}
+            {rewardTransferred
+              ? `₹${displayReward} Reward Transferred`
+              : rewardUnlocked
+                ? `₹${displayReward} Reward Unlocked`
+                : 'Reward in Progress'}
           </strong>
 
           <span>
-            {completedOrders >= targetOrders
-              ? 'Your order target has been completed.'
-              : 'Only completed orders count towards this reward.'}
+            {rewardTransferred
+              ? `Congratulations! ₹${displayReward} has been transferred to your account.`
+              : rewardUnlocked
+                ? shopClosed
+                  ? `The business day is closed and ₹${displayReward} is ready to be transferred to your account.`
+                  : `Complete orders until ${closingTime} to finish today’s business day.`
+                : `Only completed, paid and settled orders count towards this reward.`}
           </span>
+        </div>
+      </div>
+
+      <div className="offer_business_day">
+        <div>
+          <span>Business day</span>
+          <strong>{businessDate || 'Today'}</strong>
+        </div>
+
+        <div>
+          <span>Shop hours</span>
+          <strong>
+            {openingTime || '--:--'} – {closingTime || '--:--'}
+          </strong>
         </div>
       </div>
 
@@ -113,9 +146,11 @@ function OrderRewardCard({
         onClick={() => navigate('/owner/orders')}
       >
         <span>
-          {completedOrders >= targetOrders
+          {rewardTransferred
             ? 'View Completed Orders'
-            : 'Keep Completing Orders'}
+            : rewardUnlocked
+              ? 'View Completed Orders'
+              : 'Keep Completing Orders'}
         </span>
 
         <span>→</span>

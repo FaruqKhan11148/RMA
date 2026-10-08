@@ -9,6 +9,10 @@ import PaymentBreakdown from './components/Finance/PaymentBreakdown';
 import ShopFinance from './components/Finance/ShopFinance';
 import OrderFinance from './components/Finance/OrderFinance';
 import FinanceOrderModal from './components/Finance/FinanceOrderModal';
+import FinanceWithdrawals from './components/Withdrawals/FinanceWithdrawals';
+import RmaAccount from './components/RmaAccount/RmaAccount';
+import OwnerAccounts from './components/OwnerAccounts/OwnerAccounts';
+import DeliveryPartnerAccounts from './components/DeliveryPartnerAccounts/DeliveryPartnerAccounts';
 
 import { fetchFinanceData } from './utils/Finance/financeApi';
 
@@ -23,6 +27,8 @@ import {
 
 function AdminFinance() {
   const navigate = useNavigate();
+
+  const [activeSection, setActiveSection] = useState('overview');
 
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -74,45 +80,124 @@ function AdminFinance() {
     <div className="admin-finance-page">
       <FinanceHeader onBack={() => navigate('/admin/dashboard')} />
 
-      {error && <div className="finance-error">{error}</div>}
+      <div className="finance-center-nav">
+        <button
+          type="button"
+          className={
+            activeSection === 'overview'
+              ? 'finance-center-nav-item active'
+              : 'finance-center-nav-item'
+          }
+          onClick={() => setActiveSection('overview')}
+        >
+          Overview
+        </button>
 
-      {loading ? (
-        <div className="finance-loading">Loading finance data...</div>
+        <button
+          type="button"
+          className={
+            activeSection === 'rma-account'
+              ? 'finance-center-nav-item active'
+              : 'finance-center-nav-item'
+          }
+          onClick={() => setActiveSection('rma-account')}
+        >
+          RMA Account
+        </button>
+
+        <button
+          type="button"
+          className={
+            activeSection === 'owner-accounts'
+              ? 'finance-center-nav-item active'
+              : 'finance-center-nav-item'
+          }
+          onClick={() => setActiveSection('owner-accounts')}
+        >
+          Owner Accounts
+        </button>
+
+        <button
+          type="button"
+          className={
+            activeSection === 'delivery-partner-accounts'
+              ? 'finance-center-nav-item active'
+              : 'finance-center-nav-item'
+          }
+          onClick={() => setActiveSection('delivery-partner-accounts')}
+        >
+          Delivery Partners
+        </button>
+
+        <button
+          type="button"
+          className={
+            activeSection === 'withdrawals'
+              ? 'finance-center-nav-item active'
+              : 'finance-center-nav-item'
+          }
+          onClick={() => setActiveSection('withdrawals')}
+        >
+          Withdrawals
+        </button>
+      </div>
+
+      {activeSection === 'rma-account' ? (
+        <RmaAccount />
+      ) : activeSection === 'owner-accounts' ? (
+        <OwnerAccounts />
+      ) : activeSection === 'delivery-partner-accounts' ? (
+        <DeliveryPartnerAccounts />
+      ) : activeSection === 'withdrawals' ? (
+        <FinanceWithdrawals />
       ) : (
         <>
-          <FinanceStats
-            financeSummary={financeSummary}
-            formatMoney={formatMoney}
-          />
+          {error && <div className="finance-error">{error}</div>}
 
-          <PaymentBreakdown
-            financeSummary={financeSummary}
-            formatMoney={formatMoney}
-          />
+          {loading ? (
+            <div className="finance-loading">Loading finance data...</div>
+          ) : (
+            <>
+              <FinanceStats
+                financeSummary={financeSummary}
+                formatMoney={formatMoney}
+              />
 
-          <ShopFinance shopFinance={shopFinance} formatMoney={formatMoney} />
+              <PaymentBreakdown
+                financeSummary={financeSummary}
+                formatMoney={formatMoney}
+              />
 
-          <OrderFinance
-            filteredOrders={filteredOrders}
-            orders={orders}
-            search={search}
-            paymentFilter={paymentFilter}
-            onSearchChange={setSearch}
-            onPaymentFilterChange={setPaymentFilter}
-            onViewOrder={setSelectedOrder}
-            formatMoney={formatMoney}
-            formatDate={formatDate}
-            getPaymentClass={getPaymentClass}
-          />
+              <ShopFinance
+                shopFinance={shopFinance}
+                formatMoney={formatMoney}
+              />
+
+              <OrderFinance
+                filteredOrders={filteredOrders}
+                orders={orders}
+                search={search}
+                paymentFilter={paymentFilter}
+                onSearchChange={setSearch}
+                onPaymentFilterChange={setPaymentFilter}
+                onViewOrder={setSelectedOrder}
+                formatMoney={formatMoney}
+                formatDate={formatDate}
+                getPaymentClass={getPaymentClass}
+              />
+            </>
+          )}
         </>
       )}
 
-      <FinanceOrderModal
-        selectedOrder={selectedOrder}
-        onClose={() => setSelectedOrder(null)}
-        formatMoney={formatMoney}
-        formatDate={formatDate}
-      />
+      {activeSection === 'overview' && (
+        <FinanceOrderModal
+          selectedOrder={selectedOrder}
+          onClose={() => setSelectedOrder(null)}
+          formatMoney={formatMoney}
+          formatDate={formatDate}
+        />
+      )}
     </div>
   );
 }

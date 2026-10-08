@@ -1,5 +1,20 @@
 const Order = require('../../../models/Order');
 const DeliveryWalletTransaction = require('../../../models/DeliveryWalletTransaction');
+const {
+  releaseDpWalletEarning,
+  completeDpWalletWithdrawal,
+} = require('../../../services/testBank/testBankDpWallet.service');
+
+const {
+  getOrCreateRmaAccount,
+  getRmaAccountDetails,
+  getOwnerAccounts,
+  getDeliveryPartnerAccounts,
+  getFinanceOverview,
+  getFinanceSettlements,
+  getFinanceTransactions,
+  getFinanceWithdrawals,
+} = require('../../../services/adminFinance/adminFinance.service');
 
 // ============================================================
 // GET TODAY'S ORDERS FOR ADMIN
@@ -465,32 +480,29 @@ async function releaseDeliveryEarning(req, res) {
   try {
     const { transactionId } = req.params;
 
-    const transaction = await DeliveryWalletTransaction.findOne({
-      _id: transactionId,
-      type: 'ORDER_DELIVERY_EARNING',
-      status: 'PENDING',
-    });
-
-    if (!transaction) {
-      return res.status(404).json({
-        message: 'Pending delivery earning not found',
-      });
-    }
-
-    transaction.status = 'AVAILABLE';
-    transaction.availableAt = new Date();
-
-    await transaction.save();
+    const result = await releaseDpWalletEarning(transactionId);
 
     return res.status(200).json({
       message: 'Delivery earning released successfully',
-      transaction,
+      transaction: result.walletTransaction,
+      testBankTransaction: result.bankTransaction,
+      testBankAccount: {
+        id: result.dpAccount._id,
+        accountNumber: result.dpAccount.accountNumber,
+        accountName: result.dpAccount.accountName,
+        balance: result.dpAccount.balance,
+        availableBalance: result.dpAccount.availableBalance,
+        heldBalance: result.dpAccount.heldBalance,
+      },
     });
   } catch (error) {
     console.error('Release delivery earning failed:', error);
 
-    return res.status(500).json({
-      message: 'Server error',
+    const statusCode =
+      error.message === 'Pending delivery earning not found' ? 404 : 400;
+
+    return res.status(statusCode).json({
+      message: error.message || 'Unable to release delivery earning',
     });
   }
 }
@@ -551,33 +563,29 @@ async function completeDeliveryWithdrawal(req, res) {
   try {
     const { transactionId } = req.params;
 
-    const withdrawal = await DeliveryWalletTransaction.findOne({
-      _id: transactionId,
-      type: 'WITHDRAWAL_REQUEST',
-      status: 'PROCESSING',
-    });
-
-    if (!withdrawal) {
-      return res.status(404).json({
-        message: 'Processing withdrawal request not found',
-      });
-    }
-
-    withdrawal.type = 'WITHDRAWAL_COMPLETED';
-    withdrawal.status = 'COMPLETED';
-    withdrawal.processedAt = new Date();
-
-    await withdrawal.save();
+    const result = await completeDpWalletWithdrawal(transactionId);
 
     return res.status(200).json({
       message: 'Delivery withdrawal completed successfully',
-      withdrawal,
+      withdrawal: result.withdrawal,
+      testBankTransaction: result.bankTransaction,
+      testBankAccount: {
+        id: result.dpAccount._id,
+        accountNumber: result.dpAccount.accountNumber,
+        accountName: result.dpAccount.accountName,
+        balance: result.dpAccount.balance,
+        availableBalance: result.dpAccount.availableBalance,
+        heldBalance: result.dpAccount.heldBalance,
+      },
     });
   } catch (error) {
     console.error('Complete delivery withdrawal failed:', error);
 
-    return res.status(500).json({
-      message: 'Server error',
+    const statusCode =
+      error.message === 'Processing withdrawal request not found' ? 404 : 400;
+
+    return res.status(statusCode).json({
+      message: error.message || 'Unable to complete delivery withdrawal',
     });
   }
 }
@@ -622,6 +630,201 @@ async function rejectDeliveryWithdrawal(req, res) {
   }
 }
 
+async function setupRmaAccount(req, res) {
+  try {
+    const account = await getOrCreateRmaAccount();
+
+    return res.status(200).json({
+      success: true,
+      message: 'RMA Test Bank account is ready',
+      account: {
+        id: account._id,
+        accountNumber: account.accountNumber,
+        accountName: account.accountName,
+        accountType: account.accountType,
+        balance: account.balance,
+        availableBalance: account.availableBalance,
+        heldBalance: account.heldBalance,
+        currency: account.currency,
+        status: account.status,
+        createdAt: account.createdAt,
+        updatedAt: account.updatedAt,
+      },
+    });
+  } catch (error) {
+    console.error('Setup RMA Test Bank account error:', error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to setup RMA Test Bank account',
+    });
+  }
+}
+
+async function getRmaAccount(req, res) {
+  try {
+    const { account, transactions } = await getRmaAccountDetails();
+
+    return res.status(200).json({
+      success: true,
+      account: {
+        id: account._id,
+        accountNumber: account.accountNumber,
+        accountName: account.accountName,
+        accountType: account.accountType,
+        balance: account.balance,
+        availableBalance: account.availableBalance,
+        heldBalance: account.heldBalance,
+        currency: account.currency,
+        status: account.status,
+        createdAt: account.createdAt,
+        updatedAt: account.updatedAt,
+      },
+      transactions,
+    });
+  } catch (error) {
+    console.error('Get RMA Test Bank account error:', error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to fetch RMA Test Bank account',
+    });
+  }
+}
+
+async function getOwnerTestBankAccounts(req, res) {
+  try {
+    const accounts = await getOwnerAccounts();
+
+    return res.status(200).json({
+      success: true,
+      accounts,
+    });
+  } catch (error) {
+    console.error('Get owner Test Bank accounts error:', error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to fetch owner Test Bank accounts',
+    });
+  }
+}
+
+async function getDeliveryPartnerTestBankAccounts(req, res) {
+  try {
+    const accounts = await getDeliveryPartnerAccounts();
+
+    return res.status(200).json({
+      success: true,
+      accounts,
+    });
+  } catch (error) {
+    console.error('Get delivery partner Test Bank accounts error:', error);
+
+    return res.status(500).json({
+      success: false,
+      message:
+        error.message || 'Failed to fetch delivery partner Test Bank accounts',
+    });
+  }
+}
+
+async function getFinanceOverviewData(req, res) {
+  try {
+    const overview = await getFinanceOverview();
+
+    return res.status(200).json({
+      success: true,
+      overview,
+    });
+  } catch (error) {
+    console.error('Get finance overview error:', error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to fetch finance overview',
+    });
+  }
+}
+
+async function getFinanceSettlementsData(req, res) {
+  try {
+    const settlements = await getFinanceSettlements();
+
+    return res.status(200).json({
+      success: true,
+      settlements,
+    });
+  } catch (error) {
+    console.error('Get finance settlements error:', error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to fetch finance settlements',
+    });
+  }
+}
+
+async function getFinanceTransactionsData(req, res) {
+  try {
+    const {
+      page,
+      limit,
+      transactionType,
+      status,
+      referenceType,
+      referenceId,
+      accountId,
+    } = req.query;
+
+    const result = await getFinanceTransactions({
+      page,
+      limit,
+      transactionType,
+      status,
+      referenceType,
+      referenceId,
+      accountId,
+    });
+
+    return res.status(200).json({
+      success: true,
+      ...result,
+    });
+  } catch (error) {
+    console.error('Get finance transactions error:', error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to fetch finance transactions',
+    });
+  }
+}
+
+async function getFinanceWithdrawalsData(req, res) {
+  try {
+    const { status, page, limit } = req.query;
+
+    const result = await getFinanceWithdrawals({
+      status,
+      page,
+      limit,
+    });
+
+    return res.status(200).json({
+      success: true,
+      ...result,
+    });
+  } catch (error) {
+    console.error('Get finance withdrawals error:', error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to fetch finance withdrawals',
+    });
+  }
+}
+
 module.exports = {
   getDailyOrders,
   getMonthlyFinance,
@@ -631,4 +834,12 @@ module.exports = {
   completeDeliveryWithdrawal,
   rejectDeliveryWithdrawal,
   getPendingDeliveryEarnings,
+  setupRmaAccount,
+  getRmaAccount,
+  getOwnerTestBankAccounts,
+  getDeliveryPartnerTestBankAccounts,
+  getFinanceOverviewData,
+  getFinanceSettlementsData,
+  getFinanceTransactionsData,
+  getFinanceWithdrawalsData,
 };

@@ -669,3 +669,1015 @@
 [data-theme='dark'] .owner_earnings_error p {
   color: #c2aaaa;
 }
+
+.owner_earnings_order_card {
+  cursor: pointer;
+}
+
+.owner_earnings_order_card:hover {
+  transform: translateY(-1px);
+}
+
+.owner_earnings_view_button {
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+/* =========================================
+   Earnings Order Details Modal
+========================================= */
+
+.owner_earnings_modal_overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(0, 0, 0, 0.55);
+
+  overflow-y: auto;
+}
+
+.owner_earnings_modal {
+  width: 100%;
+  max-width: 620px;
+  max-height: calc(100vh - 40px);
+
+  background: #ffffff;
+  border-radius: 16px;
+
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+
+  overflow-y: auto;
+}
+
+.owner_earnings_modal_header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  padding: 20px 22px;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.owner_earnings_modal_header span {
+  display: block;
+
+  margin-bottom: 5px;
+
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.owner_earnings_modal_header h2 {
+  margin: 0;
+
+  font-size: 18px;
+  font-weight: 700;
+
+  word-break: break-word;
+}
+
+.owner_earnings_modal_close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 36px;
+  height: 36px;
+
+  padding: 0;
+
+  border: none;
+  border-radius: 50%;
+
+  background: #f3f4f6;
+
+  cursor: pointer;
+
+  transition: background 0.2s ease;
+}
+
+.owner_earnings_modal_close:hover {
+  background: #e5e7eb;
+}
+
+.owner_earnings_modal_status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding: 14px 22px;
+
+  background: #f9fafb;
+
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.owner_earnings_breakdown {
+  margin: 16px 20px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+
+  overflow: hidden;
+}
+
+.owner_earnings_breakdown_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 15px 16px;
+
+  background: #f9fafb;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.owner_earnings_breakdown_header h3 {
+  margin: 0;
+
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.owner_earnings_breakdown_header strong {
+  font-size: 17px;
+}
+
+.owner_earnings_breakdown_row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+
+  padding: 12px 16px;
+
+  font-size: 14px;
+}
+
+.owner_earnings_breakdown_row span {
+  color: #6b7280;
+}
+
+.owner_earnings_breakdown_row strong {
+  font-weight: 600;
+}
+
+.owner_earnings_breakdown_row.deduction strong {
+  color: #dc2626;
+}
+
+.owner_earnings_breakdown_total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+
+  padding: 14px 16px;
+
+  border-top: 1px solid #e5e7eb;
+
+  font-weight: 700;
+}
+
+.owner_earnings_breakdown_total strong {
+  font-size: 17px;
+}
+
+.owner_earnings_transaction_info {
+  margin: 16px 20px;
+
+  padding: 16px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+}
+
+.owner_earnings_transaction_info h3 {
+  margin: 0 0 14px;
+
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.owner_earnings_info_row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  gap: 20px;
+
+  padding: 10px 0;
+
+  border-bottom: 1px solid #f1f5f9;
+
+  font-size: 13px;
+}
+
+.owner_earnings_info_row:last-child {
+  border-bottom: none;
+}
+
+.owner_earnings_info_row span {
+  color: #6b7280;
+  flex-shrink: 0;
+}
+
+.owner_earnings_info_row strong {
+  text-align: right;
+
+  word-break: break-word;
+}
+
+.owner_earnings_modal_footer {
+  display: flex;
+  justify-content: flex-end;
+
+  padding: 16px 20px;
+
+  border-top: 1px solid #e5e7eb;
+}
+
+.owner_earnings_modal_footer button {
+  padding: 9px 18px;
+
+  border: none;
+  border-radius: 8px;
+
+  background: #111827;
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.owner_earnings_modal_footer button:hover {
+  opacity: 0.9;
+}
+
+/* =========================================
+   Clickable Earnings Cards
+========================================= */
+
+.owner_earnings_order_card {
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.owner_earnings_order_card:hover {
+  transform: translateY(-1px);
+
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
+}
+
+.owner_earnings_view_button {
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  color: inherit;
+
+  font: inherit;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+/* =========================================
+   Mobile
+========================================= */
+
+@media (max-width: 600px) {
+  .owner_earnings_modal_overlay {
+    align-items: flex-end;
+
+    padding: 0;
+  }
+
+  .owner_earnings_modal {
+    max-width: none;
+    max-height: 92vh;
+
+    border-radius: 18px 18px 0 0;
+  }
+
+  .owner_earnings_modal_header {
+    padding: 18px;
+  }
+
+  .owner_earnings_modal_status {
+    padding: 12px 18px;
+
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .owner_earnings_breakdown {
+    margin: 14px;
+  }
+
+  .owner_earnings_transaction_info {
+    margin: 14px;
+  }
+
+  .owner_earnings_info_row {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .owner_earnings_info_row strong {
+    text-align: left;
+  }
+
+  .owner_earnings_modal_footer {
+    padding: 14px;
+  }
+
+  .owner_earnings_modal_footer button {
+    width: 100%;
+  }
+}
+
+.owner_earnings_modal_overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(0, 0, 0, 0.6);
+
+  padding: 20px;
+}
+
+.owner_earnings_modal {
+  width: 100%;
+  max-width: 600px;
+
+  max-height: 90vh;
+  overflow-y: auto;
+
+  background: #ffffff;
+
+  border-radius: 16px;
+
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.owner_earnings_modal_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 20px;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.owner_earnings_modal_header span {
+  display: block;
+
+  margin-bottom: 4px;
+
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.owner_earnings_modal_header h2 {
+  margin: 0;
+
+  font-size: 18px;
+}
+
+.owner_earnings_modal_close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 36px;
+  height: 36px;
+
+  border: none;
+  border-radius: 50%;
+
+  background: #f3f4f6;
+
+  cursor: pointer;
+}
+
+.owner_earnings_modal_content {
+  padding: 20px;
+}
+
+.owner_earnings_modal_content h3 {
+  margin-top: 0;
+}
+
+.owner_earnings_modal_content p {
+  display: flex;
+  justify-content: space-between;
+
+  margin: 12px 0;
+
+  font-size: 14px;
+}
+
+.owner_earnings_modal_content hr {
+  border: 0;
+  border-top: 1px solid #e5e7eb;
+
+  margin: 18px 0;
+}
+
+.owner_earnings_modal_footer {
+  padding: 16px 20px;
+
+  border-top: 1px solid #e5e7eb;
+}
+
+.owner_earnings_modal_footer button {
+  width: 100%;
+
+  padding: 10px;
+
+  border: none;
+  border-radius: 8px;
+
+  background: #111827;
+  color: #ffffff;
+
+  cursor: pointer;
+}
+
+/* =========================================================
+   OWNER EARNINGS - DP STYLE REDESIGN
+   ========================================================= */
+
+/* =========================
+   Total Earnings Hero
+   ========================= */
+
+.owner_earnings_total {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  min-height: 215px;
+
+  padding: 28px 24px;
+  margin-bottom: 16px;
+
+  border-radius: 22px;
+
+  background: #16833a;
+  color: #ffffff;
+
+  box-shadow: 0 12px 28px rgba(22, 131, 58, 0.18);
+
+  text-align: center;
+}
+
+.owner_earnings_total_icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 52px;
+  height: 52px;
+
+  margin-bottom: 12px;
+
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+}
+
+.owner_earnings_total_label {
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.95;
+}
+
+.owner_earnings_total_amount {
+  display: block;
+
+  margin-top: 5px;
+
+  font-size: 34px;
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+}
+
+.owner_earnings_total_description {
+  margin: 8px 0 0;
+
+  font-size: 12px;
+  line-height: 1.4;
+
+  opacity: 0.9;
+}
+
+.owner_earnings_total_orders {
+  position: absolute;
+
+  right: 18px;
+  top: 18px;
+
+  padding: 6px 10px;
+
+  border-radius: 20px;
+
+  background: rgba(255, 255, 255, 0.12);
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* =========================
+   Today / This Week
+   ========================= */
+
+.owner_earnings_period_cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+
+  width: 100%;
+
+  margin-bottom: 26px;
+}
+
+.owner_earnings_period_card {
+  min-width: 0;
+
+  padding: 18px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+
+  background: #ffffff;
+
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.04);
+}
+
+.owner_earnings_period_icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 38px;
+  height: 38px;
+
+  margin-bottom: 12px;
+
+  border-radius: 11px;
+
+  background: #edf8f0;
+  color: #16833a;
+}
+
+.owner_earnings_period_card span {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #737373;
+
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.owner_earnings_period_card strong {
+  display: block;
+
+  color: #111111;
+
+  font-size: 20px;
+  line-height: 1.2;
+  font-weight: 750;
+}
+
+/* =========================
+   Money
+   ========================= */
+
+.owner_earnings_money {
+  width: 100%;
+
+  margin-bottom: 28px;
+}
+
+.owner_earnings_money h2 {
+  margin: 0 0 12px;
+
+  color: #111111;
+
+  font-size: 18px;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+.owner_earnings_money_list {
+  overflow: hidden;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+
+  background: #ffffff;
+
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.035);
+}
+
+.owner_earnings_money_item {
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+  min-height: 76px;
+
+  padding: 13px 16px;
+
+  border: 0;
+  border-bottom: 1px solid #eeeeee;
+
+  background: #ffffff;
+
+  color: #111111;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  font-family: inherit;
+
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
+}
+
+.owner_earnings_money_item:last-child {
+  border-bottom: 0;
+}
+
+.owner_earnings_money_item:hover {
+  background: #fafafa;
+}
+
+.owner_earnings_money_item:active {
+  transform: scale(0.995);
+}
+
+.owner_earnings_money_icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex: 0 0 auto;
+
+  width: 40px;
+  height: 40px;
+
+  margin-right: 14px;
+
+  border-radius: 11px;
+
+  background: #edf8f0;
+  color: #16833a;
+}
+
+.owner_earnings_money_text {
+  display: flex;
+  flex-direction: column;
+
+  flex: 1;
+
+  min-width: 0;
+}
+
+.owner_earnings_money_text strong {
+  overflow: hidden;
+
+  color: #111111;
+
+  font-size: 14px;
+  font-weight: 650;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.owner_earnings_money_text span {
+  margin-top: 3px;
+
+  color: #737373;
+
+  font-size: 11px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.owner_earnings_money_item > svg {
+  flex: 0 0 auto;
+
+  color: #16833a;
+}
+
+/* =========================
+   Recent Earnings
+   ========================= */
+
+.owner_earnings_orders {
+  width: 100%;
+
+  margin-bottom: 20px;
+}
+
+.owner_earnings_section_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 12px;
+}
+
+.owner_earnings_section_header h2 {
+  margin: 0;
+
+  color: #111111;
+
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.owner_earnings_order_list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.owner_earnings_order_card {
+  padding: 16px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 17px;
+
+  background: #ffffff;
+
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.035);
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.owner_earnings_order_card:hover {
+  transform: translateY(-1px);
+
+  box-shadow: 0 7px 18px rgba(0, 0, 0, 0.06);
+}
+
+.owner_earnings_order_top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  margin-bottom: 14px;
+}
+
+.owner_earnings_order_top > div {
+  min-width: 0;
+}
+
+.owner_earnings_order_top span:first-child {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #777777;
+
+  font-size: 10px;
+}
+
+.owner_earnings_order_top strong {
+  display: block;
+
+  color: #111111;
+
+  font-size: 13px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.owner_settlement_badge {
+  flex: 0 0 auto;
+
+  padding: 5px 9px;
+
+  border-radius: 20px;
+
+  background: #edf8f0;
+  color: #16833a;
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.owner_earnings_order_details {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+
+  padding: 12px 0;
+
+  border-top: 1px solid #eeeeee;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.owner_earnings_order_details > div {
+  min-width: 0;
+}
+
+.owner_earnings_order_details span {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #777777;
+
+  font-size: 10px;
+}
+
+.owner_earnings_order_details strong {
+  display: block;
+
+  color: #111111;
+
+  font-size: 13px;
+}
+
+.owner_earnings_order_details > div:last-child strong {
+  color: #16833a;
+}
+
+.owner_earnings_order_bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+
+  margin-top: 12px;
+}
+
+.owner_earnings_order_bottom > span {
+  color: #777777;
+
+  font-size: 10px;
+}
+
+.owner_earnings_view_button {
+  padding: 0;
+
+  border: 0;
+
+  background: transparent;
+
+  color: #16833a;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+/* =========================
+   Mobile
+   ========================= */
+
+@media (max-width: 480px) {
+  .owner_earnings_total {
+    min-height: 205px;
+
+    padding: 25px 18px;
+
+    border-radius: 20px;
+  }
+
+  .owner_earnings_total_amount {
+    font-size: 32px;
+  }
+
+  .owner_earnings_total_orders {
+    right: 14px;
+    top: 14px;
+
+    font-size: 10px;
+  }
+
+  .owner_earnings_period_cards {
+    gap: 10px;
+  }
+
+  .owner_earnings_period_card {
+    padding: 15px;
+    border-radius: 16px;
+  }
+
+  .owner_earnings_period_card strong {
+    font-size: 18px;
+  }
+
+  .owner_earnings_money_item {
+    min-height: 72px;
+
+    padding: 12px 14px;
+  }
+
+  .owner_earnings_order_details {
+    gap: 6px;
+  }
+
+  .owner_earnings_order_details strong {
+    font-size: 12px;
+  }
+}
+
+/* =========================
+   Dark Mode
+   ========================= */
+
+@media (prefers-color-scheme: dark) {
+  .owner_earnings_period_card,
+  .owner_earnings_money_list,
+  .owner_earnings_money_item,
+  .owner_earnings_order_card {
+    background: #ffffff;
+  }
+
+  .owner_earnings_money_item {
+    color: #ffffff;
+    border-bottom-color: #333333;
+  }
+
+  .owner_earnings_money_item:hover {
+    background: #252525;
+  }
+
+  .owner_earnings_period_card strong,
+  .owner_earnings_money_text strong,
+  .owner_earnings_order_top strong,
+  .owner_earnings_order_details strong,
+  .owner_earnings_money h2,
+  .owner_earnings_section_header h2 {
+    color: #000000;
+  }
+
+  .owner_earnings_period_card span,
+  .owner_earnings_money_text span,
+  .owner_earnings_order_details span,
+  .owner_earnings_order_bottom > span,
+  .owner_earnings_order_top span:first-child {
+    color: #6d6d6d;
+  }
+
+  .owner_earnings_order_details {
+    border-color: #333333;
+  }
+}

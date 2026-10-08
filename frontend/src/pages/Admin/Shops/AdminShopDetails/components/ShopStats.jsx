@@ -28,7 +28,7 @@ function ShopStats({ stats }) {
       <div className="admin-shop-stat-card">
         <span>RMA Fees</span>
         <strong>₹{stats.totalRmaFees.toFixed(2)}</strong>
-        <small>1% platform fee</small>
+        <small>2.5% platform fee</small>
       </div>
     </section>
   );

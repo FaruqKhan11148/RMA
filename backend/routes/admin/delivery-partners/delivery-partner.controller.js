@@ -1,4 +1,5 @@
 const DeliveryPerson = require('../../../models/DeliveryPerson');
+const TestBankAccount = require('../../../models/TestBankAccount');
 
 // ============================================================
 // GET PENDING RMA DELIVERY PARTNERS
@@ -82,9 +83,51 @@ const approveDeliveryPartner = async (req, res) => {
       });
     }
 
+    // ========================================
+    // FIND EXISTING TESTBANK DP ACCOUNT
+    // ========================================
+
+    let testBankAccount = await TestBankAccount.findOne({
+      accountType: 'DELIVERY_PARTNER',
+      deliveryPersonId: deliveryPerson._id,
+    });
+
+    // ========================================
+    // CREATE TESTBANK DP ACCOUNT
+    // ========================================
+
+    if (!testBankAccount) {
+      const testAccountNumber = `RMA-DP-${deliveryPerson._id}`;
+
+      testBankAccount = await TestBankAccount.create({
+        accountNumber: testAccountNumber,
+
+        accountName: deliveryPerson.name,
+
+        accountType: 'DELIVERY_PARTNER',
+
+        deliveryPersonId: deliveryPerson._id,
+
+        balance: 0,
+        availableBalance: 0,
+        heldBalance: 0,
+
+        currency: 'INR',
+
+        status: 'ACTIVE',
+      });
+    }
+
+    // ========================================
+    // APPROVE DELIVERY PARTNER
+    // ========================================
+
     deliveryPerson.applicationStatus = 'APPROVED';
+
     deliveryPerson.isActive = true;
+
     deliveryPerson.availabilityStatus = 'OFFLINE';
+
     deliveryPerson.reviewedAt = new Date();
 
     deliveryPerson.correctionReason = null;
@@ -94,12 +137,30 @@ const approveDeliveryPartner = async (req, res) => {
 
     return res.status(200).json({
       message: 'Delivery partner application approved successfully',
+
       deliveryPartner: {
         id: deliveryPerson._id,
+
+        name: deliveryPerson.name,
+
         applicationStatus: deliveryPerson.applicationStatus,
+
         isActive: deliveryPerson.isActive,
+
         availabilityStatus: deliveryPerson.availabilityStatus,
+
         reviewedAt: deliveryPerson.reviewedAt,
+      },
+
+      testBankAccount: {
+        id: testBankAccount._id,
+        accountNumber: testBankAccount.accountNumber,
+        accountName: testBankAccount.accountName,
+        accountType: testBankAccount.accountType,
+        balance: testBankAccount.balance,
+        availableBalance: testBankAccount.availableBalance,
+        heldBalance: testBankAccount.heldBalance,
+        status: testBankAccount.status,
       },
     });
   } catch (error) {

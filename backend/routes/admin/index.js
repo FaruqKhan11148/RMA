@@ -12,12 +12,21 @@ const dashboardRoutes = require('./dashboard/dashboard.routes');
 const router = express.Router();
 
 router.use('/', authRoutes);
+
 router.use('/customers', customerRoutes);
+
 router.use('/delivery', deliveryRoutes);
+
 router.use('/', deliveryPartnerRoutes);
+
 router.use('/orders', financeRoutes);
+
+router.use('/finance', financeRoutes);
+
 router.use('/orders', orderRoutes);
+
 router.use('/owners', ownerRoutes);
+
 router.use('/dashboard', dashboardRoutes);
 
 module.exports = router;

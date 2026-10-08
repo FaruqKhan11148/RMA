@@ -1,6 +1,6 @@
 import './OwnerStep3.css';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import productCatalogue from '../../../data/productCatalogue';
@@ -33,13 +33,52 @@ function OwnerStep3() {
 
   const [error, setError] = useState('');
 
+  // =========================
+  // RESTORE REGISTRATION DATA
+  // =========================
+
+  useEffect(() => {
+    const savedData = sessionStorage.getItem('rma_owner_registration');
+
+    if (!savedData) return;
+
+    try {
+      const ownerData = JSON.parse(savedData);
+
+      if (Array.isArray(ownerData.products)) {
+        setProducts(ownerData.products);
+      }
+
+      if (
+        ownerData.location &&
+        Number.isFinite(Number(ownerData.location.latitude)) &&
+        Number.isFinite(Number(ownerData.location.longitude))
+      ) {
+        setShopLocation({
+          latitude: Number(ownerData.location.latitude),
+          longitude: Number(ownerData.location.longitude),
+          address: ownerData.location.address || '',
+          accuracy: ownerData.location.accuracy ?? null,
+        });
+      }
+    } catch (err) {
+      console.error('Failed to restore owner registration data:', err);
+    }
+  }, []);
+
+  // =========================
   // SELECT CATEGORY
+  // =========================
+
   const handleCategorySelect = (category) => {
     setError('');
     setSelectedCategory(category);
   };
 
+  // =========================
   // CHANGE CATALOGUE PRODUCT PRICE
+  // =========================
+
   const handleProductPriceChange = (productId, price) => {
     setProductPrices((currentPrices) => ({
       ...currentPrices,
@@ -47,7 +86,10 @@ function OwnerStep3() {
     }));
   };
 
+  // =========================
   // ADD CATALOGUE PRODUCT
+  // =========================
+
   const addCatalogueProduct = (catalogueProduct) => {
     setError('');
 
@@ -67,6 +109,11 @@ function OwnerStep3() {
       return;
     }
 
+    if (!selectedCategory?.categoryName) {
+      setError('Please select a product category.');
+      return;
+    }
+
     const newProduct = {
       productId: `P${Date.now()}`,
       catalogueProductId: catalogueProduct.productId,
@@ -83,12 +130,17 @@ function OwnerStep3() {
 
     setProductPrices((currentPrices) => {
       const updatedPrices = { ...currentPrices };
+
       delete updatedPrices[catalogueProduct.productId];
+
       return updatedPrices;
     });
   };
 
+  // =========================
   // ADD CUSTOM PRODUCT
+  // =========================
+
   const addCustomProduct = () => {
     setError('');
 
@@ -130,14 +182,20 @@ function OwnerStep3() {
     setShowCustomProduct(false);
   };
 
+  // =========================
   // REMOVE PRODUCT
+  // =========================
+
   const removeProduct = (productId) => {
     setProducts((currentProducts) =>
       currentProducts.filter((product) => product.productId !== productId),
     );
   };
 
+  // =========================
   // CONTINUE
+  // =========================
+
   const handleContinue = (event) => {
     event.preventDefault();
 
@@ -160,29 +218,46 @@ function OwnerStep3() {
       return;
     }
 
-    const ownerData = JSON.parse(savedData);
+    try {
+      const ownerData = JSON.parse(savedData);
 
-    const updatedOwnerData = {
-      ...ownerData,
-      products,
-      location: {
-        latitude: shopLocation.latitude,
-        longitude: shopLocation.longitude,
-      },
-    };
+      const updatedOwnerData = {
+        ...ownerData,
 
-    sessionStorage.setItem(
-      'rma_owner_registration',
-      JSON.stringify(updatedOwnerData),
-    );
+        products,
 
-    navigate('/owner/register/step-4');
+        location: {
+          latitude: Number(shopLocation.latitude),
+          longitude: Number(shopLocation.longitude),
+          address: shopLocation.address || '',
+          accuracy: shopLocation.accuracy ?? null,
+        },
+      };
+
+      sessionStorage.setItem(
+        'rma_owner_registration',
+        JSON.stringify(updatedOwnerData),
+      );
+
+      navigate('/owner/register/step-4');
+    } catch (err) {
+      console.error('Failed to save owner registration data:', err);
+
+      setError('Unable to save your registration data. Please try again.');
+    }
   };
 
+  // =========================
   // BACK
+  // =========================
+
   const handleBack = () => {
     navigate('/owner/register/step-2');
   };
+
+  // =========================
+  // RENDER
+  // =========================
 
   return (
     <main className="owner_step">
@@ -234,7 +309,7 @@ function OwnerStep3() {
         <div className="owner_step_footer">
           <p>Already have a shop?</p>
 
-          <button onClick={() => navigate('/owner/login')}>
+          <button type="button" onClick={() => navigate('/owner/login')}>
             Back to Login
           </button>
         </div>

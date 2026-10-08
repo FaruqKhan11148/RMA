@@ -10,7 +10,13 @@ function FinanceStats({ financeSummary, formatMoney }) {
       <div className="finance-stat-card finance-rma-card">
         <span>RMA Revenue</span>
         <strong>{formatMoney(financeSummary.totalRmaRevenue)}</strong>
-        <small>1% platform fee</small>
+        <small>2.5% platform fee</small>
+      </div>
+
+      <div className="finance-stat-card finance-payu-card">
+        <span>PayU Charges (T+2)</span>
+        <strong>{formatMoney(financeSummary.totalPayuCharges)}</strong>
+        <small>2% fee + 18% GST</small>
       </div>
 
       <div className="finance-stat-card">

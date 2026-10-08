@@ -24,6 +24,7 @@ const notificationSchema = new mongoose.Schema(
         'ORDER_COMPLETED',
         'ORDER_REJECTED',
         'ORDER_CANCELLED',
+        'ORDER_COLLECTED',
         'DELIVERY_ASSIGNED',
         'DELIVERY_ASSIGNMENT_REQUEST',
         'DELIVERY_ASSIGNMENT_ACCEPTED',

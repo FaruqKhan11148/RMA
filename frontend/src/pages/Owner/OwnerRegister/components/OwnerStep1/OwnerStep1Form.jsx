@@ -9,6 +9,8 @@ function OwnerStep1Form({
   setPassword,
   confirmPassword,
   setConfirmPassword,
+  referralCode,
+  setReferralCode,
   error,
   handleContinue,
   navigate,
@@ -71,6 +73,16 @@ function OwnerStep1Form({
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
+            />
+          </label>
+
+          <label>
+            Referral Code <span>(Optional)</span>
+            <input
+              type="text"
+              placeholder="Enter referral code"
+              value={referralCode}
+              onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
             />
           </label>
         </section>

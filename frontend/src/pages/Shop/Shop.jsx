@@ -44,6 +44,18 @@ function Shop() {
           return;
         }
 
+        if (!data.shop?.isOpen) {
+          navigate('/shop-closed', {
+            replace: true,
+            state: {
+              shopName: data.shop?.shopName,
+              shopId: data.shop?.shopId || shopId,
+            },
+          });
+
+          return;
+        }
+
         setShop(data.shop);
       } catch (error) {
         console.error('Fetch shop failed:', error);

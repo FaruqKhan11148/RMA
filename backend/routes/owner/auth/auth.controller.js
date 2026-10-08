@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const Owner = require('../../../models/Owner');
 const Counter = require('../../../models/Counter');
 const getShopStatus = require('../../../utils/shopStatus');
+const Referral = require('../../../models/Referral');
 
 // REGISTER OWNER
 async function registerOwner(req, res) {
@@ -20,6 +21,7 @@ async function registerOwner(req, res) {
       pickup,
       products,
       location,
+      referralCode,
 
       // BANK DETAILS
       bankHolderName,
@@ -82,6 +84,23 @@ async function registerOwner(req, res) {
       return res.status(409).json({
         message: 'Owner with this email already exists',
       });
+    }
+
+    // Validate referral code
+    let referrerOwner = null;
+
+    if (referralCode && referralCode.trim()) {
+      const normalizedReferralCode = referralCode.trim().toUpperCase();
+
+      referrerOwner = await Owner.findOne({
+        referralCode: normalizedReferralCode,
+      });
+
+      if (!referrerOwner) {
+        return res.status(400).json({
+          message: 'Invalid referral code',
+        });
+      }
     }
 
     // Check products
@@ -163,6 +182,75 @@ async function registerOwner(req, res) {
         payuChildMerchantUuid: null,
       },
     });
+
+    // Create permanent referral relationship
+    if (referrerOwner) {
+      const joinedAt = new Date();
+
+      const qualificationEndDate = new Date(joinedAt);
+
+      qualificationEndDate.setDate(qualificationEndDate.getDate() + 20);
+
+      // ========================================
+      // FIND NEXT REFERRAL SLOT
+      // ========================================
+
+      const latestReferral = await Referral.findOne({
+        referrerOwnerId: referrerOwner._id,
+      })
+        .sort({
+          cycleNumber: -1,
+          slotNumber: -1,
+        })
+        .lean();
+
+      let cycleNumber = 1;
+      let slotNumber = 1;
+
+      if (latestReferral) {
+        cycleNumber = latestReferral.cycleNumber;
+        slotNumber = latestReferral.slotNumber + 1;
+
+        if (slotNumber > 7) {
+          cycleNumber += 1;
+          slotNumber = 1;
+        }
+      }
+
+      // ========================================
+      // CREATE REFERRAL
+      // ========================================
+
+      await Referral.create({
+        referrerOwnerId: referrerOwner._id,
+        referredOwnerId: owner._id,
+        referralCode: referrerOwner.referralCode,
+
+        cycleNumber,
+        slotNumber,
+
+        status: 'REGISTERED',
+
+        joinedAt,
+
+        qualification: {
+          startDate: joinedAt,
+          endDate: qualificationEndDate,
+
+          requiredOrders: 100,
+
+          referredOwnerOrders: 0,
+          referrerOwnerOrders: 0,
+
+          requiredActiveDays: 18,
+
+          referredOwnerActiveDays: 0,
+          referrerOwnerActiveDays: 0,
+
+          qualificationDays: 20,
+        },
+      });
+    }
 
     // Send safe owner data to frontend
     res.status(201).json({

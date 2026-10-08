@@ -1,6 +1,37 @@
 const Owner = require('../../../models/Owner');
 const getShopStatus = require('../../../utils/shopStatus');
 
+// GENERATE UNIQUE REFERRAL CODE
+async function getOrCreateReferralCode(owner) {
+  if (owner.referralCode) {
+    return owner.referralCode;
+  }
+
+  const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+
+  let referralCode;
+  let exists = true;
+
+  while (exists) {
+    let randomPart = '';
+
+    for (let i = 0; i < 8; i += 1) {
+      randomPart += characters.charAt(
+        Math.floor(Math.random() * characters.length),
+      );
+    }
+
+    referralCode = `RMA-${randomPart}`;
+
+    exists = await Owner.exists({ referralCode });
+  }
+
+  owner.referralCode = referralCode;
+  await owner.save();
+
+  return referralCode;
+}
+
 // GET ALL OWNERS
 async function getAllOwners(req, res) {
   try {
@@ -142,8 +173,36 @@ async function getShopById(req, res) {
   }
 }
 
+// GET OWNER REFERRAL CODE
+async function getOwnerReferralCode(req, res) {
+  try {
+    const { ownerId } = req.params;
+
+    const owner = await Owner.findById(ownerId);
+
+    if (!owner) {
+      return res.status(404).json({
+        message: 'Owner not found',
+      });
+    }
+
+    const referralCode = await getOrCreateReferralCode(owner);
+
+    return res.status(200).json({
+      referralCode,
+    });
+  } catch (error) {
+    console.error('Get owner referral code failed:', error);
+
+    return res.status(500).json({
+      message: 'Failed to get referral code',
+    });
+  }
+}
+
 module.exports = {
   getAllOwners,
   getNearbyShops,
   getShopById,
+  getOwnerReferralCode,
 };

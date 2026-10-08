@@ -3,6 +3,10 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 require('dotenv').config();
 
+const {
+  startOwnerOfferScheduler,
+} = require('./services/ownerOffers/ownerOffer.scheduler');
+
 const connectDB = require('./config/db.js');
 
 const ownerRoutes = require('./routes/owner');
@@ -13,6 +17,9 @@ const paymentRoutes = require('./routes/payments/index');
 const deliveryRoutes = require('./routes/delivery');
 const adminRoutes = require('./routes/admin');
 const customerRoutes = require('./routes/customer');
+const testBankAccountRoutes = require('./routes/test-bank/account.routes');
+const testBankLedgerRoutes = require('./routes/test-bank/ledger.routes');
+const testBankSettlementRoutes = require('./routes/test-bank/settlement.routes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -84,6 +91,10 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/customers', customerRoutes);
 app.use('/api/reviews', reviewRoutes);
 
+app.use('/api/test-bank/accounts', testBankAccountRoutes);
+app.use('/api/test-bank/ledger', testBankLedgerRoutes);
+app.use('/api/test-bank/settlements', testBankSettlementRoutes);
+
 /* =========================
    HEALTH CHECK
 ========================= */
@@ -95,15 +106,22 @@ app.get('/', (req, res) => {
 });
 
 /* =========================
-   DATABASE
+   DATABASE + SERVER
 ========================= */
 
-connectDB();
+async function startServer() {
+  try {
+    await connectDB();
 
-/* =========================
-   SERVER
-========================= */
+    startOwnerOfferScheduler();
 
-app.listen(PORT, () => {
-  console.log(`RMA server running on port ${PORT}`);
-});
+    app.listen(PORT, () => {
+      console.log(`RMA server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error('Failed to start RMA server:', error.message);
+    process.exit(1);
+  }
+}
+
+startServer();

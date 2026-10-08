@@ -231,7 +231,7 @@ const orderSchema = new mongoose.Schema(
     // RMA / OWNER / RIDER SPLIT
     // =========================
 
-    // RMA product fee = 1.5% of product subtotal
+    // RMA product fee = 2.5% of product subtotal
     rmaFee: {
       type: Number,
       required: true,

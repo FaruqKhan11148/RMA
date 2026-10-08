@@ -1,41 +1,28 @@
-import { Clock3, Package, CheckCircle2 } from 'lucide-react';
+import { CalendarDays, TrendingUp } from 'lucide-react';
 
 function OwnerEarningsCards({ earnings }) {
+  const formatAmount = (amount) => `₹${Number(amount || 0).toFixed(2)}`;
+
   return (
-    <section className="owner_earnings_cards">
-      <div className="owner_earning_card">
-        <div className="owner_earning_card_icon pending">
-          <Clock3 size={20} />
+    <section className="owner_earnings_period_cards">
+      <div className="owner_earnings_period_card">
+        <div className="owner_earnings_period_icon">
+          <CalendarDays size={19} />
         </div>
 
-        <div>
-          <span>Pending</span>
-          <strong>₹{Number(earnings?.pendingEarnings || 0).toFixed(2)}</strong>
-        </div>
+        <span>Today</span>
+
+        <strong>{formatAmount(earnings?.todayEarnings)}</strong>
       </div>
 
-      <div className="owner_earning_card">
-        <div className="owner_earning_card_icon processing">
-          <Package size={20} />
+      <div className="owner_earnings_period_card">
+        <div className="owner_earnings_period_icon">
+          <TrendingUp size={19} />
         </div>
 
-        <div>
-          <span>Processing</span>
-          <strong>
-            ₹{Number(earnings?.processingEarnings || 0).toFixed(2)}
-          </strong>
-        </div>
-      </div>
+        <span>This Week</span>
 
-      <div className="owner_earning_card">
-        <div className="owner_earning_card_icon settled">
-          <CheckCircle2 size={20} />
-        </div>
-
-        <div>
-          <span>Settled</span>
-          <strong>₹{Number(earnings?.settledEarnings || 0).toFixed(2)}</strong>
-        </div>
+        <strong>{formatAmount(earnings?.weekEarnings)}</strong>
       </div>
     </section>
   );

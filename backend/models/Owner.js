@@ -68,6 +68,24 @@ const ownerSchema = new mongoose.Schema(
       trim: true,
     },
 
+    // REFERRAL CODE
+
+    referralCode: {
+      type: String,
+      unique: true,
+      sparse: true,
+      trim: true,
+      uppercase: true,
+    },
+
+    // OWNER DETAILS
+
+    ownerName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
     // OWNER DETAILS
 
     ownerName: {

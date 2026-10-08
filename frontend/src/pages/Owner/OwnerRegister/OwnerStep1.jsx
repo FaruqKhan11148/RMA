@@ -16,6 +16,8 @@ function OwnerStep1() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
+  const [referralCode, setReferralCode] = useState('');
+
   const [error, setError] = useState('');
 
   const handleContinue = (e) => {
@@ -40,6 +42,7 @@ function OwnerStep1() {
       phone,
       email,
       password,
+      referralCode,
     };
 
     sessionStorage.setItem('rma_owner_registration', JSON.stringify(ownerData));
@@ -65,6 +68,8 @@ function OwnerStep1() {
           setPassword={setPassword}
           confirmPassword={confirmPassword}
           setConfirmPassword={setConfirmPassword}
+          referralCode={referralCode}
+          setReferralCode={setReferralCode}
           error={error}
           handleContinue={handleContinue}
           navigate={navigate}

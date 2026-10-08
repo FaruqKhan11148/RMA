@@ -49,7 +49,7 @@ function OrderFinance({
                 <th>Order</th>
                 <th>Shop</th>
                 <th>Gross</th>
-                <th>RMA 1%</th>
+                <th>RMA 2.5%</th>
                 <th>Owner Amount</th>
                 <th>Payment</th>
                 <th>Order Status</th>

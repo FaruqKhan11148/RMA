@@ -1,6 +1,7 @@
 import './MapPicker.css';
 
 import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import {
   MapContainer,
@@ -82,6 +83,7 @@ function LocationMarker({ position, onSelect }) {
 // =========================
 
 function MapPicker({ onLocationSelect }) {
+  const navigate = useNavigate();
   const [position, setPosition] = useState(null);
 
   const [address, setAddress] = useState('');
@@ -303,8 +305,13 @@ function MapPicker({ onLocationSelect }) {
         </MapContainer>
 
         <div className="map_top_bar">
-          <div className="map_back_button">←</div>
-
+          <button
+            type="button"
+            className="map_back_button"
+            onClick={() => navigate(-1)}
+          >
+            ←
+          </button>
           <div className="map_top_title">
             <h4>Choose your location</h4>
           </div>

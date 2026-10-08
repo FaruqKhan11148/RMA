@@ -1,0 +1,5621 @@
+/* =========================
+   HOW RMA WORKS — OVERLAY
+   ========================= */
+
+.how_rma_overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+
+  background: rgba(15, 22, 17, 0.68);
+  backdrop-filter: blur(6px);
+
+  animation: howRmaOverlayIn 0.25s ease;
+}
+
+/* =========================
+   MODAL
+   ========================= */
+
+.how_rma_modal {
+  position: relative;
+
+  width: min(1100px, 100%);
+  max-height: calc(100vh - 48px);
+
+  overflow-y: auto;
+
+  background: #ffffff;
+  border-radius: 24px;
+
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.22),
+    0 8px 24px rgba(0, 0, 0, 0.08);
+
+  animation: howRmaModalIn 0.3s ease;
+}
+
+/* =========================
+   HEADER
+   ========================= */
+
+.how_rma_header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+
+  padding: 30px 34px 26px;
+
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(10px);
+
+  border-bottom: 1px solid #edf1ed;
+}
+
+.how_rma_header > div {
+  min-width: 0;
+}
+
+.how_rma_badge {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 6px 10px;
+
+  border-radius: 999px;
+
+  background: #eef8f0;
+  color: #25833d;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+}
+
+.how_rma_header h2 {
+  margin: 10px 0 7px;
+
+  color: #172019;
+
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 800;
+}
+
+.how_rma_header p {
+  max-width: 680px;
+
+  margin: 0;
+
+  color: #68736b;
+
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+/* =========================
+   CLOSE BUTTON
+   ========================= */
+
+.how_rma_close {
+  flex: 0 0 auto;
+
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #e4e9e5;
+  border-radius: 50%;
+
+  background: #f7f9f7;
+  color: #4e5951;
+
+  font-size: 26px;
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.how_rma_close:hover {
+  background: #eef3ef;
+  color: #172019;
+  transform: rotate(90deg);
+}
+
+/* =========================
+   STEPS AREA
+   ========================= */
+
+.how_rma_steps {
+  padding: 30px 34px 10px;
+}
+
+/* =========================
+   STEP
+   ========================= */
+
+.how_rma_step {
+  position: relative;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.85fr);
+  gap: 50px;
+
+  min-height: 250px;
+
+  align-items: center;
+
+  padding: 24px 0 70px;
+}
+
+.how_rma_step_image_first {
+  grid-template-columns: minmax(280px, 0.85fr) minmax(0, 1fr);
+}
+
+.how_rma_step_image_first .how_rma_content {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.how_rma_step_image_first .how_rma_visual {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+/* =========================
+   STEP CONTENT
+   ========================= */
+
+.how_rma_content {
+  padding: 10px 8px;
+}
+
+.how_rma_step_number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 42px;
+  height: 42px;
+
+  margin-bottom: 14px;
+
+  border-radius: 12px;
+
+  background: #eef8f0;
+  color: #25833d;
+
+  font-size: 13px;
+  font-weight: 800;
+
+  letter-spacing: 0.3px;
+}
+
+.how_rma_content h3 {
+  margin: 0 0 10px;
+
+  color: #1c271f;
+
+  font-size: 23px;
+  line-height: 1.3;
+  font-weight: 800;
+}
+
+.how_rma_content p {
+  max-width: 500px;
+
+  margin: 0;
+
+  color: #68736b;
+
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+/* =========================
+   VISUAL PLACEHOLDER
+   ========================= */
+
+.how_rma_visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 235px;
+
+  padding: 20px;
+}
+
+.how_rma_visual_placeholder {
+  width: 100%;
+  max-width: 360px;
+  height: 235px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px dashed #cbd8ce;
+  border-radius: 22px;
+
+  background: linear-gradient(135deg, #f8fbf8 0%, #f0f7f1 100%);
+
+  color: #25833d;
+}
+
+.how_rma_visual_placeholder span {
+  font-size: 38px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.how_rma_visual_placeholder small {
+  margin-top: 5px;
+
+  color: #829087;
+
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+/* =========================
+   CONNECTOR
+   ========================= */
+
+.how_rma_connector {
+  position: absolute;
+
+  left: 50%;
+
+  bottom: 8px;
+
+  width: 1px;
+  height: 46px;
+
+  background: #d8e2da;
+
+  transform: translateX(-50%);
+}
+
+.how_rma_connector::after {
+  content: '';
+
+  position: absolute;
+
+  left: 50%;
+  bottom: 0;
+
+  width: 8px;
+  height: 8px;
+
+  border-right: 1px solid #b8c8bc;
+  border-bottom: 1px solid #b8c8bc;
+
+  transform: translateX(-50%) rotate(45deg);
+}
+
+/* =========================
+   FOOTER
+   ========================= */
+
+.how_rma_footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  margin: 10px 34px 30px;
+  padding: 22px;
+
+  border: 1px solid #e5ece6;
+  border-radius: 18px;
+
+  background: #f8fbf8;
+}
+
+.how_rma_footer p {
+  margin: 0;
+
+  color: #526057;
+
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.how_rma_footer .offer_primary_button {
+  flex: 0 0 auto;
+
+  width: auto;
+  min-width: 160px;
+}
+
+/* =========================
+   SCROLLBAR
+   ========================= */
+
+.how_rma_modal::-webkit-scrollbar {
+  width: 7px;
+}
+
+.how_rma_modal::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.how_rma_modal::-webkit-scrollbar-thumb {
+  background: #cbd6cd;
+  border-radius: 10px;
+}
+
+.how_rma_modal::-webkit-scrollbar-thumb:hover {
+  background: #aebcaf;
+}
+
+/* =========================
+   ANIMATIONS
+   ========================= */
+
+@keyframes howRmaOverlayIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes howRmaModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* =========================
+   TABLET
+   ========================= */
+
+@media (max-width: 800px) {
+  .how_rma_overlay {
+    padding: 14px;
+  }
+
+  .how_rma_modal {
+    max-height: calc(100vh - 28px);
+    border-radius: 20px;
+  }
+
+  .how_rma_header {
+    padding: 24px 22px 20px;
+  }
+
+  .how_rma_header h2 {
+    font-size: 24px;
+  }
+
+  .how_rma_steps {
+    padding: 20px 22px 5px;
+  }
+
+  .how_rma_step,
+  .how_rma_step_image_first {
+    grid-template-columns: 1fr;
+    gap: 18px;
+
+    min-height: auto;
+
+    padding: 20px 0 65px;
+  }
+
+  .how_rma_step_image_first .how_rma_content,
+  .how_rma_step_image_first .how_rma_visual {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .how_rma_content p {
+    max-width: none;
+  }
+
+  .how_rma_visual {
+    min-height: 190px;
+    padding: 5px 0;
+  }
+
+  .how_rma_visual_placeholder {
+    max-width: 100%;
+    height: 190px;
+  }
+
+  .how_rma_connector {
+    left: 50%;
+  }
+
+  .how_rma_footer {
+    flex-direction: column;
+    align-items: stretch;
+
+    margin: 5px 22px 22px;
+    padding: 18px;
+  }
+
+  .how_rma_footer .offer_primary_button {
+    width: 100%;
+  }
+}
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 500px) {
+  .how_rma_overlay {
+    padding: 0;
+  }
+
+  .how_rma_modal {
+    width: 100%;
+    max-height: 100vh;
+
+    border-radius: 0;
+  }
+
+  .how_rma_header {
+    padding: 20px 16px 18px;
+    position: static;
+  }
+
+  .how_rma_header h2 {
+    font-size: 22px;
+  }
+
+  .how_rma_header p {
+    font-size: 13px;
+  }
+
+  .how_rma_close {
+    width: 36px;
+    height: 36px;
+
+    font-size: 23px;
+  }
+
+  .how_rma_steps {
+    padding: 14px 16px 0;
+  }
+
+  .how_rma_step {
+    padding-bottom: 60px;
+  }
+
+  .how_rma_content {
+    padding: 5px 0;
+  }
+
+  .how_rma_step_number {
+    width: 38px;
+    height: 38px;
+  }
+
+  .how_rma_content h3 {
+    font-size: 20px;
+  }
+
+  .how_rma_content p {
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .how_rma_visual_placeholder {
+    height: 170px;
+    border-radius: 18px;
+  }
+
+  .how_rma_visual_placeholder span {
+    font-size: 32px;
+  }
+
+  .how_rma_footer {
+    margin: 0 16px 16px;
+  }
+}
+
+/* =========================
+   Step 1 - Bring Shop Online
+========================= */
+
+.rma_step_one_visual {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  height: 235px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+
+  overflow: hidden;
+}
+
+/* =========================
+   Small Shop Icon
+========================= */
+
+.rma_shop_icon {
+  position: absolute;
+  left: 18px;
+  top: 48px;
+
+  width: 54px;
+  height: 50px;
+
+  z-index: 1;
+
+  animation: rmaShopFloat 3s ease-in-out infinite;
+}
+
+.rma_shop_roof {
+  position: absolute;
+  top: 0;
+  left: 4px;
+
+  width: 46px;
+  height: 18px;
+
+  border: 2px solid #25833d;
+  border-radius: 8px 8px 3px 3px;
+
+  background: #eef8f0;
+}
+
+.rma_shop_body {
+  position: absolute;
+  left: 9px;
+  bottom: 0;
+
+  width: 36px;
+  height: 35px;
+
+  border: 2px solid #25833d;
+  border-radius: 3px;
+
+  background: #ffffff;
+}
+
+.rma_shop_body::before {
+  content: '';
+
+  position: absolute;
+  left: 50%;
+  top: 5px;
+
+  width: 15px;
+  height: 11px;
+
+  border: 1.5px solid #25833d;
+  border-radius: 2px;
+
+  transform: translateX(-50%);
+}
+
+.rma_shop_body i {
+  position: absolute;
+  bottom: 0;
+
+  width: 2px;
+  height: 13px;
+
+  background: #25833d;
+}
+
+.rma_shop_body i:first-child {
+  left: 10px;
+}
+
+.rma_shop_body i:last-child {
+  right: 10px;
+}
+
+/* =========================
+   Online Badge
+========================= */
+
+.rma_online_badge {
+  position: absolute;
+  right: 12px;
+  top: 30px;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 6px 9px;
+
+  border: 1px solid #cfe6d4;
+  border-radius: 999px;
+
+  background: #ffffff;
+
+  color: #25833d;
+
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+
+  box-shadow: 0 5px 15px rgba(37, 131, 61, 0.08);
+
+  animation: rmaBadgeFloat 2.8s ease-in-out infinite;
+}
+
+.rma_online_dot {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: #25833d;
+
+  box-shadow: 0 0 0 4px #eaf6ed;
+
+  animation: rmaOnlinePulse 1.8s ease-in-out infinite;
+}
+
+/* =========================
+   Connection Line
+========================= */
+
+.rma_connection_line {
+  position: absolute;
+  left: 62px;
+  top: 74px;
+
+  width: 48px;
+  height: 1px;
+
+  border-top: 1.5px dashed #8fbd99;
+
+  transform: rotate(18deg);
+
+  animation: rmaConnectionMove 2s ease-in-out infinite;
+}
+
+.rma_connection_line::after {
+  content: '';
+
+  position: absolute;
+  right: -2px;
+  top: -4px;
+
+  width: 7px;
+  height: 7px;
+
+  border-top: 1.5px solid #25833d;
+  border-right: 1.5px solid #25833d;
+
+  transform: rotate(45deg);
+}
+
+/* =========================
+   Online Signal
+========================= */
+
+.rma_online_signal {
+  position: absolute;
+  right: 66px;
+  top: 70px;
+
+  width: 24px;
+  height: 24px;
+
+  z-index: 2;
+}
+
+.rma_online_signal span {
+  position: absolute;
+
+  border: 1.5px solid #25833d;
+  border-left-color: transparent;
+  border-bottom-color: transparent;
+
+  border-radius: 50%;
+
+  transform: rotate(-45deg);
+
+  animation: rmaSignalPulse 2s ease-in-out infinite;
+}
+
+.rma_online_signal span:nth-child(1) {
+  width: 8px;
+  height: 8px;
+  left: 8px;
+  top: 8px;
+}
+
+.rma_online_signal span:nth-child(2) {
+  width: 15px;
+  height: 15px;
+  left: 4px;
+  top: 4px;
+  animation-delay: 0.25s;
+}
+
+.rma_online_signal span:nth-child(3) {
+  width: 22px;
+  height: 22px;
+  left: 0;
+  top: 0;
+  animation-delay: 0.5s;
+}
+
+/* =========================
+   Floating Dots
+========================= */
+
+.rma_floating_dot {
+  position: absolute;
+
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: #8fbd99;
+}
+
+.rma_floating_dot_one {
+  left: 86px;
+  top: 32px;
+
+  animation: rmaDotFloat 2.5s ease-in-out infinite;
+}
+
+.rma_floating_dot_two {
+  right: 38px;
+  bottom: 74px;
+
+  width: 7px;
+  height: 7px;
+
+  animation: rmaDotFloat 3s ease-in-out infinite 0.4s;
+}
+
+.rma_floating_dot_three {
+  left: 42px;
+  bottom: 70px;
+
+  width: 4px;
+  height: 4px;
+
+  animation: rmaDotFloat 2.2s ease-in-out infinite 0.7s;
+}
+
+/* =========================
+   Animations
+========================= */
+
+@keyframes rmaShopFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes rmaBadgeFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes rmaOnlinePulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.55;
+    transform: scale(0.85);
+  }
+}
+
+@keyframes rmaConnectionMove {
+  0%,
+  100% {
+    opacity: 0.45;
+    width: 42px;
+  }
+
+  50% {
+    opacity: 1;
+    width: 52px;
+  }
+}
+
+@keyframes rmaSignalPulse {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes rmaDotFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+
+  50% {
+    transform: translateY(-8px);
+    opacity: 1;
+  }
+}
+
+/* =========================
+   Step 2 - Shop Discovery
+========================= */
+
+.rma_step_two_visual {
+  position: relative;
+
+  width: 100%;
+  max-width: 360px;
+  height: 235px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+
+  overflow: hidden;
+}
+
+/* =========================
+   Map
+========================= */
+
+.rma_map {
+  position: absolute;
+  left: 0px;
+  top: 50px;
+  width: 175px;
+  height: 125px;
+  border: 1.5px solid #d5e8d9;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #f8fcf9, #eef8f0);
+  overflow: hidden;
+  transform: rotate(-3deg);
+  animation: rmaMapFloat 4s ease-in-out infinite;
+}
+
+.rma_map::before,
+.rma_map::after {
+  content: '';
+
+  position: absolute;
+
+  background: #d5e8d9;
+}
+
+.rma_map::before {
+  width: 1px;
+  height: 150px;
+
+  left: 55px;
+  top: -5px;
+
+  transform: rotate(25deg);
+}
+
+.rma_map::after {
+  width: 230px;
+  height: 1px;
+
+  left: -15px;
+  top: 72px;
+
+  transform: rotate(-18deg);
+}
+
+/* =========================
+   Map Roads
+========================= */
+
+.rma_map_line {
+  position: absolute;
+
+  height: 7px;
+
+  border-top: 1px solid #d0e3d4;
+  border-bottom: 1px solid #d0e3d4;
+
+  background: rgba(255, 255, 255, 0.65);
+
+  border-radius: 999px;
+
+  transform-origin: left center;
+}
+
+.rma_map_line_one {
+  width: 145px;
+  left: -10px;
+  top: 40px;
+  transform: rotate(18deg);
+}
+
+.rma_map_line_two {
+  width: 135px;
+  left: 65px;
+  top: 105px;
+  transform: rotate(-20deg);
+}
+
+.rma_map_line_three {
+  width: 105px;
+  left: 25px;
+  top: 78px;
+  transform: rotate(8deg);
+}
+/* =========================
+   Shop Pin
+========================= */
+
+.rma_map_pin {
+  position: absolute;
+
+  width: 22px;
+  height: 28px;
+
+  border: 2px solid #25833d;
+  border-radius: 50% 50% 50% 0;
+
+  background: #ffffff;
+
+  transform: rotate(-45deg);
+
+  z-index: 3;
+
+  animation: rmaPinBounce 2s ease-in-out infinite;
+}
+
+.rma_map_pin span {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: #25833d;
+
+  transform: translate(-50%, -50%);
+}
+
+.rma_map_pin_shop {
+  left: 88px;
+  top: 51px;
+}
+
+/* =========================
+   Customer Dots
+========================= */
+
+.rma_map_customer {
+  position: absolute;
+
+  width: 16px;
+  height: 16px;
+
+  border: 1.5px solid #8fbd99;
+  border-radius: 50%;
+
+  background: #ffffff;
+}
+
+.rma_map_customer span {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: #8fbd99;
+
+  transform: translate(-50%, -50%);
+}
+
+.rma_map_customer_one {
+  left: 28px;
+  top: 27px;
+
+  animation: rmaCustomerPulse 2.5s ease-in-out infinite;
+}
+
+.rma_map_customer_two {
+  left: 145px;
+  top: 83px;
+
+  animation: rmaCustomerPulse 2.5s ease-in-out infinite 0.5s;
+}
+
+.rma_map_customer_three {
+  left: 48px;
+  top: 108px;
+
+  animation: rmaCustomerPulse 2.5s ease-in-out infinite 1s;
+}
+
+/* =========================
+   Discovery Signal
+========================= */
+
+.rma_discovery_signal {
+  position: absolute;
+
+  left: 178px;
+  top: 68px;
+
+  width: 30px;
+  height: 30px;
+
+  z-index: 4;
+}
+
+.rma_discovery_signal span {
+  position: absolute;
+
+  border: 1.5px solid #25833d;
+  border-left-color: transparent;
+  border-bottom-color: transparent;
+
+  border-radius: 50%;
+
+  transform: rotate(-45deg);
+
+  animation: rmaDiscoveryWave 2s ease-out infinite;
+}
+
+.rma_discovery_signal span:nth-child(1) {
+  width: 10px;
+  height: 10px;
+
+  left: 12px;
+  top: 12px;
+}
+
+.rma_discovery_signal span:nth-child(2) {
+  width: 21px;
+  height: 21px;
+
+  left: 6px;
+  top: 6px;
+
+  animation-delay: 0.35s;
+}
+
+.rma_discovery_signal span:nth-child(3) {
+  width: 32px;
+  height: 32px;
+
+  left: 0;
+  top: 0;
+
+  animation-delay: 0.7s;
+}
+
+/* =========================
+   Discovery Badge
+========================= */
+
+.rma_discovery_badge {
+  position: absolute;
+  top: 10px;
+  left: 18px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  border: 1px solid #cfe6d4;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #25833d;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  white-space: nowrap;
+  box-shadow: 0 5px 15px rgba(37, 131, 61, 0.08);
+  z-index: 4;
+  animation: rmaDiscoveryBadge 3s ease-in-out infinite;
+}
+
+.rma_discovery_dot {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: #25833d;
+
+  box-shadow: 0 0 0 4px #eaf6ed;
+}
+
+/* =========================
+   Step 2 Character Position
+========================= */
+.rma_step_two_visual .rma_character {
+  position: absolute;
+
+  right: -8px;
+  bottom: -4px;
+
+  transform: scale(0.78);
+  transform-origin: bottom center;
+
+  z-index: 4;
+}
+
+/* =========================
+   Animations
+========================= */
+
+@keyframes rmaMapFloat {
+  0%,
+  100% {
+    transform: rotate(-3deg) translateY(0);
+  }
+
+  50% {
+    transform: rotate(-3deg) translateY(-3px);
+  }
+}
+
+@keyframes rmaPinBounce {
+  0%,
+  100% {
+    transform: rotate(-45deg) translateY(0);
+  }
+
+  50% {
+    transform: rotate(-45deg) translateY(-5px);
+  }
+}
+
+@keyframes rmaCustomerPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.65;
+  }
+
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+}
+
+@keyframes rmaDiscoveryWave {
+  0% {
+    opacity: 0;
+  }
+
+  35% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes rmaDiscoveryBadge {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+/* =========================
+   Step 3 - Show Products
+========================= */
+
+.rma_step_three_visual {
+  position: relative;
+
+  width: 100%;
+  max-width: 360px;
+  height: 235px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+
+  overflow: hidden;
+}
+
+/* =========================
+   Product Panel
+========================= */
+
+.rma_product_panel {
+  position: absolute;
+
+  left: 5px;
+  top: 18px;
+
+  width: 180px;
+  padding: 10px;
+
+  border: 1px solid #d7e8da;
+  border-radius: 18px;
+
+  background: #ffffff;
+
+  box-shadow: 0 10px 28px rgba(37, 131, 61, 0.08);
+
+  transform: rotate(-2deg);
+
+  animation: rmaProductPanelFloat 4s ease-in-out infinite;
+
+  z-index: 2;
+}
+
+/* =========================
+   Panel Header
+========================= */
+
+.rma_product_panel_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 8px;
+
+  color: #263229;
+
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.rma_product_add {
+  width: 18px;
+  height: 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #eaf6ed;
+  color: #25833d;
+
+  font-size: 14px;
+}
+
+/* =========================
+   Product Cards
+========================= */
+
+.rma_product_card {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  min-height: 34px;
+  margin-top: 6px;
+  padding: 5px 6px;
+
+  border: 1px solid #edf3ee;
+  border-radius: 10px;
+
+  background: #fbfdfb;
+
+  animation: rmaProductCardIn 3.5s ease-in-out infinite;
+}
+
+.rma_product_card_two {
+  animation-delay: 0.25s;
+}
+
+.rma_product_card_three {
+  animation-delay: 0.5s;
+}
+
+/* =========================
+   Product Icon
+========================= */
+
+.rma_product_icon {
+  position: relative;
+
+  flex: 0 0 auto;
+
+  width: 27px;
+  height: 27px;
+
+  border-radius: 8px;
+
+  background: #eaf6ed;
+}
+
+.rma_product_icon::before {
+  content: '';
+
+  position: absolute;
+
+  left: 7px;
+  top: 7px;
+
+  width: 13px;
+  height: 10px;
+
+  border: 1.5px solid #25833d;
+  border-radius: 7px 7px 4px 4px;
+}
+
+.rma_product_icon::after {
+  content: '';
+
+  position: absolute;
+
+  left: 10px;
+  top: 4px;
+
+  width: 7px;
+  height: 5px;
+
+  border: 1.5px solid #25833d;
+  border-bottom: 0;
+
+  border-radius: 5px 5px 0 0;
+}
+
+.rma_product_icon_red {
+  background: #f8eeee;
+}
+
+.rma_product_icon_red::before,
+.rma_product_icon_red::after {
+  border-color: #a85c5c;
+}
+
+.rma_product_icon_dark {
+  background: #eef2f4;
+}
+
+.rma_product_icon_dark::before,
+.rma_product_icon_dark::after {
+  border-color: #66757d;
+}
+
+/* =========================
+   Product Text
+========================= */
+
+.rma_product_info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.rma_product_info strong {
+  color: #28332c;
+
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.rma_product_info small {
+  margin-top: 2px;
+
+  color: #819087;
+
+  font-size: 7px;
+}
+
+/* =========================
+   Product Check
+========================= */
+
+.rma_product_check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 16px;
+  height: 16px;
+
+  border-radius: 50%;
+
+  background: #eaf6ed;
+  color: #25833d;
+
+  font-size: 9px;
+  font-weight: 800;
+}
+
+/* =========================
+   Add Product
+========================= */
+
+.rma_product_add_line {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  margin-top: 7px;
+  padding: 5px;
+
+  color: #25833d;
+
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.rma_product_add_line span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 15px;
+  height: 15px;
+
+  border-radius: 50%;
+
+  background: #25833d;
+  color: #ffffff;
+
+  font-size: 11px;
+}
+
+/* =========================
+   Product Signal
+========================= */
+
+.rma_product_signal {
+  position: absolute;
+
+  left: 173px;
+  top: 77px;
+
+  width: 30px;
+  height: 30px;
+
+  z-index: 4;
+}
+
+.rma_product_signal span {
+  position: absolute;
+
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: #8fbd99;
+
+  animation: rmaProductSignal 2s ease-out infinite;
+}
+
+.rma_product_signal span:nth-child(1) {
+  left: 0;
+  top: 12px;
+}
+
+.rma_product_signal span:nth-child(2) {
+  left: 11px;
+  top: 12px;
+
+  animation-delay: 0.3s;
+}
+
+.rma_product_signal span:nth-child(3) {
+  left: 22px;
+  top: 12px;
+
+  animation-delay: 0.6s;
+}
+
+/* =========================
+   Character
+========================= */
+
+.rma_step_three_visual .rma_character {
+  position: absolute;
+
+  right: -8px;
+  bottom: -4px;
+
+  transform: scale(0.74);
+  transform-origin: bottom center;
+
+  z-index: 4;
+
+  animation: rmaCharacterFloatStepThree 3s ease-in-out infinite;
+}
+
+/* =========================
+   Animations
+========================= */
+
+@keyframes rmaProductPanelFloat {
+  0%,
+  100% {
+    transform: rotate(-2deg) translateY(0);
+  }
+
+  50% {
+    transform: rotate(-2deg) translateY(-4px);
+  }
+}
+
+@keyframes rmaProductCardIn {
+  0%,
+  100% {
+    transform: translateX(0);
+    opacity: 0.9;
+  }
+
+  50% {
+    transform: translateX(3px);
+    opacity: 1;
+  }
+}
+
+@keyframes rmaProductSignal {
+  0% {
+    transform: translateX(0);
+    opacity: 0.2;
+  }
+
+  50% {
+    transform: translateX(5px);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(10px);
+    opacity: 0.1;
+  }
+}
+
+@keyframes rmaCharacterFloatStepThree {
+  0%,
+  100% {
+    transform: scale(0.74) translateY(0);
+  }
+
+  50% {
+    transform: scale(0.74) translateY(-5px);
+  }
+}
+
+/* =========================
+   Step 4 - Customers Order Online
+========================= */
+
+.rma_step_four_visual {
+  position: relative;
+
+  width: 100%;
+  max-width: 360px;
+  height: 235px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+
+  overflow: hidden;
+}
+
+/* =========================
+   Phone / Order Screen
+========================= */
+
+.rma_order_phone {
+  position: absolute;
+
+  left: 8px;
+  top: 8px;
+
+  width: 185px;
+  height: 190px;
+
+  padding: 10px;
+
+  border: 1.5px solid #d3e6d7;
+  border-radius: 20px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 12px 30px rgba(37, 131, 61, 0.1),
+    0 3px 10px rgba(0, 0, 0, 0.04);
+
+  transform: rotate(-2deg);
+
+  animation: rmaOrderPhoneFloat 4s ease-in-out infinite;
+
+  z-index: 2;
+}
+
+/* =========================
+   Phone Header
+========================= */
+
+.rma_order_phone_top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  color: #25833d;
+
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.rma_order_cart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 21px;
+  height: 21px;
+
+  border-radius: 7px;
+
+  background: #eef8f0;
+
+  font-size: 10px;
+}
+
+/* =========================
+   Shop Name
+========================= */
+
+.rma_order_shop_name {
+  margin-top: 7px;
+  margin-bottom: 8px;
+
+  color: #263229;
+
+  font-size: 11px;
+  font-weight: 800;
+}
+
+/* =========================
+   Order Items
+========================= */
+
+.rma_order_item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  margin-top: 6px;
+  padding: 5px;
+
+  border: 1px solid #edf3ee;
+  border-radius: 9px;
+
+  background: #fbfdfb;
+}
+
+.rma_order_item_icon {
+  position: relative;
+
+  flex: 0 0 auto;
+
+  width: 25px;
+  height: 25px;
+
+  border-radius: 7px;
+
+  background: #eaf6ed;
+}
+
+.rma_order_item_icon::before {
+  content: '';
+
+  position: absolute;
+
+  left: 6px;
+  top: 7px;
+
+  width: 13px;
+  height: 9px;
+
+  border: 1.5px solid #25833d;
+  border-radius: 6px 6px 3px 3px;
+}
+
+.rma_order_item_icon::after {
+  content: '';
+
+  position: absolute;
+
+  left: 9px;
+  top: 4px;
+
+  width: 7px;
+  height: 5px;
+
+  border: 1.5px solid #25833d;
+  border-bottom: 0;
+
+  border-radius: 5px 5px 0 0;
+}
+
+.rma_order_item_icon_two {
+  background: #eef2f4;
+}
+
+.rma_order_item_icon_two::before,
+.rma_order_item_icon_two::after {
+  border-color: #66757d;
+}
+
+/* =========================
+   Item Information
+========================= */
+
+.rma_order_item_info {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+
+  flex: 1;
+}
+
+.rma_order_item_info strong {
+  color: #28332c;
+
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.rma_order_item_info small {
+  margin-top: 2px;
+
+  color: #819087;
+
+  font-size: 7px;
+}
+
+/* =========================
+   Quantity
+========================= */
+
+.rma_order_quantity {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.rma_order_quantity span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 13px;
+  height: 13px;
+
+  border-radius: 50%;
+
+  background: #eef8f0;
+  color: #25833d;
+
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.rma_order_quantity strong {
+  color: #39463e;
+
+  font-size: 8px;
+}
+
+/* =========================
+   Total
+========================= */
+
+.rma_order_total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-top: 8px;
+  padding: 0 3px;
+
+  color: #6f7c73;
+
+  font-size: 8px;
+}
+
+.rma_order_total strong {
+  color: #25833d;
+
+  font-size: 11px;
+}
+
+/* =========================
+   Place Order Button
+========================= */
+
+.rma_order_button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 25px;
+
+  margin-top: 8px;
+
+  border-radius: 8px;
+
+  background: #25833d;
+  color: #ffffff;
+
+  font-size: 7px;
+  font-weight: 800;
+
+  letter-spacing: 0.6px;
+
+  box-shadow: 0 5px 12px rgba(37, 131, 61, 0.18);
+
+  animation: rmaOrderButtonPulse 2.5s ease-in-out infinite;
+}
+
+/* =========================
+   Order Signal
+========================= */
+
+.rma_order_signal {
+  position: absolute;
+
+  left: 180px;
+  top: 70px;
+
+  width: 30px;
+  height: 30px;
+
+  z-index: 4;
+}
+
+.rma_order_signal span {
+  position: absolute;
+
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: #8fbd99;
+
+  animation: rmaOrderSignal 2s ease-out infinite;
+}
+
+.rma_order_signal span:nth-child(1) {
+  left: 0;
+  top: 12px;
+}
+
+.rma_order_signal span:nth-child(2) {
+  left: 11px;
+  top: 12px;
+
+  animation-delay: 0.3s;
+}
+
+.rma_order_signal span:nth-child(3) {
+  left: 22px;
+  top: 12px;
+
+  animation-delay: 0.6s;
+}
+
+/* =========================
+   Character
+========================= */
+
+.rma_step_four_visual .rma_character {
+  position: absolute;
+
+  right: -8px;
+  bottom: -4px;
+
+  transform: scale(0.74);
+  transform-origin: bottom center;
+
+  z-index: 4;
+
+  animation: rmaCharacterFloatStepFour 3s ease-in-out infinite;
+}
+
+/* =========================
+   Step 4 Animations
+========================= */
+
+@keyframes rmaOrderPhoneFloat {
+  0%,
+  100% {
+    transform: rotate(-2deg) translateY(0);
+  }
+
+  50% {
+    transform: rotate(-2deg) translateY(-5px);
+  }
+}
+
+@keyframes rmaOrderButtonPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(0.97);
+  }
+}
+
+@keyframes rmaOrderSignal {
+  0% {
+    transform: translateX(0);
+    opacity: 0.2;
+  }
+
+  50% {
+    transform: translateX(5px);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(10px);
+    opacity: 0.1;
+  }
+}
+
+@keyframes rmaCharacterFloatStepFour {
+  0%,
+  100% {
+    transform: scale(0.74) translateY(0);
+  }
+
+  50% {
+    transform: scale(0.74) translateY(-5px);
+  }
+}
+
+/* =========================
+   Step 5 - Receive Order
+========================= */
+
+.rma_step_five_visual {
+  position: relative;
+
+  width: 100%;
+  max-width: 360px;
+  height: 235px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+
+  overflow: hidden;
+}
+
+/* =========================
+   New Order Badge
+========================= */
+
+.rma_new_order_badge {
+  position: absolute;
+
+  right: 18px;
+  top: 12px;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 7px 10px;
+
+  border: 1px solid #cfe6d4;
+  border-radius: 999px;
+
+  background: #ffffff;
+
+  color: #25833d;
+
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+
+  box-shadow: 0 6px 16px rgba(37, 131, 61, 0.1);
+
+  z-index: 4;
+
+  animation: rmaNewOrderBadgeFloat 3s ease-in-out infinite;
+}
+
+.rma_new_order_dot {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: #25833d;
+
+  box-shadow: 0 0 0 4px #eaf6ed;
+
+  animation: rmaNewOrderDotPulse 1.5s ease-in-out infinite;
+}
+
+/* =========================
+   Order Received Card
+========================= */
+
+.rma_order_received_card {
+  position: absolute;
+
+  left: 5px;
+  top: 27px;
+
+  width: 190px;
+
+  padding: 11px;
+
+  border: 1px solid #d6e7d9;
+  border-radius: 18px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 12px 30px rgba(37, 131, 61, 0.1),
+    0 3px 10px rgba(0, 0, 0, 0.04);
+
+  transform: rotate(-2deg);
+
+  z-index: 3;
+
+  animation: rmaReceivedCardFloat 4s ease-in-out infinite;
+}
+
+/* =========================
+   Received Header
+========================= */
+
+.rma_received_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rma_received_header > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.rma_received_header span {
+  color: #819087;
+
+  font-size: 7px;
+  font-weight: 600;
+}
+
+.rma_received_header strong {
+  color: #263229;
+
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.rma_received_bell {
+  position: relative;
+
+  width: 27px;
+  height: 27px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 9px;
+
+  background: #eef8f0;
+}
+
+.rma_received_bell::before {
+  content: '';
+
+  width: 10px;
+  height: 11px;
+
+  border: 1.5px solid #25833d;
+  border-radius: 7px 7px 3px 3px;
+}
+
+.rma_received_bell::after {
+  content: '';
+
+  position: absolute;
+
+  bottom: 6px;
+
+  width: 5px;
+  height: 1.5px;
+
+  border-radius: 2px;
+
+  background: #25833d;
+}
+
+/* =========================
+   Customer
+========================= */
+
+.rma_received_customer {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  margin-top: 9px;
+  padding: 7px;
+
+  border-radius: 10px;
+
+  background: #f8fbf8;
+}
+
+.rma_customer_avatar {
+  position: relative;
+
+  flex: 0 0 auto;
+
+  width: 25px;
+  height: 25px;
+
+  border-radius: 50%;
+
+  background: #eaf6ed;
+}
+
+.rma_customer_avatar::before {
+  content: '';
+
+  position: absolute;
+
+  left: 8px;
+  top: 5px;
+
+  width: 8px;
+  height: 8px;
+
+  border: 1.3px solid #25833d;
+  border-radius: 50%;
+}
+
+.rma_customer_avatar::after {
+  content: '';
+
+  position: absolute;
+
+  left: 5px;
+  bottom: 4px;
+
+  width: 15px;
+  height: 7px;
+
+  border: 1.3px solid #25833d;
+  border-bottom: 0;
+
+  border-radius: 10px 10px 0 0;
+}
+
+.rma_received_customer > div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rma_received_customer strong {
+  color: #303b33;
+
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.rma_received_customer small {
+  color: #839087;
+
+  font-size: 7px;
+}
+
+/* =========================
+   Items
+========================= */
+
+.rma_received_items {
+  margin-top: 8px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.rma_received_items > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 5px 7px;
+
+  border: 1px solid #edf3ee;
+  border-radius: 7px;
+
+  background: #ffffff;
+}
+
+.rma_received_items span {
+  color: #68756c;
+
+  font-size: 7px;
+}
+
+.rma_received_items strong {
+  color: #303b33;
+
+  font-size: 7px;
+}
+
+/* =========================
+   Total
+========================= */
+
+.rma_received_total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-top: 8px;
+  padding: 0 3px;
+
+  color: #758279;
+
+  font-size: 7px;
+}
+
+.rma_received_total strong {
+  color: #25833d;
+
+  font-size: 11px;
+}
+
+/* =========================
+   Accept Button
+========================= */
+
+.rma_accept_button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 24px;
+
+  margin-top: 8px;
+
+  border-radius: 8px;
+
+  background: #25833d;
+  color: #ffffff;
+
+  font-size: 7px;
+  font-weight: 800;
+
+  letter-spacing: 0.5px;
+
+  box-shadow: 0 5px 12px rgba(37, 131, 61, 0.18);
+
+  animation: rmaAcceptPulse 2.5s ease-in-out infinite;
+}
+
+/* =========================
+   Notification Rings
+========================= */
+
+.rma_notification_rings {
+  position: absolute;
+
+  left: 182px;
+  top: 72px;
+
+  width: 34px;
+  height: 34px;
+
+  z-index: 4;
+}
+
+.rma_notification_rings span {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 8px;
+  height: 8px;
+
+  border: 1.5px solid #25833d;
+  border-radius: 50%;
+
+  transform: translate(-50%, -50%);
+
+  animation: rmaNotificationRing 2s ease-out infinite;
+}
+
+.rma_notification_rings span:nth-child(2) {
+  animation-delay: 0.45s;
+}
+
+.rma_notification_rings span:nth-child(3) {
+  animation-delay: 0.9s;
+}
+
+/* =========================
+   Character
+========================= */
+
+.rma_step_five_visual .rma_character {
+  position: absolute;
+
+  right: -8px;
+  bottom: -4px;
+
+  transform: scale(0.74);
+  transform-origin: bottom center;
+
+  z-index: 4;
+
+  animation: rmaCharacterFloatStepFive 3s ease-in-out infinite;
+}
+
+/* =========================
+   Step 5 Animations
+========================= */
+
+@keyframes rmaNewOrderBadgeFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes rmaNewOrderDotPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.5;
+    transform: scale(0.8);
+  }
+}
+
+@keyframes rmaReceivedCardFloat {
+  0%,
+  100% {
+    transform: rotate(-2deg) translateY(0);
+  }
+
+  50% {
+    transform: rotate(-2deg) translateY(-5px);
+  }
+}
+
+@keyframes rmaAcceptPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(0.97);
+  }
+}
+
+@keyframes rmaNotificationRing {
+  0% {
+    width: 7px;
+    height: 7px;
+    opacity: 0.9;
+  }
+
+  100% {
+    width: 34px;
+    height: 34px;
+    opacity: 0;
+  }
+}
+
+@keyframes rmaCharacterFloatStepFive {
+  0%,
+  100% {
+    transform: scale(0.74) translateY(0);
+  }
+
+  50% {
+    transform: scale(0.74) translateY(-5px);
+  }
+}
+
+/* =========================
+   Step 6 - Prepare Order
+========================= */
+
+.rma_step_six_visual {
+  position: relative;
+
+  width: 100%;
+  max-width: 360px;
+  height: 235px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+
+  overflow: hidden;
+}
+
+/* =========================
+   Preparing Order Card
+========================= */
+
+.rma_preparing_order {
+  position: absolute;
+
+  left: 2px;
+  top: 12px;
+
+  width: 190px;
+
+  padding: 11px;
+
+  border: 1px solid #d7e8da;
+  border-radius: 18px;
+
+  background: #ffffff;
+
+  box-shadow: 0 10px 28px rgba(37, 131, 61, 0.08);
+
+  transform: rotate(-2deg);
+
+  animation: rmaPreparingCardFloat 4s ease-in-out infinite;
+
+  z-index: 2;
+}
+
+/* =========================
+   Order Header
+========================= */
+
+.rma_preparing_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 8px;
+
+  padding-bottom: 8px;
+
+  border-bottom: 1px solid #edf3ee;
+}
+
+.rma_preparing_header > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rma_preparing_header span {
+  color: #849189;
+
+  font-size: 7px;
+  font-weight: 700;
+
+  letter-spacing: 0.5px;
+}
+
+.rma_preparing_header strong {
+  color: #263229;
+
+  font-size: 10px;
+  font-weight: 800;
+}
+
+/* =========================
+   Preparing Badge
+========================= */
+
+.rma_preparing_badge {
+  display: flex;
+  align-items: center;
+
+  gap: 5px;
+
+  padding: 5px 7px;
+
+  border: 1px solid #cfe6d4;
+  border-radius: 999px;
+
+  background: #eef8f0;
+
+  color: #25833d;
+
+  font-size: 7px;
+  font-weight: 800;
+
+  white-space: nowrap;
+
+  animation: rmaPreparingBadgePulse 2s ease-in-out infinite;
+}
+
+.rma_preparing_badge > span {
+  width: 5px;
+  height: 5px;
+
+  flex: 0 0 auto;
+
+  border-radius: 50%;
+
+  background: #25833d;
+
+  animation: rmaPreparingDotPulse 1.2s ease-in-out infinite;
+}
+
+/* =========================
+   Preparing Items
+========================= */
+
+.rma_preparing_items {
+  display: flex;
+  flex-direction: column;
+
+  gap: 5px;
+
+  margin-top: 8px;
+}
+
+.rma_preparing_item {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  min-height: 29px;
+
+  padding: 4px 5px;
+
+  border: 1px solid #edf3ee;
+  border-radius: 9px;
+
+  background: #fbfdfb;
+}
+
+/* =========================
+   Item Icon
+========================= */
+
+.rma_preparing_item_icon {
+  position: relative;
+
+  width: 23px;
+  height: 23px;
+
+  flex: 0 0 auto;
+
+  border-radius: 7px;
+
+  background: #eaf6ed;
+}
+
+.rma_preparing_item_icon::before {
+  content: '';
+
+  position: absolute;
+
+  left: 6px;
+  top: 6px;
+
+  width: 11px;
+  height: 8px;
+
+  border: 1.5px solid #25833d;
+
+  border-radius: 6px 6px 3px 3px;
+}
+
+.rma_preparing_item_icon::after {
+  content: '';
+
+  position: absolute;
+
+  left: 8px;
+  top: 4px;
+
+  width: 7px;
+  height: 4px;
+
+  border: 1.5px solid #25833d;
+
+  border-bottom: 0;
+
+  border-radius: 5px 5px 0 0;
+}
+
+.rma_preparing_item_red {
+  background: #f8eeee;
+}
+
+.rma_preparing_item_red::before,
+.rma_preparing_item_red::after {
+  border-color: #a85c5c;
+}
+
+.rma_preparing_item_dark {
+  background: #eef2f4;
+}
+
+.rma_preparing_item_dark::before,
+.rma_preparing_item_dark::after {
+  border-color: #66757d;
+}
+
+/* =========================
+   Item Information
+========================= */
+
+.rma_preparing_item_info {
+  display: flex;
+  flex-direction: column;
+
+  flex: 1;
+
+  min-width: 0;
+}
+
+.rma_preparing_item_info strong {
+  color: #28332c;
+
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.rma_preparing_item_info small {
+  margin-top: 1px;
+
+  color: #849189;
+
+  font-size: 7px;
+}
+
+/* =========================
+   Item Completed
+========================= */
+
+.rma_item_done {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 15px;
+  height: 15px;
+
+  border-radius: 50%;
+
+  background: #eaf6ed;
+
+  color: #25833d;
+
+  font-size: 8px;
+  font-weight: 900;
+
+  animation: rmaItemCheck 2.5s ease-in-out infinite;
+}
+
+/* =========================
+   Item Loading
+========================= */
+
+.rma_item_loading {
+  min-width: 17px;
+
+  color: #25833d;
+
+  font-size: 9px;
+  font-weight: 900;
+
+  letter-spacing: 1px;
+
+  animation: rmaPreparingDots 1.2s ease-in-out infinite;
+}
+
+/* =========================
+   Progress
+========================= */
+
+.rma_preparing_progress {
+  margin-top: 9px;
+}
+
+.rma_preparing_progress_top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 4px;
+
+  color: #7a887e;
+
+  font-size: 7px;
+}
+
+.rma_preparing_progress_top strong {
+  color: #25833d;
+
+  font-size: 7px;
+}
+
+/* =========================
+   Progress Bar
+========================= */
+
+.rma_preparing_progress_bar {
+  width: 100%;
+  height: 5px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background: #eaf2ec;
+}
+
+.rma_preparing_progress_bar div {
+  width: 75%;
+  height: 100%;
+
+  border-radius: inherit;
+
+  background: #25833d;
+
+  transform-origin: left center;
+
+  animation: rmaPreparingProgress 3s ease-in-out infinite;
+}
+
+/* =========================
+   Signal
+========================= */
+
+.rma_preparing_signal {
+  position: absolute;
+
+  left: 185px;
+  top: 88px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 4px;
+
+  z-index: 4;
+}
+
+.rma_preparing_signal span {
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: #8fbd99;
+
+  animation: rmaPreparingSignal 1.5s ease-in-out infinite;
+}
+
+.rma_preparing_signal span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.rma_preparing_signal span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* =========================
+   Status Badge
+========================= */
+
+.rma_preparing_status {
+  position: absolute;
+
+  right: 8px;
+  top: 28px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 5px;
+
+  padding: 6px 9px;
+
+  border: 1px solid #cfe6d4;
+  border-radius: 999px;
+
+  background: #ffffff;
+
+  color: #25833d;
+
+  font-size: 7px;
+  font-weight: 800;
+
+  white-space: nowrap;
+
+  box-shadow: 0 5px 15px rgba(37, 131, 61, 0.08);
+
+  animation: rmaPreparingStatusFloat 3s ease-in-out infinite;
+
+  z-index: 4;
+}
+
+.rma_preparing_status_dot {
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: #25833d;
+
+  box-shadow: 0 0 0 3px #eaf6ed;
+}
+
+/* =========================
+   Character
+========================= */
+
+.rma_step_six_visual .rma_character {
+  position: absolute;
+
+  right: -6px;
+  bottom: -3px;
+
+  transform: scale(0.78);
+
+  transform-origin: bottom center;
+
+  z-index: 5;
+}
+
+/* =========================
+   Step 6 Animations
+========================= */
+
+@keyframes rmaPreparingCardFloat {
+  0%,
+  100% {
+    transform: rotate(-2deg) translateY(0);
+  }
+
+  50% {
+    transform: rotate(-2deg) translateY(-4px);
+  }
+}
+
+@keyframes rmaPreparingBadgePulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.04);
+  }
+}
+
+@keyframes rmaPreparingDotPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.45;
+    transform: scale(0.7);
+  }
+}
+
+@keyframes rmaItemCheck {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.12);
+  }
+}
+
+@keyframes rmaPreparingDots {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes rmaPreparingProgress {
+  0% {
+    width: 58%;
+  }
+
+  50% {
+    width: 82%;
+  }
+
+  100% {
+    width: 75%;
+  }
+}
+
+@keyframes rmaPreparingSignal {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: translateX(0);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateX(4px);
+  }
+}
+
+@keyframes rmaPreparingStatusFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+/* =========================
+   Step 7 - Delivery or Pickup
+========================= */
+
+.rma_step_seven_visual {
+  position: relative;
+
+  width: 100%;
+  max-width: 360px;
+  height: 235px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+
+  overflow: hidden;
+}
+
+/* =========================
+   Ready Order
+========================= */
+
+.rma_delivery_order {
+  position: absolute;
+
+  left: 5px;
+  top: 30px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 5px;
+
+  animation: rmaReadyOrderFloat 3.5s ease-in-out infinite;
+
+  z-index: 3;
+}
+
+.rma_delivery_order strong {
+  color: #25833d;
+
+  font-size: 7px;
+  font-weight: 800;
+
+  letter-spacing: 0.5px;
+}
+
+/* =========================
+   Delivery Box
+========================= */
+
+.rma_delivery_box {
+  position: relative;
+
+  width: 48px;
+  height: 40px;
+
+  border: 2px solid #25833d;
+  border-radius: 7px;
+
+  background: #eef8f0;
+}
+
+.rma_delivery_box_top {
+  position: absolute;
+
+  left: 50%;
+  top: -8px;
+
+  width: 28px;
+  height: 10px;
+
+  border: 2px solid #25833d;
+  border-bottom: 0;
+
+  border-radius: 5px 5px 0 0;
+
+  background: #ffffff;
+
+  transform: translateX(-50%);
+}
+
+.rma_delivery_box_line {
+  position: absolute;
+
+  left: 50%;
+  top: 0;
+
+  width: 2px;
+  height: 100%;
+
+  background: #25833d;
+
+  transform: translateX(-50%);
+
+  opacity: 0.45;
+}
+
+/* =========================
+   Route
+========================= */
+
+.rma_delivery_route {
+  position: absolute;
+
+  left: 54px;
+  top: 58px;
+
+  width: 130px;
+  height: 45px;
+
+  border-top: 1.5px dashed #9fc5a7;
+  border-radius: 50%;
+
+  transform: rotate(-7deg);
+
+  z-index: 1;
+}
+
+.rma_route_dot {
+  position: absolute;
+
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: #8fbd99;
+}
+
+.rma_route_dot_one {
+  left: 8px;
+  top: 18px;
+
+  animation: rmaRouteDot 2.5s ease-in-out infinite;
+}
+
+.rma_route_dot_two {
+  left: 58px;
+  top: 8px;
+
+  animation: rmaRouteDot 2.5s ease-in-out infinite 0.4s;
+}
+
+.rma_route_dot_three {
+  right: 8px;
+  top: 17px;
+
+  animation: rmaRouteDot 2.5s ease-in-out infinite 0.8s;
+}
+
+/* =========================
+   Delivery Option
+========================= */
+
+.rma_delivery_option {
+  position: absolute;
+
+  left: 120px;
+  top: 115px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 5px;
+
+  z-index: 4;
+
+  animation: rmaDeliveryFloat 3s ease-in-out infinite;
+}
+
+.rma_delivery_option > span,
+.rma_pickup_option > span {
+  color: #25833d;
+
+  font-size: 7px;
+  font-weight: 800;
+
+  letter-spacing: 0.5px;
+}
+
+/* =========================
+   Bike
+========================= */
+
+.rma_delivery_icon {
+  position: relative;
+
+  width: 58px;
+  height: 32px;
+}
+
+.rma_bike_body {
+  position: absolute;
+
+  left: 17px;
+  top: 10px;
+
+  width: 25px;
+  height: 8px;
+
+  border: 2px solid #25833d;
+  border-radius: 7px;
+
+  transform: skewX(-15deg);
+}
+
+.rma_bike_wheel {
+  position: absolute;
+
+  bottom: 0;
+
+  width: 15px;
+  height: 15px;
+
+  border: 2px solid #25833d;
+
+  border-radius: 50%;
+
+  background: #ffffff;
+}
+
+.rma_bike_wheel_one {
+  left: 3px;
+}
+
+.rma_bike_wheel_two {
+  right: 3px;
+}
+
+.rma_bike_handle {
+  position: absolute;
+
+  right: 6px;
+  top: 3px;
+
+  width: 11px;
+  height: 8px;
+
+  border-top: 2px solid #25833d;
+  border-right: 2px solid #25833d;
+
+  transform: rotate(15deg);
+}
+
+/* =========================
+   Pickup Option
+========================= */
+
+.rma_pickup_option {
+  position: absolute;
+
+  right: 18px;
+  top: 105px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 5px;
+
+  z-index: 4;
+
+  animation: rmaPickupFloat 3s ease-in-out infinite 0.5s;
+}
+
+.rma_pickup_icon {
+  position: relative;
+
+  width: 48px;
+  height: 40px;
+}
+
+.rma_pickup_roof {
+  position: absolute;
+
+  left: 3px;
+  top: 2px;
+
+  width: 42px;
+  height: 13px;
+
+  border: 2px solid #25833d;
+  border-radius: 8px 8px 2px 2px;
+
+  background: #eef8f0;
+}
+
+.rma_pickup_body {
+  position: absolute;
+
+  left: 7px;
+  bottom: 0;
+
+  width: 34px;
+  height: 28px;
+
+  border: 2px solid #25833d;
+  border-radius: 3px;
+
+  background: #ffffff;
+}
+
+.rma_pickup_door {
+  position: absolute;
+
+  left: 50%;
+  bottom: 0;
+
+  width: 9px;
+  height: 16px;
+
+  border: 1.5px solid #25833d;
+  border-bottom: 0;
+
+  transform: translateX(-50%);
+}
+
+/* =========================
+   Delivery Signal
+========================= */
+
+.rma_delivery_signal {
+  position: absolute;
+
+  left: 87px;
+  top: 125px;
+
+  display: flex;
+  gap: 4px;
+
+  z-index: 5;
+}
+
+.rma_delivery_signal span {
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: #8fbd99;
+
+  animation: rmaDeliverySignal 1.6s ease-in-out infinite;
+}
+
+.rma_delivery_signal span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.rma_delivery_signal span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* =========================
+   Character
+========================= */
+
+.rma_step_seven_visual .rma_character {
+  position: absolute;
+
+  right: -8px;
+  bottom: -3px;
+
+  transform: scale(0.72);
+
+  transform-origin: bottom center;
+
+  z-index: 6;
+}
+
+/* =========================
+   Step 7 Animations
+========================= */
+
+@keyframes rmaReadyOrderFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes rmaRouteDot {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.25);
+  }
+}
+
+@keyframes rmaDeliveryFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes rmaPickupFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes rmaDeliverySignal {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: translateX(0);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateX(4px);
+  }
+}
+
+/* =========================
+   Step 8 - Track Order
+========================= */
+
+.rma_step_eight_visual {
+  position: relative;
+
+  width: 100%;
+  max-width: 360px;
+  height: 235px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+
+  overflow: hidden;
+}
+
+/* =========================
+   Tracking Phone
+========================= */
+
+.rma_tracking_phone {
+  position: absolute;
+
+  left: 18px;
+  top: 10px;
+
+  width: 185px;
+  height: 190px;
+
+  padding: 12px;
+
+  border: 2px solid #25833d;
+  border-radius: 20px;
+
+  background: #ffffff;
+
+  box-shadow: 0 10px 28px rgba(37, 131, 61, 0.08);
+
+  transform: rotate(-2deg);
+
+  animation: rmaTrackingPhoneFloat 4s ease-in-out infinite;
+
+  z-index: 2;
+}
+
+/* =========================
+   Phone Header
+========================= */
+
+.rma_phone_top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 13px;
+
+  color: #263229;
+
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.rma_phone_signal {
+  color: #25833d;
+
+  font-size: 7px;
+
+  animation: rmaPhoneSignal 1.8s ease-in-out infinite;
+}
+
+/* =========================
+   Tracking Status
+========================= */
+
+.rma_tracking_status {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  min-height: 35px;
+}
+
+.rma_tracking_status > div {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+}
+
+.rma_tracking_status strong {
+  color: #29342d;
+
+  font-size: 7px;
+  font-weight: 800;
+}
+
+.rma_tracking_status small {
+  margin-top: 2px;
+
+  color: #87938a;
+
+  font-size: 6px;
+
+  line-height: 1.3;
+}
+
+/* =========================
+   Status Dots
+========================= */
+
+.rma_tracking_status_dot {
+  flex: 0 0 auto;
+
+  width: 22px;
+  height: 22px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.rma_tracking_status_done {
+  background: #eaf6ed;
+
+  border: 1px solid #b8d8bf;
+
+  color: #25833d;
+}
+
+.rma_tracking_status_active {
+  background: #25833d;
+
+  border: 1px solid #25833d;
+
+  color: #ffffff;
+
+  animation: rmaTrackingActive 1.5s ease-in-out infinite;
+}
+
+/* =========================
+   Tracking Lines
+========================= */
+
+.rma_tracking_line {
+  width: 1px;
+  height: 13px;
+
+  margin-left: 10px;
+
+  background: #9fc5a7;
+
+  position: relative;
+}
+
+.rma_tracking_line::after {
+  content: '';
+
+  position: absolute;
+
+  left: -1px;
+  bottom: 0;
+
+  width: 3px;
+  height: 3px;
+
+  border-radius: 50%;
+
+  background: #25833d;
+}
+
+/* =========================
+   Moving Tracking Signal
+========================= */
+
+.rma_tracking_signal {
+  position: absolute;
+
+  left: 207px;
+  top: 70px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 5px;
+
+  z-index: 4;
+}
+
+.rma_tracking_signal span {
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: #8fbd99;
+
+  animation: rmaTrackingSignal 1.8s ease-in-out infinite;
+}
+
+.rma_tracking_signal span:nth-child(2) {
+  animation-delay: 0.25s;
+}
+
+.rma_tracking_signal span:nth-child(3) {
+  animation-delay: 0.5s;
+}
+
+/* =========================
+   Location Indicator
+========================= */
+
+.rma_tracking_location {
+  position: absolute;
+
+  right: 65px;
+  top: 28px;
+
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 3;
+}
+
+.rma_tracking_location_pin {
+  position: relative;
+
+  width: 18px;
+  height: 23px;
+
+  border: 2px solid #25833d;
+
+  border-radius: 50% 50% 50% 0;
+
+  background: #ffffff;
+
+  transform: rotate(-45deg);
+
+  animation: rmaTrackingPin 2.2s ease-in-out infinite;
+}
+
+.rma_tracking_location_pin::after {
+  content: '';
+
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: #25833d;
+
+  transform: translate(-50%, -50%);
+}
+
+.rma_tracking_location_ring {
+  position: absolute;
+
+  width: 42px;
+  height: 42px;
+
+  border: 1px solid #b9d9c0;
+
+  border-radius: 50%;
+
+  animation: rmaTrackingRing 2s ease-out infinite;
+}
+
+/* =========================
+   Character
+========================= */
+
+.rma_step_eight_visual .rma_character {
+  position: absolute;
+
+  right: -8px;
+  bottom: -3px;
+
+  transform: scale(0.72);
+
+  transform-origin: bottom center;
+
+  z-index: 6;
+}
+
+/* =========================
+   Step 8 Animations
+========================= */
+
+@keyframes rmaTrackingPhoneFloat {
+  0%,
+  100% {
+    transform: rotate(-2deg) translateY(0);
+  }
+
+  50% {
+    transform: rotate(-2deg) translateY(-4px);
+  }
+}
+
+@keyframes rmaPhoneSignal {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes rmaTrackingActive {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(37, 131, 61, 0.25);
+  }
+
+  50% {
+    transform: scale(1.08);
+    box-shadow: 0 0 0 6px rgba(37, 131, 61, 0.08);
+  }
+}
+
+@keyframes rmaTrackingSignal {
+  0% {
+    opacity: 0.2;
+    transform: translateY(0);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateY(-4px);
+  }
+
+  100% {
+    opacity: 0.2;
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes rmaTrackingPin {
+  0%,
+  100% {
+    transform: rotate(-45deg) translateY(0);
+  }
+
+  50% {
+    transform: rotate(-45deg) translateY(-4px);
+  }
+}
+
+@keyframes rmaTrackingRing {
+  0% {
+    opacity: 0.8;
+    transform: scale(0.7);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.3);
+  }
+}
+
+/* =========================
+   Step 9 - Build Customer Base
+========================= */
+
+.rma_step_nine_visual {
+  position: relative;
+
+  width: 100%;
+  max-width: 360px;
+  height: 235px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+
+  overflow: hidden;
+}
+
+/* =========================
+   Customer Network
+========================= */
+
+.rma_customer_network {
+  position: absolute;
+
+  left: 5px;
+  top: 8px;
+
+  width: 265px;
+  height: 190px;
+
+  z-index: 2;
+}
+
+/* =========================
+   Central Shop
+========================= */
+
+.rma_network_shop {
+  position: absolute;
+
+  left: 100px;
+  top: 66px;
+
+  width: 66px;
+  height: 65px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  animation: rmaNetworkShopFloat 3.5s ease-in-out infinite;
+
+  z-index: 5;
+}
+
+.rma_network_shop_roof {
+  position: absolute;
+
+  left: 7px;
+  top: 2px;
+
+  width: 52px;
+  height: 19px;
+
+  border: 2px solid #25833d;
+  border-radius: 9px 9px 3px 3px;
+
+  background: #eef8f0;
+}
+
+.rma_network_shop_body {
+  position: absolute;
+
+  left: 12px;
+  bottom: 3px;
+
+  width: 42px;
+  height: 43px;
+
+  border: 2px solid #25833d;
+  border-radius: 4px;
+
+  background: #ffffff;
+}
+
+.rma_network_shop_body::before {
+  content: '';
+
+  position: absolute;
+
+  left: 50%;
+  top: 7px;
+
+  width: 16px;
+  height: 12px;
+
+  border: 1.5px solid #25833d;
+  border-radius: 2px;
+
+  transform: translateX(-50%);
+}
+
+.rma_network_shop_body i {
+  position: absolute;
+
+  bottom: 0;
+
+  width: 2px;
+  height: 16px;
+
+  background: #25833d;
+}
+
+.rma_network_shop_body i:first-child {
+  left: 12px;
+}
+
+.rma_network_shop_body i:last-child {
+  right: 12px;
+}
+
+.rma_network_shop small {
+  position: absolute;
+
+  bottom: -14px;
+
+  color: #25833d;
+
+  font-size: 6px;
+  font-weight: 800;
+
+  letter-spacing: 0.5px;
+
+  white-space: nowrap;
+}
+
+/* =========================
+   Customer Nodes
+========================= */
+
+.rma_customer_node {
+  position: absolute;
+
+  width: 32px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  animation: rmaCustomerNodeFloat 3s ease-in-out infinite;
+
+  z-index: 4;
+}
+
+.rma_customer_head {
+  position: absolute;
+
+  top: 2px;
+
+  width: 13px;
+  height: 13px;
+
+  border: 1.5px solid #25833d;
+
+  border-radius: 50%;
+
+  background: #ffffff;
+}
+
+.rma_customer_body {
+  position: absolute;
+
+  bottom: 2px;
+
+  width: 24px;
+  height: 17px;
+
+  border: 1.5px solid #25833d;
+
+  border-radius: 12px 12px 5px 5px;
+
+  background: #eef8f0;
+}
+
+/* =========================
+   Customer Positions
+========================= */
+
+.rma_customer_node_one {
+  left: 18px;
+  top: 27px;
+}
+
+.rma_customer_node_two {
+  right: 8px;
+  top: 25px;
+
+  animation-delay: 0.35s;
+}
+
+.rma_customer_node_three {
+  left: 15px;
+  bottom: 16px;
+
+  animation-delay: 0.7s;
+}
+
+.rma_customer_node_four {
+  right: 5px;
+  bottom: 10px;
+
+  animation-delay: 1s;
+}
+
+/* =========================
+   Connections
+========================= */
+
+.rma_customer_connection {
+  position: absolute;
+
+  height: 1px;
+
+  border-top: 1.5px dashed #9fc5a7;
+
+  transform-origin: left center;
+
+  z-index: 1;
+
+  animation: rmaConnectionPulse 2.5s ease-in-out infinite;
+}
+
+.rma_customer_connection_one {
+  left: 45px;
+  top: 52px;
+
+  width: 70px;
+
+  transform: rotate(22deg);
+}
+
+.rma_customer_connection_two {
+  left: 156px;
+  top: 54px;
+
+  width: 70px;
+
+  transform: rotate(-20deg);
+}
+
+.rma_customer_connection_three {
+  left: 43px;
+  top: 135px;
+
+  width: 73px;
+
+  transform: rotate(-25deg);
+
+  animation-delay: 0.4s;
+}
+
+.rma_customer_connection_four {
+  left: 157px;
+  top: 134px;
+
+  width: 72px;
+
+  transform: rotate(24deg);
+
+  animation-delay: 0.8s;
+}
+
+/* =========================
+   Order Signals
+========================= */
+
+.rma_order_signal {
+  position: absolute;
+
+  width: 17px;
+  height: 17px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #c8dfcd;
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  color: #25833d;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  z-index: 3;
+
+  animation: rmaOrderSignalMove 2.8s ease-in-out infinite;
+}
+
+.rma_order_signal_one {
+  left: 73px;
+  top: 48px;
+}
+
+.rma_order_signal_two {
+  left: 178px;
+  top: 49px;
+
+  animation-delay: 0.7s;
+}
+
+.rma_order_signal_three {
+  left: 70px;
+  top: 128px;
+
+  animation-delay: 1.4s;
+}
+
+/* =========================
+   Growth Badge
+========================= */
+
+.rma_customer_growth_badge {
+  position: absolute;
+
+  right: 8px;
+  top: 8px;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 7px 10px;
+
+  border: 1px solid #cfe6d4;
+  border-radius: 999px;
+
+  background: #ffffff;
+
+  color: #25833d;
+
+  font-size: 8px;
+  font-weight: 800;
+
+  letter-spacing: 0.4px;
+
+  box-shadow: 0 5px 15px rgba(37, 131, 61, 0.08);
+
+  animation: rmaGrowthBadgeFloat 3s ease-in-out infinite;
+
+  z-index: 6;
+}
+
+.rma_growth_badge_dot {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: #25833d;
+
+  box-shadow: 0 0 0 4px #eaf6ed;
+
+  animation: rmaGrowthPulse 1.8s ease-in-out infinite;
+}
+
+/* =========================
+   Character
+========================= */
+
+.rma_step_nine_visual .rma_character {
+  position: absolute;
+
+  right: -8px;
+  bottom: -3px;
+
+  transform: scale(0.68);
+
+  transform-origin: bottom center;
+
+  z-index: 7;
+}
+
+/* =========================
+   Step 9 Animations
+========================= */
+
+@keyframes rmaNetworkShopFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes rmaCustomerNodeFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes rmaConnectionPulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes rmaOrderSignalMove {
+  0% {
+    opacity: 0;
+
+    transform: translate(0, 0) scale(0.7);
+  }
+
+  25% {
+    opacity: 1;
+  }
+
+  70% {
+    opacity: 1;
+
+    transform: translate(20px, 4px) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+
+    transform: translate(35px, 7px) scale(0.7);
+  }
+}
+
+@keyframes rmaGrowthBadgeFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes rmaGrowthPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.5;
+    transform: scale(0.8);
+  }
+}
+
+/* =========================
+   Step 10 - Track Your Business
+========================= */
+
+.rma_step_ten_visual {
+  position: relative;
+
+  width: 100%;
+  max-width: 360px;
+  height: 235px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+
+  overflow: hidden;
+}
+
+/* =========================
+   Dashboard Panel
+========================= */
+
+.rma_dashboard_panel {
+  position: absolute;
+
+  left: 5px;
+  top: 8px;
+
+  width: 285px;
+  height: 184px;
+
+  padding: 11px;
+
+  border: 2px solid #25833d;
+  border-radius: 16px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 12px 30px rgba(37, 131, 61, 0.09),
+    0 3px 10px rgba(0, 0, 0, 0.04);
+
+  animation: rmaDashboardFloat 4s ease-in-out infinite;
+
+  z-index: 3;
+}
+
+/* =========================
+   Dashboard Header
+========================= */
+
+.rma_dashboard_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 1px 2px 9px;
+
+  border-bottom: 1px solid #e7eee8;
+}
+
+.rma_dashboard_header > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rma_dashboard_header span {
+  color: #7c8980;
+
+  font-size: 5px;
+  font-weight: 700;
+
+  letter-spacing: 0.7px;
+}
+
+.rma_dashboard_header strong {
+  color: #263229;
+
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.rma_dashboard_live {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  padding: 4px 6px;
+
+  border: 1px solid #cfe6d4;
+  border-radius: 999px;
+
+  color: #25833d;
+
+  font-size: 5px;
+  font-weight: 800;
+
+  letter-spacing: 0.4px;
+}
+
+.rma_dashboard_live i {
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: #25833d;
+
+  animation: rmaDashboardLivePulse 1.5s ease-in-out infinite;
+}
+
+/* =========================
+   Stats
+========================= */
+
+.rma_dashboard_stats {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 6px;
+
+  margin-top: 8px;
+}
+
+.rma_dashboard_stat {
+  position: relative;
+
+  min-height: 39px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  padding: 6px;
+
+  border: 1px solid #e5ece6;
+  border-radius: 8px;
+
+  background: #f9fcf9;
+
+  animation: rmaDashboardCardIn 0.8s ease both;
+}
+
+.rma_dashboard_stat:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.rma_dashboard_stat:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.rma_dashboard_stat:nth-child(4) {
+  animation-delay: 0.45s;
+}
+
+.rma_stat_icon {
+  width: 20px;
+  height: 20px;
+
+  flex: 0 0 auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 6px;
+
+  background: #eef8f0;
+
+  color: #25833d;
+
+  font-size: 8px;
+  font-weight: 900;
+}
+
+.rma_dashboard_stat > div {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 1px;
+}
+
+.rma_dashboard_stat small {
+  color: #849087;
+
+  font-size: 5px;
+  font-weight: 600;
+}
+
+.rma_dashboard_stat strong {
+  color: #263229;
+
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.rma_dashboard_stat em {
+  position: absolute;
+
+  right: 5px;
+  top: 5px;
+
+  color: #25833d;
+
+  font-size: 4.5px;
+  font-weight: 800;
+
+  font-style: normal;
+}
+
+/* =========================
+   Recent Activity
+========================= */
+
+.rma_dashboard_activity {
+  margin-top: 8px;
+
+  padding: 7px;
+
+  border: 1px solid #e5ece6;
+  border-radius: 8px;
+
+  background: #ffffff;
+}
+
+.rma_activity_title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 5px;
+}
+
+.rma_activity_title span {
+  color: #39463d;
+
+  font-size: 6px;
+  font-weight: 800;
+}
+
+.rma_activity_title small {
+  color: #9aa59d;
+
+  font-size: 5px;
+}
+
+.rma_activity_row {
+  display: flex;
+  align-items: center;
+
+  gap: 5px;
+
+  min-height: 13px;
+
+  border-top: 1px solid #f0f3f0;
+}
+
+.rma_activity_row i {
+  width: 5px;
+  height: 5px;
+
+  flex: 0 0 auto;
+
+  border-radius: 50%;
+
+  background: #25833d;
+
+  animation: rmaActivityPulse 1.8s ease-in-out infinite;
+}
+
+.rma_activity_row:nth-child(3) i {
+  animation-delay: 0.3s;
+}
+
+.rma_activity_row:nth-child(4) i {
+  animation-delay: 0.6s;
+}
+
+.rma_activity_row span {
+  flex: 1;
+
+  color: #667168;
+
+  font-size: 5px;
+  font-weight: 600;
+}
+
+.rma_activity_row small {
+  color: #a0aaa2;
+
+  font-size: 4.5px;
+}
+
+/* =========================
+   Floating Dashboard Signals
+========================= */
+
+.rma_dashboard_signal {
+  position: absolute;
+
+  display: flex;
+
+  gap: 4px;
+
+  z-index: 5;
+}
+
+.rma_dashboard_signal span {
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: #8fbd99;
+
+  animation: rmaDashboardSignal 1.8s ease-in-out infinite;
+}
+
+.rma_dashboard_signal_one {
+  right: 38px;
+  top: 28px;
+}
+
+.rma_dashboard_signal_two {
+  right: 55px;
+  bottom: 58px;
+}
+
+.rma_dashboard_signal_two span:nth-child(2) {
+  animation-delay: 0.3s;
+}
+
+.rma_dashboard_signal_one span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.rma_dashboard_signal_one span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* =========================
+   Character
+========================= */
+
+.rma_step_ten_visual .rma_character {
+  position: absolute;
+
+  right: -8px;
+  bottom: -3px;
+
+  transform: scale(0.68);
+
+  transform-origin: bottom center;
+
+  z-index: 7;
+}
+
+/* =========================
+   Animations
+========================= */
+
+@keyframes rmaDashboardFloat {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-0.5deg);
+  }
+
+  50% {
+    transform: translateY(-4px) rotate(0.5deg);
+  }
+}
+
+@keyframes rmaDashboardLivePulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(0.8);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+@keyframes rmaDashboardCardIn {
+  from {
+    opacity: 0.4;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rmaActivityPulse {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+@keyframes rmaDashboardSignal {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateY(-4px);
+  }
+}
+
+/* =========================
+   Step 11 - Refer Other Shops
+========================= */
+
+.rma_step_eleven_visual {
+  position: relative;
+
+  width: 100%;
+  max-width: 360px;
+  height: 235px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+
+  overflow: hidden;
+}
+
+/* =========================
+   Shop Icons
+========================= */
+
+.rma_referral_shop {
+  position: absolute;
+
+  width: 58px;
+  height: 65px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  animation: rmaReferralShopFloat 3.5s ease-in-out infinite;
+
+  z-index: 3;
+}
+
+.rma_referral_shop_sender {
+  left: 12px;
+  top: 70px;
+}
+
+.rma_referral_shop_receiver {
+  right: 12px;
+  top: 70px;
+
+  animation-delay: 0.6s;
+}
+
+.rma_referral_shop_icon {
+  position: relative;
+
+  width: 48px;
+  height: 47px;
+}
+
+.rma_referral_roof {
+  position: absolute;
+
+  left: 3px;
+  top: 2px;
+
+  width: 42px;
+  height: 14px;
+
+  border: 2px solid #25833d;
+  border-radius: 8px 8px 2px 2px;
+
+  background: #eef8f0;
+}
+
+.rma_referral_shop_body {
+  position: absolute;
+
+  left: 7px;
+  bottom: 0;
+
+  width: 34px;
+  height: 31px;
+
+  border: 2px solid #25833d;
+  border-radius: 3px;
+
+  background: #ffffff;
+}
+
+.rma_referral_shop_body::before {
+  content: '';
+
+  position: absolute;
+
+  left: 50%;
+  top: 6px;
+
+  width: 12px;
+  height: 9px;
+
+  border: 1.5px solid #25833d;
+  border-radius: 2px;
+
+  transform: translateX(-50%);
+}
+
+.rma_referral_shop_body i {
+  position: absolute;
+
+  left: 50%;
+  bottom: 0;
+
+  width: 8px;
+  height: 14px;
+
+  border: 1.5px solid #25833d;
+  border-bottom: 0;
+
+  transform: translateX(-50%);
+}
+
+.rma_referral_shop small {
+  margin-top: 4px;
+
+  color: #25833d;
+
+  font-size: 6px;
+  font-weight: 800;
+
+  letter-spacing: 0.5px;
+}
+
+/* =========================
+   Referral Code Card
+========================= */
+
+.rma_referral_code_card {
+  position: absolute;
+
+  left: 91px;
+  top: 38px;
+
+  width: 126px;
+  height: 67px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 8px;
+
+  border: 1.5px solid #25833d;
+  border-radius: 12px;
+
+  background: #ffffff;
+
+  box-shadow: 0 9px 24px rgba(37, 131, 61, 0.1);
+
+  animation: rmaReferralCodeFloat 3s ease-in-out infinite;
+
+  z-index: 5;
+}
+
+.rma_referral_code_label {
+  margin-bottom: 5px;
+
+  color: #7f8b82;
+
+  font-size: 5px;
+  font-weight: 800;
+
+  letter-spacing: 0.6px;
+}
+
+.rma_referral_code_card strong {
+  color: #25833d;
+
+  font-size: 11px;
+  font-weight: 900;
+
+  letter-spacing: 0.8px;
+}
+
+.rma_referral_share_icon {
+  position: absolute;
+
+  right: 8px;
+  top: 8px;
+
+  display: flex;
+  gap: 2px;
+}
+
+.rma_referral_share_icon span {
+  width: 4px;
+  height: 4px;
+
+  border: 1px solid #8fbd99;
+  border-radius: 50%;
+
+  background: #ffffff;
+}
+
+.rma_referral_share_icon span:nth-child(2) {
+  margin-top: 4px;
+}
+
+.rma_referral_share_icon span:nth-child(3) {
+  margin-top: 8px;
+}
+
+/* =========================
+   Sharing Arrow
+========================= */
+
+.rma_referral_arrow {
+  position: absolute;
+
+  left: 93px;
+  top: 119px;
+
+  width: 122px;
+  height: 22px;
+
+  z-index: 2;
+}
+
+.rma_referral_arrow::before {
+  content: '';
+
+  position: absolute;
+
+  left: 0;
+  top: 10px;
+
+  width: 108px;
+
+  border-top: 1.5px dashed #9fc5a7;
+}
+
+.rma_referral_arrow::after {
+  content: '';
+
+  position: absolute;
+
+  right: 7px;
+  top: 5px;
+
+  width: 9px;
+  height: 9px;
+
+  border-top: 1.5px solid #25833d;
+  border-right: 1.5px solid #25833d;
+
+  transform: rotate(45deg);
+
+  animation: rmaReferralArrowPulse 1.8s ease-in-out infinite;
+}
+
+.rma_referral_arrow span {
+  position: absolute;
+
+  top: 7px;
+
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: #8fbd99;
+
+  animation: rmaReferralShareMove 2.4s ease-in-out infinite;
+}
+
+.rma_referral_arrow span:nth-child(1) {
+  left: 15px;
+}
+
+.rma_referral_arrow span:nth-child(2) {
+  left: 48px;
+
+  animation-delay: 0.5s;
+}
+
+.rma_referral_arrow span:nth-child(3) {
+  left: 81px;
+
+  animation-delay: 1s;
+}
+
+/* =========================
+   Join Badge
+========================= */
+
+.rma_referral_join_badge {
+  position: absolute;
+
+  right: 10px;
+  top: 38px;
+
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  padding: 6px 8px;
+
+  border: 1px solid #cfe6d4;
+  border-radius: 999px;
+
+  background: #ffffff;
+
+  color: #25833d;
+
+  font-size: 6px;
+  font-weight: 800;
+
+  letter-spacing: 0.4px;
+
+  animation: rmaReferralJoinFloat 2.8s ease-in-out infinite;
+
+  z-index: 6;
+}
+
+.rma_referral_join_badge span {
+  width: 11px;
+  height: 11px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #eef8f0;
+
+  color: #25833d;
+
+  font-size: 9px;
+  font-weight: 900;
+}
+
+/* =========================
+   Character
+========================= */
+
+.rma_step_eleven_visual .rma_character {
+  position: absolute;
+
+  right: -8px;
+  bottom: -3px;
+
+  transform: scale(0.66);
+
+  transform-origin: bottom center;
+
+  z-index: 8;
+}
+
+/* =========================
+   Animations
+========================= */
+
+@keyframes rmaReferralShopFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes rmaReferralCodeFloat {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1deg);
+  }
+
+  50% {
+    transform: translateY(-5px) rotate(1deg);
+  }
+}
+
+@keyframes rmaReferralShareMove {
+  0% {
+    opacity: 0.2;
+    transform: translateX(0) scale(0.7);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateX(12px) scale(1);
+  }
+
+  100% {
+    opacity: 0.2;
+    transform: translateX(24px) scale(0.7);
+  }
+}
+
+@keyframes rmaReferralArrowPulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes rmaReferralJoinFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+/* =========================
+   Step 12 - Grow Together
+========================= */
+
+.rma_step_twelve_visual {
+  position: relative;
+
+  width: 100%;
+  max-width: 360px;
+  height: 235px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+
+  overflow: hidden;
+}
+
+/* =========================
+   Shops
+========================= */
+
+.rma_growth_shop {
+  position: absolute;
+
+  width: 70px;
+  height: 70px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  animation: rmaGrowthShopFloat 3.5s ease-in-out infinite;
+
+  z-index: 4;
+}
+
+.rma_growth_shop_left {
+  left: 8px;
+  top: 70px;
+}
+
+.rma_growth_shop_right {
+  right: 8px;
+  top: 70px;
+
+  animation-delay: 0.5s;
+}
+
+.rma_growth_shop_icon {
+  position: relative;
+
+  width: 52px;
+  height: 49px;
+}
+
+.rma_growth_roof {
+  position: absolute;
+
+  left: 3px;
+  top: 1px;
+
+  width: 46px;
+  height: 15px;
+
+  border: 2px solid #25833d;
+  border-radius: 9px 9px 2px 2px;
+
+  background: #eef8f0;
+}
+
+.rma_growth_shop_body {
+  position: absolute;
+
+  left: 8px;
+  bottom: 0;
+
+  width: 36px;
+  height: 32px;
+
+  border: 2px solid #25833d;
+  border-radius: 4px;
+
+  background: #ffffff;
+}
+
+.rma_growth_shop_body::before {
+  content: '';
+
+  position: absolute;
+
+  left: 50%;
+  top: 6px;
+
+  width: 13px;
+  height: 9px;
+
+  border: 1.5px solid #25833d;
+  border-radius: 2px;
+
+  transform: translateX(-50%);
+}
+
+.rma_growth_shop_body i {
+  position: absolute;
+
+  left: 50%;
+  bottom: 0;
+
+  width: 8px;
+  height: 14px;
+
+  border: 1.5px solid #25833d;
+  border-bottom: 0;
+
+  transform: translateX(-50%);
+}
+
+.rma_growth_shop small {
+  margin-top: 5px;
+
+  color: #25833d;
+
+  font-size: 5.5px;
+  font-weight: 800;
+
+  letter-spacing: 0.4px;
+
+  white-space: nowrap;
+}
+
+/* =========================
+   Growth Center
+========================= */
+
+.rma_growth_center {
+  position: absolute;
+
+  left: 50%;
+  top: 64px;
+
+  width: 90px;
+  height: 72px;
+
+  transform: translateX(-50%);
+
+  z-index: 3;
+}
+
+.rma_growth_circle {
+  position: absolute;
+
+  left: 50%;
+  top: 5px;
+
+  width: 43px;
+  height: 43px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 2px solid #25833d;
+  border-radius: 50%;
+
+  background: #eef8f0;
+
+  transform: translateX(-50%);
+
+  animation: rmaGrowthCirclePulse 2.4s ease-in-out infinite;
+}
+
+.rma_growth_arrow {
+  color: #25833d;
+
+  font-size: 23px;
+  font-weight: 900;
+
+  line-height: 1;
+
+  animation: rmaGrowthArrow 2s ease-in-out infinite;
+}
+
+.rma_growth_lines {
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: 2px;
+
+  display: flex;
+  justify-content: center;
+
+  gap: 5px;
+}
+
+.rma_growth_lines span {
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: #8fbd99;
+
+  animation: rmaGrowthDot 1.8s ease-in-out infinite;
+}
+
+.rma_growth_lines span:nth-child(2) {
+  animation-delay: 0.25s;
+}
+
+.rma_growth_lines span:nth-child(3) {
+  animation-delay: 0.5s;
+}
+
+/* =========================
+   Reward Card
+========================= */
+
+.rma_growth_reward {
+  position: absolute;
+
+  left: 50%;
+  bottom: 17px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  padding: 7px 11px;
+
+  border: 1px solid #cfe6d4;
+  border-radius: 10px;
+
+  background: #ffffff;
+
+  box-shadow: 0 7px 20px rgba(37, 131, 61, 0.08);
+
+  transform: translateX(-50%);
+
+  animation: rmaRewardFloat 3s ease-in-out infinite;
+
+  z-index: 6;
+}
+
+.rma_growth_reward_star {
+  width: 22px;
+  height: 22px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 7px;
+
+  background: #eef8f0;
+
+  color: #25833d;
+
+  font-size: 11px;
+}
+
+.rma_growth_reward > div {
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+}
+
+.rma_growth_reward small {
+  color: #849087;
+
+  font-size: 5px;
+  font-weight: 800;
+
+  letter-spacing: 0.5px;
+}
+
+.rma_growth_reward strong {
+  color: #25833d;
+
+  font-size: 9px;
+  font-weight: 900;
+}
+
+/* =========================
+   Qualified Badge
+========================= */
+
+.rma_growth_success {
+  position: absolute;
+
+  right: 14px;
+  top: 30px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 5px;
+
+  padding: 6px 8px;
+
+  border: 1px solid #cfe6d4;
+  border-radius: 999px;
+
+  background: #ffffff;
+
+  color: #25833d;
+
+  font-size: 5.5px;
+  font-weight: 900;
+
+  letter-spacing: 0.4px;
+
+  animation: rmaQualifiedFloat 2.8s ease-in-out infinite;
+
+  z-index: 7;
+}
+
+.rma_growth_success span {
+  width: 12px;
+  height: 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #25833d;
+
+  color: #ffffff;
+
+  font-size: 7px;
+  font-weight: 900;
+}
+
+/* =========================
+   Character
+========================= */
+
+.rma_step_twelve_visual .rma_character {
+  position: absolute;
+
+  right: -8px;
+  bottom: -3px;
+
+  transform: scale(0.64);
+
+  transform-origin: bottom center;
+
+  z-index: 8;
+}
+
+/* =========================
+   Animations
+========================= */
+
+@keyframes rmaGrowthShopFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes rmaGrowthCirclePulse {
+  0%,
+  100% {
+    transform: translateX(-50%) scale(1);
+    box-shadow: 0 0 0 0 rgba(37, 131, 61, 0.08);
+  }
+
+  50% {
+    transform: translateX(-50%) scale(1.08);
+    box-shadow: 0 0 0 7px rgba(37, 131, 61, 0.06);
+  }
+}
+
+@keyframes rmaGrowthArrow {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(3px, -3px);
+  }
+}
+
+@keyframes rmaGrowthDot {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes rmaRewardFloat {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  50% {
+    transform: translateX(-50%) translateY(-4px);
+  }
+}
+
+@keyframes rmaQualifiedFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}

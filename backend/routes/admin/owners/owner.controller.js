@@ -2,6 +2,7 @@ const crypto = require('crypto');
 
 const Owner = require('../../../models/Owner');
 const Order = require('../../../models/Order');
+const TestBankAccount = require('../../../models/TestBankAccount');
 
 // ============================================================
 // START PAYU ONBOARDING
@@ -385,6 +386,41 @@ const approveOwnerSettlement = async (req, res) => {
       });
     }
 
+    // ========================================
+    // CREATE / FIND TESTBANK OWNER ACCOUNT
+    // ========================================
+
+    let testBankAccount = await TestBankAccount.findOne({
+      accountType: 'OWNER',
+      ownerId: owner._id,
+    });
+
+    if (!testBankAccount) {
+      const testAccountNumber = `RMA-OWNER-${owner.shopId}`;
+
+      testBankAccount = await TestBankAccount.create({
+        accountNumber: testAccountNumber,
+
+        accountName: owner.shopName,
+
+        accountType: 'OWNER',
+
+        ownerId: owner._id,
+
+        balance: 0,
+        availableBalance: 0,
+        heldBalance: 0,
+
+        currency: 'INR',
+
+        status: 'ACTIVE',
+      });
+    }
+
+    // ========================================
+    // APPROVE OWNER SETTLEMENT
+    // ========================================
+
     owner.payment.rmaApprovalStatus = 'APPROVED';
 
     owner.payment.rmaApprovedAt = new Date();
@@ -399,8 +435,21 @@ const approveOwnerSettlement = async (req, res) => {
       settlement: {
         ownerId: owner._id,
         shopId: owner.shopId,
+
         rmaApprovalStatus: owner.payment.rmaApprovalStatus,
+
         rmaApprovedAt: owner.payment.rmaApprovedAt,
+
+        testBankAccount: {
+          id: testBankAccount._id,
+          accountNumber: testBankAccount.accountNumber,
+          accountName: testBankAccount.accountName,
+          accountType: testBankAccount.accountType,
+          balance: testBankAccount.balance,
+          availableBalance: testBankAccount.availableBalance,
+          heldBalance: testBankAccount.heldBalance,
+          status: testBankAccount.status,
+        },
       },
     });
   } catch (error) {
@@ -524,8 +573,8 @@ const getShopStatistics = async (req, res) => {
       if (order.status === 'Completed' && order.paymentStatus === 'Paid') {
         completedTransactionValue += amount;
 
-        // RMA platform fee = 1%
-        totalRmaFees += amount * 0.01;
+        // RMA platform fee = 2.5%
+        totalRmaFees += amount * 0.025;
       }
     }
 

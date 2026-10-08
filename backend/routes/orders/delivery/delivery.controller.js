@@ -1,6 +1,9 @@
 const Order = require('../../../models/Order');
 const DeliveryPerson = require('../../../models/DeliveryPerson');
 const DeliveryWalletTransaction = require('../../../models/DeliveryWalletTransaction');
+const {
+  settleCompletedOrder,
+} = require('../../../services/orders/settlement.service');
 
 const {
   createAndSendNotification,
@@ -66,18 +69,6 @@ async function verifyDeliveryOtp(req, res) {
     }
 
     // ==========================================
-    // OWNER SETTLEMENT
-    // ==========================================
-
-    if (
-      order.paymentStatus === 'Paid' &&
-      order.settlementStatus === 'Pending'
-    ) {
-      order.settlementStatus = 'Settled';
-      order.settledAt = new Date();
-    }
-
-    // ==========================================
     // DELIVERY PARTNER WALLET EARNING
     // ==========================================
 
@@ -114,6 +105,50 @@ async function verifyDeliveryOtp(req, res) {
     await order.save();
 
     // ==========================================
+    // TEST BANK SETTLEMENT
+    // ==========================================
+
+    if (
+      order.paymentStatus === 'Paid' &&
+      ['Pending', 'Processing', 'Failed'].includes(order.settlementStatus)
+    ) {
+      try {
+        order.settlementStatus = 'Processing';
+        await order.save();
+
+        const settlementResult = await settleCompletedOrder(order.orderId);
+
+        console.log(
+          `TestBank settlement completed for ${order.orderId}:`,
+          settlementResult,
+        );
+
+        const settledOrder = await Order.findOne({
+          orderId: order.orderId,
+        });
+
+        if (settledOrder) {
+          order.settlementStatus = settledOrder.settlementStatus;
+          order.settledAt = settledOrder.settledAt;
+        }
+      } catch (settlementError) {
+        console.error(
+          `TestBank settlement failed for ${order.orderId}:`,
+          settlementError,
+        );
+
+        order.settlementStatus = 'Failed';
+        await order.save();
+
+        return res.status(502).json({
+          message:
+            'Order delivered, but financial settlement failed. Please retry settlement from admin.',
+          order,
+        });
+      }
+    }
+
+    // ==========================================
     // CUSTOMER COMPLETION NOTIFICATION
     // ==========================================
 
@@ -134,6 +169,33 @@ async function verifyDeliveryOtp(req, res) {
       } catch (notificationError) {
         console.error(
           'Customer completion notification failed:',
+          notificationError,
+        );
+      }
+    }
+
+    // ==========================================
+    // OWNER COMPLETION NOTIFICATION
+    // ==========================================
+
+    if (order.ownerId) {
+      try {
+        await createAndSendNotification({
+          recipientType: 'owner',
+          recipientId: order.ownerId,
+          type: 'ORDER_COMPLETED',
+          title: 'Order Completed',
+          message: `Order ${order.orderId} has been delivered successfully.`,
+          orderId: order.orderId,
+          data: {
+            screen: 'orders',
+            orderId: order.orderId,
+            status: 'Completed',
+          },
+        });
+      } catch (notificationError) {
+        console.error(
+          'Owner completion notification failed:',
           notificationError,
         );
       }

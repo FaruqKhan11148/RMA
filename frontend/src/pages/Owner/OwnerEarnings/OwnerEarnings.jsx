@@ -11,12 +11,11 @@ import { fetchOwnerEarnings } from './utils/ownerEarningsApi';
 
 function OwnerEarnings() {
   const [earnings, setEarnings] = useState(null);
-  const [recentOrders, setRecentOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchEarnings = async () => {
+    const loadEarnings = async () => {
       try {
         setLoading(true);
         setError('');
@@ -35,17 +34,33 @@ function OwnerEarnings() {
 
         const data = await fetchOwnerEarnings(owner.id);
 
-        setEarnings(data.earnings);
-        setRecentOrders(data.recentOrders || []);
+        setEarnings({
+          totalSettledEarnings: data.earnings?.totalSettledEarnings || 0,
+
+          todayEarnings: data.earnings?.todayEarnings || 0,
+
+          weekEarnings: data.earnings?.weekEarnings || 0,
+
+          monthEarnings: data.earnings?.monthEarnings || 0,
+
+          totalProductSales: data.earnings?.totalProductSales || 0,
+
+          totalRmaFees: data.earnings?.totalRmaFees || 0,
+
+          settledOrders: data.earnings?.settledOrders || 0,
+
+          recentEarnings: data.recentEarnings || [],
+        });
       } catch (error) {
         console.error('Fetch owner earnings failed:', error);
+
         setError(error.message || 'Failed to load earnings');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchEarnings();
+    loadEarnings();
   }, []);
 
   if (loading) {
@@ -78,7 +93,7 @@ function OwnerEarnings() {
 
       <OwnerEarningsCards earnings={earnings} />
 
-      <OwnerRecentOrders recentOrders={recentOrders} />
+      <OwnerRecentOrders recentEarnings={earnings?.recentEarnings || []} />
     </main>
   );
 }

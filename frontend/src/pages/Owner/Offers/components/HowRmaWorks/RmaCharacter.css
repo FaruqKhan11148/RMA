@@ -1,0 +1,571 @@
+.rma_character {
+  --rma-green: #25833d;
+  --rma-green-light: #eaf6ed;
+  --rma-green-soft: #cfe6d4;
+  --rma-dark: #243029;
+  --rma-skin: #f3c7a5;
+
+  position: relative;
+  width: 190px;
+  height: 235px;
+  margin: 0 auto;
+
+  animation: rmaCharacterFloat 3.5s ease-in-out infinite;
+}
+
+/* =========================
+   Shadow
+========================= */
+
+.rma_character_shadow {
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+
+  width: 105px;
+  height: 12px;
+
+  border-radius: 50%;
+  background: rgba(37, 131, 61, 0.12);
+
+  transform: translateX(-50%);
+
+  animation: rmaCharacterShadow 3.5s ease-in-out infinite;
+}
+
+/* =========================
+   Head
+========================= */
+
+.rma_character_head {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+
+  width: 66px;
+  height: 72px;
+
+  transform: translateX(-50%);
+  z-index: 5;
+}
+
+.rma_character_face {
+  position: absolute;
+  inset: 8px 2px 0;
+
+  border: 2px solid var(--rma-green);
+  border-radius: 48% 48% 45% 45%;
+
+  background: #fff;
+}
+
+/* =========================
+   Cap
+========================= */
+
+.rma_character_cap {
+  position: absolute;
+  top: 0;
+  left: 50%;
+
+  width: 70px;
+  height: 30px;
+
+  transform: translateX(-50%);
+  z-index: 3;
+}
+
+.rma_character_cap_top {
+  position: absolute;
+  top: 0;
+  left: 9px;
+
+  width: 52px;
+  height: 23px;
+
+  border: 2px solid var(--rma-green);
+  border-bottom: 0;
+
+  border-radius: 50px 50px 8px 8px;
+
+  background: var(--rma-green-light);
+}
+
+.rma_character_cap_brim {
+  position: absolute;
+  left: 2px;
+  bottom: 3px;
+
+  width: 66px;
+  height: 10px;
+
+  border: 2px solid var(--rma-green);
+  border-radius: 50%;
+
+  background: #fff;
+}
+
+/* =========================
+   Face
+========================= */
+
+.rma_character_eye {
+  position: absolute;
+  top: 29px;
+
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+  background: var(--rma-green);
+}
+
+.rma_character_eye_left {
+  left: 19px;
+}
+
+.rma_character_eye_right {
+  right: 19px;
+}
+
+.rma_character_mouth {
+  position: absolute;
+  left: 50%;
+  bottom: 15px;
+
+  width: 17px;
+  height: 8px;
+
+  border-bottom: 2px solid var(--rma-green);
+  border-radius: 0 0 16px 16px;
+
+  transform: translateX(-50%);
+}
+
+/* =========================
+   Neck
+========================= */
+
+.rma_character_neck {
+  position: absolute;
+  top: 96px;
+  left: 50%;
+
+  width: 18px;
+  height: 16px;
+
+  border-left: 2px solid var(--rma-green);
+  border-right: 2px solid var(--rma-green);
+
+  background: #fff;
+
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+/* =========================
+   Body
+========================= */
+
+.rma_character_body {
+  position: absolute;
+  top: 105px;
+  left: 50%;
+
+  width: 86px;
+  height: 82px;
+
+  border: 2px solid var(--rma-green);
+  border-radius: 22px 22px 14px 14px;
+
+  background: var(--rma-green-light);
+
+  transform: translateX(-50%);
+  z-index: 3;
+}
+
+.rma_character_shirt_line {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+
+  width: 32px;
+  height: 1px;
+
+  background: var(--rma-green);
+
+  transform: translateX(-50%);
+}
+
+/* =========================
+   Pocket
+========================= */
+
+.rma_character_pocket {
+  position: absolute;
+  right: 10px;
+  top: 35px;
+
+  width: 23px;
+  height: 19px;
+
+  border: 1.5px solid var(--rma-green);
+  border-radius: 3px;
+}
+
+.rma_character_pocket span {
+  position: absolute;
+  left: 50%;
+  top: 3px;
+
+  width: 9px;
+  height: 1px;
+
+  background: var(--rma-green);
+
+  transform: translateX(-50%);
+}
+
+/* =========================
+   Arms
+========================= */
+
+.rma_character_arm {
+  position: absolute;
+  top: 12px;
+
+  width: 18px;
+  height: 67px;
+
+  border: 2px solid var(--rma-green);
+  border-radius: 15px;
+
+  background: #fff;
+}
+
+.rma_character_arm_left {
+  left: -15px;
+  transform: rotate(18deg);
+}
+
+.rma_character_arm_right {
+  right: -15px;
+  transform: rotate(-28deg);
+}
+
+.rma_character_hand {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+
+  width: 13px;
+  height: 13px;
+
+  border: 2px solid var(--rma-green);
+  border-radius: 50%;
+
+  background: #fff;
+
+  transform: translateX(-50%);
+}
+
+/* =========================
+   Phone
+========================= */
+
+.rma_character_phone {
+  position: absolute;
+  right: -19px;
+  bottom: 7px;
+
+  width: 25px;
+  height: 43px;
+
+  border: 2px solid var(--rma-green);
+  border-radius: 6px;
+
+  background: #fff;
+
+  transform: rotate(-10deg);
+
+  animation: rmaPhoneFloat 2.5s ease-in-out infinite;
+}
+
+.rma_character_phone_screen {
+  position: absolute;
+  inset: 5px 4px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  padding-top: 5px;
+}
+
+.rma_character_phone_screen span {
+  display: block;
+
+  width: 100%;
+  height: 3px;
+
+  border-radius: 4px;
+  background: var(--rma-green-soft);
+}
+
+.rma_character_phone_screen span:first-child {
+  width: 70%;
+}
+
+/* =========================
+   Legs
+========================= */
+
+.rma_character_legs {
+  position: absolute;
+  top: 181px;
+  left: 50%;
+
+  width: 58px;
+  height: 47px;
+
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+.rma_character_leg {
+  position: absolute;
+  top: 0;
+
+  width: 17px;
+  height: 42px;
+
+  border: 2px solid var(--rma-green);
+  border-top: 0;
+
+  background: #fff;
+}
+
+.rma_character_leg_left {
+  left: 8px;
+  transform: rotate(3deg);
+}
+
+.rma_character_leg_right {
+  right: 8px;
+  transform: rotate(-3deg);
+}
+
+.rma_character_shoe {
+  position: absolute;
+  bottom: -3px;
+
+  width: 25px;
+  height: 9px;
+
+  border: 2px solid var(--rma-green);
+  border-radius: 10px 10px 5px 5px;
+
+  background: #fff;
+}
+
+.rma_character_leg_left .rma_character_shoe {
+  left: -5px;
+}
+
+.rma_character_leg_right .rma_character_shoe {
+  right: -5px;
+}
+
+/* =========================
+   Animations
+========================= */
+
+@keyframes rmaCharacterFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  25% {
+    transform: translateY(-2px);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
+
+  75% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes rmaCharacterShadow {
+  0%,
+  100% {
+    transform: translateX(-50%) scaleX(1);
+    opacity: 0.7;
+  }
+
+  50% {
+    transform: translateX(-50%) scaleX(0.88);
+    opacity: 0.45;
+  }
+}
+
+@keyframes rmaPhoneFloat {
+  0%,
+  100% {
+    transform: rotate(-10deg) translateY(0);
+  }
+
+  50% {
+    transform: rotate(-7deg) translateY(-3px);
+  }
+}
+
+/* =========================
+   Mobile
+========================= */
+
+@media (max-width: 500px) {
+  .rma_character {
+    transform: scale(0.9);
+    transform-origin: center bottom;
+  }
+
+  @keyframes rmaCharacterFloat {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    25% {
+      transform: translateY(-2px);
+    }
+
+    50% {
+      transform: translateY(-5px);
+    }
+
+    75% {
+      transform: translateY(-2px);
+    }
+  }
+}
+
+/* =========================
+   Character Micro Animations
+========================= */
+
+.rma_character_head {
+  animation: rmaHeadFloat 3.5s ease-in-out infinite;
+}
+
+.rma_character_body {
+  animation: rmaBodyFloat 3.5s ease-in-out infinite;
+}
+
+.rma_character_cap {
+  animation: rmaCapFloat 3.5s ease-in-out infinite;
+}
+
+.rma_character_arm_right {
+  animation: rmaArmFloat 2.8s ease-in-out infinite;
+}
+
+@keyframes rmaHeadFloat {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateX(-50%) translateY(-2px) rotate(-1deg);
+  }
+}
+
+@keyframes rmaBodyFloat {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  50% {
+    transform: translateX(-50%) translateY(2px);
+  }
+}
+
+@keyframes rmaCapFloat {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateX(-50%) translateY(-1px) rotate(-1deg);
+  }
+}
+
+@keyframes rmaArmFloat {
+  0%,
+  100% {
+    transform: rotate(-28deg);
+  }
+
+  50% {
+    transform: rotate(-24deg) translateY(-2px);
+  }
+}
+
+.rma_character_phone_screen span {
+  animation: rmaPhoneLinePulse 2.4s ease-in-out infinite;
+}
+
+.rma_character_phone_screen span:nth-child(2) {
+  animation-delay: 0.25s;
+}
+
+.rma_character_phone_screen span:nth-child(3) {
+  animation-delay: 0.5s;
+}
+
+@keyframes rmaPhoneLinePulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scaleX(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scaleX(0.8);
+  }
+}
+
+.rma_character_collar {
+  position: absolute;
+  top: 7px;
+
+  width: 17px;
+  height: 20px;
+
+  border-bottom: 1.5px solid var(--rma-green);
+
+  background: #fff;
+}
+
+.rma_character_collar_left {
+  left: 27px;
+
+  border-right: 1.5px solid var(--rma-green);
+
+  transform: skewY(22deg);
+}
+
+.rma_character_collar_right {
+  right: 27px;
+
+  border-left: 1.5px solid var(--rma-green);
+
+  transform: skewY(-22deg);
+}

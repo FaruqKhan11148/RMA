@@ -1,6 +1,23 @@
-function OwnerEarningsOrderCard({ order }) {
+function OwnerEarningsOrderCard({ order, onClick }) {
+  const handleOpen = () => {
+    if (onClick) {
+      onClick(order);
+    }
+  };
+
   return (
-    <article className="owner_earnings_order_card" key={order.orderId}>
+    <article
+      className="owner_earnings_order_card"
+      onClick={handleOpen}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          handleOpen();
+        }
+      }}
+    >
       <div className="owner_earnings_order_top">
         <div>
           <span>Order ID</span>
@@ -18,8 +35,13 @@ function OwnerEarningsOrderCard({ order }) {
 
       <div className="owner_earnings_order_details">
         <div>
-          <span>Order Total</span>
-          <strong>₹{Number(order.totalPrice || 0).toFixed(2)}</strong>
+          <span>Product Sales</span>
+          <strong>₹{Number(order.productSubtotal || 0).toFixed(2)}</strong>
+        </div>
+
+        <div>
+          <span>RMA Fee</span>
+          <strong>-₹{Number(order.rmaFee || 0).toFixed(2)}</strong>
         </div>
 
         <div>
@@ -29,13 +51,22 @@ function OwnerEarningsOrderCard({ order }) {
       </div>
 
       <div className="owner_earnings_order_bottom">
-        <span>{order.orderStatus}</span>
+        <span>
+          {order.settledAt
+            ? `Settled ${new Date(order.settledAt).toLocaleDateString()}`
+            : new Date(order.orderDate).toLocaleDateString()}
+        </span>
 
-        {order.settledAt ? (
-          <span>Settled {new Date(order.settledAt).toLocaleDateString()}</span>
-        ) : (
-          <span>{new Date(order.orderDate).toLocaleDateString()}</span>
-        )}
+        <button
+          type="button"
+          className="owner_earnings_view_button"
+          onClick={(event) => {
+            event.stopPropagation();
+            handleOpen();
+          }}
+        >
+          View details →
+        </button>
       </div>
     </article>
   );

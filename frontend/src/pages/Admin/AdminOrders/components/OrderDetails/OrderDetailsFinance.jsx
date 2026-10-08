@@ -15,7 +15,7 @@ function OrderDetailsFinance({ order }) {
         </div>
 
         <div>
-          <span>RMA Fee (1%)</span>
+          <span>RMA Fee (2.5%)</span>
           <strong>₹{Number(order.rmaFee || 0).toFixed(2)}</strong>
         </div>
 

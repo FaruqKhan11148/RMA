@@ -21,7 +21,7 @@ function PlatformInfo({ admin }) {
 
         <div>
           <span>Platform Fee</span>
-          <strong>1%</strong>
+          <strong>2.5%</strong>
         </div>
 
         <div>
