@@ -773,6 +773,22 @@ async function transferOutOfAccount({
     await session.withTransaction(async () => {
       const account = await getActiveAccount(debitAccountId, session);
 
+      if (account.balance < debitAmount) {
+        throw new Error(
+          `Insufficient account balance. Available balance in ledger: ₹${Number(
+            account.balance,
+          ).toFixed(2)}`,
+        );
+      }
+
+      if (account.availableBalance < debitAmount) {
+        throw new Error(
+          `Insufficient available balance. Available: ₹${Number(
+            account.availableBalance,
+          ).toFixed(2)}`,
+        );
+      }
+
       if (account.availableBalance < debitAmount) {
         throw new Error(
           `Insufficient available balance. Available: ₹${Number(

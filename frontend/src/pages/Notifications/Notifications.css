@@ -484,3 +484,142 @@
 [data-theme='dark'] .notification_modal_footer p {
   color: var(--rma-text-secondary);
 }
+
+/* =========================================
+   NOTIFICATIONS SKELETON
+========================================= */
+
+.notifications_skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.notification_skeleton_card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  width: 100%;
+  padding: 16px;
+  border: 1px solid #e5e5e5;
+  border-radius: 14px;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.notification_skeleton_icon {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+}
+
+.notification_skeleton_content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.notification_skeleton_top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.notification_skeleton_line,
+.notification_skeleton_icon {
+  background: linear-gradient(90deg, #eeeeee 25%, #f7f7f7 50%, #eeeeee 75%);
+  background-size: 200% 100%;
+  animation: notification-skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+.notification_skeleton_line {
+  display: block;
+  flex-shrink: 0;
+  height: 13px;
+  border-radius: 5px;
+}
+
+.notification_skeleton_title {
+  width: 45%;
+  max-width: 220px;
+  height: 17px;
+}
+
+.notification_skeleton_date {
+  width: 82px;
+  height: 12px;
+}
+
+.notification_skeleton_message {
+  width: 92%;
+}
+
+.notification_skeleton_message_short {
+  width: 62%;
+}
+
+@keyframes notification-skeleton-shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+/* DARK MODE */
+
+[data-theme='dark'] .notification_skeleton_card {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+}
+
+[data-theme='dark'] .notification_skeleton_line,
+[data-theme='dark'] .notification_skeleton_icon {
+  background: linear-gradient(
+    90deg,
+    var(--rma-bg-secondary) 25%,
+    var(--rma-border) 50%,
+    var(--rma-bg-secondary) 75%
+  );
+  background-size: 200% 100%;
+}
+
+/* MOBILE */
+
+@media (max-width: 480px) {
+  .notification_skeleton_card {
+    gap: 10px;
+    padding: 14px;
+  }
+
+  .notification_skeleton_icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .notification_skeleton_top {
+    gap: 8px;
+  }
+
+  .notification_skeleton_title {
+    width: 50%;
+  }
+
+  .notification_skeleton_date {
+    width: 70px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notification_skeleton_line,
+  .notification_skeleton_icon {
+    animation: none;
+  }
+}

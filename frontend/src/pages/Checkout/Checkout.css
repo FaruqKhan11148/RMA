@@ -1425,7 +1425,6 @@
   }
 }
 
-
 /* =========================================================
    DARK MODE — CHECKOUT
    ========================================================= */
@@ -1976,4 +1975,259 @@
 
 [data-theme='dark'] .location_sheet_back {
   color: var(--rma-text);
+}
+
+/* =========================
+   CHECKOUT PAGE SKELETON
+========================= */
+
+.checkout_page_skeleton {
+  pointer-events: none;
+}
+
+.checkout_skeleton_block {
+  position: relative;
+  overflow: hidden;
+  background: var(--rma-border, #e8e8e8);
+  border-radius: 8px;
+}
+
+.checkout_skeleton_block::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.55),
+    transparent
+  );
+  animation: checkoutSkeletonShimmer 1.4s infinite;
+}
+
+.checkout_skeleton_header {
+  margin-bottom: 24px;
+}
+
+.skeleton_eyebrow {
+  width: 90px;
+  height: 12px;
+  margin-bottom: 14px;
+}
+
+.skeleton_title {
+  width: 180px;
+  height: 34px;
+  margin-bottom: 12px;
+}
+
+.skeleton_description {
+  width: min(360px, 90%);
+  height: 14px;
+}
+
+.skeleton_shop {
+  height: 82px;
+  margin-bottom: 24px;
+}
+
+.checkout_skeleton_card {
+  padding: 22px;
+  margin-bottom: 20px;
+}
+
+.skeleton_section_title {
+  width: 180px;
+  height: 22px;
+  margin-bottom: 14px;
+}
+
+.skeleton_section_text {
+  width: 65%;
+  height: 13px;
+  margin-bottom: 22px;
+}
+
+.skeleton_location {
+  width: 100%;
+  height: 76px;
+}
+
+.skeleton_input {
+  width: 100%;
+  height: 44px;
+  margin-bottom: 18px;
+}
+
+.skeleton_textarea {
+  width: 100%;
+  height: 88px;
+}
+
+.skeleton_summary_item {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 22px 0;
+}
+
+.skeleton_summary_name {
+  width: 55%;
+  height: 16px;
+}
+
+.skeleton_summary_price {
+  width: 55px;
+  height: 16px;
+}
+
+.skeleton_summary_row {
+  width: 100%;
+  height: 18px;
+  margin: 18px 0;
+}
+
+.skeleton_summary_total {
+  width: 100%;
+  height: 30px;
+  margin: 24px 0;
+}
+
+.skeleton_checkout_button {
+  width: 100%;
+  height: 50px;
+  margin-top: 22px;
+}
+
+.skeleton_secure_note {
+  width: 100%;
+  height: 48px;
+}
+
+.checkout_skeleton_sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@keyframes checkoutSkeletonShimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .checkout_skeleton_block::after {
+    animation: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .checkout_skeleton_card {
+    padding: 16px;
+  }
+
+  .skeleton_shop {
+    height: 72px;
+  }
+}
+
+/* Saved address skeleton */
+.location_sheet_skeleton_list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.location_address_skeleton {
+  cursor: default;
+  pointer-events: none;
+}
+
+.location_address_skeleton_icon {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #e9e9e9;
+}
+
+.location_address_skeleton_content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 9px;
+  min-width: 0;
+}
+
+.location_address_skeleton_line {
+  position: relative;
+  overflow: hidden;
+  height: 13px;
+  border-radius: 6px;
+  background: #e9e9e9;
+}
+
+.location_address_skeleton_line::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.65),
+    transparent
+  );
+  animation: checkoutSkeletonShimmer 1.4s infinite;
+}
+
+.location_address_skeleton_label {
+  width: 42%;
+}
+
+.location_address_skeleton_text {
+  width: 85%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .location_address_skeleton_line::after {
+    animation: none;
+  }
+}
+
+/* Order summary value skeleton */
+.summary_value_skeleton {
+  position: relative;
+  display: inline-block;
+  height: 17px;
+  max-width: 100%;
+  overflow: hidden;
+  vertical-align: middle;
+  border-radius: 5px;
+  background: #e9e9e9;
+}
+
+.summary_value_skeleton::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.65),
+    transparent
+  );
+  animation: checkoutSkeletonShimmer 1.4s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .summary_value_skeleton::after {
+    animation: none;
+  }
 }

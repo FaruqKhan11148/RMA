@@ -1,7 +1,7 @@
 function FindShopLocation({ locationName, onChangeLocation }) {
   return (
     <section className="find_shop_location">
-      <div className="find_shop_location_icon">
+      <div className="find_shop_location_icon" aria-hidden="true">
         <svg
           width="22"
           height="22"

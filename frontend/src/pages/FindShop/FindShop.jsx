@@ -10,6 +10,7 @@ import ShopSearch from './components/ShopSearch';
 import ShopQrSection from './components/ShopQrSection';
 import SavedShop from './components/SavedShop';
 import LocationSheet from './components/LocationSheet';
+import FindShopPageSkeleton from './components/FindShopPageSkeleton';
 
 import {
   fetchSavedShop,
@@ -44,6 +45,8 @@ function FindShop() {
   const [loadingAddresses, setLoadingAddresses] = useState(false);
 
   const [customerLoggedIn, setCustomerLoggedIn] = useState(false);
+
+  const [initialNearbyCheckDone, setInitialNearbyCheckDone] = useState(false);
 
   useEffect(() => {
     const loadSavedShop = async () => {
@@ -116,25 +119,29 @@ function FindShop() {
   }, []);
 
   useEffect(() => {
-    const savedLocation = getSavedLocation();
+    const loadInitialNearbyShops = async () => {
+      const savedLocation = getSavedLocation();
 
-    if (!savedLocation) {
-      return;
-    }
+      if (!savedLocation) {
+        setInitialNearbyCheckDone(true);
+        return;
+      }
 
-    if (
-      Number.isFinite(Number(savedLocation.latitude)) &&
-      Number.isFinite(Number(savedLocation.longitude))
-    ) {
-      fetchNearbyShops(
-        Number(savedLocation.latitude),
-        Number(savedLocation.longitude),
-      );
-    }
+      if (savedLocation.locationName) {
+        setLocationName(savedLocation.locationName);
+      }
 
-    if (savedLocation.locationName) {
-      setLocationName(savedLocation.locationName);
-    }
+      const latitude = Number(savedLocation.latitude);
+      const longitude = Number(savedLocation.longitude);
+
+      if (Number.isFinite(latitude) && Number.isFinite(longitude)) {
+        await fetchNearbyShops(latitude, longitude);
+      }
+
+      setInitialNearbyCheckDone(true);
+    };
+
+    loadInitialNearbyShops();
   }, [fetchNearbyShops]);
 
   const handleLocationClick = () => {
@@ -270,6 +277,10 @@ function FindShop() {
 
     loadCustomerLogin();
   }, []);
+
+  if (loadingShop || !initialNearbyCheckDone) {
+    return <FindShopPageSkeleton />;
+  }
 
   return (
     <main className="find_shop">

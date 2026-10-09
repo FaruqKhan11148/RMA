@@ -1681,3 +1681,426 @@
     border-color: #333333;
   }
 }
+
+/* Earnings navigation cards */
+
+.owner_earnings_navigation {
+  margin-top: 28px;
+  margin-bottom: 28px;
+}
+
+.owner_earnings_navigation h2 {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.owner_earnings_navigation > p {
+  margin: 0 0 18px;
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.owner_earnings_navigation_grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.owner_earnings_navigation_card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #1f2937;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.owner_earnings_navigation_card:hover {
+  border-color: #16a34a;
+  box-shadow: 0 5px 18px rgb(0 0 0 / 6%);
+  transform: translateY(-2px);
+}
+
+.owner_earnings_navigation_card:focus-visible {
+  outline: 2px solid #16a34a;
+  outline-offset: 3px;
+}
+
+.owner_earnings_navigation_icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #ecfdf5;
+  color: #15803d;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.owner_earnings_navigation_text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.owner_earnings_navigation_text strong {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.owner_earnings_navigation_text small {
+  color: #6b7280;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.owner_earnings_navigation_arrow {
+  flex-shrink: 0;
+  color: #6b7280;
+  font-size: 21px;
+}
+
+@media (max-width: 900px) {
+  .owner_earnings_navigation_grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .owner_earnings_navigation_card {
+    padding: 14px;
+    gap: 10px;
+  }
+
+  .owner_earnings_navigation_icon {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* =========================================
+   OWNER RECENT EARNINGS — FILTERS & ARCHIVE
+========================================= */
+
+.owner-earnings-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.owner-earnings-filters > label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.owner-earnings-filters select,
+.owner-earnings-custom-dates input {
+  min-height: 42px;
+  max-width: 100%;
+  padding: 9px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #fff;
+  color: #1f2937;
+  font: inherit;
+}
+
+.owner-earnings-custom-dates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  width: 100%;
+}
+
+.owner-earnings-custom-dates label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1 1 160px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.owner-earnings-filter-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 18px 0;
+}
+
+.owner-earnings-filter-summary > div {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.owner-earnings-filter-summary span {
+  display: block;
+  margin-bottom: 8px;
+  color: #6b7280;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.owner-earnings-filter-summary strong {
+  display: block;
+  overflow-wrap: anywhere;
+  color: #111827;
+  font-size: 19px;
+  line-height: 1.4;
+}
+
+.owner-earnings-selection-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 16px 0;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #f9fafb;
+}
+
+.owner-earnings-selection-toolbar > label {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 36px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.owner-earnings-selection-toolbar input[type='checkbox'],
+.owner-earnings-order-checkbox input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  margin: 0;
+  accent-color: #078a3d;
+  cursor: pointer;
+}
+
+.owner-earnings-selection-toolbar button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #b42318;
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.owner-earnings-selection-toolbar button:hover:not(:disabled) {
+  background: #912018;
+}
+
+.owner-earnings-selection-toolbar button:disabled {
+  background: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.owner-earnings-archive-error,
+.owner-earnings-archive-success {
+  margin: 12px 0;
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.owner-earnings-archive-error {
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.owner-earnings-archive-success {
+  border: 1px solid #bbf7d0;
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.owner-earnings-selectable-order {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 14px;
+}
+
+.owner-earnings-order-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding-top: 22px;
+  cursor: pointer;
+}
+
+.owner-earnings-order-card-wrapper {
+  flex: 1;
+  min-width: 0;
+}
+
+.owner-earnings-order-card-wrapper > * {
+  max-width: 100%;
+}
+
+/* =========================================
+   RESPONSIVE LAYOUT
+========================================= */
+
+@media (max-width: 600px) {
+  .owner-earnings-filters {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .owner-earnings-filters > label {
+    font-size: 14px;
+  }
+
+  .owner-earnings-filters select {
+    width: 100%;
+  }
+
+  .owner-earnings-custom-dates {
+    flex-direction: column;
+  }
+
+  .owner-earnings-custom-dates label {
+    flex-basis: auto;
+  }
+
+  .owner-earnings-filter-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+  }
+
+  .owner-earnings-filter-summary > div {
+    padding: 12px;
+  }
+
+  .owner-earnings-filter-summary > div:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .owner-earnings-filter-summary span {
+    font-size: 12px;
+  }
+
+  .owner-earnings-filter-summary strong {
+    font-size: 17px;
+  }
+
+  .owner-earnings-selection-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .owner-earnings-selection-toolbar > label {
+    line-height: 1.5;
+  }
+
+  .owner-earnings-selection-toolbar button {
+    width: 100%;
+  }
+
+  .owner-earnings-selectable-order {
+    gap: 8px;
+  }
+
+  .owner-earnings-order-checkbox {
+    padding-top: 20px;
+  }
+}
+
+/* Back to Earnings button */
+.owner_recent_earnings_back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  margin-bottom: 16px;
+  padding: 10px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #1f2937;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.owner_recent_earnings_back:hover {
+  background: #f0fdf4;
+  border-color: #16a34a;
+  color: #15803d;
+}
+
+.owner_recent_earnings_back:active {
+  transform: translateY(1px);
+}
+
+.owner_recent_earnings_back:focus-visible {
+  outline: 2px solid #16a34a;
+  outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+  .owner_recent_earnings_back {
+    min-height: 44px;
+    margin-bottom: 12px;
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+}

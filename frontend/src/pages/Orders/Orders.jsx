@@ -8,6 +8,7 @@ import OrdersEmpty from './components/OrdersEmpty';
 import OrderCard from './components/OrderCard';
 import OrdersHeader from './components/OrdersHeader';
 import OrderSheet from './components/OrderSheet';
+import OrdersSkeleton from './components/OrdersSkeleton';
 
 import { fetchCustomerOrders, deleteCustomerOrders } from './utils/ordersApi';
 
@@ -225,12 +226,20 @@ function Orders() {
   };
 
   // ==============================
+  // LOADING STATE
+  // ==============================
+
+  if (loading) {
+    return <OrdersSkeleton />;
+  }
+
+  // ==============================
   // EMPTY STATE
   // ==============================
 
-  if (loading || orders.length === 0) {
+  if (orders.length === 0) {
     return (
-      <OrdersEmpty loading={loading} onStartOrdering={() => navigate('/')} />
+      <OrdersEmpty loading={false} onStartOrdering={() => navigate('/')} />
     );
   }
 

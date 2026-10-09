@@ -4,8 +4,10 @@ import './Notifications.css';
 import NotificationsHeader from './components/NotificationsHeader';
 import NotificationsList from './components/NotificationsList';
 import NotificationModal from './components/NotificationModal';
+import NotificationsSkeleton from './components/NotificationsSkeleton';
 
 import { getNotificationStatus, formatDate } from './utils/notificationHelpers';
+
 import {
   fetchNotifications as fetchNotificationsApi,
   markNotificationAsRead as markNotificationAsReadApi,
@@ -67,13 +69,16 @@ function Notifications() {
     <main className="notifications">
       <NotificationsHeader unreadCount={unreadCount} />
 
-      <NotificationsList
-        loading={loading}
-        error={error}
-        notifications={notifications}
-        handleNotificationClick={handleNotificationClick}
-        formatDate={formatDate}
-      />
+      {loading ? (
+        <NotificationsSkeleton />
+      ) : (
+        <NotificationsList
+          error={error}
+          notifications={notifications}
+          handleNotificationClick={handleNotificationClick}
+          formatDate={formatDate}
+        />
+      )}
 
       <NotificationModal
         selectedNotification={selectedNotification}

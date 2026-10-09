@@ -1,0 +1,123 @@
+.orders_skeleton {
+  min-height: 50vh;
+}
+
+.orders_skeleton_heading {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.orders_skeleton_block {
+  display: block;
+  flex-shrink: 0;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #eeeeee 25%, #f7f7f7 50%, #eeeeee 75%);
+  background-size: 200% 100%;
+  animation: orders-skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+.orders_skeleton_title {
+  width: 145px;
+  height: 28px;
+}
+
+.orders_skeleton_subtitle {
+  width: 235px;
+  max-width: 100%;
+  height: 14px;
+}
+
+.orders_skeleton_select {
+  width: 78px;
+  height: 38px;
+  border-radius: 8px;
+}
+
+.orders_skeleton_card {
+  cursor: default;
+  pointer-events: none;
+}
+
+.orders_skeleton_order_id {
+  width: 125px;
+  height: 17px;
+}
+
+.orders_skeleton_status {
+  width: 78px;
+  height: 25px;
+  border-radius: 20px;
+}
+
+.orders_skeleton_shop {
+  width: 155px;
+  max-width: 65%;
+  height: 20px;
+}
+
+.orders_skeleton_arrow {
+  width: 12px;
+  height: 20px;
+}
+
+.orders_skeleton_meta {
+  width: 65px;
+  height: 14px;
+}
+
+.orders_skeleton_delivery {
+  width: 60px;
+}
+
+.orders_skeleton_price {
+  width: 78px;
+  height: 18px;
+  margin-left: auto;
+}
+
+.orders_skeleton_hint {
+  width: 145px;
+  height: 11px;
+}
+
+@keyframes orders-skeleton-shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .orders_skeleton_title {
+    width: 125px;
+    height: 25px;
+  }
+
+  .orders_skeleton_subtitle {
+    width: 195px;
+  }
+
+  .orders_skeleton_select {
+    width: 65px;
+    height: 35px;
+  }
+
+  .orders_skeleton_order_id {
+    width: 105px;
+  }
+
+  .orders_skeleton_shop {
+    width: 130px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orders_skeleton_block {
+    animation: none;
+  }
+}

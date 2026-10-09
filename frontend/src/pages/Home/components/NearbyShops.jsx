@@ -1,6 +1,7 @@
 import NearbyShopImageSlider from '../../../components/NearbyShopImageSlider/NearbyShopImageSlider';
 
 import { useLanguage } from '../../../context/LanguageContext';
+import { NearbyShopSkeletons } from './HomeSkeleton';
 
 function NearbyShops({
   userLocation,
@@ -31,9 +32,7 @@ function NearbyShops({
         </button>
       </div>
 
-      {loadingNearbyShops && (
-        <div className="nearby_shops_loading">{t.home.loadingNearbyShops}</div>
-      )}
+      {loadingNearbyShops && <NearbyShopSkeletons />}
 
       {!loadingNearbyShops && nearbyShopsError && (
         <div className="nearby_shops_error">{nearbyShopsError}</div>

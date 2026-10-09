@@ -1,3 +1,13 @@
+function SummaryValueSkeleton({ width = '72px' }) {
+  return (
+    <span
+      className="summary_value_skeleton"
+      style={{ width }}
+      aria-hidden="true"
+    />
+  );
+}
+
 function OrderSummary({
   cartItems,
   totalPrice,
@@ -47,11 +57,13 @@ function OrderSummary({
         </div>
 
         <strong>
-          {orderType === 'delivery'
-            ? deliveryLoading
-              ? 'calculating...'
-              : `₹${deliveryCharge.toFixed(2)}`
-            : 'Free'}
+          {orderType !== 'delivery' ? (
+            'Free'
+          ) : deliveryLoading ? (
+            <SummaryValueSkeleton width="78px" />
+          ) : (
+            `₹${deliveryCharge.toFixed(2)}`
+          )}
         </strong>
       </div>
 
@@ -71,9 +83,11 @@ function OrderSummary({
         <span>Final Customer Total</span>
 
         <strong>
-          {deliveryLoading
-            ? 'Calculating...'
-            : `₹${payuPricing.customerPayableAmount.toFixed(2)}`}
+          {deliveryLoading ? (
+            <SummaryValueSkeleton width="110px" />
+          ) : (
+            `₹${payuPricing.customerPayableAmount.toFixed(2)}`
+          )}
         </strong>
       </div>
     </section>

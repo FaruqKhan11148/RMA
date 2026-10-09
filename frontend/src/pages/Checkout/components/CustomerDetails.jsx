@@ -7,7 +7,6 @@ function CustomerDetails({ customer, onChange, onSubmit, orderType }) {
 
           <div>
             <h2>Your Details</h2>
-
             <p>Enter your contact information.</p>
           </div>
         </div>
@@ -24,6 +23,8 @@ function CustomerDetails({ customer, onChange, onSubmit, orderType }) {
             placeholder="Enter your name"
             value={customer.name}
             onChange={onChange}
+            autoComplete="name"
+            maxLength={100}
             required
           />
         </div>
@@ -35,9 +36,14 @@ function CustomerDetails({ customer, onChange, onSubmit, orderType }) {
             id="checkout-phone"
             type="tel"
             name="phone"
-            placeholder="Enter your mobile number"
+            placeholder="Enter your 10-digit mobile number"
             value={customer.phone}
             onChange={onChange}
+            autoComplete="tel"
+            inputMode="numeric"
+            pattern="[0-9]{10}"
+            maxLength={10}
+            title="Enter a valid 10-digit mobile number."
             required
           />
         </div>
@@ -52,6 +58,8 @@ function CustomerDetails({ customer, onChange, onSubmit, orderType }) {
               placeholder="Enter your complete delivery address"
               value={customer.address}
               onChange={onChange}
+              autoComplete="street-address"
+              maxLength={500}
               required
             />
           </div>

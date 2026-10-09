@@ -22,7 +22,44 @@ function NearbyShops({
       </div>
 
       {loadingNearbyShops && (
-        <div className="find_shop_message">Finding nearby shops...</div>
+        <div
+          className="find_shop_nearby_list find_shop_nearby_skeleton_list"
+          role="status"
+          aria-label="Loading nearby shops"
+          aria-busy="true"
+        >
+          {[1, 2, 3].map((item) => (
+            <div
+              key={item}
+              className="find_shop_nearby_card find_shop_nearby_skeleton_card"
+              aria-hidden="true"
+            >
+              <div className="find_shop_skeleton_image" />
+
+              <div className="find_shop_nearby_card_content">
+                <div className="find_shop_nearby_title_row">
+                  <div className="find_shop_skeleton_line find_shop_skeleton_title" />
+
+                  <div className="find_shop_skeleton_rating" />
+                </div>
+
+                <div className="find_shop_skeleton_line find_shop_skeleton_description" />
+
+                <div className="find_shop_skeleton_meta">
+                  <div className="find_shop_skeleton_line" />
+                  <div className="find_shop_skeleton_line" />
+                  <div className="find_shop_skeleton_line" />
+                </div>
+              </div>
+
+              <div className="find_shop_nearby_card_footer">
+                <div className="find_shop_skeleton_line find_shop_skeleton_shop_id" />
+
+                <div className="find_shop_skeleton_line find_shop_skeleton_view_shop" />
+              </div>
+            </div>
+          ))}
+        </div>
       )}
 
       {!loadingNearbyShops && nearbyShopsError && (

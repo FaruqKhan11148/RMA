@@ -1,4 +1,5 @@
 import { useLanguage } from '../../../context/LanguageContext';
+import { AddressSkeletons } from './HomeSkeleton';
 
 function HomeLocationSheet({
   showLocationSheet,
@@ -147,11 +148,7 @@ function HomeLocationSheet({
             {t.home.savedAddressesTitle}
           </span>
 
-          {loadingAddresses && (
-            <div className="location_sheet_empty">
-              {t.home.loadingSavedAddresses}
-            </div>
-          )}
+          {loadingAddresses && <AddressSkeletons />}
 
           {!loadingAddresses && savedAddresses.length === 0 && (
             <div className="location_sheet_empty">

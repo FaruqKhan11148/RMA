@@ -115,7 +115,26 @@ function LocationSheet({
               <h4>Saved addresses</h4>
 
               {loadingAddresses ? (
-                <p className="location_sheet_empty">Loading addresses...</p>
+                <div
+                  className="location_sheet_skeleton_list"
+                  role="status"
+                  aria-label="Loading saved addresses"
+                  aria-busy="true"
+                >
+                  {[1, 2, 3].map((item) => (
+                    <div
+                      className="location_sheet_saved_item location_address_skeleton"
+                      key={item}
+                    >
+                      <div className="location_address_skeleton_icon" />
+
+                      <div className="location_address_skeleton_content">
+                        <div className="location_address_skeleton_line location_address_skeleton_label" />
+                        <div className="location_address_skeleton_line location_address_skeleton_text" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
               ) : savedAddresses.length === 0 ? (
                 <p className="location_sheet_empty">No saved addresses yet.</p>
               ) : (

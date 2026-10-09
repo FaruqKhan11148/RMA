@@ -1,4 +1,5 @@
 const express = require('express');
+const ownerAuth = require('../../../middleware/ownerAuth');
 
 const {
   getDailyReward,
@@ -7,6 +8,7 @@ const {
   testFinalizeOwnerOffer,
   getReferralProgress,
   testFinalizeReferralQualification,
+  archiveOwnerEarnings,
 } = require('./owner.controller');
 
 const router = express.Router();
@@ -43,6 +45,12 @@ router.get('/owner/:ownerId/referrals', getReferralProgress);
 router.post(
   '/referrals/:referralId/test-finalize',
   testFinalizeReferralQualification,
+);
+
+router.post(
+  '/owner/:ownerId/earnings/archive',
+  ownerAuth,
+  archiveOwnerEarnings,
 );
 
 module.exports = router;

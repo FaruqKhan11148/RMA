@@ -2490,3 +2490,433 @@
 [data-theme='dark'] .find_shop input:focus-visible {
   outline-color: rgba(34, 166, 83, 0.32);
 }
+
+
+
+/* ==========================================
+   NEARBY SHOP SKELETON LOADING
+========================================== */
+
+.find_shop_nearby_skeleton_list {
+  cursor: default;
+}
+
+.find_shop_nearby_skeleton_card {
+  cursor: default;
+  pointer-events: none;
+  transform: none;
+}
+
+.find_shop_nearby_skeleton_card:hover,
+.find_shop_nearby_skeleton_card:active {
+  transform: none;
+  border-color: var(--rma-border);
+  box-shadow: 0 5px 18px rgba(20, 35, 25, 0.045);
+}
+
+.find_shop_skeleton_image,
+.find_shop_skeleton_line,
+.find_shop_skeleton_rating {
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--rma-skeleton, #e9ede9);
+  border-radius: 7px;
+}
+
+.find_shop_skeleton_image::after,
+.find_shop_skeleton_line::after,
+.find_shop_skeleton_rating::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.65),
+    transparent
+  );
+  animation: find_shop_skeleton_shimmer 1.4s infinite;
+}
+
+.find_shop_skeleton_image {
+  width: 100%;
+  height: 125px;
+  margin-bottom: 15px;
+  border-radius: 12px;
+}
+
+.find_shop_skeleton_title {
+  width: 58%;
+  height: 17px;
+}
+
+.find_shop_skeleton_rating {
+  width: 42px;
+  height: 20px;
+  border-radius: 6px;
+}
+
+.find_shop_skeleton_description {
+  width: 82%;
+  height: 10px;
+  margin: 10px 0 15px;
+}
+
+.find_shop_skeleton_meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.find_shop_skeleton_meta .find_shop_skeleton_line {
+  width: 48px;
+  height: 10px;
+}
+
+.find_shop_skeleton_meta .find_shop_skeleton_line:nth-child(2) {
+  width: 54px;
+}
+
+.find_shop_skeleton_meta .find_shop_skeleton_line:nth-child(3) {
+  width: 42px;
+}
+
+.find_shop_nearby_skeleton_card .find_shop_nearby_card_footer {
+  margin-top: 17px;
+}
+
+.find_shop_skeleton_shop_id {
+  width: 66px;
+  height: 10px;
+}
+
+.find_shop_skeleton_view_shop {
+  width: 72px;
+  height: 10px;
+}
+
+@keyframes find_shop_skeleton_shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Dark mode */
+
+[data-theme='dark'] .find_shop_skeleton_image,
+[data-theme='dark'] .find_shop_skeleton_line,
+[data-theme='dark'] .find_shop_skeleton_rating {
+  background: var(--rma-skeleton, #2b332e);
+}
+
+[data-theme='dark'] .find_shop_skeleton_image::after,
+[data-theme='dark'] .find_shop_skeleton_line::after,
+[data-theme='dark'] .find_shop_skeleton_rating::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.07),
+    transparent
+  );
+}
+
+/* Mobile sizing */
+
+@media (max-width: 600px) {
+  .find_shop_skeleton_image {
+    height: 115px;
+  }
+}
+
+/* Respect reduced-motion preferences */
+
+@media (prefers-reduced-motion: reduce) {
+  .find_shop_skeleton_image::after,
+  .find_shop_skeleton_line::after,
+  .find_shop_skeleton_rating::after {
+    animation: none;
+    transform: none;
+  }
+}
+
+/* ==========================================
+   FULL FIND SHOP PAGE SKELETON
+========================================== */
+
+.find_shop_page_skeleton {
+  pointer-events: none;
+}
+
+.page_skeleton_block {
+  position: relative;
+  display: block;
+  flex-shrink: 0;
+  overflow: hidden;
+  background: var(--rma-skeleton, #e9ede9);
+  border-radius: 7px;
+}
+
+.page_skeleton_block::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.65),
+    transparent
+  );
+  animation: find_shop_page_shimmer 1.4s infinite;
+}
+
+.page_skeleton_eyebrow {
+  width: 95px;
+  height: 11px;
+  margin-bottom: 14px;
+}
+
+.page_skeleton_heading {
+  width: min(240px, 70%);
+  height: 32px;
+  margin-bottom: 12px;
+}
+
+.page_skeleton_subtitle {
+  width: min(330px, 90%);
+  height: 12px;
+}
+
+.page_skeleton_small {
+  width: 100px;
+  height: 10px;
+}
+
+.page_skeleton_location {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 17px;
+  margin: 22px 0 30px;
+  border: 1px solid var(--rma-border);
+  border-radius: 14px;
+}
+
+.page_skeleton_location_text {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+}
+
+.page_skeleton_location_name {
+  width: min(230px, 90%);
+  height: 15px;
+}
+
+.page_skeleton_change {
+  width: 55px;
+  height: 13px;
+}
+
+.page_skeleton_section_heading {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.page_skeleton_subheading {
+  width: min(190px, 75%);
+  height: 21px;
+}
+
+.page_skeleton_distance {
+  width: 75px;
+  height: 14px;
+  margin-top: 25px;
+}
+
+.page_skeleton_shop_image {
+  width: 100%;
+  height: 125px;
+  margin-bottom: 15px;
+  border-radius: 12px;
+}
+
+.page_skeleton_shop_title_row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.page_skeleton_shop_title {
+  width: 58%;
+  height: 17px;
+}
+
+.page_skeleton_rating {
+  width: 42px;
+  height: 20px;
+}
+
+.page_skeleton_description {
+  width: 82%;
+  height: 10px;
+  margin: 12px 0 15px;
+}
+
+.page_skeleton_shop_meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.page_skeleton_meta_item {
+  width: 48px;
+  height: 10px;
+}
+
+.page_skeleton_meta_item:nth-child(2) {
+  width: 54px;
+}
+
+.page_skeleton_meta_item:nth-child(3) {
+  width: 42px;
+}
+
+.page_skeleton_shop_footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 17px;
+}
+
+.page_skeleton_shop_id {
+  width: 66px;
+  height: 10px;
+}
+
+.page_skeleton_view_shop {
+  width: 72px;
+  height: 10px;
+}
+
+.page_skeleton_section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 22px 0;
+}
+
+.page_skeleton_input {
+  width: 100%;
+  height: 48px;
+  border-radius: 10px;
+}
+
+.page_skeleton_button {
+  width: 100%;
+  height: 46px;
+  border-radius: 10px;
+}
+
+.page_skeleton_qr {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  margin: 12px 0;
+  border: 1px solid var(--rma-border);
+  border-radius: 16px;
+}
+
+.page_skeleton_qr_icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+}
+
+.page_skeleton_qr_text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.page_skeleton_qr_button {
+  width: 85px;
+  height: 38px;
+  border-radius: 9px;
+}
+
+.page_skeleton_saved_shop {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 22px 0;
+}
+
+@keyframes find_shop_page_shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+[data-theme='dark'] .page_skeleton_block {
+  background: var(--rma-skeleton, #2b332e);
+}
+
+[data-theme='dark'] .page_skeleton_block::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.07),
+    transparent
+  );
+}
+
+@media (max-width: 600px) {
+  .page_skeleton_heading {
+    height: 28px;
+  }
+
+  .page_skeleton_location {
+    padding: 14px;
+    margin: 18px 0 25px;
+  }
+
+  .page_skeleton_shop_image {
+    height: 115px;
+  }
+
+  .page_skeleton_qr {
+    padding: 15px;
+    gap: 12px;
+  }
+
+  .page_skeleton_qr_icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .page_skeleton_qr_button {
+    width: 65px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page_skeleton_block::after {
+    animation: none;
+    transform: none;
+  }
+}

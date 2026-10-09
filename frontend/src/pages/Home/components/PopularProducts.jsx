@@ -1,4 +1,5 @@
 import { useLanguage } from '../../../context/LanguageContext';
+import { PopularProductSkeletons } from './HomeSkeleton';
 
 function PopularProducts({
   userLocation,
@@ -14,7 +15,7 @@ function PopularProducts({
 
   return (
     userLocation &&
-    nearbyShops.length > 0 && (
+    (nearbyShops.length > 0 || loadingNearbyShops) && (
       <section className="popular_products">
         <div className="popular_products_header">
           <div>
@@ -32,6 +33,8 @@ function PopularProducts({
             <span>→</span>
           </button>
         </div>
+
+        {loadingNearbyShops && <PopularProductSkeletons />}
 
         {!loadingNearbyShops &&
           !nearbyShopsError &&

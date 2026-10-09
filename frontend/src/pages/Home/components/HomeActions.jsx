@@ -8,7 +8,7 @@ function HomeActions({ onScanQr, onFindShop }) {
     <section className="home_actions">
       {/* SCAN QR */}
 
-      <button className="qr_action" onClick={onScanQr}>
+      <button type="button" className="qr_action" onClick={onScanQr}>
         <div className="action_icon">
           <QrCode className="qr_icon_pattern" />
         </div>
@@ -21,14 +21,16 @@ function HomeActions({ onScanQr, onFindShop }) {
           <p>{t.home.scanQrDescription}</p>
         </div>
 
-        <span className="action_arrow">→</span>
+        <span className="action_arrow" aria-hidden="true">
+          →
+        </span>
       </button>
 
       {/* FIND SHOP */}
 
-      <button className="find_action" onClick={onFindShop}>
+      <button type="button" className="find_action" onClick={onFindShop}>
         <div className="find_icon">
-          <span>⌕</span>
+          <span aria-hidden="true">⌕</span>
         </div>
 
         <div className="find_content">
@@ -39,7 +41,9 @@ function HomeActions({ onScanQr, onFindShop }) {
           <span className="find_description">{t.home.findShopDescription}</span>
         </div>
 
-        <span className="find_arrow">→</span>
+        <span className="find_arrow" aria-hidden="true">
+          →
+        </span>
       </button>
     </section>
   );

@@ -1,7 +1,6 @@
 import { Bell } from 'lucide-react';
 
 function NotificationsList({
-  loading,
   error,
   notifications,
   handleNotificationClick,
@@ -9,19 +8,13 @@ function NotificationsList({
 }) {
   return (
     <section className="notifications_list">
-      {loading && (
-        <div className="notification_state">
-          <p>Loading messages...</p>
-        </div>
-      )}
-
-      {!loading && error && (
+      {error && (
         <div className="notification_state">
           <p>{error}</p>
         </div>
       )}
 
-      {!loading && !error && notifications.length === 0 && (
+      {!error && notifications.length === 0 && (
         <div className="notification_empty">
           <div className="notification_empty_icon">
             <Bell />
@@ -33,8 +26,7 @@ function NotificationsList({
         </div>
       )}
 
-      {!loading &&
-        !error &&
+      {!error &&
         notifications.length > 0 &&
         notifications.map((notification) => (
           <button

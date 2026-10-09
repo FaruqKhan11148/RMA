@@ -1,7 +1,9 @@
-import { CalendarDays, TrendingUp } from 'lucide-react';
+import { CalendarDays, PackageCheck } from 'lucide-react';
 
 function OwnerEarningsCards({ earnings }) {
   const formatAmount = (amount) => `₹${Number(amount || 0).toFixed(2)}`;
+
+  const settledOrders = Number(earnings?.settledOrders || 0);
 
   return (
     <section className="owner_earnings_period_cards">
@@ -10,19 +12,19 @@ function OwnerEarningsCards({ earnings }) {
           <CalendarDays size={19} />
         </div>
 
-        <span>Today</span>
+        <span>This Week</span>
 
-        <strong>{formatAmount(earnings?.todayEarnings)}</strong>
+        <strong>{formatAmount(earnings?.weekEarnings)}</strong>
       </div>
 
       <div className="owner_earnings_period_card">
         <div className="owner_earnings_period_icon">
-          <TrendingUp size={19} />
+          <PackageCheck size={19} />
         </div>
 
-        <span>This Week</span>
+        <span>Settled Orders</span>
 
-        <strong>{formatAmount(earnings?.weekEarnings)}</strong>
+        <strong>{settledOrders}</strong>
       </div>
     </section>
   );

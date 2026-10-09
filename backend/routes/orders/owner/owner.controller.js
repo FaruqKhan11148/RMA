@@ -7,6 +7,8 @@ const {
   finalizeOwnerOffer,
 } = require('../../../services/ownerOffers/ownerOffer.service');
 
+const OwnerEarningsArchive = require('../../../models/OwnerEarningsArchive');
+
 const {
   getOwnerReferralProgress,
   finalizeReferralQualification,
@@ -99,10 +101,6 @@ async function getDailyReward(req, res) {
   }
 }
 
-// ==========================================
-// GET OWNER EARNINGS
-// ==========================================
-
 async function getOwnerEarnings(req, res) {
   try {
     const { ownerId } = req.params;
@@ -115,8 +113,17 @@ async function getOwnerEarnings(req, res) {
       });
     }
 
+    // Find archived records for this owner only.
+    const archivedRecords = await OwnerEarningsArchive.find({
+      ownerId: owner._id,
+    }).select('orderId -_id');
+
+    const archivedOrderIds = new Set(
+      archivedRecords.map((record) => record.orderId),
+    );
+
     const orders = await Order.find({
-      ownerId,
+      ownerId: owner._id,
       paymentStatus: 'Paid',
       settlementStatus: {
         $in: ['Pending', 'Processing', 'Settled'],
@@ -130,7 +137,6 @@ async function getOwnerEarnings(req, res) {
 
     let totalProductSales = 0;
     let totalRmaFees = 0;
-
     let settledOrders = 0;
 
     const now = new Date();
@@ -138,14 +144,23 @@ async function getOwnerEarnings(req, res) {
     const startOfToday = new Date(now);
     startOfToday.setHours(0, 0, 0, 0);
 
+    const startOfTomorrow = new Date(startOfToday);
+    startOfTomorrow.setDate(startOfTomorrow.getDate() + 1);
+
     const startOfWeek = new Date(startOfToday);
     const day = startOfWeek.getDay();
     const diff = day === 0 ? 6 : day - 1;
     startOfWeek.setDate(startOfWeek.getDate() - diff);
 
+    const startOfNextWeek = new Date(startOfWeek);
+    startOfNextWeek.setDate(startOfNextWeek.getDate() + 7);
+
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
+    const startOfNextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
     const recentEarnings = [];
+    let archivedOrders = 0;
 
     orders.forEach((order) => {
       const productSubtotal = Number(
@@ -174,13 +189,7 @@ async function getOwnerEarnings(req, res) {
         Number(order.customerPayableAmount || order.totalPrice || 0).toFixed(2),
       );
 
-      /*
-       * Pending / Processing are settlement states,
-       * not actual owner earnings.
-       *
-       * We therefore only count Settled orders
-       * in the owner's earnings totals.
-       */
+      // Financial totals always include archived orders.
       if (order.settlementStatus === 'Settled') {
         settledOrders++;
 
@@ -194,25 +203,26 @@ async function getOwnerEarnings(req, res) {
         if (settlementDate) {
           const date = new Date(settlementDate);
 
-          if (date >= startOfToday) {
+          if (date >= startOfToday && date < startOfTomorrow) {
             todayEarnings += ownerAmount;
           }
 
-          if (date >= startOfWeek) {
+          if (date >= startOfWeek && date < startOfNextWeek) {
             weekEarnings += ownerAmount;
           }
 
-          if (date >= startOfMonth) {
+          if (date >= startOfMonth && date < startOfNextMonth) {
             monthEarnings += ownerAmount;
           }
         }
       }
 
-      /*
-       * Every order remains available in the recent
-       * earnings list so the owner can inspect its
-       * financial breakdown.
-       */
+      // Archive hides the order only from the recent list.
+      if (archivedOrderIds.has(order.orderId)) {
+        archivedOrders++;
+        return;
+      }
+
       recentEarnings.push({
         orderId: order.orderId,
 
@@ -226,12 +236,12 @@ async function getOwnerEarnings(req, res) {
 
         productSubtotal,
         rmaFee,
+
         rmaFeePercentage: productSubtotal
           ? Number(((rmaFee / productSubtotal) * 100).toFixed(2))
           : 0,
 
         ownerAmount,
-
         deliveryCharge,
 
         payuFee,
@@ -240,17 +250,9 @@ async function getOwnerEarnings(req, res) {
 
         customerPayableAmount,
 
-        /*
-         * These IDs allow the frontend to show
-         * transaction/payment information later.
-         */
         paymentId: order.paymentId || null,
         paymentOrderId: order.paymentOrderId || null,
 
-        /*
-         * Useful for displaying exactly what happened
-         * financially for this order.
-         */
         financialBreakdown: {
           productSales: productSubtotal,
           rmaFee,
@@ -267,23 +269,22 @@ async function getOwnerEarnings(req, res) {
     return res.status(200).json({
       earnings: {
         totalSettledEarnings: Number(totalSettledEarnings.toFixed(2)),
-
         todayEarnings: Number(todayEarnings.toFixed(2)),
-
         weekEarnings: Number(weekEarnings.toFixed(2)),
-
         monthEarnings: Number(monthEarnings.toFixed(2)),
-
         totalProductSales: Number(totalProductSales.toFixed(2)),
-
         totalRmaFees: Number(totalRmaFees.toFixed(2)),
-
         settledOrders,
       },
 
       orders: {
+        // Counts all eligible paid orders, including archived ones.
         total: orders.length,
         settled: settledOrders,
+        archived: archivedOrders,
+
+        // Counts records currently visible in Recent Earnings.
+        visible: recentEarnings.length,
       },
 
       recentEarnings,
@@ -384,6 +385,86 @@ async function testFinalizeReferralQualification(req, res) {
   }
 }
 
+// ==========================================
+// ARCHIVE OWNER EARNINGS
+// Hides records from the owner's earnings view.
+// Does not modify or delete original orders.
+// ==========================================
+
+async function archiveOwnerEarnings(req, res) {
+  try {
+    const authenticatedOwnerId = req.owner._id.toString();
+    const { ownerId } = req.params;
+    const { orderIds } = req.body;
+
+    if (ownerId !== authenticatedOwnerId) {
+      return res.status(403).json({
+        message: 'You cannot archive another owner’s earnings',
+      });
+    }
+
+    if (
+      !Array.isArray(orderIds) ||
+      orderIds.length === 0 ||
+      orderIds.some((id) => typeof id !== 'string' || !id.trim())
+    ) {
+      return res.status(400).json({
+        message: 'Please provide valid order IDs to archive',
+      });
+    }
+
+    const uniqueOrderIds = [...new Set(orderIds.map((id) => id.trim()))];
+
+    // Confirm every requested order belongs to this owner
+    // and is eligible for the earnings view.
+    const matchingOrders = await Order.find({
+      ownerId: authenticatedOwnerId,
+      orderId: { $in: uniqueOrderIds },
+      paymentStatus: 'Paid',
+      settlementStatus: {
+        $in: ['Pending', 'Processing', 'Settled'],
+      },
+    }).select('orderId');
+
+    if (matchingOrders.length !== uniqueOrderIds.length) {
+      return res.status(400).json({
+        message:
+          'Some selected orders are invalid or do not belong to your earnings history',
+      });
+    }
+
+    await OwnerEarningsArchive.bulkWrite(
+      uniqueOrderIds.map((orderId) => ({
+        updateOne: {
+          filter: {
+            ownerId: req.owner._id,
+            orderId,
+          },
+          update: {
+            $setOnInsert: {
+              ownerId: req.owner._id,
+              orderId,
+              archivedAt: new Date(),
+            },
+          },
+          upsert: true,
+        },
+      })),
+    );
+
+    return res.status(200).json({
+      message: 'Selected earnings records archived successfully',
+      archivedCount: uniqueOrderIds.length,
+    });
+  } catch (error) {
+    console.error('Archive owner earnings error:', error);
+
+    return res.status(500).json({
+      message: 'Failed to archive earnings records',
+    });
+  }
+}
+
 module.exports = {
   getDailyReward,
   getOwnerEarnings,
@@ -391,4 +472,5 @@ module.exports = {
   testFinalizeOwnerOffer,
   getReferralProgress,
   testFinalizeReferralQualification,
+  archiveOwnerEarnings,
 };

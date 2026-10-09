@@ -109,6 +109,7 @@ import Address from './pages/Owner/OwnerSettings/Shop/Address';
 import ScanQR from './pages/ScanQR/ScanQR';
 
 import OwnerEarnings from './pages/Owner/OwnerEarnings/OwnerEarnings';
+import OwnerRecentEarnings from './pages/Owner/OwnerEarnings/OwnerRecentEarnings';
 import OwnerShop from './pages/Owner/OwnerShop/OwnerShop';
 
 // ADMIN
@@ -372,6 +373,10 @@ function AppLayout() {
             <Route path="/owner/dashboard" element={<OwnerDashboard />} />
             <Route path="/owner/orders" element={<OwnerOrders />} />
             <Route path="/owner/earnings" element={<OwnerEarnings />} />
+            <Route
+              path="/owner/earnings/recent"
+              element={<OwnerRecentEarnings />}
+            />
             <Route path="/owner/offers" element={<Offers />} />
             <Route path="/owner/shop" element={<OwnerShop />} />
             <Route

@@ -24,6 +24,7 @@ a,
 input,
 textarea,
 article,
+label,
 select {
   -webkit-tap-highlight-color: transparent;
 }
