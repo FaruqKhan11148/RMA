@@ -16,7 +16,6 @@ import CustomerDetails from './components/CustomerDetails';
 import OrderSummary from './components/OrderSummary';
 import SecureNote from './components/SecureNote';
 import LocationSheet from './components/LocationSheet';
-import CheckoutPageSkeleton from './components/CheckoutPageSkeleton';
 
 import {
   fetchSavedAddresses,
@@ -44,7 +43,6 @@ function Checkout() {
   const [savedAddresses, setSavedAddresses] = useState([]);
 
   const [loadingAddresses, setLoadingAddresses] = useState(false);
-  const [initializingCheckout, setInitializingCheckout] = useState(false);
 
   const [showMapPicker, setShowMapPicker] = useState(false);
 

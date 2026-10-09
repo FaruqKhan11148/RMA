@@ -1,15 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Package, Archive, CalendarDays } from 'lucide-react';
 
 import OwnerEarningsOrderCard from './OwnerEarningsOrderCard';
 import OwnerEarningsDetailsModal from './OwnerEarningsDetailsModal';
 import { archiveOwnerEarnings } from '../utils/ownerEarningsApi';
 
-function OwnerRecentOrders({
-  recentEarnings = [],
-  ownerId,
-  onArchived,
-}) {
+function OwnerRecentOrders({ recentEarnings = [], ownerId, onArchived }) {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [selectedOrderIds, setSelectedOrderIds] = useState([]);
   const [dateFilter, setDateFilter] = useState('all');
@@ -26,8 +22,10 @@ function OwnerRecentOrders({
     return Number.isNaN(date.getTime()) ? null : date;
   };
 
-  const getSettlementDate = (order) =>
-    getDate(order.settledAt);
+  const getSettlementDate = useCallback(
+    (order) => getDate(order.settledAt),
+    [],
+  );
 
   const filteredOrders = useMemo(() => {
     const now = new Date();
@@ -44,11 +42,7 @@ function OwnerRecentOrders({
     const startOfWeek = new Date(startOfToday);
     startOfWeek.setDate(startOfWeek.getDate() - 6);
 
-    const startOfMonth = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      1,
-    );
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
     const customStartDate = customStart
       ? new Date(`${customStart}T00:00:00`)
@@ -64,50 +58,38 @@ function OwnerRecentOrders({
       if (dateFilter === 'all') return true;
 
       // Date-based earnings filters include only settled orders.
-      if (
-        order.settlementStatus !== 'Settled' ||
-        !settlementDate
-      ) {
+      if (order.settlementStatus !== 'Settled' || !settlementDate) {
         return false;
       }
 
       switch (dateFilter) {
         case 'today':
-          return settlementDate >= startOfToday &&
-            settlementDate <= now;
+          return settlementDate >= startOfToday && settlementDate <= now;
 
         case 'yesterday':
-          return settlementDate >= startOfYesterday &&
-            settlementDate < startOfToday;
+          return (
+            settlementDate >= startOfYesterday && settlementDate < startOfToday
+          );
 
         case 'last7':
-          return settlementDate >= startOfWeek &&
-            settlementDate <= now;
+          return settlementDate >= startOfWeek && settlementDate <= now;
 
         case 'last30': {
           const start = new Date(startOfToday);
           start.setDate(start.getDate() - 29);
 
-          return settlementDate >= start &&
-            settlementDate <= now;
+          return settlementDate >= start && settlementDate <= now;
         }
 
         case 'month':
-          return settlementDate >= startOfMonth &&
-            settlementDate <= now;
+          return settlementDate >= startOfMonth && settlementDate <= now;
 
         case 'custom':
-          if (
-            customStartDate &&
-            settlementDate < customStartDate
-          ) {
+          if (customStartDate && settlementDate < customStartDate) {
             return false;
           }
 
-          if (
-            customEndDate &&
-            settlementDate > customEndDate
-          ) {
+          if (customEndDate && settlementDate > customEndDate) {
             return false;
           }
 
@@ -125,12 +107,7 @@ function OwnerRecentOrders({
           return true;
       }
     });
-  }, [
-    recentEarnings,
-    dateFilter,
-    customStart,
-    customEnd,
-  ]);
+  }, [recentEarnings, dateFilter, customStart, customEnd, getSettlementDate]);
 
   const settledOrders = filteredOrders.filter(
     (order) => order.settlementStatus === 'Settled',
@@ -141,15 +118,11 @@ function OwnerRecentOrders({
     0,
   );
 
-  const visibleOrderIds = filteredOrders.map(
-    (order) => order.orderId,
-  );
+  const visibleOrderIds = filteredOrders.map((order) => order.orderId);
 
   const allVisibleSelected =
     visibleOrderIds.length > 0 &&
-    visibleOrderIds.every((id) =>
-      selectedOrderIds.includes(id),
-    );
+    visibleOrderIds.every((id) => selectedOrderIds.includes(id));
 
   const toggleOrder = (orderId) => {
     setSelectedOrderIds((previous) =>
@@ -165,14 +138,10 @@ function OwnerRecentOrders({
   const toggleSelectAll = () => {
     setSelectedOrderIds((previous) => {
       if (allVisibleSelected) {
-        return previous.filter(
-          (id) => !visibleOrderIds.includes(id),
-        );
+        return previous.filter((id) => !visibleOrderIds.includes(id));
       }
 
-      return [
-        ...new Set([...previous, ...visibleOrderIds]),
-      ];
+      return [...new Set([...previous, ...visibleOrderIds])];
     });
 
     setArchiveError('');
@@ -201,10 +170,7 @@ function OwnerRecentOrders({
       setArchiveError('');
       setArchiveMessage('');
 
-      const result = await archiveOwnerEarnings(
-        ownerId,
-        selectedOrderIds,
-      );
+      const result = await archiveOwnerEarnings(ownerId, selectedOrderIds);
 
       setSelectedOrderIds([]);
       setArchiveMessage(
@@ -215,9 +181,7 @@ function OwnerRecentOrders({
         await onArchived();
       }
     } catch (error) {
-      setArchiveError(
-        error.message || 'Unable to archive selected records.',
-      );
+      setArchiveError(error.message || 'Unable to archive selected records.');
     } finally {
       setArchiving(false);
     }
@@ -262,9 +226,7 @@ function OwnerRecentOrders({
                   type="date"
                   value={customStart}
                   max={customEnd || undefined}
-                  onChange={(event) =>
-                    setCustomStart(event.target.value)
-                  }
+                  onChange={(event) => setCustomStart(event.target.value)}
                 />
               </label>
 
@@ -274,9 +236,7 @@ function OwnerRecentOrders({
                   type="date"
                   value={customEnd}
                   min={customStart || undefined}
-                  onChange={(event) =>
-                    setCustomEnd(event.target.value)
-                  }
+                  onChange={(event) => setCustomEnd(event.target.value)}
                 />
               </label>
             </div>
@@ -320,9 +280,7 @@ function OwnerRecentOrders({
             <button
               type="button"
               onClick={handleArchiveSelected}
-              disabled={
-                archiving || selectedOrderIds.length === 0
-              }
+              disabled={archiving || selectedOrderIds.length === 0}
             >
               <Archive size={17} />
               {archiving
