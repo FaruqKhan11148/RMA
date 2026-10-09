@@ -3,6 +3,7 @@ import './Offers.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import HowRmaWorks from './components/HowRmaWorks/HowRmaWorks';
 import OffersHeader from './components/OffersHeader';
 import OrderRewardCard from './components/OrderRewardCard';
 import ReferralRewardCard from './components/ReferralRewardCard';
@@ -37,6 +38,8 @@ function Offers() {
 
   const [loadingOrders, setLoadingOrders] = useState(true);
   const [ordersError, setOrdersError] = useState('');
+
+  const [showHowRmaWorks, setShowHowRmaWorks] = useState(false);
 
   // =========================
   // Offer 2 — Refer & Earn
@@ -232,11 +235,9 @@ function Offers() {
   return (
     <main className="owner_offers">
       <OffersHeader />
-
       {/* =========================
           OFFER 1 — ORDER REWARD
           ========================= */}
-
       <OrderRewardCard
         loadingOrders={loadingOrders}
         completedOrders={completedOrders}
@@ -255,11 +256,9 @@ function Offers() {
         getProgressMessage={getProgressMessage}
         navigate={navigate}
       />
-
       {/* =========================
           OFFER 2 — REFER & EARN
           ========================= */}
-
       <ReferralRewardCard
         referralCode={referralCode}
         copied={copied}
@@ -268,6 +267,18 @@ function Offers() {
         loadingReferrals={loadingReferrals}
         referralError={referralError}
       />
+      {/* ========================= HOW RMA WORKS ========================= */}{' '}
+      <button
+        type="button"
+        className="offer_primary_button how_rma_works_button"
+        onClick={() => setShowHowRmaWorks(true)}
+      >
+        {' '}
+        <span>How RMA Works</span> <span>→</span>{' '}
+      </button>{' '}
+      {showHowRmaWorks && (
+        <HowRmaWorks onClose={() => setShowHowRmaWorks(false)} />
+      )}{' '}
     </main>
   );
 }

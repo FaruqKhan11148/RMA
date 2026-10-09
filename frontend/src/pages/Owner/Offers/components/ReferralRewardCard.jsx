@@ -42,7 +42,7 @@ function ReferralRewardCard({ referralCode, copied, handleCopyReferralCode }) {
         className="offer_primary_button"
         onClick={() => navigate('/owner/offers/referrals')}
       >
-        <span>View Referral Dashboard</span>
+        <span>View Referrals & Track Rewards</span>
         <span>→</span>
       </button>
     </section>
