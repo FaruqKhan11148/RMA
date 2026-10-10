@@ -42,21 +42,39 @@ export const fetchDeliveryPreview = async (ownerId, deliveryLocation) => {
   return data;
 };
 
+// Keep PayU available while Cashfree is being tested.
 export const createPayuPayment = async (orderId) => {
   const response = await fetch(`${API_URL}api/payments/create-order`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      orderId,
-    }),
+    body: JSON.stringify({ orderId }),
   });
 
   const data = await response.json();
 
   if (!response.ok) {
     throw new Error(data.message || 'Unable to create PayU payment.');
+  }
+
+  return data;
+};
+
+// Create a Cashfree payment session for an existing RMA order.
+export const createCashfreePayment = async (orderId) => {
+  const response = await fetch(`${API_URL}api/payments/cashfree/create-order`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ orderId }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Unable to create Cashfree payment.');
   }
 
   return data;

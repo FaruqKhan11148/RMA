@@ -17,10 +17,12 @@ import OrderSummary from './components/OrderSummary';
 import SecureNote from './components/SecureNote';
 import LocationSheet from './components/LocationSheet';
 
+import { load } from '@cashfreepayments/cashfree-js';
+
 import {
   fetchSavedAddresses,
   fetchDeliveryPreview,
-  createPayuPayment,
+  createCashfreePayment,
 } from './utils/checkoutApi';
 
 import { calculatePayuPricing } from './utils/checkoutHelpers';
@@ -262,68 +264,53 @@ function Checkout() {
       });
 
       // ==========================================
-      // STEP 2: CREATE PAYU PAYMENT
+      // STEP 2: CREATE CASHFREE PAYMENT SESSION
       // ==========================================
 
-      console.log('Creating PayU payment...');
+      console.log('Creating Cashfree payment session...');
 
-      const payuData = await createPayuPayment(order.orderId);
+      const cashfreeData = await createCashfreePayment(order.orderId);
 
-      console.log('PayU response:', payuData);
+      console.log('Cashfree response:', cashfreeData);
 
-      if (!payuData.paymentUrl || !payuData.payment) {
-        throw new Error('PayU payment details are missing.');
+      const paymentSessionId = cashfreeData.payment?.paymentSessionId;
+
+      if (!paymentSessionId) {
+        throw new Error('Cashfree payment session is missing.');
       }
 
-      if (!payuData.pricing) {
-        throw new Error('PayU pricing details are missing.');
+      const environment =
+        cashfreeData.payment.environment === 'production'
+          ? 'production'
+          : 'sandbox';
+
+      // ==========================================
+      // STEP 3: OPEN CASHFREE CHECKOUT
+      // ==========================================
+
+      const cashfree = await load({ mode: environment });
+
+      if (!cashfree) {
+        throw new Error('Unable to load Cashfree Checkout.');
       }
 
-      console.log('Final backend pricing:', payuData.pricing);
+      console.log('Opening Cashfree Checkout...');
 
-      console.log('PayU payment created successfully.');
-
-      console.log('PayU amount:', payuData.payment.amount);
-
-      console.log('PayU transaction ID:', payuData.payment.txnid);
-
-      // ==========================================
-      // STEP 3: SEND CUSTOMER DIRECTLY TO PAYU
-      // ==========================================
-
-      const form = document.createElement('form');
-
-      form.method = 'POST';
-      form.action = payuData.paymentUrl;
-
-      form.style.display = 'none';
-
-      const paymentFields = {
-        key: payuData.payment.key,
-        txnid: payuData.payment.txnid,
-        amount: payuData.payment.amount,
-        productinfo: payuData.payment.productinfo,
-        firstname: payuData.payment.firstname,
-        email: payuData.payment.email,
-        phone: payuData.payment.phone,
-        surl: payuData.payment.surl,
-        furl: payuData.payment.furl,
-        hash: payuData.payment.hash,
-      };
-
-      Object.entries(paymentFields).forEach(([name, value]) => {
-        const input = document.createElement('input');
-
-        input.type = 'hidden';
-        input.name = name;
-        input.value = String(value ?? '');
-
-        form.appendChild(input);
+      const checkoutResult = await cashfree.checkout({
+        paymentSessionId,
+        redirectTarget: '_self',
       });
 
-      document.body.appendChild(form);
+      // A returned error means checkout could not proceed.
+      // Never mark the order as paid from this frontend result.
+      if (checkoutResult?.error) {
+        throw new Error(
+          checkoutResult.error.message || 'Unable to open Cashfree Checkout.',
+        );
+      }
 
-      form.submit();
+      // Cashfree normally redirects the customer to the return URL.
+      // Payment confirmation must come from the backend/webhook.
     } catch (error) {
       console.error('Payment process failed:', error);
 

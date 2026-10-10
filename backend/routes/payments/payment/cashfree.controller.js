@@ -2,7 +2,6 @@ const crypto = require('crypto');
 const Order = require('../../../models/Order');
 const { cashfree } = require('../helpers/cashfree.helper');
 
-const CASHFREE_API_VERSION = '2023-08-01';
 const FRONTEND_URL = (
   process.env.FRONTEND_URL || 'http://localhost:3000'
 ).replace(/\/$/, '');
@@ -147,7 +146,6 @@ async function createCashfreePayment(req, res) {
       .digest('hex');
 
     const response = await cashfree.PGCreateOrder(
-      CASHFREE_API_VERSION,
       request,
       undefined,
       idempotencyKey,
@@ -184,10 +182,12 @@ async function createCashfreePayment(req, res) {
       },
     });
   } catch (error) {
-    console.error(
-      'Create Cashfree payment failed:',
-      error.response?.data || error.message,
-    );
+    console.error('Create Cashfree payment failed:', {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status,
+      stack: error.stack,
+    });
 
     return res.status(500).json({
       message: 'Unable to create Cashfree payment',

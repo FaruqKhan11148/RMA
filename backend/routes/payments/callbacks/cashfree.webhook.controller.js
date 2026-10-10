@@ -1,5 +1,8 @@
 const Order = require('../../../models/Order');
 const { cashfree } = require('../helpers/cashfree.helper');
+const {
+  createAndSendNotification,
+} = require('../../../services/notificationService');
 
 const CASHFREE_API_VERSION = '2023-08-01';
 
@@ -176,6 +179,27 @@ async function handleCashfreeWebhook(req, res) {
     await order.save();
 
     console.log('Cashfree payment verified for RMA order:', order.orderId);
+
+    // Notify the shop owner after the payment is verified and saved.
+    try {
+      await createAndSendNotification({
+        recipientType: 'owner',
+        recipientId: order.ownerId,
+        type: 'NEW_ORDER',
+        title: 'New Order',
+        message: `You have received a new order ${order.orderId}.`,
+        orderId: order.orderId,
+        data: {
+          screen: 'owner-dashboard',
+          orderId: order.orderId,
+        },
+      });
+    } catch (notificationError) {
+      console.error(
+        'Cashfree owner new order notification failed:',
+        notificationError,
+      );
+    }
 
     return res.status(200).json({
       received: true,

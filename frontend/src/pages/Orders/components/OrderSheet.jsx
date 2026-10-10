@@ -1,3 +1,22 @@
+const getOrderDisplayAmount = (order) => {
+  const customerPayableAmount = Number(order.customerPayableAmount);
+  const totalPrice = Number(order.totalPrice);
+
+  if (
+    order.customerPayableAmount != null &&
+    Number.isFinite(customerPayableAmount) &&
+    customerPayableAmount > 0
+  ) {
+    return customerPayableAmount;
+  }
+
+  if (Number.isFinite(totalPrice) && totalPrice >= 0) {
+    return totalPrice;
+  }
+
+  return 0;
+};
+
 function OrderSheet({
   selectedOrder,
   showOrderSheet,
@@ -77,14 +96,7 @@ function OrderSheet({
           <div className="order_sheet_detail order_sheet_total">
             <span>Total</span>
 
-            <strong>
-              ₹
-              {Number(
-                selectedOrder.customerPayableAmount ??
-                  selectedOrder.totalPrice ??
-                  0,
-              ).toFixed(2)}
-            </strong>
+            <strong>₹{getOrderDisplayAmount(selectedOrder).toFixed(2)}</strong>
           </div>
         </div>
 

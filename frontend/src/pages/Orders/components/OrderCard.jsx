@@ -1,3 +1,22 @@
+const getOrderDisplayAmount = (order) => {
+  const customerPayableAmount = Number(order.customerPayableAmount);
+  const totalPrice = Number(order.totalPrice);
+
+  if (
+    order.customerPayableAmount != null &&
+    Number.isFinite(customerPayableAmount) &&
+    customerPayableAmount > 0
+  ) {
+    return customerPayableAmount;
+  }
+
+  if (Number.isFinite(totalPrice) && totalPrice >= 0) {
+    return totalPrice;
+  }
+
+  return 0;
+};
+
 function OrderCard({
   order,
   onOrderClick,
@@ -57,12 +76,7 @@ function OrderCard({
 
           <span>{order.orderType === 'pickup' ? 'Pickup' : 'Delivery'}</span>
 
-          <strong>
-            ₹
-            {Number(
-              order.customerPayableAmount ?? order.totalPrice ?? 0,
-            ).toFixed(2)}
-          </strong>
+          <strong>₹{getOrderDisplayAmount(order).toFixed(2)}</strong>
         </div>
 
         {!selectionMode && (
