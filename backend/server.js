@@ -57,10 +57,15 @@ const corsOptions = {
 };
 
 app.use((req, res, next) => {
-  const isPayUCallback =
+  const isPaymentProviderCallback =
     req.path === '/api/payments/payu/success' ||
     req.path === '/api/payments/payu/failure' ||
-    req.path === '/api/payments/payu/refund-callback';
+    req.path === '/api/payments/payu/refund-callback' ||
+    req.path === '/api/payments/cashfree/webhook';
+
+  if (isPaymentProviderCallback) {
+    return next();
+  }
 
   if (isPayUCallback) {
     return next();
@@ -75,7 +80,15 @@ app.use((req, res, next) => {
 
 app.use(cookieParser());
 
-app.use(express.json());
+app.use(
+  express.json({
+    verify: (req, res, buf) => {
+      if (req.originalUrl.split('?')[0] === '/api/payments/cashfree/webhook') {
+        req.rawBody = buf.toString('utf8');
+      }
+    },
+  }),
+);
 
 /* =========================
    ROUTES

@@ -275,6 +275,25 @@ const orderSchema = new mongoose.Schema(
       min: 0,
     },
 
+    // Cashfree payment gateway fields
+    cashfreeOrderId: {
+      type: String,
+      default: null,
+      trim: true,
+    },
+
+    cashfreePaymentSessionId: {
+      type: String,
+      default: null,
+      select: false,
+    },
+
+    cashfreeOrderAmount: {
+      type: Number,
+      default: null,
+      min: 0,
+    },
+
     // Base customer amount before PayU charges
     // = subtotal + deliveryCharge
     totalPrice: {

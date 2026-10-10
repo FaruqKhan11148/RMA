@@ -17,7 +17,14 @@ const testBankAccountSchema = new mongoose.Schema(
 
     accountType: {
       type: String,
-      enum: ['RMA', 'OWNER', 'DELIVERY_PARTNER', 'CUSTOMER', 'PAYU'],
+      enum: [
+        'RMA',
+        'OWNER',
+        'DELIVERY_PARTNER',
+        'CUSTOMER',
+        'PAYU',
+        'CASHFREE',
+      ],
       required: true,
     },
 
