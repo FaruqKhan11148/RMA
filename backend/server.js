@@ -67,10 +67,6 @@ app.use((req, res, next) => {
     return next();
   }
 
-  if (isPayUCallback) {
-    return next();
-  }
-
   return cors(corsOptions)(req, res, next);
 });
 
