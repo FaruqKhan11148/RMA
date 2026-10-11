@@ -152,6 +152,9 @@ async function createCashfreePayment(req, res) {
         return_url:
           `${FRONTEND_URL}/delivery-status/${encodeURIComponent(order.orderId)}` +
           '?cashfree_return=1',
+
+        notify_url: 
+          'https://rma-backend-bo4a.onrender.com/api/payments/cashfree/webhook',
       },
       order_note: `RMA Order ${order.orderId}`.slice(0, 200),
     };
