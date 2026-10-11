@@ -188,10 +188,33 @@ async function handleCashfreeWebhook(req, res) {
       apiVersion: CASHFREE_API_VERSION,
     });
 
-    const orderResponse = await cashfree.PGFetchOrder(
-      CASHFREE_API_VERSION,
+    console.log('[CF WEBHOOK] Fetching Cashfree order with:', {
+      environment: (process.env.CASHFREE_ENV || 'sandbox').toLowerCase(),
       cashfreeOrderId,
-    );
+      apiVersion: CASHFREE_API_VERSION,
+    });
+
+    let orderResponse;
+
+    try {
+      orderResponse = await cashfree.PGFetchOrder(
+        CASHFREE_API_VERSION,
+        cashfreeOrderId,
+      );
+    } catch (error) {
+      console.error('[CF WEBHOOK] Cashfree order fetch failed:', {
+        environment: (process.env.CASHFREE_ENV || 'sandbox').toLowerCase(),
+        appIdPrefix: process.env.CASHFREE_APP_ID?.slice(0, 8),
+        cashfreeOrderId,
+        apiVersion: CASHFREE_API_VERSION,
+        providerStatus: error.response?.status,
+        providerError: error.response?.data,
+      });
+
+      throw error;
+    }
+
+    const cashfreeOrder = orderResponse?.data;
 
     const cashfreeOrder = orderResponse?.data;
 
