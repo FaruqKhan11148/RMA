@@ -21,4 +21,11 @@ const cashfree = new Cashfree(
   secretKey,
 );
 
+console.log('[CASHFREE CONFIG]', {
+  environment,
+  hasAppId: Boolean(appId),
+  hasSecretKey: Boolean(secretKey),
+  appIdLength: appId?.length,
+});
+
 module.exports = { cashfree };
