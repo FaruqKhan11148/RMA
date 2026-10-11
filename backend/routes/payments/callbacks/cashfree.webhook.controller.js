@@ -216,8 +216,6 @@ async function handleCashfreeWebhook(req, res) {
 
     const cashfreeOrder = orderResponse?.data;
 
-    const cashfreeOrder = orderResponse?.data;
-
     console.log(`${DEBUG} [5] Cashfree order response`, {
       hasResponse: Boolean(orderResponse),
       hasData: Boolean(cashfreeOrder),
