@@ -7,6 +7,12 @@ import DeliveryPersonDetails from './components/DeliveryPerson/DeliveryPersonDet
 import DeliveryPersonEditForm from './components/DeliveryPerson/DeliveryPersonEditForm';
 import DeliveryPersonRegisterForm from './components/DeliveryPerson/DeliveryPersonRegisterForm';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function DeliveryPerson() {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -32,14 +38,11 @@ function DeliveryPerson() {
           return;
         }
 
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/delivery/person',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const response = await fetch(`${API_URL}api/delivery/person`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
 
         const data = await response.json();
 
@@ -81,19 +84,16 @@ function DeliveryPerson() {
         return;
       }
 
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/delivery/person/status',
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            isActive: !deliveryPerson.isActive,
-          }),
+      const response = await fetch(`${API_URL}api/delivery/person/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
-      );
+        body: JSON.stringify({
+          isActive: !deliveryPerson.isActive,
+        }),
+      });
 
       const data = await response.json();
 
@@ -144,20 +144,17 @@ function DeliveryPerson() {
         return;
       }
 
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/delivery/person',
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            name: editName.trim(),
-            phone: editPhone.trim(),
-          }),
+      const response = await fetch(`${API_URL}api/delivery/person`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
-      );
+        body: JSON.stringify({
+          name: editName.trim(),
+          phone: editPhone.trim(),
+        }),
+      });
 
       const data = await response.json();
 
@@ -215,20 +212,17 @@ function DeliveryPerson() {
         return;
       }
 
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/delivery/register',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            name: name.trim(),
-            phone: phone.trim(),
-          }),
+      const response = await fetch(`${API_URL}api/delivery/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
-      );
+        body: JSON.stringify({
+          name: name.trim(),
+          phone: phone.trim(),
+        }),
+      });
 
       const data = await response.json();
 

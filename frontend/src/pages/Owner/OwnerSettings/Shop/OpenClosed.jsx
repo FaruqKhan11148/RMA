@@ -9,6 +9,12 @@ import ShopStatusOptions from './components/OpenClosed/ShopStatusOptions';
 import OpenClosedMessages from './components/OpenClosed/OpenClosedMessages';
 import ShopStatusNote from './components/OpenClosed/ShopStatusNote';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function OpenClosed() {
   const navigate = useNavigate();
 
@@ -35,14 +41,11 @@ function OpenClosed() {
           setLoading(true);
         }
 
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/owners/me',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const response = await fetch(`${API_URL}api/owners/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
 
         const data = await response.json();
 
@@ -86,7 +89,7 @@ function OpenClosed() {
 
     try {
       const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/owners/settings/open-closed',
+        `${API_URL}api/owners/settings/open-closed`,
         {
           method: 'PATCH',
           headers: {

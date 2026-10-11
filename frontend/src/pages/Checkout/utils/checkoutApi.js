@@ -1,5 +1,9 @@
-const API_URL = 'https://rma-backend-bo4a.onrender.com/';
-
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+    
 export const fetchSavedAddresses = async () => {
   const response = await fetch(`${API_URL}api/customers/addresses`, {
     credentials: 'include',

@@ -8,6 +8,12 @@ import LocationConfirmation from './components/Location/LocationConfirmation';
 import LocationActions from './components/Location/LocationActions';
 import MapPicker from '../../../../components/map/MapPicker';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function Location() {
   const navigate = useNavigate();
 
@@ -30,14 +36,11 @@ function Location() {
 
     const fetchOwner = async () => {
       try {
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/owners/me',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const response = await fetch(`${API_URL}api/owners/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
 
         const data = await response.json();
 
@@ -115,20 +118,17 @@ function Location() {
     try {
       setSaving(true);
 
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/owners/settings/location',
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            latitude,
-            longitude,
-          }),
+      const response = await fetch(`${API_URL}api/owners/settings/location`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
-      );
+        body: JSON.stringify({
+          latitude,
+          longitude,
+        }),
+      });
 
       const data = await response.json();
 

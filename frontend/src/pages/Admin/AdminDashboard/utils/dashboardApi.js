@@ -1,11 +1,14 @@
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 export async function fetchAdminSession() {
-  const response = await fetch(
-    'https://rma-backend-bo4a.onrender.com/api/admin/me',
-    {
-      method: 'GET',
-      credentials: 'include',
-    },
-  );
+  const response = await fetch(`${API_URL}api/admin/me`, {
+    method: 'GET',
+    credentials: 'include',
+  });
 
   const data = await response.json();
 
@@ -21,13 +24,10 @@ export async function fetchAdminSession() {
 }
 
 export async function fetchDashboardData() {
-  const response = await fetch(
-    'https://rma-backend-bo4a.onrender.com/api/admin/dashboard',
-    {
-      method: 'GET',
-      credentials: 'include',
-    },
-  );
+  const response = await fetch(`${API_URL}api/admin/dashboard`, {
+    method: 'GET',
+    credentials: 'include',
+  });
 
   const data = await response.json();
 
@@ -46,13 +46,10 @@ export async function fetchDashboardData() {
 }
 
 export async function logoutAdmin() {
-  const response = await fetch(
-    'https://rma-backend-bo4a.onrender.com/api/admin/logout',
-    {
-      method: 'POST',
-      credentials: 'include',
-    },
-  );
+  const response = await fetch(`${API_URL}api/admin/logout`, {
+    method: 'POST',
+    credentials: 'include',
+  });
 
   if (!response.ok) {
     const data = await response.json().catch(() => ({}));

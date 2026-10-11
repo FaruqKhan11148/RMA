@@ -9,6 +9,12 @@ import PickupStatusOptions from './components/PickupAvailable/PickupStatusOption
 import PickupStatusMessages from './components/PickupAvailable/PickupStatusMessages';
 import PickupStatusNote from './components/PickupAvailable/PickupStatusNote';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function PickupAvailable() {
   const navigate = useNavigate();
 
@@ -29,14 +35,11 @@ function PickupAvailable() {
 
     const fetchOwner = async () => {
       try {
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/owners/me',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const response = await fetch(`${API_URL}api/owners/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
 
         const data = await response.json();
 
@@ -68,7 +71,7 @@ function PickupAvailable() {
 
     try {
       const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/owners/settings/pickup-available',
+        `${API_URL}api/owners/settings/pickup-available`,
         {
           method: 'PATCH',
           headers: {

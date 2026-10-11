@@ -6,6 +6,12 @@ import { useNavigate } from 'react-router-dom';
 import OwnerNameHeader from './components/OwnerName/OwnerNameHeader';
 import OwnerNameForm from './components/OwnerName/OwnerNameForm';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function OwnerName() {
   const navigate = useNavigate();
 
@@ -26,14 +32,11 @@ function OwnerName() {
           return;
         }
 
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/owners/me',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const response = await fetch(`${API_URL}api/owners/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
 
         const data = await response.json();
 
@@ -76,19 +79,16 @@ function OwnerName() {
         return;
       }
 
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/owners/settings/owner-name',
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            ownerName: trimmedName,
-          }),
+      const response = await fetch(`${API_URL}api/owners/settings/owner-name`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
-      );
+        body: JSON.stringify({
+          ownerName: trimmedName,
+        }),
+      });
 
       const data = await response.json();
 

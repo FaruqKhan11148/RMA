@@ -1,10 +1,13 @@
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 export const fetchSavedAddresses = async () => {
-  const response = await fetch(
-    'https://rma-backend-bo4a.onrender.com/api/customers/addresses',
-    {
-      credentials: 'include',
-    },
-  );
+  const response = await fetch(`${API_URL}api/customers/addresses`, {
+    credentials: 'include',
+  });
 
   const data = await response.json();
 
@@ -21,7 +24,7 @@ export const fetchSavedAddresses = async () => {
 
 export const fetchNearbyShops = async (latitude, longitude) => {
   const response = await fetch(
-    `https://rma-backend-bo4a.onrender.com/api/owners/nearby?latitude=${latitude}&longitude=${longitude}`,
+    `${API_URL}api/owners/nearby?latitude=${latitude}&longitude=${longitude}`,
   );
 
   const data = await response.json();
@@ -34,12 +37,9 @@ export const fetchNearbyShops = async (latitude, longitude) => {
 };
 
 export const checkCustomerLogin = async () => {
-  const response = await fetch(
-    'https://rma-backend-bo4a.onrender.com/api/customers/me',
-    {
-      credentials: 'include',
-    },
-  );
+  const response = await fetch(`${API_URL}api/customers/me`, {
+    credentials: 'include',
+  });
 
   if (!response.ok) {
     return null;

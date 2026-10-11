@@ -1,11 +1,14 @@
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 export async function fetchOwners() {
-  const response = await fetch(
-    'https://rma-backend-bo4a.onrender.com/api/admin/owners',
-    {
-      method: 'GET',
-      credentials: 'include',
-    },
-  );
+  const response = await fetch(`${API_URL}api/admin/owners`, {
+    method: 'GET',
+    credentials: 'include',
+  });
 
   if (response.status === 401) {
     const error = new Error('Admin authentication required');
@@ -29,13 +32,10 @@ export async function fetchOwners() {
 }
 
 export async function fetchSettlements() {
-  const response = await fetch(
-    'https://rma-backend-bo4a.onrender.com/api/admin/owners/settlements',
-    {
-      method: 'GET',
-      credentials: 'include',
-    },
-  );
+  const response = await fetch(`${API_URL}api/admin/owners/settlements`, {
+    method: 'GET',
+    credentials: 'include',
+  });
 
   if (response.status === 401) {
     const error = new Error('Admin authentication required');
@@ -60,7 +60,7 @@ export async function fetchSettlements() {
 
 export async function updateSettlement(ownerId, action) {
   const response = await fetch(
-    `https://rma-backend-bo4a.onrender.com/api/admin/owners/${ownerId}/settlement/${action}`,
+    `${API_URL}api/admin/owners/${ownerId}/settlement/${action}`,
     {
       method: 'PATCH',
       credentials: 'include',
@@ -90,7 +90,7 @@ export async function updateSettlement(ownerId, action) {
 
 export async function startPayUOnboarding(ownerId) {
   const response = await fetch(
-    `https://rma-backend-bo4a.onrender.com/api/admin/owners/${ownerId}/payu/onboarding/start`,
+    `${API_URL}api/admin/owners/${ownerId}/payu/onboarding/start`,
     {
       method: 'PATCH',
       credentials: 'include',
@@ -134,7 +134,7 @@ export async function verifyPayU(ownerId, type) {
   }
 
   const response = await fetch(
-    `https://rma-backend-bo4a.onrender.com/api/admin/owners/${ownerId}/payu/${endpoint}`,
+    `${API_URL}api/admin/owners/${ownerId}/payu/${endpoint}`,
     {
       method: 'PATCH',
       credentials: 'include',

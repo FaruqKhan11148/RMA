@@ -6,6 +6,12 @@ import { useNavigate } from 'react-router-dom';
 import DescriptionHeader from './components/Description/DescriptionHeader';
 import DescriptionForm from './components/Description/DescriptionForm';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function Description() {
   const navigate = useNavigate();
 
@@ -26,14 +32,11 @@ function Description() {
           return;
         }
 
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/owners/me',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const response = await fetch(`${API_URL}api/owners/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
 
         const data = await response.json();
 
@@ -78,7 +81,7 @@ function Description() {
       }
 
       const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/owners/settings/description',
+        `${API_URL}api/owners/settings/description`,
         {
           method: 'PATCH',
           headers: {

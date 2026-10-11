@@ -11,6 +11,12 @@ import OwnerShopServices from './components/OwnerShopServices';
 import OwnerShopAddress from './components/OwnerShopAddress';
 import OwnerShopProducts from './components/OwnerShopProducts';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function OwnerShop() {
   const navigate = useNavigate();
 
@@ -32,14 +38,11 @@ function OwnerShop() {
         setLoading(true);
         setError('');
 
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/owners/me',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const response = await fetch(`${API_URL}api/owners/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
 
         const data = await response.json();
 

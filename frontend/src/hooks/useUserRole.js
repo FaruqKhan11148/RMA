@@ -1,5 +1,11 @@
 import { useEffect, useState } from 'react';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function useUserRole() {
   const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -53,12 +59,9 @@ function useUserRole() {
 
       // 3. Customer
       try {
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/customers/me',
-          {
-            credentials: 'include',
-          },
-        );
+        const response = await fetch(`${API_URL}api/customers/me`, {
+          credentials: 'include',
+        });
 
         if (response.ok) {
           const data = await response.json();

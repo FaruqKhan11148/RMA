@@ -3,9 +3,13 @@ const TestBankAccount = require('../../models/TestBankAccount');
 
 const { runTestSettlement } = require('../testBank/testBankSettlement.service');
 
-async function getTestBankAccounts(order) {
-  const payuAccount = await TestBankAccount.findOne({
-    accountType: 'PAYU',
+function roundAmount(amount) {
+  return Number(Number(amount).toFixed(2));
+}
+
+async function getTestBankAccounts(order, paymentProvider) {
+  const gatewayAccount = await TestBankAccount.findOne({
+    accountType: paymentProvider,
     status: 'ACTIVE',
   });
 
@@ -21,8 +25,8 @@ async function getTestBankAccounts(order) {
     status: 'ACTIVE',
   });
 
-  if (!payuAccount) {
-    throw new Error('Active PayU TestBank account not found');
+  if (!gatewayAccount) {
+    throw new Error(`Active ${paymentProvider} TestBank account not found`);
   }
 
   if (!rmaAccount) {
@@ -58,7 +62,7 @@ async function getTestBankAccounts(order) {
   }
 
   return {
-    payuAccount,
+    gatewayAccount,
     rmaAccount,
     ownerAccount,
     dpAccount,
@@ -93,31 +97,86 @@ async function settleCompletedOrder(orderId) {
     );
   }
 
-  const { payuAccount, rmaAccount, ownerAccount, dpAccount } =
-    await getTestBankAccounts(order);
+  // Cashfree orders have a Cashfree order ID; legacy orders use PayU.
+  // Keep PayU as the default for existing orders without a Cashfree ID.
+  const paymentProvider = order.cashfreeOrderId ? 'CASHFREE' : 'PAYU';
+
+  const { gatewayAccount, rmaAccount, ownerAccount, dpAccount } =
+    await getTestBankAccounts(order, paymentProvider);
 
   // ==========================================================
   // ORDER AMOUNTS
   // ==========================================================
 
-  const productSubtotal = Number(order.subtotal);
-  const deliveryCharge = Number(order.deliveryCharge || 0);
+  const productSubtotal = roundAmount(order.subtotal);
+  const deliveryCharge = roundAmount(order.deliveryCharge ?? 0);
 
-  // Actual PayU fee before GST
-  const payuFee = Number(order.payuFee);
+  const payuFee = roundAmount(order.payuFee ?? 0);
+  const payuGst = roundAmount(order.payuGst ?? 0);
+  const payuCharges = roundAmount(order.payuCharges ?? 0);
 
-  // GST charged on PayU fee
-  const payuGst = Number(order.payuGst);
+  let customerPayableAmount;
 
-  // Total PayU gateway charges = fee + GST
-  const payuCharges = Number(order.payuCharges);
+  if (paymentProvider === 'CASHFREE') {
+    // Cashfree amount is stored when its payment order is created.
+    customerPayableAmount = roundAmount(
+      order.cashfreeOrderAmount ?? order.totalPrice,
+    );
 
-  // Exact amount customer paid to PayU
-  const customerPayableAmount = Number(order.customerPayableAmount);
+    if (payuFee !== 0 || payuGst !== 0 || payuCharges !== 0) {
+      throw new Error('Cashfree order unexpectedly contains PayU fees or GST');
+    }
 
-  // ==========================================================
-  // VALIDATION
-  // ==========================================================
+    const expectedCashfreeAmount = roundAmount(
+      productSubtotal + deliveryCharge,
+    );
+
+    if (customerPayableAmount !== expectedCashfreeAmount) {
+      throw new Error(
+        `Cashfree amount mismatch. Expected ₹${expectedCashfreeAmount.toFixed(
+          2,
+        )}, but order has ₹${customerPayableAmount.toFixed(2)}`,
+      );
+    }
+  } else {
+    customerPayableAmount = roundAmount(order.customerPayableAmount);
+
+    if (!Number.isFinite(payuFee) || payuFee <= 0) {
+      throw new Error('Invalid PayU fee on order');
+    }
+
+    if (!Number.isFinite(payuGst) || payuGst < 0) {
+      throw new Error('Invalid PayU GST on order');
+    }
+
+    if (!Number.isFinite(payuCharges) || payuCharges <= 0) {
+      throw new Error('Invalid PayU charges on order');
+    }
+
+    const calculatedPayuCharges = roundAmount(payuFee + payuGst);
+
+    if (calculatedPayuCharges !== payuCharges) {
+      throw new Error(
+        `PayU charge mismatch. Fee ₹${payuFee.toFixed(
+          2,
+        )} + GST ₹${payuGst.toFixed(2)} = ₹${calculatedPayuCharges.toFixed(
+          2,
+        )}, but order has ₹${payuCharges.toFixed(2)}`,
+      );
+    }
+
+    const calculatedCustomerPayableAmount = roundAmount(
+      productSubtotal + deliveryCharge + payuCharges,
+    );
+
+    if (calculatedCustomerPayableAmount !== customerPayableAmount) {
+      throw new Error(
+        `Customer payable amount mismatch. Expected ₹${calculatedCustomerPayableAmount.toFixed(
+          2,
+        )}, but order has ₹${customerPayableAmount.toFixed(2)}`,
+      );
+    }
+  }
 
   if (!Number.isFinite(productSubtotal) || productSubtotal <= 0) {
     throw new Error('Invalid order product subtotal');
@@ -127,54 +186,8 @@ async function settleCompletedOrder(orderId) {
     throw new Error('Invalid order delivery charge');
   }
 
-  if (!Number.isFinite(payuFee) || payuFee <= 0) {
-    throw new Error('Invalid PayU fee on order');
-  }
-
-  if (!Number.isFinite(payuGst) || payuGst < 0) {
-    throw new Error('Invalid PayU GST on order');
-  }
-
-  if (!Number.isFinite(payuCharges) || payuCharges <= 0) {
-    throw new Error('Invalid PayU charges on order');
-  }
-
   if (!Number.isFinite(customerPayableAmount) || customerPayableAmount <= 0) {
     throw new Error('Invalid customer payable amount on order');
-  }
-
-  // ==========================================================
-  // VERIFY PAYU CHARGE MATH
-  // ==========================================================
-
-  const calculatedPayuCharges = Number((payuFee + payuGst).toFixed(2));
-
-  if (calculatedPayuCharges !== Number(payuCharges.toFixed(2))) {
-    throw new Error(
-      `PayU charge mismatch. Fee ₹${payuFee.toFixed(
-        2,
-      )} + GST ₹${payuGst.toFixed(2)} = ₹${calculatedPayuCharges.toFixed(
-        2,
-      )}, but order has ₹${payuCharges.toFixed(2)}`,
-    );
-  }
-
-  // ==========================================================
-  // VERIFY CUSTOMER PAYMENT
-  // ==========================================================
-
-  const calculatedCustomerPayableAmount = Number(
-    (productSubtotal + deliveryCharge + payuCharges).toFixed(2),
-  );
-
-  if (
-    calculatedCustomerPayableAmount !== Number(customerPayableAmount.toFixed(2))
-  ) {
-    throw new Error(
-      `Customer payable amount mismatch. Expected ₹${calculatedCustomerPayableAmount.toFixed(
-        2,
-      )}, but order has ₹${customerPayableAmount.toFixed(2)}`,
-    );
   }
 
   // ==========================================================
@@ -184,7 +197,12 @@ async function settleCompletedOrder(orderId) {
   const settlement = await runTestSettlement({
     orderId: order.orderId,
 
-    payuAccountId: payuAccount._id,
+    paymentProvider,
+    gatewayAccountId: gatewayAccount._id,
+
+    // Keep the legacy field populated for schema compatibility.
+    payuAccountId: gatewayAccount._id,
+
     ownerAccountId: ownerAccount._id,
     rmaAccountId: rmaAccount._id,
     dpAccountId: dpAccount?._id || null,
@@ -200,6 +218,7 @@ async function settleCompletedOrder(orderId) {
 
     metadata: {
       source: 'RMA_ORDER_SETTLEMENT',
+      paymentProvider,
 
       ownerId: String(order.ownerId),
 
@@ -208,8 +227,8 @@ async function settleCompletedOrder(orderId) {
         : null,
 
       paymentId: order.paymentId || null,
-
       paymentOrderId: order.paymentOrderId || null,
+      cashfreeOrderId: order.cashfreeOrderId || null,
 
       baseAmount: Number(order.totalPrice),
     },

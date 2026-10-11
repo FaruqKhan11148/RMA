@@ -1,4 +1,8 @@
-const API_BASE_URL = 'https://rma-backend-bo4a.onrender.com/api';
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
 
 const getToken = () => {
   return localStorage.getItem('delivery_token');
@@ -18,7 +22,7 @@ const getHeaders = () => {
 };
 
 export const updateRmaApplication = async (section, data) => {
-  const response = await fetch(`${API_BASE_URL}/delivery/rma/application`, {
+  const response = await fetch(`${API_URL}/delivery/rma/application`, {
     method: 'PATCH',
     headers: getHeaders(),
     body: JSON.stringify({
@@ -37,7 +41,7 @@ export const updateRmaApplication = async (section, data) => {
 };
 
 export const fetchRmaApplication = async () => {
-  const response = await fetch(`${API_BASE_URL}/delivery/rma/application`, {
+  const response = await fetch(`${API_URL}/delivery/rma/application`, {
     method: 'GET',
     headers: getHeaders(),
   });
@@ -52,13 +56,10 @@ export const fetchRmaApplication = async () => {
 };
 
 export const submitRmaApplication = async () => {
-  const response = await fetch(
-    `${API_BASE_URL}/delivery/rma/application/submit`,
-    {
-      method: 'PATCH',
-      headers: getHeaders(),
-    },
-  );
+  const response = await fetch(`${API_URL}/delivery/rma/application/submit`, {
+    method: 'PATCH',
+    headers: getHeaders(),
+  });
 
   const data = await response.json();
 

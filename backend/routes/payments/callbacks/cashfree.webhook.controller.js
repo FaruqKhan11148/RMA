@@ -1,68 +1,146 @@
 const Order = require('../../../models/Order');
+const TestBankAccount = require('../../../models/TestBankAccount');
+
 const { cashfree } = require('../helpers/cashfree.helper');
+
+const {
+  recordCustomerPayment,
+} = require('../../../services/testBank/testBankSettlement.service');
+
 const {
   createAndSendNotification,
 } = require('../../../services/notificationService');
 
 const CASHFREE_API_VERSION = '2023-08-01';
 
+const DEBUG = '[CF WEBHOOK]';
+
+const toPaise = (value) => {
+  const amount = Number(value);
+
+  return Number.isFinite(amount) ? Math.round(amount * 100) : NaN;
+};
+
 async function handleCashfreeWebhook(req, res) {
+  const startedAt = Date.now();
+
+  const signature = req.headers['x-webhook-signature'];
+  const timestamp = req.headers['x-webhook-timestamp'];
+  const rawBody = req.rawBody;
+
+  console.log(`${DEBUG} [1] Request received`, {
+    method: req.method,
+    path: req.originalUrl,
+    contentType: req.headers['content-type'],
+    hasSignature: Boolean(signature),
+    hasTimestamp: Boolean(timestamp),
+    hasRawBody: Boolean(rawBody),
+    rawBodyType: rawBody?.constructor?.name,
+    rawBodyLength: rawBody?.length,
+  });
+
+  console.log('[CF WEBHOOK] Header/body check:', {
+    hasSignature: Boolean(signature),
+    hasTimestamp: Boolean(timestamp),
+    hasRawBody: Boolean(rawBody),
+    rawBodyType: typeof rawBody,
+    rawBodyLength: rawBody?.length ?? 0,
+  });
+
+  if (!signature || !timestamp || !rawBody) {
+    console.error(`${DEBUG} [ERROR 1] Missing webhook verification data`, {
+      hasSignature: Boolean(signature),
+      hasTimestamp: Boolean(timestamp),
+      hasRawBody: Boolean(rawBody),
+    });
+
+    return res.status(400).json({
+      message: 'Missing Cashfree webhook signature, timestamp, or raw body',
+    });
+  }
+
+  let event;
+
+  // STEP 2: Verify webhook signature and parse event.
   try {
-    const signature = req.headers['x-webhook-signature'];
-    const timestamp = req.headers['x-webhook-timestamp'];
-    const rawBody = req.rawBody;
+    console.log(`${DEBUG} [2] Verifying webhook signature`);
 
-    if (!signature || !timestamp || !rawBody) {
-      return res.status(400).json({
-        message: 'Missing Cashfree webhook signature, timestamp, or raw body',
-      });
-    }
+    const isValidSignature = cashfree.PGVerifyWebhookSignature(
+      signature,
+      rawBody,
+      timestamp,
+    );
 
-    // Verify that Cashfree signed the exact raw request body.
-    let isValidSignature;
-
-    try {
-      isValidSignature = cashfree.PGVerifyWebhookSignature(
-        signature,
-        rawBody,
-        timestamp,
-      );
-    } catch (error) {
-      console.error(
-        'Cashfree webhook signature verification failed:',
-        error.message,
-      );
-
-      return res.status(401).json({
-        message: 'Invalid Cashfree webhook signature',
-      });
-    }
+    console.log(`${DEBUG} [2] Signature verification result`, {
+      isValidSignature: Boolean(isValidSignature),
+    });
 
     if (!isValidSignature) {
+      console.error(`${DEBUG} [ERROR 2] Invalid webhook signature`);
+
       return res.status(401).json({
         message: 'Invalid Cashfree webhook signature',
       });
     }
 
-    const event = JSON.parse(rawBody);
+    event = JSON.parse(rawBody.toString('utf8'));
 
-    const cashfreeOrderId = event?.data?.order?.order_id;
+    console.log(`${DEBUG} [3] Event parsed`, {
+      eventType: event?.type,
+      eventTime: event?.event_time,
+      cashfreeOrderId: event?.data?.order?.order_id,
+      paymentStatus: event?.data?.payment?.payment_status,
+    });
+  } catch (error) {
+    console.error(
+      `${DEBUG} [ERROR 2] Signature verification or JSON parsing failed`,
+      {
+        message: error.message,
+        stack: error.stack,
+      },
+    );
 
-    if (!cashfreeOrderId) {
-      return res.status(400).json({
-        message: 'Cashfree order ID is missing from webhook',
-      });
-    }
+    return res.status(401).json({
+      message: 'Invalid Cashfree webhook signature or payload',
+    });
+  }
 
-    // Find only the RMA order associated with this Cashfree order.
-    const order = await Order.findOne({
+  const cashfreeOrderId = event?.data?.order?.order_id;
+
+  if (!cashfreeOrderId) {
+    console.error(`${DEBUG} [ERROR 3] Missing Cashfree order ID`, {
+      eventType: event?.type,
+      hasData: Boolean(event?.data),
+    });
+
+    return res.status(400).json({
+      message: 'Cashfree order ID is missing from webhook',
+    });
+  }
+
+  try {
+    // STEP 4: Find RMA order.
+    console.log(`${DEBUG} [4] Searching for RMA order`, {
       cashfreeOrderId,
     });
 
-    if (!order) {
-      console.error('RMA order not found for Cashfree order:', cashfreeOrderId);
+    const order = await Order.findOne({ cashfreeOrderId });
 
-      // Acknowledge a verified but unmatched event to avoid endless retries.
+    console.log(`${DEBUG} [4] RMA order lookup result`, {
+      found: Boolean(order),
+      orderId: order?.orderId,
+      paymentStatus: order?.paymentStatus,
+      paymentMethod: order?.paymentMethod,
+      orderStatus: order?.status,
+      cashfreeOrderAmount: order?.cashfreeOrderAmount,
+      totalPrice: order?.totalPrice,
+    });
+
+    if (!order) {
+      console.error(`${DEBUG} [ERROR 4] RMA order not found`, {
+        cashfreeOrderId,
+      });
+
       return res.status(200).json({
         received: true,
         processed: false,
@@ -70,8 +148,46 @@ async function handleCashfreeWebhook(req, res) {
       });
     }
 
-    // Never mark an order paid based only on webhook payload data.
-    // Confirm the order's status directly with Cashfree.
+    if (order.paymentMethod !== 'ONLINE') {
+      console.error(
+        `${DEBUG} [STOP 4] Order is not configured for online payment`,
+        {
+          orderId: order.orderId,
+          paymentMethod: order.paymentMethod,
+        },
+      );
+
+      return res.status(200).json({
+        received: true,
+        processed: false,
+        message: 'Order is not configured for online payment',
+      });
+    }
+
+    if (order.status === 'Rejected' || order.cancelledAt) {
+      console.error(
+        `${DEBUG} [STOP 4] Cancelled/rejected order needs reconciliation`,
+        {
+          orderId: order.orderId,
+          status: order.status,
+          cancelledAt: order.cancelledAt,
+        },
+      );
+
+      return res.status(200).json({
+        received: true,
+        processed: false,
+        message: 'Cancelled order requires payment reconciliation',
+      });
+    }
+
+    // STEP 5: Verify actual provider order status.
+    console.log(`${DEBUG} [5] Fetching order status from Cashfree`, {
+      orderId: order.orderId,
+      cashfreeOrderId,
+      apiVersion: CASHFREE_API_VERSION,
+    });
+
     const orderResponse = await cashfree.PGFetchOrder(
       CASHFREE_API_VERSION,
       cashfreeOrderId,
@@ -79,7 +195,20 @@ async function handleCashfreeWebhook(req, res) {
 
     const cashfreeOrder = orderResponse?.data;
 
+    console.log(`${DEBUG} [5] Cashfree order response`, {
+      hasResponse: Boolean(orderResponse),
+      hasData: Boolean(cashfreeOrder),
+      orderStatus: cashfreeOrder?.order_status,
+      orderAmount: cashfreeOrder?.order_amount,
+      currency: cashfreeOrder?.order_currency,
+    });
+
     if (cashfreeOrder?.order_status !== 'PAID') {
+      console.warn(`${DEBUG} [STOP 5] Cashfree order is not PAID`, {
+        orderId: order.orderId,
+        providerStatus: cashfreeOrder?.order_status,
+      });
+
       return res.status(200).json({
         received: true,
         processed: false,
@@ -87,29 +216,45 @@ async function handleCashfreeWebhook(req, res) {
       });
     }
 
-    const expectedAmount = Number(order.cashfreeOrderAmount);
-    const providerAmount = Number(cashfreeOrder.order_amount);
+    // STEP 6: Validate amount and currency.
+    const expectedPaise = toPaise(order.cashfreeOrderAmount);
+    const providerPaise = toPaise(cashfreeOrder.order_amount);
+
+    console.log(`${DEBUG} [6] Validating amount and currency`, {
+      expectedPaise,
+      providerPaise,
+      expectedAmount: expectedPaise / 100,
+      providerAmount: providerPaise / 100,
+      currency: cashfreeOrder.order_currency,
+    });
 
     if (
-      !Number.isFinite(expectedAmount) ||
-      !Number.isFinite(providerAmount) ||
-      expectedAmount <= 0 ||
-      Math.abs(expectedAmount - providerAmount) > 0.001 ||
+      !Number.isFinite(expectedPaise) ||
+      !Number.isFinite(providerPaise) ||
+      expectedPaise <= 0 ||
+      expectedPaise !== providerPaise ||
       cashfreeOrder.order_currency !== 'INR'
     ) {
-      console.error('Cashfree order amount/currency mismatch:', {
+      console.error(`${DEBUG} [ERROR 6] Amount/currency mismatch`, {
         orderId: order.orderId,
-        expectedAmount,
-        providerAmount,
+        expectedPaise,
+        providerPaise,
         currency: cashfreeOrder.order_currency,
       });
 
-      return res.status(400).json({
-        message: 'Cashfree order amount or currency mismatch',
+      return res.status(200).json({
+        received: true,
+        processed: false,
+        message:
+          'Cashfree order amount or currency mismatch; reconciliation required',
       });
     }
 
-    // Confirm a successful payment record with Cashfree too.
+    // STEP 7: Fetch successful payment details.
+    console.log(`${DEBUG} [7] Fetching payments from Cashfree`, {
+      cashfreeOrderId,
+    });
+
     const paymentsResponse = await cashfree.PGOrderFetchPayments(
       CASHFREE_API_VERSION,
       cashfreeOrderId,
@@ -119,13 +264,35 @@ async function handleCashfreeWebhook(req, res) {
       ? paymentsResponse.data
       : [];
 
+    console.log(`${DEBUG} [7] Cashfree payment list`, {
+      count: payments.length,
+      payments: payments.map((payment) => ({
+        paymentId: payment.cf_payment_id,
+        status: payment.payment_status,
+        amount: payment.payment_amount,
+        currency: payment.payment_currency,
+      })),
+    });
+
     const successfulPayment = payments.find(
       (payment) =>
         payment.payment_status === 'SUCCESS' &&
-        Number(payment.payment_amount) === expectedAmount,
+        toPaise(payment.payment_amount) === expectedPaise &&
+        payment.payment_currency === 'INR',
     );
 
     if (!successfulPayment) {
+      console.error(`${DEBUG} [STOP 7] No matching successful payment`, {
+        orderId: order.orderId,
+        cashfreeOrderId,
+        expectedPaise,
+        paymentStatuses: payments.map((payment) => ({
+          status: payment.payment_status,
+          amount: payment.payment_amount,
+          currency: payment.payment_currency,
+        })),
+      });
+
       return res.status(200).json({
         received: true,
         processed: false,
@@ -133,73 +300,162 @@ async function handleCashfreeWebhook(req, res) {
       });
     }
 
-    // Idempotency: do not repeat payment side effects for an already-paid order.
-    if (order.paymentStatus === 'Paid') {
-      return res.status(200).json({
-        received: true,
-        processed: true,
-        alreadyPaid: true,
-      });
+    const paymentAmount = expectedPaise / 100;
+    const paymentId = String(successfulPayment.cf_payment_id);
+
+    console.log(`${DEBUG} [8] Successful payment verified`, {
+      orderId: order.orderId,
+      paymentId,
+      paymentAmount,
+      currency: successfulPayment.payment_currency,
+    });
+
+    // STEP 9: Find active Cashfree TestBank account.
+    console.log(`${DEBUG} [9] Searching for active CASHFREE TestBank account`);
+
+    const cashfreeAccount = await TestBankAccount.findOne({
+      accountType: 'CASHFREE',
+      status: 'ACTIVE',
+    });
+
+    console.log(`${DEBUG} [9] TestBank account lookup result`, {
+      found: Boolean(cashfreeAccount),
+      accountNumber: cashfreeAccount?.accountNumber,
+      accountType: cashfreeAccount?.accountType,
+      status: cashfreeAccount?.status,
+      accountId: cashfreeAccount?._id?.toString(),
+    });
+
+    if (!cashfreeAccount) {
+      throw new Error('Active CASHFREE TestBank account not found');
     }
 
-    if (order.paymentMethod !== 'ONLINE') {
-      console.error(
-        'Cashfree payment received for a non-online RMA order:',
-        order.orderId,
-      );
+    // STEP 10: Record customer payment in TestBank.
+    console.log(`${DEBUG} [10] Recording customer payment`, {
+      orderId: order.orderId,
+      accountNumber: cashfreeAccount.accountNumber,
+      paymentAmount,
+      paymentId,
+      cashfreeOrderId,
+    });
 
-      return res.status(409).json({
-        message: 'RMA order is not configured for online payment',
-      });
-    }
+    const receiptResult = await recordCustomerPayment({
+      orderId: order.orderId,
+      payuAccountId: cashfreeAccount._id,
+      amount: paymentAmount,
+      metadata: {
+        provider: 'CASHFREE',
+        paymentId,
+        cashfreeOrderId,
+        baseAmount: order.totalPrice,
+        customerPayableAmount: paymentAmount,
+      },
+    });
 
-    if (order.status === 'Rejected' || order.cancelledAt) {
-      console.error(
-        'Cashfree payment received for a rejected/cancelled order:',
-        order.orderId,
-      );
+    console.log(`${DEBUG} [10] Customer payment recorded`, {
+      orderId: order.orderId,
+      receiptResult:
+        receiptResult && typeof receiptResult === 'object'
+          ? {
+              success: receiptResult.success,
+              alreadyRecorded: receiptResult.alreadyRecorded,
+              transactionId: receiptResult.transactionId?.toString?.(),
+            }
+          : receiptResult,
+    });
 
-      // Do not silently mark a cancelled order as paid.
-      // Handle refund/reconciliation separately.
-      return res.status(409).json({
-        message:
-          'Order is cancelled or rejected; manual reconciliation is required',
-      });
-    }
+    // STEP 11: Update order payment fields.
+    const wasAlreadyPaid = order.paymentStatus === 'Paid';
+
+    console.log(`${DEBUG} [11] Preparing order update`, {
+      orderId: order.orderId,
+      wasAlreadyPaid,
+      previousPaymentStatus: order.paymentStatus,
+      previousPaymentId: order.paymentId,
+      previousSettlementStatus: order.settlementStatus,
+    });
 
     order.paymentStatus = 'Paid';
     order.paymentMethod = 'ONLINE';
-    order.paymentId = String(successfulPayment.cf_payment_id);
-    order.paidAt = new Date();
+    order.onlinePaymentMethod = 'CASHFREE';
+    order.paymentId = paymentId;
 
-    // Cashfree settlement accounting must be implemented separately.
-    // Do not send this order through the existing PayU-specific settlement flow.
-    order.settlementStatus = 'NotRequired';
+    if (!order.paidAt) {
+      order.paidAt = new Date();
+    }
+
+    if (order.settlementStatus !== 'Settled') {
+      order.settlementStatus = 'Pending';
+    }
+
+    if (!order.refundStatus) {
+      order.refundStatus = 'NotRequired';
+    }
+
+    console.log(`${DEBUG} [11] Saving order to MongoDB`, {
+      orderId: order.orderId,
+      paymentStatus: order.paymentStatus,
+      paymentId: order.paymentId,
+      settlementStatus: order.settlementStatus,
+    });
 
     await order.save();
 
-    console.log('Cashfree payment verified for RMA order:', order.orderId);
+    console.log(`${DEBUG} [11] Order saved successfully`, {
+      orderId: order.orderId,
+      paymentStatus: order.paymentStatus,
+      paymentId: order.paymentId,
+      paidAt: order.paidAt,
+      settlementStatus: order.settlementStatus,
+    });
 
-    // Notify the shop owner after the payment is verified and saved.
-    try {
-      await createAndSendNotification({
-        recipientType: 'owner',
-        recipientId: order.ownerId,
-        type: 'NEW_ORDER',
-        title: 'New Order',
-        message: `You have received a new order ${order.orderId}.`,
+    // STEP 12: Send owner notification.
+    if (!wasAlreadyPaid) {
+      console.log(`${DEBUG} [12] Sending owner notification`, {
         orderId: order.orderId,
-        data: {
-          screen: 'owner-dashboard',
+        ownerId: order.ownerId?.toString?.() || order.ownerId,
+      });
+
+      try {
+        await createAndSendNotification({
+          recipientType: 'owner',
+          recipientId: order.ownerId,
+          type: 'NEW_ORDER',
+          title: 'New Order',
+          message: `You have received a new order ${order.orderId}.`,
+          orderId: order.orderId,
+          data: {
+            screen: 'owner-dashboard',
+            orderId: order.orderId,
+          },
+        });
+
+        console.log(`${DEBUG} [12] Owner notification completed`, {
+          orderId: order.orderId,
+        });
+      } catch (notificationError) {
+        console.error(`${DEBUG} [ERROR 12] Owner notification failed`, {
+          orderId: order.orderId,
+          message: notificationError.message,
+          stack: notificationError.stack,
+        });
+      }
+    } else {
+      console.log(
+        `${DEBUG} [12] Notification skipped; order was already paid`,
+        {
           orderId: order.orderId,
         },
-      });
-    } catch (notificationError) {
-      console.error(
-        'Cashfree owner new order notification failed:',
-        notificationError,
       );
     }
+
+    console.log(`${DEBUG} [SUCCESS] Webhook processing completed`, {
+      orderId: order.orderId,
+      cashfreeOrderId,
+      paymentId,
+      amount: paymentAmount,
+      durationMs: Date.now() - startedAt,
+    });
 
     return res.status(200).json({
       received: true,
@@ -208,12 +464,15 @@ async function handleCashfreeWebhook(req, res) {
       paymentStatus: 'Paid',
     });
   } catch (error) {
-    console.error(
-      'Cashfree webhook processing failed:',
-      error.response?.data || error.message,
-    );
+    console.error(`${DEBUG} [FATAL ERROR] Webhook processing failed`, {
+      cashfreeOrderId,
+      message: error.message,
+      providerStatus: error.response?.status,
+      providerError: error.response?.data,
+      stack: error.stack,
+      durationMs: Date.now() - startedAt,
+    });
 
-    // A 5xx response allows Cashfree to retry transient processing failures.
     return res.status(500).json({
       message: 'Cashfree webhook processing failed',
     });

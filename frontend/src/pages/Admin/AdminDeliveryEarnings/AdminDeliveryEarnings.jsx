@@ -3,6 +3,12 @@ import './AdminDeliveryEarnings.css';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function AdminDeliveryEarnings() {
   const navigate = useNavigate();
 
@@ -22,7 +28,7 @@ function AdminDeliveryEarnings() {
       setError('');
 
       const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/admin/orders/delivery-earnings/pending',
+        `${API_URL}api/admin/orders/delivery-earnings/pending`,
         {
           method: 'GET',
           credentials: 'include',
@@ -83,7 +89,7 @@ function AdminDeliveryEarnings() {
       setError('');
 
       const response = await fetch(
-        `https://rma-backend-bo4a.onrender.com/api/admin/orders/delivery-earnings/${transactionId}/release`,
+        `${API_URL}api/admin/orders/delivery-earnings/${transactionId}/release`,
         {
           method: 'PATCH',
           credentials: 'include',

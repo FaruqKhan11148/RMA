@@ -3,6 +3,12 @@ import './CustomerSignup.css';
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function CustomerSignup() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -46,22 +52,19 @@ function CustomerSignup() {
         throw new Error('Password must be at least 6 characters');
       }
 
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/customers/register',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-          body: JSON.stringify({
-            name: formData.name,
-            phone: formData.phone,
-            email: formData.email,
-            password: formData.password,
-          }),
+      const response = await fetch(`${API_URL}api/customers/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        credentials: 'include',
+        body: JSON.stringify({
+          name: formData.name,
+          phone: formData.phone,
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
 
       const data = await response.json();
 

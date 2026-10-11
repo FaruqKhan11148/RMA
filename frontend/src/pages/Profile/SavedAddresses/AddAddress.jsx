@@ -4,6 +4,12 @@ import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import MapPicker from '../../../components/map/MapPicker';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function AddAddress() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -37,22 +43,19 @@ function AddAddress() {
       setSaving(true);
       setError('');
 
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/customers/addresses',
-        {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            label,
-            address: address.trim(),
-            latitude,
-            longitude,
-          }),
+      const response = await fetch(`${API_URL}api/customers/addresses`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify({
+          label,
+          address: address.trim(),
+          latitude,
+          longitude,
+        }),
+      });
 
       const data = await response.json();
 

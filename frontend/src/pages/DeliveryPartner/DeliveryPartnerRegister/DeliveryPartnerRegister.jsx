@@ -3,6 +3,12 @@ import './DeliveryPartnerRegister.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function DeliveryPartnerRegister() {
   const navigate = useNavigate();
 
@@ -34,19 +40,16 @@ function DeliveryPartnerRegister() {
     try {
       setLoading(true);
 
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/delivery/rma/register',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            name: trimmedName,
-            phone: trimmedPhone,
-          }),
+      const response = await fetch(`${API_URL}api/delivery/rma/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify({
+          name: trimmedName,
+          phone: trimmedPhone,
+        }),
+      });
 
       const data = await response.json();
 

@@ -1,11 +1,14 @@
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 export async function fetchDeliveryPersons() {
-  const response = await fetch(
-    'https://rma-backend-bo4a.onrender.com/api/admin/delivery',
-    {
-      method: 'GET',
-      credentials: 'include',
-    },
-  );
+  const response = await fetch(`${API_URL}api/admin/delivery`, {
+    method: 'GET',
+    credentials: 'include',
+  });
 
   const data = await response.json();
 
@@ -22,7 +25,7 @@ export async function fetchDeliveryPersons() {
 
 export async function fetchDeliveryPersonDetails(deliveryPersonId) {
   const response = await fetch(
-    `https://rma-backend-bo4a.onrender.com/api/admin/delivery/${deliveryPersonId}`,
+    `${API_URL}api/admin/delivery/${deliveryPersonId}`,
     {
       method: 'GET',
       credentials: 'include',

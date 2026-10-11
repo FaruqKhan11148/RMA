@@ -6,6 +6,12 @@ import { useNavigate } from 'react-router-dom';
 import PhoneNumberHeader from './components/PhoneNumber/PhoneNumberHeader';
 import PhoneNumberForm from './components/PhoneNumber/PhoneNumberForm';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function PhoneNumber() {
   const navigate = useNavigate();
 
@@ -26,14 +32,11 @@ function PhoneNumber() {
           return;
         }
 
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/owners/me',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const response = await fetch(`${API_URL}api/owners/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
 
         const data = await response.json();
 
@@ -76,19 +79,16 @@ function PhoneNumber() {
         return;
       }
 
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/owners/settings/phone',
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            phone: trimmedPhone,
-          }),
+      const response = await fetch(`${API_URL}api/owners/settings/phone`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
-      );
+        body: JSON.stringify({
+          phone: trimmedPhone,
+        }),
+      });
 
       const data = await response.json();
 

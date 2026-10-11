@@ -6,6 +6,12 @@ import { useNavigate } from 'react-router-dom';
 import PasswordHeader from './components/Password/PasswordHeader';
 import PasswordForm from './components/Password/PasswordForm';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function Password() {
   const navigate = useNavigate();
 
@@ -49,21 +55,18 @@ function Password() {
         return;
       }
 
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/owners/settings/password',
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            currentPassword,
-            newPassword,
-            confirmPassword,
-          }),
+      const response = await fetch(`${API_URL}api/owners/settings/password`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
-      );
+        body: JSON.stringify({
+          currentPassword,
+          newPassword,
+          confirmPassword,
+        }),
+      });
 
       const data = await response.json();
 

@@ -3,6 +3,12 @@ import './CustomerLogin.css';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function CustomerLogin() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -33,17 +39,14 @@ function CustomerLogin() {
       setLoading(true);
       setError('');
 
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/customers/login',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-          body: JSON.stringify(formData),
+      const response = await fetch(`${API_URL}api/customers/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        credentials: 'include',
+        body: JSON.stringify(formData),
+      });
 
       const data = await response.json();
 

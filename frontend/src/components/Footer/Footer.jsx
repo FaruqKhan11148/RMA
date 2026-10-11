@@ -7,6 +7,12 @@ import { Home, Store, ShoppingCart, ClipboardList, Bell } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useCart } from '../../context/CartContext';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function Footer() {
   const { t } = useLanguage();
   const { totalItems } = useCart();
@@ -19,12 +25,9 @@ function Footer() {
   useEffect(() => {
     const fetchUnreadCount = async () => {
       try {
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/customers/notifications',
-          {
-            credentials: 'include',
-          },
-        );
+        const response = await fetch(`${API_URL}api/customers/notifications`, {
+          credentials: 'include',
+        });
 
         if (!response.ok) {
           return;
@@ -97,12 +100,9 @@ function Footer() {
         className={({ isActive }) => `nav_item ${isActive ? 'active' : ''}`}
         onClick={async (event) => {
           try {
-            const response = await fetch(
-              'https://rma-backend-bo4a.onrender.com/api/customers/me',
-              {
-                credentials: 'include',
-              },
-            );
+            const response = await fetch(`${API_URL}api/customers/me`, {
+              credentials: 'include',
+            });
 
             if (!response.ok) {
               event.preventDefault();

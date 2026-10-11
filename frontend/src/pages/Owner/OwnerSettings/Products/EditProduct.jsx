@@ -11,6 +11,12 @@ import EditProductPrice from './components/EditProduct/EditProductPrice';
 import EditProductAvailability from './components/EditProduct/EditProductAvailability';
 import EditProductActions from './components/EditProduct/EditProductActions';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function EditProduct() {
   const navigate = useNavigate();
   const { productId } = useParams();
@@ -43,14 +49,11 @@ function EditProduct() {
           return;
         }
 
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/owners/products',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const response = await fetch(`${API_URL}api/owners/products`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
 
         const data = await response.json();
 
@@ -134,7 +137,7 @@ function EditProduct() {
        */
       if (!product.isCustom) {
         const response = await fetch(
-          `https://rma-backend-bo4a.onrender.com/api/owners/products/${productId}/price`,
+          `${API_URL}api/owners/products/${productId}/price`,
           {
             method: 'PATCH',
             headers: {
@@ -166,7 +169,7 @@ function EditProduct() {
       }
 
       const response = await fetch(
-        `https://rma-backend-bo4a.onrender.com/api/owners/products/${productId}`,
+        `${API_URL}api/owners/products/${productId}`,
         {
           method: 'PATCH',
           headers: {
@@ -221,7 +224,7 @@ function EditProduct() {
 
     try {
       const response = await fetch(
-        `https://rma-backend-bo4a.onrender.com/api/owners/products/${productId}/availability`,
+        `${API_URL}api/owners/products/${productId}/availability`,
         {
           method: 'PATCH',
           headers: {

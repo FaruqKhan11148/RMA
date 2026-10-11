@@ -21,6 +21,12 @@ import {
 
 import { listenForOwnerNotifications } from '../../../firebase/ownerNotifications';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function OwnerOrders() {
   const navigate = useNavigate();
 
@@ -298,7 +304,7 @@ function OwnerOrders() {
       const ownerToken = localStorage.getItem('rma_owner_token');
 
       const response = await fetch(
-        `https://rma-backend-bo4a.onrender.com/api/orders/${selectedDeliveryOrder.orderId}/delivery-assignment`,
+        `${API_URL}api/orders/${selectedDeliveryOrder.orderId}/delivery-assignment`,
         {
           method: 'POST',
           headers: {

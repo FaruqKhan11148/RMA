@@ -3,6 +3,12 @@ import './SavedAddresses.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function SavedAddresses() {
   const navigate = useNavigate();
 
@@ -11,7 +17,7 @@ function SavedAddresses() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    fetch('https://rma-backend-bo4a.onrender.com/api/customers/addresses', {
+    fetch(`${API_URL}api/customers/addresses`, {
       credentials: 'include',
     })
       .then(async (response) => {
@@ -44,7 +50,7 @@ function SavedAddresses() {
 
     try {
       const response = await fetch(
-        `https://rma-backend-bo4a.onrender.com/api/customers/addresses/${addressId}`,
+        `${API_URL}api/customers/addresses/${addressId}`,
         {
           method: 'DELETE',
           credentials: 'include',
@@ -67,7 +73,7 @@ function SavedAddresses() {
   const handleSetDefault = async (addressId) => {
     try {
       const response = await fetch(
-        `https://rma-backend-bo4a.onrender.com/api/customers/addresses/${addressId}/default`,
+        `${API_URL}api/customers/addresses/${addressId}/default`,
         {
           method: 'PUT',
           credentials: 'include',

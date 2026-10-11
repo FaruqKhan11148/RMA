@@ -147,6 +147,12 @@ import Privacy from './pages/Privacy/Privacy';
 import Terms from './pages/Terms/Terms';
 import ShopPromotion from './pages/Owner/OwnerSettings/ShopPromotion/ShopPromotion';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function AppLayout() {
   const location = useLocation();
   const isRMAChatRoute = location.pathname === '/rma-chat';
@@ -177,12 +183,9 @@ function AppLayout() {
   useEffect(() => {
     const checkCustomerLogin = async () => {
       try {
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/customers/me',
-          {
-            credentials: 'include',
-          },
-        );
+        const response = await fetch(`${API_URL}/api/customers/me`, {
+          credentials: 'include',
+        });
 
         if (response.ok) {
           setCustomerLoggedIn(true);

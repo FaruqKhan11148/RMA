@@ -2,7 +2,11 @@ import { getToken, onMessage } from 'firebase/messaging';
 import { messagingPromise } from './firebase';
 
 const VAPID_KEY = process.env.REACT_APP_FIREBASE_VAPID_KEY;
-const API_URL = 'https://rma-backend-bo4a.onrender.com/';
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
 
 export const requestCustomerNotificationPermission = async () => {
   try {

@@ -32,9 +32,20 @@ function requirePositiveAmount(amount, fieldName) {
   return value;
 }
 
+function normalizeProvider(provider = 'PAYU') {
+  const normalized = String(provider).trim().toUpperCase();
+
+  if (!['PAYU', 'CASHFREE'].includes(normalized)) {
+    throw new Error(`Unsupported payment provider: ${normalized}`);
+  }
+
+  return normalized;
+}
+
 async function recordCustomerPayment({
   orderId,
   payuAccountId,
+  gatewayAccountId,
   amount,
   metadata = {},
 }) {
@@ -44,6 +55,11 @@ async function recordCustomerPayment({
 
   const normalizedOrderId = String(orderId).trim();
   const paymentAmount = requirePositiveAmount(amount, 'amount');
+  const accountId = gatewayAccountId || payuAccountId;
+
+  if (!accountId) {
+    throw new Error('gatewayAccountId is required');
+  }
 
   const TestBankTransaction = require('../../models/TestBankTransaction');
 
@@ -54,24 +70,32 @@ async function recordCustomerPayment({
   });
 
   if (existingTransaction) {
-    if (existingTransaction.status === 'COMPLETED') {
-      console.log(
-        `TestBank customer payment already recorded for ${normalizedOrderId}: ${existingTransaction.transactionId}`,
+    if (existingTransaction.status !== 'COMPLETED') {
+      throw new Error(
+        `Existing customer payment transaction for ${normalizedOrderId} is not completed`,
       );
-
-      return {
-        alreadyProcessed: true,
-        transaction: existingTransaction,
-      };
     }
 
-    throw new Error(
-      `Existing customer payment transaction for ${normalizedOrderId} is not completed`,
+    const existingAmount = roundAmount(existingTransaction.amount);
+
+    if (Number.isFinite(existingAmount) && existingAmount !== paymentAmount) {
+      throw new Error(
+        `Existing customer payment amount does not match for ${normalizedOrderId}`,
+      );
+    }
+
+    console.log(
+      `TestBank customer payment already recorded for ${normalizedOrderId}: ${existingTransaction.transactionId}`,
     );
+
+    return {
+      alreadyProcessed: true,
+      transaction: existingTransaction,
+    };
   }
 
   const result = await receiveCustomerPayment({
-    payuAccountId,
+    payuAccountId: accountId,
     amount: paymentAmount,
     referenceId: normalizedOrderId,
     description: `Customer payment for ${normalizedOrderId}`,
@@ -93,7 +117,9 @@ async function recordCustomerPayment({
 
 async function runTestSettlement({
   orderId,
+  paymentProvider = 'PAYU',
   payuAccountId,
+  gatewayAccountId,
   ownerAccountId,
   rmaAccountId,
   dpAccountId,
@@ -110,35 +136,55 @@ async function runTestSettlement({
   }
 
   const normalizedOrderId = String(orderId).trim();
+  const provider = normalizeProvider(paymentProvider);
+  const accountId = gatewayAccountId || payuAccountId;
+
+  if (!accountId || !ownerAccountId || !rmaAccountId) {
+    throw new Error('Gateway, owner, and RMA account IDs are required');
+  }
 
   const productAmount = requirePositiveAmount(
     productSubtotal,
     'productSubtotal',
   );
 
-  const deliveryAmount = validateAmount(deliveryCharge, 'deliveryCharge');
+  const deliveryAmount = validateAmount(deliveryCharge ?? 0, 'deliveryCharge');
 
-  const feeAmount = requirePositiveAmount(payuFee, 'payuFee');
+  const feeAmount = validateAmount(payuFee ?? 0, 'payuFee');
+  const gstAmount = validateAmount(payuGst ?? 0, 'payuGst');
 
-  const gstAmount = validateAmount(payuGst, 'payuGst');
+  let totalGatewayCharges;
 
-  const calculatedPayuCharges = roundAmount(feeAmount + gstAmount);
+  if (provider === 'PAYU') {
+    requirePositiveAmount(feeAmount, 'payuFee');
 
-  const totalPayuCharges =
-    payuCharges === undefined || payuCharges === null
-      ? calculatedPayuCharges
-      : requirePositiveAmount(payuCharges, 'payuCharges');
+    totalGatewayCharges =
+      payuCharges === undefined || payuCharges === null
+        ? roundAmount(feeAmount + gstAmount)
+        : validateAmount(payuCharges, 'payuCharges');
 
-  if (totalPayuCharges !== calculatedPayuCharges) {
-    throw new Error(
-      `PayU charges mismatch. Expected ₹${calculatedPayuCharges.toFixed(
-        2,
-      )}, received ₹${totalPayuCharges.toFixed(2)}`,
-    );
+    if (totalGatewayCharges <= 0) {
+      throw new Error('payuCharges must be greater than zero for PayU');
+    }
+
+    if (totalGatewayCharges !== roundAmount(feeAmount + gstAmount)) {
+      throw new Error('PayU charges must equal PayU fee plus GST');
+    }
+  } else {
+    // Cashfree must not incur a simulated PayU fee liability.
+    if (feeAmount !== 0 || gstAmount !== 0) {
+      throw new Error('Cashfree settlement cannot include PayU fees or GST');
+    }
+
+    if (payuCharges !== undefined && roundAmount(payuCharges) !== 0) {
+      throw new Error('Cashfree settlement cannot include PayU charges');
+    }
+
+    totalGatewayCharges = 0;
   }
 
   const calculatedCustomerPayment = roundAmount(
-    productAmount + deliveryAmount + totalPayuCharges,
+    productAmount + deliveryAmount + totalGatewayCharges,
   );
 
   const customerPayment =
@@ -155,22 +201,18 @@ async function runTestSettlement({
   }
 
   const ownerAmount = roundAmount(productAmount * 0.975);
-
   const rmaFee = roundAmount(productAmount * 0.025);
-
   const dpAmount = deliveryAmount;
 
   const splitTotal = roundAmount(
-    ownerAmount + rmaFee + dpAmount + totalPayuCharges,
+    ownerAmount + rmaFee + dpAmount + totalGatewayCharges,
   );
 
   if (splitTotal !== customerPayment) {
     throw new Error(
       `Settlement split mismatch. Customer payment: ₹${customerPayment.toFixed(
         2,
-      )}, split total: ₹${splitTotal.toFixed(
-        2,
-      )} (Owner + RMA + DP + PayU charges)`,
+      )}, split total: ₹${splitTotal.toFixed(2)}`,
     );
   }
 
@@ -186,14 +228,15 @@ async function runTestSettlement({
     settlement = await TestBankSettlement.create({
       orderId: normalizedOrderId,
 
-      payuAccountId,
+      // Legacy schema field: for Cashfree this stores the
+      // Cashfree gateway account ID, not a PayU account ID.
+      payuAccountId: accountId,
       ownerAccountId,
       rmaAccountId,
-      dpAccountId,
+      dpAccountId: dpAccountId || undefined,
 
       productSubtotal: productAmount,
       deliveryCharge: deliveryAmount,
-
       customerPayment,
 
       ownerAmount,
@@ -201,13 +244,12 @@ async function runTestSettlement({
       dpAmount,
 
       payuFee: feeAmount,
-
       payuGst: gstAmount,
-
-      payuCharges: totalPayuCharges,
+      payuCharges: totalGatewayCharges,
 
       metadata: {
         ...metadata,
+        paymentProvider: provider,
         customerPayableAmount: customerPayment,
       },
 
@@ -231,17 +273,14 @@ async function runTestSettlement({
 
       dpSettlement: {
         amount: dpAmount,
-
         hold: {
           status: 'PENDING',
           transactionId: null,
         },
-
         release: {
           status: 'PENDING',
           transactionId: null,
         },
-
         withdrawal: {
           status: 'PENDING',
           transactionId: null,
@@ -250,12 +289,11 @@ async function runTestSettlement({
 
       payuSettlement: {
         liability: {
-          status: 'PENDING',
+          status: provider === 'PAYU' ? 'PENDING' : 'COMPLETED',
           transactionId: null,
         },
-
         deduction: {
-          status: 'PENDING',
+          status: provider === 'PAYU' ? 'PENDING' : 'COMPLETED',
           transactionId: null,
           processedAt: null,
         },
@@ -264,44 +302,42 @@ async function runTestSettlement({
       settlementStatus: 'PENDING',
     });
   } else {
-    // ========================================================
-    // EXISTING SETTLEMENT VALIDATION
-    // ========================================================
-
     if (settlement.settlementStatus === 'COMPLETED') {
       throw new Error(
         `Test settlement for ${normalizedOrderId} is already completed`,
       );
     }
 
+    const existingProvider = normalizeProvider(
+      settlement.metadata?.paymentProvider || 'PAYU',
+    );
+
     if (
-      String(settlement.payuAccountId) !== String(payuAccountId) ||
+      existingProvider !== provider ||
+      String(settlement.payuAccountId) !== String(accountId) ||
       String(settlement.ownerAccountId) !== String(ownerAccountId) ||
       String(settlement.rmaAccountId) !== String(rmaAccountId) ||
-      String(settlement.dpAccountId) !== String(dpAccountId)
+      String(settlement.dpAccountId || '') !== String(dpAccountId || '')
     ) {
       throw new Error(
-        'Existing settlement account configuration does not match',
+        'Existing settlement provider or account configuration does not match',
       );
     }
 
-    const existingPayuFee = roundAmount(settlement.payuFee);
+    const matches = [
+      [settlement.customerPayment, customerPayment],
+      [settlement.ownerAmount, ownerAmount],
+      [settlement.rmaFee, rmaFee],
+      [settlement.dpAmount, dpAmount],
+      [settlement.payuFee, feeAmount],
+      [settlement.payuGst, gstAmount],
+      [settlement.payuCharges, totalGatewayCharges],
+    ].every(
+      ([existing, expected]) =>
+        roundAmount(existing ?? 0) === roundAmount(expected),
+    );
 
-    const existingPayuGst = roundAmount(settlement.payuGst);
-
-    const existingPayuCharges = roundAmount(settlement.payuCharges);
-
-    const existingCustomerPayment = roundAmount(settlement.customerPayment);
-
-    if (
-      existingCustomerPayment !== customerPayment ||
-      settlement.ownerAmount !== ownerAmount ||
-      settlement.rmaFee !== rmaFee ||
-      settlement.dpAmount !== dpAmount ||
-      existingPayuFee !== feeAmount ||
-      existingPayuGst !== gstAmount ||
-      existingPayuCharges !== totalPayuCharges
-    ) {
+    if (!matches) {
       throw new Error('Existing settlement amounts do not match');
     }
   }
@@ -315,34 +351,28 @@ async function runTestSettlement({
   await settlement.save();
 
   try {
-    // ========================================================
-    // STEP 1 — RECEIVE CUSTOMER PAYMENT
-    // ========================================================
-
+    // STEP 1 — CUSTOMER PAYMENT RECEIPT
     if (settlement.customerPaymentSettlement.status === 'PENDING') {
       const result = await recordCustomerPayment({
         orderId: settlement.orderId,
-        payuAccountId: settlement.payuAccountId,
+        gatewayAccountId: settlement.payuAccountId,
         amount: settlement.customerPayment,
         metadata: {
           orderId: settlement.orderId,
+          paymentProvider: provider,
           customerPayableAmount: customerPayment,
           ...settlement.metadata,
         },
       });
 
       settlement.customerPaymentSettlement.status = 'COMPLETED';
-
       settlement.customerPaymentSettlement.transactionId =
         result.transaction.transactionId;
 
       await settlement.save();
     }
 
-    // ========================================================
     // STEP 2 — OWNER SETTLEMENT
-    // ========================================================
-
     if (settlement.ownerSettlement.status === 'PENDING') {
       const result = await settleOwnerAmount({
         payuAccountId: settlement.payuAccountId,
@@ -352,22 +382,19 @@ async function runTestSettlement({
         description: `Owner settlement for ${settlement.orderId}`,
         metadata: {
           orderId: settlement.orderId,
+          paymentProvider: provider,
           ...settlement.metadata,
         },
       });
 
       settlement.ownerSettlement.status = 'COMPLETED';
-
       settlement.ownerSettlement.transactionId =
         result.transaction.transactionId;
 
       await settlement.save();
     }
 
-    // ========================================================
-    // STEP 3 — RMA FEE
-    // ========================================================
-
+    // STEP 3 — RMA PLATFORM FEE
     if (settlement.rmaFeeSettlement.status === 'PENDING') {
       const result = await creditRmaFee({
         payuAccountId: settlement.payuAccountId,
@@ -377,26 +404,29 @@ async function runTestSettlement({
         description: `RMA platform fee for ${settlement.orderId}`,
         metadata: {
           orderId: settlement.orderId,
+          paymentProvider: provider,
           ...settlement.metadata,
         },
       });
 
       settlement.rmaFeeSettlement.status = 'COMPLETED';
-
       settlement.rmaFeeSettlement.transactionId =
         result.transaction.transactionId;
 
       await settlement.save();
     }
 
-    // ========================================================
-    // STEP 4 — HOLD DP EARNING
-    // ========================================================
-
+    // STEP 4 — HOLD DELIVERY PARTNER EARNING
     if (
       settlement.dpSettlement.hold.status === 'PENDING' &&
       settlement.dpSettlement.amount > 0
     ) {
+      if (!settlement.dpAccountId) {
+        throw new Error(
+          `Delivery partner account is required for order ${settlement.orderId}`,
+        );
+      }
+
       const result = await holdDeliveryEarning({
         payuAccountId: settlement.payuAccountId,
         dpAccountId: settlement.dpAccountId,
@@ -405,51 +435,44 @@ async function runTestSettlement({
         description: `Hold delivery earning for ${settlement.orderId}`,
         metadata: {
           orderId: settlement.orderId,
+          paymentProvider: provider,
           ...settlement.metadata,
         },
       });
 
       settlement.dpSettlement.hold.status = 'COMPLETED';
-
       settlement.dpSettlement.hold.transactionId =
         result.transaction.transactionId;
 
       await settlement.save();
-    }
-
-    // ========================================================
-    // STEP 5 — PAYU FEE LIABILITY
-    // ========================================================
-
-    if (settlement.payuSettlement.liability.status === 'PENDING') {
-      const result = await recordPayUFeeLiability({
-        rmaAccountId: settlement.rmaAccountId,
-
-        // RMA owes PayU the COMPLETE gateway charge:
-        // PayU fee + GST.
-        amount: totalPayuCharges,
-
-        referenceId: settlement.orderId,
-
-        description: `PayU fee liability for ${settlement.orderId}`,
-
-        metadata: {
-          orderId: settlement.orderId,
-          ...settlement.metadata,
-        },
-      });
-
-      settlement.payuSettlement.liability.status = 'COMPLETED';
-
-      settlement.payuSettlement.liability.transactionId =
-        result.transaction.transactionId;
-
+    } else if (settlement.dpSettlement.hold.status === 'PENDING') {
+      // No delivery earning to hold for a zero-charge order.
+      settlement.dpSettlement.hold.status = 'COMPLETED';
       await settlement.save();
     }
 
-    // ========================================================
-    // SETTLEMENT CORE COMPLETED
-    // ========================================================
+    // STEP 5 — PAYU FEE LIABILITY (PAYU ONLY)
+    if (provider === 'PAYU') {
+      if (settlement.payuSettlement.liability.status === 'PENDING') {
+        const result = await recordPayUFeeLiability({
+          rmaAccountId: settlement.rmaAccountId,
+          amount: totalGatewayCharges,
+          referenceId: settlement.orderId,
+          description: `PayU fee liability for ${settlement.orderId}`,
+          metadata: {
+            orderId: settlement.orderId,
+            paymentProvider: provider,
+            ...settlement.metadata,
+          },
+        });
+
+        settlement.payuSettlement.liability.status = 'COMPLETED';
+        settlement.payuSettlement.liability.transactionId =
+          result.transaction.transactionId;
+
+        await settlement.save();
+      }
+    }
 
     settlement.settlementStatus = 'COMPLETED';
     settlement.completedAt = new Date();
@@ -461,7 +484,6 @@ async function runTestSettlement({
     console.error(`Test settlement failed for ${normalizedOrderId}:`, error);
 
     settlement.settlementStatus = 'FAILED';
-
     await settlement.save();
 
     throw error;

@@ -13,6 +13,12 @@ import ShopCategories from './components/ShopCategories';
 import ShopHero from './components/ShopHero';
 import ShopProducts from './components/ShopProducts';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function Shop() {
   const { shopId } = useParams();
   const navigate = useNavigate();
@@ -34,7 +40,7 @@ function Shop() {
         setError('');
 
         const response = await fetch(
-          `https://rma-backend-bo4a.onrender.com/api/owners/shop/${shopId}`,
+          `${API_URL}api/owners/shop/${shopId}`,
         );
 
         const data = await response.json();

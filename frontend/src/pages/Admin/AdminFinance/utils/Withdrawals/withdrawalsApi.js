@@ -1,4 +1,8 @@
-const API_BASE_URL = 'https://rma-backend-bo4a.onrender.com/';
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
 
 export async function fetchFinanceWithdrawals({
   status = '',
@@ -15,7 +19,7 @@ export async function fetchFinanceWithdrawals({
   params.set('limit', limit);
 
   const response = await fetch(
-    `${API_BASE_URL}api/admin/finance/withdrawals?${params.toString()}`,
+    `${API_URL}api/admin/finance/withdrawals?${params.toString()}`,
     {
       method: 'GET',
       credentials: 'include',
@@ -33,7 +37,7 @@ export async function fetchFinanceWithdrawals({
 
 export async function completeFinanceWithdrawal(transactionId) {
   const response = await fetch(
-    `${API_BASE_URL}api/admin/finance/withdrawals/${transactionId}/complete`,
+    `${API_URL}api/admin/finance/withdrawals/${transactionId}/complete`,
     {
       method: 'PATCH',
       credentials: 'include',
@@ -54,7 +58,7 @@ export async function completeFinanceWithdrawal(transactionId) {
 
 export async function rejectFinanceWithdrawal(transactionId) {
   const response = await fetch(
-    `${API_BASE_URL}api/admin/finance/withdrawals/${transactionId}/reject`,
+    `${API_URL}api/admin/finance/withdrawals/${transactionId}/reject`,
     {
       method: 'PATCH',
       credentials: 'include',

@@ -1,7 +1,11 @@
-const API_BASE_URL = 'https://rma-backend-bo4a.onrender.com/';
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
 
 export async function fetchRmaAccount() {
-  const response = await fetch(`${API_BASE_URL}api/admin/finance/rma-account`, {
+  const response = await fetch(`${API_URL}api/admin/finance/rma-account`, {
     method: 'GET',
     credentials: 'include',
   });
@@ -21,7 +25,7 @@ export async function fetchRmaAccount() {
 
 export async function setupRmaAccount() {
   const response = await fetch(
-    `${API_BASE_URL}api/admin/finance/rma-account/setup`,
+    `${API_URL}api/admin/finance/rma-account/setup`,
     {
       method: 'POST',
       credentials: 'include',

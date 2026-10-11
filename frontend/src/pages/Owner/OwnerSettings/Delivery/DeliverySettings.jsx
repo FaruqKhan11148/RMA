@@ -14,6 +14,12 @@ import OpeningTimeField from './components/DeliverySettings/OpeningTimeField';
 import ClosingTimeField from './components/DeliverySettings/ClosingTimeField';
 import ShopStatusField from './components/DeliverySettings/ShopStatusField';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function DeliverySettings() {
   const navigate = useNavigate();
 
@@ -44,14 +50,11 @@ function DeliverySettings() {
 
     const fetchOwner = async () => {
       try {
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/owners/me',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const response = await fetch(`${API_URL}api/owners/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
 
         const data = await response.json();
 
@@ -154,7 +157,7 @@ function DeliverySettings() {
       setSaving(true);
 
       const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/owners/settings/delivery-settings',
+        `${API_URL}api/owners/settings/delivery-settings`,
         {
           method: 'PATCH',
           headers: {

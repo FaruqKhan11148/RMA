@@ -1,10 +1,13 @@
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 export async function fetchCustomers() {
-  const response = await fetch(
-    'https://rma-backend-bo4a.onrender.com/api/admin/customers',
-    {
-      credentials: 'include',
-    },
-  );
+  const response = await fetch(`${API_URL}api/admin/customers`, {
+    credentials: 'include',
+  });
 
   const data = await response.json();
 
@@ -21,7 +24,7 @@ export async function fetchCustomers() {
 
 export async function fetchCustomerDetails(phone) {
   const response = await fetch(
-    `https://rma-backend-bo4a.onrender.com/api/admin/customers/${encodeURIComponent(phone)}`,
+    `${API_URL}api/admin/customers/${encodeURIComponent(phone)}`,
     {
       credentials: 'include',
     },

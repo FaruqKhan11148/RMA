@@ -6,6 +6,12 @@ import {
   useEffect,
 } from 'react';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 const OrderContext = createContext();
 
 export function OrderProvider({ children }) {
@@ -36,7 +42,7 @@ export function OrderProvider({ children }) {
 
       console.log('[OrderContext] Guest ID:', guestId);
 
-      const url = `https://rma-backend-bo4a.onrender.com/api/orders/guest/${guestId}`;
+      const url = `${API_URL}api/orders/guest/${guestId}`;
 
       console.log('[OrderContext] GET guest orders URL:', url);
 
@@ -77,7 +83,7 @@ export function OrderProvider({ children }) {
       console.log('[OrderContext] Guest ID:', guestId);
       console.log('[OrderContext] Order data:', orderData);
 
-      const url = 'https://rma-backend-bo4a.onrender.com/api/orders';
+      const url = `${API_URL}api/orders`;
 
       console.log('[OrderContext] POST URL:', url);
 
@@ -117,18 +123,15 @@ export function OrderProvider({ children }) {
   // UPDATE ORDER STATUS IN BACKEND
   const updateOrderStatus = async (orderId, status) => {
     try {
-      const response = await fetch(
-        `https://rma-backend-bo4a.onrender.com/api/orders/${orderId}/status`,
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            status,
-          }),
+      const response = await fetch(`${API_URL}api/orders/${orderId}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify({
+          status,
+        }),
+      });
 
       const data = await response.json();
 

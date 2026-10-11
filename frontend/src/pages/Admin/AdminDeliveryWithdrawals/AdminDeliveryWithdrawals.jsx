@@ -3,6 +3,12 @@ import './AdminDeliveryWithdrawals.css';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function AdminDeliveryWithdrawals() {
   const navigate = useNavigate();
 
@@ -62,7 +68,7 @@ function AdminDeliveryWithdrawals() {
       setError('');
 
       const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/admin/orders/delivery-withdrawals',
+        `${API_URL}api/admin/orders/delivery-withdrawals`,
         {
           method: 'GET',
           credentials: 'include',
@@ -95,7 +101,7 @@ function AdminDeliveryWithdrawals() {
       setHistoryLoading(true);
 
       const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/admin/orders/delivery-withdrawals/history',
+        `${API_URL}api/admin/orders/delivery-withdrawals/history`,
         {
           method: 'GET',
           credentials: 'include',
@@ -142,7 +148,7 @@ function AdminDeliveryWithdrawals() {
       setError('');
 
       const response = await fetch(
-        `https://rma-backend-bo4a.onrender.com/api/admin/orders/delivery-withdrawals/${withdrawalId}/complete`,
+        `${API_URL}api/admin/orders/delivery-withdrawals/${withdrawalId}/complete`,
         {
           method: 'PATCH',
           credentials: 'include',
@@ -184,7 +190,7 @@ function AdminDeliveryWithdrawals() {
       setError('');
 
       const response = await fetch(
-        `https://rma-backend-bo4a.onrender.com/api/admin/orders/delivery-withdrawals/${withdrawalId}/reject`,
+        `${API_URL}api/admin/orders/delivery-withdrawals/${withdrawalId}/reject`,
         {
           method: 'PATCH',
           credentials: 'include',

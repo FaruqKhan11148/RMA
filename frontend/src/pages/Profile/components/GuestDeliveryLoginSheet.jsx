@@ -1,3 +1,9 @@
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function GuestDeliveryLoginSheet({
   isOpen,
   customer,
@@ -12,13 +18,10 @@ function GuestDeliveryLoginSheet({
   const handleRmaDeliveryLogin = async () => {
     if (customer) {
       try {
-        await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/customers/logout',
-          {
-            method: 'POST',
-            credentials: 'include',
-          },
-        );
+        await fetch(`${API_URL}api/customers/logout`, {
+          method: 'POST',
+          credentials: 'include',
+        });
       } catch (error) {
         console.error('Customer logout failed:', error);
       }
@@ -33,13 +36,10 @@ function GuestDeliveryLoginSheet({
   const handleShopDeliveryLogin = async () => {
     if (customer) {
       try {
-        await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/customers/logout',
-          {
-            method: 'POST',
-            credentials: 'include',
-          },
-        );
+        await fetch(`${API_URL}api/customers/logout`, {
+          method: 'POST',
+          credentials: 'include',
+        });
       } catch (error) {
         console.error('Customer logout failed:', error);
       }

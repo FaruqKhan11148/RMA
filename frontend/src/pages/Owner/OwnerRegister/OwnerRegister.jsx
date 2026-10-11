@@ -3,6 +3,12 @@ import './OwnerRegister.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function OwnerRegister() {
   const navigate = useNavigate();
 
@@ -75,28 +81,25 @@ function OwnerRegister() {
     setLoading(true);
 
     try {
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/owners/register',
-        {
-          method: 'POST',
+      const response = await fetch(`${API_URL}api/owners/register`, {
+        method: 'POST',
 
-          headers: {
-            'Content-Type': 'application/json',
-          },
-
-          body: JSON.stringify({
-            ownerName,
-            shopName,
-            phone,
-            password,
-            address,
-            description,
-            delivery,
-            pickup,
-            products,
-          }),
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+
+        body: JSON.stringify({
+          ownerName,
+          shopName,
+          phone,
+          password,
+          address,
+          description,
+          delivery,
+          pickup,
+          products,
+        }),
+      });
 
       const data = await response.json();
 

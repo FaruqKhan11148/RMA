@@ -6,6 +6,12 @@ import { useNavigate } from 'react-router-dom';
 import ShopNameHeader from './components/ShopName/ShopNameHeader';
 import ShopNameForm from './components/ShopName/ShopNameForm';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function ShopName() {
   const navigate = useNavigate();
 
@@ -26,14 +32,11 @@ function ShopName() {
           return;
         }
 
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/owners/me',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const response = await fetch(`${API_URL}api/owners/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
 
         const data = await response.json();
 
@@ -82,19 +85,16 @@ function ShopName() {
         return;
       }
 
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/owners/settings/shop-name',
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            shopName: trimmedShopName,
-          }),
+      const response = await fetch(`${API_URL}api/owners/settings/shop-name`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
-      );
+        body: JSON.stringify({
+          shopName: trimmedShopName,
+        }),
+      });
 
       const data = await response.json();
 

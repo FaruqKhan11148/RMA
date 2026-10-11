@@ -11,6 +11,12 @@ import PaymentDetailsModal from './components/PaymentDetailsModal';
 
 import { filterPayments } from './utils/paymentFilters';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function AdminPayments() {
   const navigate = useNavigate();
 
@@ -35,13 +41,10 @@ function AdminPayments() {
         setLoading(true);
         setError('');
 
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/admin/orders',
-          {
-            method: 'GET',
-            credentials: 'include',
-          },
-        );
+        const response = await fetch(`${API_URL}api/admin/orders`, {
+          method: 'GET',
+          credentials: 'include',
+        });
 
         if (response.status === 401) {
           navigate('/admin/login');

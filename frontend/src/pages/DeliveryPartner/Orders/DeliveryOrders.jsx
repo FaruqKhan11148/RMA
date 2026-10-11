@@ -30,6 +30,12 @@ import {
   listenForDeliveryNotifications,
 } from '../../../firebase/deliveryNotifications';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function DeliveryOrders() {
   const [shopId, setShopId] = useState('');
   const [phone, setPhone] = useState('');
@@ -89,20 +95,17 @@ function DeliveryOrders() {
         });
 
         try {
-          await fetch(
-            'https://rma-backend-bo4a.onrender.com/api/delivery/location',
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify({
-                latitude,
-                longitude,
-              }),
+          await fetch(`${API_URL}api/delivery/location`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
             },
-          );
+            body: JSON.stringify({
+              latitude,
+              longitude,
+            }),
+          });
         } catch (locationError) {
           console.error('Delivery location update failed:', locationError);
         }

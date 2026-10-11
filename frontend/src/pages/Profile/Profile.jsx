@@ -12,6 +12,12 @@ import GuestProfile from './components/GuestProfile';
 import LoginSheet from './components/LoginSheet';
 import GuestDeliveryLoginSheet from './components/GuestDeliveryLoginSheet';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function Profile({ onRoleChange }) {
   const navigate = useNavigate();
   const { t } = useLanguage();
@@ -30,13 +36,10 @@ function Profile({ onRoleChange }) {
   const handleDeliveryRmaLogin = async () => {
     if (customer) {
       try {
-        await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/customers/logout',
-          {
-            method: 'POST',
-            credentials: 'include',
-          },
-        );
+        await fetch(`${API_URL}api/customers/logout`, {
+          method: 'POST',
+          credentials: 'include',
+        });
       } catch (error) {
         console.error('Customer logout failed:', error);
       }
@@ -57,13 +60,10 @@ function Profile({ onRoleChange }) {
   const handleShopDeliveryLogin = async () => {
     if (customer) {
       try {
-        await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/customers/logout',
-          {
-            method: 'POST',
-            credentials: 'include',
-          },
-        );
+        await fetch(`${API_URL}api/customers/logout`, {
+          method: 'POST',
+          credentials: 'include',
+        });
       } catch (error) {
         console.error('Customer logout failed:', error);
       }
@@ -84,12 +84,9 @@ function Profile({ onRoleChange }) {
   useEffect(() => {
     const fetchCustomer = async () => {
       try {
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/customers/me',
-          {
-            credentials: 'include',
-          },
-        );
+        const response = await fetch(`${API_URL}api/customers/me`, {
+          credentials: 'include',
+        });
 
         if (!response.ok) {
           setCustomer(null);
@@ -152,13 +149,10 @@ function Profile({ onRoleChange }) {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/customers/logout',
-        {
-          method: 'POST',
-          credentials: 'include',
-        },
-      );
+      const response = await fetch(`${API_URL}api/customers/logout`, {
+        method: 'POST',
+        credentials: 'include',
+      });
 
       if (!response.ok) {
         throw new Error('Logout failed');
@@ -184,43 +178,34 @@ function Profile({ onRoleChange }) {
 
       // CUSTOMER → another role
       if (customer) {
-        response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/customers/logout',
-          {
-            method: 'POST',
-            credentials: 'include',
-          },
-        );
+        response = await fetch(`${API_URL}api/customers/logout`, {
+          method: 'POST',
+          credentials: 'include',
+        });
       }
 
       // OWNER → another role
       if (owner) {
         const token = localStorage.getItem('rma_owner_token');
 
-        response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/owners/logout',
-          {
-            method: 'POST',
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        response = await fetch(`${API_URL}api/owners/logout`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
       }
 
       // DELIVERY PARTNER → another role
       if (deliveryPerson) {
         const token = sessionStorage.getItem('delivery_token');
 
-        response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/delivery/logout',
-          {
-            method: 'POST',
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        response = await fetch(`${API_URL}api/delivery/logout`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
       }
 
       if (!response || !response.ok) {
@@ -271,15 +256,12 @@ function Profile({ onRoleChange }) {
     try {
       const token = localStorage.getItem('rma_owner_token');
 
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/owners/logout',
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      const response = await fetch(`${API_URL}api/owners/logout`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      );
+      });
 
       if (!response.ok) {
         throw new Error('Owner logout failed');
@@ -300,15 +282,12 @@ function Profile({ onRoleChange }) {
     try {
       const token = sessionStorage.getItem('delivery_token');
 
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/delivery/logout',
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      const response = await fetch(`${API_URL}api/delivery/logout`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      );
+      });
 
       if (!response.ok) {
         throw new Error('Delivery partner logout failed');

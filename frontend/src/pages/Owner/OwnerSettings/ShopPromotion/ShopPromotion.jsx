@@ -11,6 +11,12 @@ import ShopQRCode from './components/ShopQRCode';
 import ShopPromotionActions from './components/ShopPromotionActions';
 import ShopPromotionNote from './components/ShopPromotionNote';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function ShopPromotion() {
   const navigate = useNavigate();
   const qrRef = useRef(null);
@@ -29,14 +35,11 @@ function ShopPromotion() {
           return;
         }
 
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/owners/me',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const response = await fetch(`${API_URL}api/owners/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
 
         const data = await response.json();
 

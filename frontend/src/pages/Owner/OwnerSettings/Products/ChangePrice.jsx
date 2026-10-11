@@ -9,6 +9,12 @@ import ChangePriceProduct from './components/ChangePrice/ChangePriceProduct';
 import ChangePriceField from './components/ChangePrice/ChangePriceField';
 import ChangePriceActions from './components/ChangePrice/ChangePriceActions';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function ChangePrice() {
   const navigate = useNavigate();
   const { productId } = useParams();
@@ -35,14 +41,11 @@ function ChangePrice() {
           return;
         }
 
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/owners/products',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const response = await fetch(`${API_URL}api/owners/products`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
 
         const data = await response.json();
 
@@ -90,7 +93,7 @@ function ChangePrice() {
       setSaving(true);
 
       const response = await fetch(
-        `https://rma-backend-bo4a.onrender.com/api/owners/products/${productId}/price`,
+        `${API_URL}api/owners/products/${productId}/price`,
         {
           method: 'PATCH',
           headers: {

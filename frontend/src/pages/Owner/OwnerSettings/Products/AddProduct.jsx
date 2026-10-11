@@ -12,6 +12,12 @@ import CatalogueProductForm from './components/AddProduct/CatalogueProductForm';
 import CustomProductForm from './components/AddProduct/CustomProductForm';
 import AddProductActions from './components/AddProduct/AddProductActions';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function AddProduct() {
   const navigate = useNavigate();
 
@@ -50,14 +56,11 @@ function AddProduct() {
       setLoadingProducts(true);
       setError('');
 
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/owners/products',
-        {
-          headers: {
-            Authorization: `Bearer ${ownerToken}`,
-          },
+      const response = await fetch(`${API_URL}api/owners/products`, {
+        headers: {
+          Authorization: `Bearer ${ownerToken}`,
         },
-      );
+      });
 
       const data = await response.json();
 
@@ -155,31 +158,28 @@ function AddProduct() {
       setError('');
       setSuccessMessage('');
 
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/owners/products',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${ownerToken}`,
-          },
-          body: JSON.stringify({
-            catalogueProductId: selectedCatalogueProduct.productId,
-
-            name: selectedCatalogueProduct.name,
-
-            category: selectedCategory.categoryName,
-
-            price: productPrice,
-
-            unit: selectedCatalogueProduct.unit,
-
-            imageUrl: selectedCatalogueProduct.imageUrl,
-
-            isCustom: false,
-          }),
+      const response = await fetch(`${API_URL}api/owners/products`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${ownerToken}`,
         },
-      );
+        body: JSON.stringify({
+          catalogueProductId: selectedCatalogueProduct.productId,
+
+          name: selectedCatalogueProduct.name,
+
+          category: selectedCategory.categoryName,
+
+          price: productPrice,
+
+          unit: selectedCatalogueProduct.unit,
+
+          imageUrl: selectedCatalogueProduct.imageUrl,
+
+          isCustom: false,
+        }),
+      });
 
       const data = await response.json();
 
@@ -230,25 +230,22 @@ function AddProduct() {
       setError('');
       setSuccessMessage('');
 
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/owners/products',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${ownerToken}`,
-          },
-          body: JSON.stringify({
-            catalogueProductId: null,
-            name,
-            category,
-            price: productPrice,
-            unit,
-            imageUrl: customProductImage.trim(),
-            isCustom: true,
-          }),
+      const response = await fetch(`${API_URL}api/owners/products`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${ownerToken}`,
         },
-      );
+        body: JSON.stringify({
+          catalogueProductId: null,
+          name,
+          category,
+          price: productPrice,
+          unit,
+          imageUrl: customProductImage.trim(),
+          isCustom: true,
+        }),
+      });
 
       const data = await response.json();
 

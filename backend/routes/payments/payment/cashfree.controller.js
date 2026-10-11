@@ -2,9 +2,11 @@ const crypto = require('crypto');
 const Order = require('../../../models/Order');
 const { cashfree } = require('../helpers/cashfree.helper');
 
+const CASHFREE_API_VERSION = '2023-08-01';
+
 const FRONTEND_URL = (
   process.env.FRONTEND_URL || 'http://localhost:3000'
-).replace(/\/$/, '');
+).replace(/\/+$/, '');
 
 async function createCashfreePayment(req, res) {
   try {
@@ -13,6 +15,12 @@ async function createCashfreePayment(req, res) {
     if (!orderId || typeof orderId !== 'string') {
       return res.status(400).json({
         message: 'A valid RMA orderId is required',
+      });
+    }
+
+    if (!process.env.CASHFREE_ENV) {
+      return res.status(500).json({
+        message: 'CASHFREE_ENV is not configured',
       });
     }
 
@@ -36,7 +44,7 @@ async function createCashfreePayment(req, res) {
       });
     }
 
-    if (['Rejected'].includes(order.status) || order.cancelledAt) {
+    if (order.status === 'Rejected' || order.cancelledAt) {
       return res.status(409).json({
         message: 'Payment is unavailable for this cancelled or rejected order',
       });
@@ -51,6 +59,9 @@ async function createCashfreePayment(req, res) {
       });
     }
 
+    // Cashfree amount is the RMA order total:
+    // product subtotal + delivery charge.
+    // Do not add PayU fees to Cashfree orders.
     const baseAmount = Number(order.totalPrice);
 
     if (!Number.isFinite(baseAmount) || baseAmount <= 0) {
@@ -61,8 +72,8 @@ async function createCashfreePayment(req, res) {
 
     const amount = Number(baseAmount.toFixed(2));
 
-    // Reuse the saved session only after Cashfree confirms
-    // that the associated gateway order is still active.
+    // Reuse a previously saved Cashfree session only after
+    // verifying the gateway order with Cashfree.
     if (order.cashfreeOrderId && Number(order.cashfreeOrderAmount) === amount) {
       try {
         const existingResponse = await cashfree.PGFetchOrder(
@@ -70,7 +81,14 @@ async function createCashfreePayment(req, res) {
           order.cashfreeOrderId,
         );
 
-        const existingOrder = existingResponse.data;
+        const existingOrder = existingResponse?.data;
+
+        if (existingOrder?.order_status === 'PAID') {
+          return res.status(409).json({
+            message:
+              'Cashfree reports this order as paid. Payment verification is pending; do not create another payment.',
+          });
+        }
 
         if (
           existingOrder?.order_status === 'ACTIVE' &&
@@ -91,15 +109,13 @@ async function createCashfreePayment(req, res) {
           });
         }
 
-        if (existingOrder?.order_status === 'PAID') {
-          return res.status(409).json({
-            message:
-              'Cashfree reports a payment for this order. Verify payment status before retrying.',
-          });
-        }
+        // If the existing order is in another state, do not silently
+        // create a second gateway order.
+        return res.status(409).json({
+          message:
+            'The existing Cashfree order is no longer active. Please verify its status before retrying.',
+        });
       } catch (error) {
-        // Do not silently create a second gateway order when the
-        // existing order could not be checked.
         console.error(
           'Unable to verify existing Cashfree order:',
           error.response?.data || error.message,
@@ -140,6 +156,7 @@ async function createCashfreePayment(req, res) {
       order_note: `RMA Order ${order.orderId}`.slice(0, 200),
     };
 
+    // This key identifies this particular gateway-order creation request.
     const idempotencyKey = crypto
       .createHash('sha256')
       .update(`${order.orderId}:${amount}:${cfOrderId}`)
@@ -151,7 +168,7 @@ async function createCashfreePayment(req, res) {
       idempotencyKey,
     );
 
-    const cfOrder = response.data;
+    const cfOrder = response?.data;
 
     if (!cfOrder?.payment_session_id || !cfOrder?.order_id) {
       console.error('Cashfree response missing order/session identifiers', {
@@ -170,6 +187,12 @@ async function createCashfreePayment(req, res) {
 
     await order.save();
 
+    console.log('Cashfree payment session created:', {
+      orderId: order.orderId,
+      cashfreeOrderId: cfOrder.order_id,
+      amount,
+    });
+
     return res.status(201).json({
       message: 'Cashfree payment session created',
       payment: {
@@ -186,7 +209,6 @@ async function createCashfreePayment(req, res) {
       message: error.message,
       response: error.response?.data,
       status: error.response?.status,
-      stack: error.stack,
     });
 
     return res.status(500).json({

@@ -3,6 +3,12 @@ import './AddAddress.css';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function EditAddress() {
   const navigate = useNavigate();
   const { addressId } = useParams();
@@ -21,12 +27,9 @@ function EditAddress() {
   useEffect(() => {
     const loadAddress = async () => {
       try {
-        const response = await fetch(
-          'https://rma-backend-bo4a.onrender.com/api/customers/addresses',
-          {
-            credentials: 'include',
-          },
-        );
+        const response = await fetch(`${API_URL}api/customers/addresses`, {
+          credentials: 'include',
+        });
 
         const data = await response.json();
 
@@ -72,7 +75,7 @@ function EditAddress() {
       setError('');
 
       const response = await fetch(
-        `https://rma-backend-bo4a.onrender.com/api/customers/addresses/${addressId}`,
+        `${API_URL}api/customers/addresses/${addressId}`,
         {
           method: 'PUT',
           credentials: 'include',

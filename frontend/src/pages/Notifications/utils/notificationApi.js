@@ -1,4 +1,8 @@
-const API_URL = 'https://rma-backend-bo4a.onrender.com/';
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
 
 export const fetchNotifications = async () => {
   let endpoint = `${API_URL}api/orders/notifications/customer`;

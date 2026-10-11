@@ -10,6 +10,12 @@ import ViewProductsFilters from './components/ViewProducts/ViewProductsFilters';
 import ViewProductsEmpty from './components/ViewProducts/ViewProductsEmpty';
 import ViewProductCard from './components/ViewProducts/ViewProductCard';
 
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/'
+    : 'https://rma-backend-bo4a.onrender.com/';
+
 function ViewProducts() {
   const navigate = useNavigate();
 
@@ -30,14 +36,11 @@ function ViewProducts() {
       setLoading(true);
       setError('');
 
-      const response = await fetch(
-        'https://rma-backend-bo4a.onrender.com/api/owners/products',
-        {
-          headers: {
-            Authorization: `Bearer ${ownerToken}`,
-          },
+      const response = await fetch(`${API_URL}api/owners/products`, {
+        headers: {
+          Authorization: `Bearer ${ownerToken}`,
         },
-      );
+      });
 
       const data = await response.json();
 
@@ -91,7 +94,7 @@ function ViewProducts() {
       setSuccessMessage('');
 
       const response = await fetch(
-        `https://rma-backend-bo4a.onrender.com/api/owners/products/${product.productId}/availability`,
+        `${API_URL}api/owners/products/${product.productId}/availability`,
         {
           method: 'PATCH',
           headers: {
@@ -140,7 +143,7 @@ function ViewProducts() {
       setSuccessMessage('');
 
       const response = await fetch(
-        `https://rma-backend-bo4a.onrender.com/api/owners/products/${product.productId}`,
+        `${API_URL}api/owners/products/${product.productId}`,
         {
           method: 'DELETE',
           headers: {
