@@ -17,6 +17,7 @@ import OrderSummary from './components/OrderSummary';
 import SecureNote from './components/SecureNote';
 import LocationSheet from './components/LocationSheet';
 
+import { QRCodeSVG } from 'qrcode.react';
 import { load } from '@cashfreepayments/cashfree-js';
 
 import {
@@ -55,6 +56,7 @@ function Checkout() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [directUpiOrder, setDirectUpiOrder] = useState(null);
   const [, setError] = useState('');
   const [flashMessage, setFlashMessage] = useState('');
 
@@ -255,6 +257,30 @@ function Checkout() {
         throw new Error('Order was created but no order ID was returned.');
       }
 
+      // Direct UPI orders do not use Cashfree.
+      if (order.paymentProvider === 'DIRECT_UPI') {
+        if (!order.shopUpiId) {
+          throw new Error('The shop has not configured its UPI ID.');
+        }
+
+        const payableAmount = Number(
+          order.customerPayableAmount ?? order.totalPrice,
+        );
+
+        if (!Number.isFinite(payableAmount) || payableAmount <= 0) {
+          throw new Error('Invalid order payment amount.');
+        }
+
+        setDirectUpiOrder({
+          orderId: order.orderId,
+          shopUpiId: order.shopUpiId,
+          amount: payableAmount,
+        });
+
+        setLoading(false);
+        return;
+      }
+
       console.log('Backend calculated order:', {
         orderId: order.orderId,
         subtotal: order.subtotal,
@@ -345,59 +371,120 @@ function Checkout() {
 
       <CheckoutHeader />
 
-      <CheckoutShop shopName={shop.shopName} />
+      {directUpiOrder && (
+        <section className="direct-upi-payment">
+          <h2>Pay the shop using UPI</h2>
 
-      <div className="checkout_layout">
-        <div className="checkout_main">
-          {orderType === 'delivery' && (
-            <DeliveryLocation
-              deliveryLocation={deliveryLocation}
-              onChooseLocation={() => {
-                setShowLocationSheet(true);
-                loadSavedAddresses();
-              }}
+          <p>Order ID: {directUpiOrder.orderId}</p>
+
+          <p>
+            UPI ID: <strong>{directUpiOrder.shopUpiId}</strong>
+          </p>
+
+          <p>
+            Exact amount: <strong>₹{directUpiOrder.amount.toFixed(2)}</strong>
+          </p>
+
+          <a
+            className="place_order_button"
+            href={`upi://pay?pa=${encodeURIComponent(
+              directUpiOrder.shopUpiId,
+            )}&pn=${encodeURIComponent(shop.shopName || 'RMA Shop')}&am=${directUpiOrder.amount.toFixed(2)}&cu=INR&tn=${encodeURIComponent(`RMA Order ${directUpiOrder.orderId}`)}`}
+          >
+            Pay using UPI
+          </a>
+
+          <div className="direct-upi-qr">
+            <h3>Or scan to pay</h3>
+
+            <QRCodeSVG
+              value={`upi://pay?pa=${encodeURIComponent(
+                directUpiOrder.shopUpiId,
+              )}&pn=${encodeURIComponent(
+                shop.shopName || 'RMA Shop',
+              )}&am=${directUpiOrder.amount.toFixed(2)}&cu=INR&tn=${encodeURIComponent(
+                `RMA Order ${directUpiOrder.orderId}`,
+              )}`}
+              size={220}
+              level="M"
+              includeMargin
             />
-          )}
 
-          <CustomerDetails
-            customer={customer}
-            onChange={handleChange}
-            onSubmit={handleSubmit}
-            orderType={orderType}
-          />
-        </div>
+            <p>Scan this QR code with your UPI app.</p>
+          </div>
 
-        <aside className="checkout_sidebar">
-          <OrderSummary
-            cartItems={cartItems}
-            totalPrice={totalPrice}
-            orderType={orderType}
-            deliveryLoading={deliveryLoading}
-            deliveryCharge={deliveryCharge}
-            paymentMethod={paymentMethod}
-            payuPricing={payuPricing}
-          />
-
-          <SecureNote />
+          <p>
+            After paying, the shop must verify the payment in its bank or UPI
+            app. Your order is not marked as paid automatically.
+          </p>
 
           <button
+            type="button"
             className="place_order_button"
-            type="submit"
-            form="checkout-form"
-            disabled={loading}
+            onClick={() =>
+              navigate(`/delivery-status/${directUpiOrder.orderId}`)
+            }
           >
-            <span>
-              {loading
-                ? 'Placing Order...'
-                : paymentMethod === 'ONLINE'
-                  ? 'Continue to Payment'
-                  : 'Place Order'}
-            </span>
-
-            {!loading && <span className="place_order_arrow">→</span>}
+            View Order Status
           </button>
-        </aside>
-      </div>
+        </section>
+      )}
+
+      <CheckoutShop shopName={shop.shopName} />
+
+      {!directUpiOrder && (
+        <div className="checkout_layout">
+          <div className="checkout_main">
+            {orderType === 'delivery' && (
+              <DeliveryLocation
+                deliveryLocation={deliveryLocation}
+                onChooseLocation={() => {
+                  setShowLocationSheet(true);
+                  loadSavedAddresses();
+                }}
+              />
+            )}
+
+            <CustomerDetails
+              customer={customer}
+              onChange={handleChange}
+              onSubmit={handleSubmit}
+              orderType={orderType}
+            />
+          </div>
+
+          <aside className="checkout_sidebar">
+            <OrderSummary
+              cartItems={cartItems}
+              totalPrice={totalPrice}
+              orderType={orderType}
+              deliveryLoading={deliveryLoading}
+              deliveryCharge={deliveryCharge}
+              paymentMethod={paymentMethod}
+              payuPricing={payuPricing}
+            />
+
+            <SecureNote />
+
+            <button
+              className="place_order_button"
+              type="submit"
+              form="checkout-form"
+              disabled={loading}
+            >
+              <span>
+                {loading
+                  ? 'Placing Order...'
+                  : paymentMethod === 'ONLINE'
+                    ? 'Continue to Payment'
+                    : 'Place Order'}
+              </span>
+
+              {!loading && <span className="place_order_arrow">→</span>}
+            </button>
+          </aside>
+        </div>
+      )}
 
       {showLocationSheet && (
         <LocationSheet

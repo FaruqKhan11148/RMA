@@ -37,10 +37,17 @@ export const rejectOrderApi = async ({
   rejectionReason,
   rejectionDescription,
 }) => {
+  const token = localStorage.getItem('rma_owner_token');
+
+  if (!token) {
+    throw new Error('Please log in again to continue.');
+  }
+
   const response = await fetch(`${API_URL}api/orders/${orderId}/status`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
       status: 'Rejected',
@@ -59,10 +66,17 @@ export const rejectOrderApi = async ({
 };
 
 export const updateOrderStatusApi = async (orderId, status) => {
+  const token = localStorage.getItem('rma_owner_token');
+
+  if (!token) {
+    throw new Error('Please log in again to continue.');
+  }
+
   const response = await fetch(`${API_URL}api/orders/${orderId}/status`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
       status,

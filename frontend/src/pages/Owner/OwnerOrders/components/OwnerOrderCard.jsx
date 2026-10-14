@@ -4,6 +4,7 @@ function OwnerOrderCard({
   handleStatusChange,
   openDeliveryAssignment,
   openRejectionModal,
+  onConfirmDirectUpiPayment,
 }) {
   const hasActiveDeliveryAssignment =
     order.orderType === 'delivery' &&
@@ -136,6 +137,18 @@ function OwnerOrderCard({
         className="owner_order_card_footer"
         onClick={(event) => event.stopPropagation()}
       >
+        {order.paymentProvider === 'DIRECT_UPI' &&
+          order.ownerPaymentConfirmation?.status === 'PENDING' &&
+          order.status === 'Pending' && (
+            <button
+              type="button"
+              className="accept_order_button"
+              onClick={() => onConfirmDirectUpiPayment(order)}
+            >
+              Confirm UPI Payment
+            </button>
+          )}
+
         {order.status === 'Pending' && (
           <>
             <button

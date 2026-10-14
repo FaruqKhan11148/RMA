@@ -1978,3 +1978,57 @@
   color: #66736d;
   font-size: 11px;
 }
+
+/* Direct UPI payment status */
+.direct_upi_status {
+  margin: 20px 16px;
+  padding: 18px;
+  border: 1px solid #dce9df;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 4px 16px rgba(24, 80, 43, 0.06);
+  overflow-wrap: anywhere;
+}
+
+.direct_upi_status h3 {
+  margin: 0 0 12px;
+  color: #176b38;
+  font-size: 18px;
+  font-weight: 750;
+  line-height: 1.4;
+}
+
+.direct_upi_status p {
+  margin: 0;
+  padding: 13px 14px;
+  border-radius: 10px;
+  background: #fff7e5;
+  color: #76541a;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.direct_upi_status p:only-of-type {
+  border-left: 4px solid #e4ad3e;
+}
+
+.direct_upi_status p:first-of-type {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 480px) {
+  .direct_upi_status {
+    margin: 16px 12px;
+    padding: 15px;
+    border-radius: 14px;
+  }
+
+  .direct_upi_status h3 {
+    font-size: 17px;
+  }
+
+  .direct_upi_status p {
+    padding: 12px;
+    font-size: 14px;
+  }
+}

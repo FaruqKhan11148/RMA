@@ -10,6 +10,8 @@ const {
   updateOrderStatus,
   createDeliveryAssignment,
   startRmaDispatch,
+  confirmDirectUpiPayment,
+  markOwnerRefundSent,
 } = require('./order.controller');
 
 const router = express.Router();
@@ -28,7 +30,19 @@ router.post(
 
 router.post('/:orderId/rma-dispatch', ownerAuth, startRmaDispatch);
 
-router.patch('/:orderId/status', updateOrderStatus);
+router.patch('/:orderId/status', ownerAuth, updateOrderStatus);
+
+router.patch(
+  '/:orderId/confirm-direct-upi',
+  ownerAuth,
+  confirmDirectUpiPayment,
+);
+
+router.patch(
+  '/:orderId/refund/:refundId/mark-sent',
+  ownerAuth,
+  markOwnerRefundSent,
+);
 
 router.get('/:orderId', getOrderById);
 

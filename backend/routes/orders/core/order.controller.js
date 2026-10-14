@@ -1,10 +1,24 @@
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
+const mongoose = require('mongoose');
+
 const Order = require('../../../models/Order');
 const Owner = require('../../../models/Owner');
 const Customer = require('../../../models/Customer');
 const DeliveryPerson = require('../../../models/DeliveryPerson');
+
+const PaymentAuditLog = require('../../../models/PaymentAuditLog');
+const {
+  recordPaymentAudit,
+  validateDirectUpiRefund,
+} = require('../../../services/payments/paymentState.service');
+
+const PaymentRefund = require('../../../models/PaymentRefund');
+
+const {
+  transitionRefund,
+} = require('../../../services/payments/refund.service');
 
 const {
   createAndSendNotification,
@@ -178,7 +192,7 @@ async function createOrder(req, res) {
       !items ||
       !Array.isArray(items) ||
       items.length === 0 ||
-      paymentMethod !== 'ONLINE'
+      !['ONLINE', 'DIRECT_UPI'].includes(paymentMethod)
     ) {
       return res.status(400).json({
         message: 'Required order fields are missing',
@@ -204,6 +218,30 @@ async function createOrder(req, res) {
         message: 'Shop owner not found',
       });
     }
+
+    // ==========================================
+    // SELECT SHOP PAYMENT PROVIDER
+    // ==========================================
+
+    const paymentProvider = owner.payment?.provider || 'PAYU';
+
+    if (!['PAYU', 'CASHFREE', 'DIRECT_UPI'].includes(paymentProvider)) {
+      return res.status(400).json({
+        message: 'Shop payment configuration is invalid',
+      });
+    }
+
+    if (paymentProvider === 'DIRECT_UPI' && !owner.payment?.upiId) {
+      return res.status(400).json({
+        message: 'This shop has not configured its UPI ID',
+      });
+    }
+
+    // Direct UPI requires a configured UPI destination.
+    const shopUpiId =
+      paymentProvider === 'DIRECT_UPI'
+        ? owner.payment.upiId.trim().toLowerCase()
+        : null;
 
     // ==========================================
     // CALCULATE ORDER AMOUNTS ON BACKEND
@@ -324,7 +362,8 @@ async function createOrder(req, res) {
         });
       }
 
-      deliveryCharge = Number((18 + 8 * deliveryDistance).toFixed(2));
+      // deliveryCharge = Number((18 + 8 * deliveryDistance).toFixed(2));
+      deliveryCharge = 0;
     }
 
     // ==========================================
@@ -432,7 +471,7 @@ async function createOrder(req, res) {
       ownerAmount,
 
       totalPrice,
-
+      customerPayableAmount: paymentProvider === 'DIRECT_UPI' ? totalPrice : 0,
       paymentMethod,
     });
 
@@ -471,8 +510,20 @@ async function createOrder(req, res) {
 
       // Base customer amount before PayU charges
       totalPrice,
+      customerPayableAmount: paymentProvider === 'DIRECT_UPI' ? totalPrice : 0,
 
-      paymentMethod,
+      // Payment configuration snapshot
+      paymentProvider,
+      shopUpiId,
+
+      ownerPaymentConfirmation: {
+        status: paymentProvider === 'DIRECT_UPI' ? 'PENDING' : 'NOT_REQUIRED',
+        confirmedAt: null,
+        reference: null,
+      },
+
+      // Keep the existing gateway flow unchanged for now.
+      paymentMethod: paymentProvider === 'DIRECT_UPI' ? 'DIRECT_UPI' : 'ONLINE',
       status: 'Pending',
     });
 
@@ -514,7 +565,129 @@ async function createOrder(req, res) {
   }
 }
 
+async function confirmDirectUpiPayment(req, res) {
+  const session = await mongoose.startSession();
+
+  try {
+    const { orderId } = req.params;
+    const { reference } = req.body;
+
+    if (reference && typeof reference !== 'string') {
+      return res.status(400).json({
+        message: 'Invalid payment reference',
+      });
+    }
+
+    let confirmedOrder = null;
+    let alreadyConfirmed = false;
+
+    await session.withTransaction(async () => {
+      const order = await Order.findOne({ orderId }).session(session);
+
+      if (!order) {
+        const error = new Error('Order not found');
+        error.statusCode = 404;
+        throw error;
+      }
+
+      if (String(order.ownerId) !== String(req.owner._id)) {
+        const error = new Error('You are not authorized to confirm this order');
+        error.statusCode = 403;
+        throw error;
+      }
+
+      if (
+        order.paymentProvider !== 'DIRECT_UPI' ||
+        order.paymentMethod !== 'DIRECT_UPI'
+      ) {
+        const error = new Error('This order does not use Direct UPI');
+        error.statusCode = 400;
+        throw error;
+      }
+
+      if (order.status === 'Rejected' || order.status === 'Completed') {
+        const error = new Error(
+          'Payment cannot be confirmed for this order status',
+        );
+        error.statusCode = 400;
+        throw error;
+      }
+
+      if (order.ownerPaymentConfirmation?.status === 'CONFIRMED') {
+        confirmedOrder = order;
+        alreadyConfirmed = true;
+        return;
+      }
+
+      const previousPaymentStatus = order.paymentStatus;
+      const previousConfirmationStatus =
+        order.ownerPaymentConfirmation?.status || 'PENDING';
+
+      const confirmedAt = new Date();
+
+      order.ownerPaymentConfirmation = {
+        status: 'CONFIRMED',
+        confirmedAt,
+        reference: reference?.trim() || null,
+      };
+
+      order.paymentStatus = 'Paid';
+      order.paidAt = confirmedAt;
+
+      await order.save({ session });
+
+      await recordPaymentAudit({
+        order,
+        actorType: 'OWNER',
+        actorId: req.owner._id,
+        action: 'PAYMENT_CONFIRMED',
+        previousStatus: previousPaymentStatus,
+        newStatus: order.paymentStatus,
+        reason: 'Owner verified payment receipt in their bank/UPI app',
+        reference: reference?.trim() || null,
+        metadata: {
+          previousConfirmationStatus,
+          confirmationStatus: 'CONFIRMED',
+          paymentProvider: order.paymentProvider,
+          paymentMethod: order.paymentMethod,
+        },
+        session,
+      });
+
+      confirmedOrder = order;
+    });
+
+    if (alreadyConfirmed) {
+      return res.status(200).json({
+        message: 'Payment was already confirmed',
+        order: confirmedOrder,
+      });
+    }
+
+    return res.status(200).json({
+      message: 'Direct UPI payment confirmed',
+      order: confirmedOrder,
+    });
+  } catch (error) {
+    if (error.statusCode) {
+      return res.status(error.statusCode).json({
+        message: error.message,
+      });
+    }
+
+    console.error('Direct UPI confirmation error:', error);
+
+    return res.status(500).json({
+      message: 'Unable to confirm payment',
+    });
+  } finally {
+    await session.endSession();
+  }
+}
+
 async function updateOrderStatus(req, res) {
+  let orderSavedInTransaction = false;
+
   try {
     const { orderId } = req.params;
     const { status, rejectionReason, rejectionDescription } = req.body;
@@ -540,6 +713,22 @@ async function updateOrderStatus(req, res) {
     if (!order) {
       return res.status(404).json({
         message: 'Order not found',
+      });
+    }
+
+    // Ensure the authenticated owner owns this order.
+    if (String(order.ownerId) !== String(req.owner._id)) {
+      return res.status(403).json({
+        message: 'You are not authorized to update this order',
+      });
+    }
+
+    // Owners can only manage shop-side order statuses.
+    const ownerAllowedStatuses = ['Accepted', 'Preparing', 'Ready', 'Rejected'];
+
+    if (!ownerAllowedStatuses.includes(status)) {
+      return res.status(403).json({
+        message: 'This status must be updated through the delivery workflow',
       });
     }
 
@@ -647,6 +836,8 @@ async function updateOrderStatus(req, res) {
       // ==========================================
 
       if (
+        order.paymentMethod === 'ONLINE' &&
+        order.paymentProvider !== 'DIRECT_UPI' &&
         order.paymentStatus === 'Paid' &&
         order.settlementStatus === 'NotRequired'
       ) {
@@ -688,6 +879,8 @@ async function updateOrderStatus(req, res) {
       // ==========================================
 
       if (
+        order.paymentMethod === 'ONLINE' &&
+        order.paymentProvider !== 'DIRECT_UPI' &&
         order.paymentStatus === 'Paid' &&
         ['Pending', 'Processing', 'Failed'].includes(order.settlementStatus)
       ) {
@@ -760,11 +953,148 @@ async function updateOrderStatus(req, res) {
       order.rejectionReason = rejectionReason.trim();
       order.rejectionDescription = rejectionDescription?.trim() || null;
 
+      // Track Direct UPI refunds for manual processing.
+      if (
+        order.paymentProvider === 'DIRECT_UPI' &&
+        order.paymentMethod === 'DIRECT_UPI' &&
+        order.paymentStatus === 'Paid'
+      ) {
+        const session = await mongoose.startSession();
+
+        try {
+          await session.withTransaction(async () => {
+            const transactionalOrder = await Order.findById(order._id).session(
+              session,
+            );
+
+            if (!transactionalOrder) {
+              throw new Error('Order not found during refund processing');
+            }
+
+            if (transactionalOrder.status !== 'Pending') {
+              throw new Error(
+                `Order cannot be rejected because it is already ${transactionalOrder.status}`,
+              );
+            }
+
+            const refundAmount =
+              Math.round(
+                Number(
+                  transactionalOrder.customerPayableAmount ||
+                    transactionalOrder.totalPrice,
+                ) * 100,
+              ) / 100;
+
+            await validateDirectUpiRefund(transactionalOrder, refundAmount, {
+              session,
+            });
+
+            const existingRefund = await PaymentRefund.findOne({
+              order: transactionalOrder._id,
+              activeRefund: true,
+            }).session(session);
+
+            if (existingRefund) {
+              throw new Error(
+                'An active refund request already exists for this order',
+              );
+            }
+
+            const previousRefundStatus =
+              transactionalOrder.refundStatus || 'NotRequired';
+
+            const [refund] = await PaymentRefund.create(
+              [
+                {
+                  order: transactionalOrder._id,
+                  orderId: transactionalOrder.orderId,
+                  requestedByType: 'OWNER',
+                  requestedById: req.owner._id,
+                  amount: refundAmount,
+                  reason: transactionalOrder.rejectionReason,
+                  status: 'REQUESTED',
+                  activeRefund: true,
+                },
+              ],
+              { session },
+            );
+
+            transactionalOrder.refundStatus = 'Pending';
+            transactionalOrder.refundAmount = refundAmount;
+            transactionalOrder.refundType = 'FULL';
+            transactionalOrder.refundReason =
+              transactionalOrder.rejectionReason;
+            transactionalOrder.refundInitiatedAt = new Date();
+            transactionalOrder.settlementStatus = 'NotRequired';
+
+            // Keep rejection and refund records consistent.
+            transactionalOrder.status = 'Rejected';
+
+            await transactionalOrder.save({ session });
+
+            await recordPaymentAudit({
+              order: transactionalOrder,
+              actorType: 'OWNER',
+              actorId: req.owner._id,
+              action: 'REFUND_REQUESTED',
+              previousStatus: previousRefundStatus,
+              newStatus: 'Pending',
+              reason: transactionalOrder.rejectionReason,
+              metadata: {
+                refundId: String(refund._id),
+                amount: refundAmount,
+                method: 'DIRECT_UPI_MANUAL',
+              },
+              session,
+            });
+
+            // Use the transactionally updated document below.
+            Object.assign(order, transactionalOrder.toObject());
+
+            orderSavedInTransaction = true;
+          });
+        } catch (refundError) {
+          if (
+            refundError.message ===
+            'An active refund request already exists for this order'
+          ) {
+            return res.status(409).json({
+              message: refundError.message,
+            });
+          }
+
+          if (
+            refundError.message === 'Only paid orders can be refunded' ||
+            refundError.message ===
+              'Direct UPI payment has not been confirmed' ||
+            refundError.message === 'This is not a Direct UPI order' ||
+            refundError.message === 'Refund amount must be greater than zero' ||
+            refundError.message === 'Invalid original payment amount' ||
+            refundError.message.startsWith(
+              'Refund exceeds the remaining refundable amount',
+            ) ||
+            refundError.message.startsWith('Order cannot be rejected')
+          ) {
+            return res.status(400).json({
+              message: refundError.message,
+            });
+          }
+
+          throw refundError;
+        } finally {
+          await session.endSession();
+        }
+      }
+
       // ==========================================
       // ONLINE PAYMENT REFUND
       // ==========================================
 
-      if (order.paymentMethod === 'ONLINE' && order.paymentStatus === 'Paid') {
+      if (
+        order.paymentMethod === 'ONLINE' &&
+        order.paymentProvider !== 'DIRECT_UPI' &&
+        order.paymentStatus === 'Paid'
+      ) {
         try {
           // Mark refund as processing before calling PayU.
           order.refundStatus = 'Processing';
@@ -797,31 +1127,6 @@ async function updateOrderStatus(req, res) {
           order.status = 'Rejected';
 
           await order.save();
-
-          // ==========================================
-          // CUSTOMER REJECTION NOTIFICATION
-          // ==========================================
-
-          // if (order.customerId) {
-          //   try {
-          //     await createAndSendNotification({
-          //       recipientType: 'customer',
-          //       recipientId: order.customerId,
-          //       type: 'ORDER_REJECTED',
-          //       title: 'Order Rejected',
-          //       message: `Your order ${order.orderId} has been rejected by the shop.`,
-          //       orderId: order.orderId,
-          //       data: {
-          //         screen: 'orders',
-          //       },
-          //     });
-          //   } catch (notificationError) {
-          //     console.error(
-          //       'Customer rejection notification failed:',
-          //       notificationError,
-          //     );
-          //   }
-          // }
 
           await order.populate('ownerId', 'ownerName shopName phone');
 
@@ -859,9 +1164,10 @@ async function updateOrderStatus(req, res) {
       }
     }
 
-    order.status = status;
-
-    await order.save();
+    if (!orderSavedInTransaction) {
+      order.status = status;
+      await order.save();
+    }
 
     // ==========================================
     // CUSTOMER ORDER STATUS NOTIFICATION
@@ -1424,7 +1730,8 @@ async function previewDeliveryCharge(req, res) {
 
     // RMA delivery pricing:
     // ₹18 base + ₹8 per kilometre
-    const deliveryCharge = Number((18 + 8 * deliveryDistance).toFixed(2));
+    // const deliveryCharge = Number((18 + 8 * deliveryDistance).toFixed(2));
+    const deliveryCharge = 0;
 
     return res.status(200).json({
       deliveryDistance: Number(deliveryDistance.toFixed(2)),
@@ -1492,6 +1799,138 @@ async function getOrderById(req, res) {
   }
 }
 
+async function markOwnerRefundSent(req, res) {
+  try {
+    const { orderId, refundId } = req.params;
+    const { reference, evidenceUrl, refundSentAt, reason } = req.body;
+
+    if (
+      typeof reference !== 'string' ||
+      !reference.trim() ||
+      reference.trim().length > 200
+    ) {
+      return res.status(400).json({
+        message: 'A valid refund transaction reference is required.',
+      });
+    }
+
+    if (
+      typeof evidenceUrl !== 'string' ||
+      !evidenceUrl.trim() ||
+      evidenceUrl.trim().length > 2000
+    ) {
+      return res.status(400).json({
+        message: 'Refund transfer evidence URL is required.',
+      });
+    }
+
+    let parsedEvidenceUrl;
+
+    try {
+      parsedEvidenceUrl = new URL(evidenceUrl.trim());
+    } catch {
+      return res.status(400).json({
+        message: 'Refund evidence URL is invalid.',
+      });
+    }
+
+    if (parsedEvidenceUrl.protocol !== 'https:') {
+      return res.status(400).json({
+        message: 'Refund evidence URL must use HTTPS.',
+      });
+    }
+
+    if (!refundSentAt) {
+      return res.status(400).json({
+        message: 'The actual refund transfer date and time are required.',
+      });
+    }
+
+    const sentAt = new Date(refundSentAt);
+
+    if (Number.isNaN(sentAt.getTime())) {
+      return res.status(400).json({
+        message: 'Refund transfer date and time are invalid.',
+      });
+    }
+
+    if (sentAt.getTime() > Date.now() + 5 * 60 * 1000) {
+      return res.status(400).json({
+        message: 'Refund transfer date and time cannot be in the future.',
+      });
+    }
+
+    const order = await Order.findOne({ orderId }).select(
+      '_id orderId ownerId',
+    );
+
+    if (!order) {
+      return res.status(404).json({
+        message: 'Order not found.',
+      });
+    }
+
+    if (String(order.ownerId) !== String(req.owner._id)) {
+      return res.status(403).json({
+        message:
+          'You are not authorized to submit refund details for this order.',
+      });
+    }
+
+    const refund = await PaymentRefund.findOne({
+      _id: refundId,
+      order: order._id,
+      orderId: order.orderId,
+    }).select('_id status activeRefund');
+
+    if (!refund) {
+      return res.status(404).json({
+        message: 'Refund request not found for this order.',
+      });
+    }
+
+    if (refund.status !== 'APPROVED' || !refund.activeRefund) {
+      return res.status(409).json({
+        message: 'Only an active, approved refund can be marked as sent.',
+      });
+    }
+
+    const updatedRefund = await transitionRefund({
+      refundId: refund._id,
+      nextStatus: 'MARKED_SENT',
+      actorType: 'OWNER',
+      actorId: req.owner._id,
+      reference: reference.trim(),
+      evidenceUrl: evidenceUrl.trim(),
+      refundSentAt: sentAt,
+      reason:
+        typeof reason === 'string' && reason.trim() ? reason.trim() : null,
+    });
+
+    return res.status(200).json({
+      message:
+        'Refund transfer details submitted. The refund is awaiting admin verification.',
+      refund: updatedRefund,
+    });
+  } catch (error) {
+    console.error('Mark owner refund as sent error:', error);
+
+    if (
+      /cannot move|not found|reference is required|evidence URL is required|date and time|future/i.test(
+        error.message || '',
+      )
+    ) {
+      return res.status(409).json({
+        message: error.message,
+      });
+    }
+
+    return res.status(500).json({
+      message: 'Unable to submit refund transfer details.',
+    });
+  }
+}
+
 module.exports = {
   initiatePayURefund,
   calculateDistanceKm,
@@ -1502,4 +1941,6 @@ module.exports = {
   updateOrderStatus,
   createDeliveryAssignment,
   startRmaDispatch,
+  confirmDirectUpiPayment,
+  markOwnerRefundSent,
 };

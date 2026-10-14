@@ -19,6 +19,8 @@ const {
   getFinanceSettlementsData,
   getFinanceTransactionsData,
   getFinanceWithdrawalsData,
+  getRefundRequests,
+  updateRefundStatus,
 } = require('./finance.controller');
 
 const router = express.Router();
@@ -77,5 +79,10 @@ router.get(
   adminAuth,
   getDeliveryWithdrawalHistory,
 );
+
+// Refund management
+router.get('/refunds', adminAuth, getRefundRequests);
+
+router.patch('/refunds/:refundId/status', adminAuth, updateRefundStatus);
 
 module.exports = router;

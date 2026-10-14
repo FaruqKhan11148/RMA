@@ -806,6 +806,65 @@ async function updateDeliverySettings(req, res) {
   }
 }
 
+// UPDATE SHOP UPI ID
+async function updateOwnerPayment(req, res) {
+  try {
+    const upiId = req.body.upiId?.trim().toLowerCase();
+
+    if (!upiId) {
+      return res.status(400).json({
+        message: 'UPI ID is required',
+      });
+    }
+
+    // Basic UPI ID format validation: username@provider
+    const upiRegex = /^[a-zA-Z0-9._-]{2,256}@[a-zA-Z0-9.-]{2,64}$/;
+
+    if (!upiRegex.test(upiId)) {
+      return res.status(400).json({
+        message: 'Please enter a valid UPI ID',
+      });
+    }
+
+    const updatedOwner = await Owner.findByIdAndUpdate(
+      req.owner._id,
+      {
+        $set: {
+          'payment.upiId': upiId,
+        },
+      },
+      {
+        new: true,
+        runValidators: true,
+      },
+    ).select('-password');
+
+    if (!updatedOwner) {
+      return res.status(404).json({
+        message: 'Owner account not found',
+      });
+    }
+
+    return res.status(200).json({
+      message: 'UPI ID updated successfully',
+      owner: {
+        id: updatedOwner._id,
+        shopId: updatedOwner.shopId,
+        shopName: updatedOwner.shopName,
+        payment: {
+          upiId: updatedOwner.payment?.upiId || '',
+        },
+      },
+    });
+  } catch (error) {
+    console.error('Update owner UPI ID failed:', error);
+
+    return res.status(500).json({
+      message: 'Failed to update UPI ID',
+    });
+  }
+}
+
 module.exports = {
   updateOwnerPhone,
   updateOwnerEmail,
@@ -819,4 +878,5 @@ module.exports = {
   updateDeliveryAvailability,
   updatePickupAvailability,
   updateDeliverySettings,
+  updateOwnerPayment,
 };

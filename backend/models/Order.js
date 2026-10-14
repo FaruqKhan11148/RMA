@@ -458,6 +458,42 @@ const orderSchema = new mongoose.Schema(
     },
 
     // =========================
+    // SHOP PAYMENT DETAILS
+    // =========================
+
+    // Snapshot the shop's payment configuration when the order is created.
+    paymentProvider: {
+      type: String,
+      enum: ['PAYU', 'CASHFREE', 'DIRECT_UPI'],
+      default: 'PAYU',
+    },
+
+    shopUpiId: {
+      type: String,
+      default: null,
+      trim: true,
+      lowercase: true,
+    },
+
+    // Owner's confirmation of direct UPI payment receipt.
+    ownerPaymentConfirmation: {
+      status: {
+        type: String,
+        enum: ['NOT_REQUIRED', 'PENDING', 'CONFIRMED', 'DISPUTED'],
+        default: 'NOT_REQUIRED',
+      },
+      confirmedAt: {
+        type: Date,
+        default: null,
+      },
+      reference: {
+        type: String,
+        default: null,
+        trim: true,
+      },
+    },
+
+    // =========================
     // PAYMENT
     // =========================
 
@@ -469,7 +505,7 @@ const orderSchema = new mongoose.Schema(
 
     paymentMethod: {
       type: String,
-      enum: ['ONLINE'],
+      enum: ['ONLINE', 'DIRECT_UPI'],
       required: true,
       default: 'ONLINE',
     },
@@ -521,7 +557,14 @@ const orderSchema = new mongoose.Schema(
     // Refund is required only when a paid order is rejected.
     refundStatus: {
       type: String,
-      enum: ['NotRequired', 'Pending', 'Processing', 'Completed', 'Failed'],
+      enum: [
+        'NotRequired',
+        'Pending',
+        'Processing',
+        'PartiallyRefunded',
+        'Completed',
+        'Failed',
+      ],
       default: 'NotRequired',
     },
 

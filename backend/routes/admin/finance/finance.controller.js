@@ -5,6 +5,12 @@ const {
   completeDpWalletWithdrawal,
 } = require('../../../services/testBank/testBankDpWallet.service');
 
+const PaymentRefund = require('../../../models/PaymentRefund');
+
+const {
+  transitionRefund,
+} = require('../../../services/payments/refund.service');
+
 const {
   getOrCreateRmaAccount,
   getRmaAccountDetails,
@@ -825,6 +831,195 @@ async function getFinanceWithdrawalsData(req, res) {
   }
 }
 
+// ============================================================
+// GET REFUND REQUESTS FOR ADMIN
+// ============================================================
+
+async function getRefundRequests(req, res) {
+  try {
+    const { status, page = 1, limit = 20 } = req.query;
+
+    const allowedStatuses = [
+      'REQUESTED',
+      'UNDER_REVIEW',
+      'APPROVED',
+      'REJECTED',
+      'MARKED_SENT',
+      'VERIFIED',
+      'FAILED',
+      'CANCELLED',
+    ];
+
+    if (status && !allowedStatuses.includes(status)) {
+      return res.status(400).json({
+        message: 'Invalid refund status filter',
+      });
+    }
+
+    const parsedPage = Number(page);
+    const parsedLimit = Number(limit);
+
+    if (
+      !Number.isInteger(parsedPage) ||
+      parsedPage < 1 ||
+      !Number.isInteger(parsedLimit) ||
+      parsedLimit < 1 ||
+      parsedLimit > 100
+    ) {
+      return res.status(400).json({
+        message: 'Invalid pagination parameters',
+      });
+    }
+
+    const filter = status ? { status } : {};
+
+    const [refunds, total] = await Promise.all([
+      PaymentRefund.find(filter)
+        .populate({
+          path: 'order',
+          select:
+            'orderId ownerId customer status paymentStatus paymentMethod paymentProvider totalPrice customerPayableAmount refundStatus',
+          populate: {
+            path: 'ownerId',
+            select: 'ownerName shopName phone shopId',
+          },
+        })
+        .sort({ createdAt: -1 })
+        .skip((parsedPage - 1) * parsedLimit)
+        .limit(parsedLimit)
+        .lean(),
+
+      PaymentRefund.countDocuments(filter),
+    ]);
+
+    return res.status(200).json({
+      success: true,
+      refunds,
+      pagination: {
+        page: parsedPage,
+        limit: parsedLimit,
+        total,
+        totalPages: Math.ceil(total / parsedLimit),
+      },
+    });
+  } catch (error) {
+    console.error('Get admin refund requests failed:', error);
+
+    return res.status(500).json({
+      message: 'Failed to fetch refund requests',
+    });
+  }
+}
+
+// UPDATE REFUND STATUS FOR ADMIN
+async function updateRefundStatus(req, res) {
+  try {
+    const { refundId } = req.params;
+    const { status, reason, reference } = req.body;
+
+    const allowedStatuses = [
+      'UNDER_REVIEW',
+      'APPROVED',
+      'REJECTED',
+      'VERIFIED',
+      'FAILED',
+      'CANCELLED',
+    ];
+
+    if (!allowedStatuses.includes(status)) {
+      return res.status(400).json({
+        message: 'Invalid refund status',
+      });
+    }
+
+    if (reason !== undefined && typeof reason !== 'string') {
+      return res.status(400).json({
+        message: 'Reason must be a string',
+      });
+    }
+
+    if (reference !== undefined && typeof reference !== 'string') {
+      return res.status(400).json({
+        message: 'Refund reference must be a string',
+      });
+    }
+
+    const { evidenceUrl } = req.body;
+
+    if (evidenceUrl !== undefined && evidenceUrl !== null) {
+      if (typeof evidenceUrl !== 'string' || evidenceUrl.trim().length > 1000) {
+        return res.status(400).json({
+          message: 'Evidence URL must be a string of at most 1000 characters',
+        });
+      }
+
+      try {
+        const parsedUrl = new URL(evidenceUrl.trim());
+
+        if (parsedUrl.protocol !== 'https:') {
+          return res.status(400).json({
+            message: 'Evidence URL must use HTTPS',
+          });
+        }
+      } catch {
+        return res.status(400).json({
+          message: 'Evidence URL must be a valid HTTPS URL',
+        });
+      }
+    }
+
+    const refund = await transitionRefund({
+      refundId,
+      nextStatus: status,
+      actorType: 'ADMIN',
+      actorId: req.admin._id,
+      reason: reason?.trim() || null,
+      reference: reference?.trim() || null,
+      evidenceUrl: evidenceUrl?.trim() || null,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: 'Refund status updated successfully',
+      refund,
+    });
+  } catch (error) {
+    console.error('Admin refund status update failed:', error);
+
+    if (error.name === 'CastError' || error.message === 'Invalid refund ID') {
+      return res.status(400).json({
+        message: 'Invalid refund ID',
+      });
+    }
+
+    if (
+      error.message?.includes('not found') ||
+      error.message?.includes('does not exist')
+    ) {
+      return res.status(404).json({
+        message: error.message,
+      });
+    }
+
+    if (
+      error.message?.includes('transition') ||
+      error.message?.includes('allowed') ||
+      error.message?.includes('Only') ||
+      error.message?.includes('required') ||
+      error.message?.includes('exceeds') ||
+      error.message?.includes('Direct UPI')
+    ) {
+      return res.status(409).json({
+        message: error.message,
+      });
+    }
+
+    return res.status(500).json({
+      message: 'Failed to update refund status',
+    });
+  }
+}
+
 module.exports = {
   getDailyOrders,
   getMonthlyFinance,
@@ -842,4 +1037,6 @@ module.exports = {
   getFinanceSettlementsData,
   getFinanceTransactionsData,
   getFinanceWithdrawalsData,
+  getRefundRequests,
+  updateRefundStatus,
 };

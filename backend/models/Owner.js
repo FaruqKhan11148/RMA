@@ -177,7 +177,15 @@ const ownerSchema = new mongoose.Schema(
 
       provider: {
         type: String,
+        enum: ['PAYU', 'CASHFREE', 'DIRECT_UPI'],
         default: 'PAYU',
+      },
+
+      upiId: {
+        type: String,
+        default: '',
+        trim: true,
+        lowercase: true,
       },
 
       accountId: {

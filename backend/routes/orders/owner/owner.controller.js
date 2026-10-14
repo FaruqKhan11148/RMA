@@ -315,18 +315,19 @@ async function getOwnerOrders(req, res) {
       });
     }
 
+    // Show ALL orders belonging to this owner,
+    // including Direct UPI orders awaiting payment confirmation.
     const orders = await Order.find({
-      ownerId,
-      paymentStatus: 'Paid',
+      ownerId: owner._id,
     }).sort({ createdAt: -1 });
 
-    res.status(200).json({
+    return res.status(200).json({
       orders,
     });
   } catch (error) {
-    console.error('Get owner orders failed:', error.message);
+    console.error('Get owner orders failed:', error);
 
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Server error',
     });
   }

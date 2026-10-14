@@ -298,6 +298,21 @@ function DeliveryStatus() {
 
       <OrderDetails order={order} shopName={shopName} />
 
+      {order.paymentProvider === 'DIRECT_UPI' && (
+        <section className="direct_upi_status">
+          <h3>UPI Payment Status</h3>
+
+          {order.ownerPaymentConfirmation?.status === 'CONFIRMED' ? (
+            <p>Payment confirmed by the shop.</p>
+          ) : (
+            <p>
+              Waiting for the shop to verify your payment. Please pay the shop
+              using its UPI ID if you haven't paid yet.
+            </p>
+          )}
+        </section>
+      )}
+
       {(order.status === 'Pending' || order.status === 'Accepted') && (
         <button
           type="button"

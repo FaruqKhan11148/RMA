@@ -21,11 +21,15 @@ export const updateOwnerOrderStatus = async (
   status,
   extraData = {},
 ) => {
+  const ownerToken = localStorage.getItem('rma_owner_token');
+
   const response = await fetch(`${API_URL}api/orders/${orderId}/status`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
+      ...(ownerToken ? { Authorization: `Bearer ${ownerToken}` } : {}),
     },
+    credentials: 'include',
     body: JSON.stringify({
       status,
       ...extraData,
@@ -78,6 +82,33 @@ export const startRmaDispatch = async (orderId, ownerToken) => {
     error.status = response.status;
     error.code = data.code;
 
+    throw error;
+  }
+
+  return data;
+};
+
+export const confirmDirectUpiPayment = async (orderId, reference = '') => {
+  const ownerToken = localStorage.getItem('rma_owner_token');
+
+  const response = await fetch(
+    `${API_URL}api/orders/${orderId}/confirm-direct-upi`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(ownerToken ? { Authorization: `Bearer ${ownerToken}` } : {}),
+      },
+      credentials: 'include',
+      body: JSON.stringify({ reference }),
+    },
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    const error = new Error(data.message || 'Failed to confirm UPI payment');
+    error.status = response.status;
     throw error;
   }
 

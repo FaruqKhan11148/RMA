@@ -22,11 +22,7 @@ async function registerOwner(req, res) {
       products,
       location,
       referralCode,
-
-      // BANK DETAILS
-      bankHolderName,
-      bankAccountNumber,
-      ifscCode,
+      upiId,
     } = req.body;
 
     // Check required fields
@@ -36,32 +32,15 @@ async function registerOwner(req, res) {
       });
     }
 
-    // Check bank details
-    if (!bankHolderName || !bankAccountNumber || !ifscCode) {
-      return res.status(400).json({
-        message: 'Bank details are required',
-      });
-    }
+    // Validate direct UPI payment details
+    const normalizedUpiId =
+      typeof upiId === 'string' ? upiId.trim().toLowerCase() : '';
 
-    const normalizedBankHolderName = bankHolderName.trim();
-    const normalizedBankAccountNumber = bankAccountNumber.trim();
-    const normalizedIfscCode = ifscCode.trim().toUpperCase();
+    const upiRegex = /^[a-zA-Z0-9._-]{2,256}@[a-zA-Z0-9.-]{2,64}$/;
 
-    if (!normalizedBankHolderName) {
+    if (!upiRegex.test(normalizedUpiId)) {
       return res.status(400).json({
-        message: 'Bank account holder name is required',
-      });
-    }
-
-    if (!/^\d{9,18}$/.test(normalizedBankAccountNumber)) {
-      return res.status(400).json({
-        message: 'Invalid bank account number',
-      });
-    }
-
-    if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(normalizedIfscCode)) {
-      return res.status(400).json({
-        message: 'Invalid IFSC code',
+        message: 'Please enter a valid UPI ID',
       });
     }
 
@@ -117,6 +96,17 @@ async function registerOwner(req, res) {
       });
     }
 
+    // Check shop location
+    if (
+      !location ||
+      typeof location.latitude !== 'number' ||
+      typeof location.longitude !== 'number'
+    ) {
+      return res.status(400).json({
+        message: 'Shop location is required',
+      });
+    }
+
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -131,17 +121,6 @@ async function registerOwner(req, res) {
     );
 
     const shopId = `RMA-${String(counter.sequenceValue).padStart(6, '0')}`;
-
-    // Check shop location
-    if (
-      !location ||
-      typeof location.latitude !== 'number' ||
-      typeof location.longitude !== 'number'
-    ) {
-      return res.status(400).json({
-        message: 'Shop location is required',
-      });
-    }
 
     // Create owner
     const owner = await Owner.create({
@@ -162,18 +141,13 @@ async function registerOwner(req, res) {
         longitude: location.longitude,
       },
 
-      // PAYMENT / SETTLEMENT
+      // DIRECT OWNER UPI PAYMENT
       payment: {
-        provider: 'PAYU',
+        provider: 'DIRECT_UPI',
+        upiId: normalizedUpiId,
 
-        bankHolderName: normalizedBankHolderName,
-        bankAccountNumber: normalizedBankAccountNumber,
-        ifscCode: normalizedIfscCode,
-
-        // Temporary RMA approval
+        // Retained for compatibility with existing approval workflows
         rmaApprovalStatus: 'PENDING',
-
-        // Real PayU onboarding will be connected later
         onboardingStatus: 'NOT_STARTED',
         kycStatus: 'NOT_STARTED',
         bankStatus: 'PENDING',
@@ -188,13 +162,9 @@ async function registerOwner(req, res) {
       const joinedAt = new Date();
 
       const qualificationEndDate = new Date(joinedAt);
-
       qualificationEndDate.setDate(qualificationEndDate.getDate() + 20);
 
-      // ========================================
-      // FIND NEXT REFERRAL SLOT
-      // ========================================
-
+      // Find next referral slot
       const latestReferral = await Referral.findOne({
         referrerOwnerId: referrerOwner._id,
       })
@@ -217,10 +187,7 @@ async function registerOwner(req, res) {
         }
       }
 
-      // ========================================
-      // CREATE REFERRAL
-      // ========================================
-
+      // Create referral
       await Referral.create({
         referrerOwnerId: referrerOwner._id,
         referredOwnerId: owner._id,
@@ -230,7 +197,6 @@ async function registerOwner(req, res) {
         slotNumber,
 
         status: 'REGISTERED',
-
         joinedAt,
 
         qualification: {
@@ -238,12 +204,10 @@ async function registerOwner(req, res) {
           endDate: qualificationEndDate,
 
           requiredOrders: 100,
-
           referredOwnerOrders: 0,
           referrerOwnerOrders: 0,
 
           requiredActiveDays: 18,
-
           referredOwnerActiveDays: 0,
           referrerOwnerActiveDays: 0,
 
@@ -253,7 +217,7 @@ async function registerOwner(req, res) {
     }
 
     // Send safe owner data to frontend
-    res.status(201).json({
+    return res.status(201).json({
       message: 'Owner registered successfully',
 
       owner: {
@@ -273,17 +237,15 @@ async function registerOwner(req, res) {
 
         payment: {
           provider: owner.payment.provider,
+          upiId: owner.payment.upiId,
           rmaApprovalStatus: owner.payment.rmaApprovalStatus,
-          onboardingStatus: owner.payment.onboardingStatus,
-          kycStatus: owner.payment.kycStatus,
-          bankStatus: owner.payment.bankStatus,
         },
       },
     });
   } catch (error) {
     console.error('Owner registration failed:', error.message);
 
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Server error',
     });
   }
@@ -328,9 +290,8 @@ async function loginOwner(req, res) {
       },
     );
 
-    res.status(200).json({
+    return res.status(200).json({
       message: 'Login successful',
-
       token,
 
       owner: {
@@ -348,12 +309,16 @@ async function loginOwner(req, res) {
         categories: owner.categories,
         products: owner.products,
         location: owner.location,
+        payment: {
+          provider: owner.payment?.provider,
+          upiId: owner.payment?.upiId || '',
+        },
       },
     });
   } catch (error) {
     console.error('Owner login failed:', error.message);
 
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Server error',
     });
   }
@@ -371,7 +336,6 @@ async function logoutOwner(req, res) {
     }
 
     owner.authVersion += 1;
-
     await owner.save();
 
     return res.status(200).json({
@@ -427,7 +391,7 @@ async function saveOwnerNotificationToken(req, res) {
 
 // PROTECTED TEST
 async function protectedOwnerTest(req, res) {
-  res.status(200).json({
+  return res.status(200).json({
     message: 'Owner authentication successful',
     owner: {
       id: req.owner._id,
@@ -444,7 +408,7 @@ async function getOwnerProfile(req, res) {
   try {
     const currentIsOpen = getShopStatus(req.owner);
 
-    res.status(200).json({
+    return res.status(200).json({
       owner: {
         id: req.owner._id,
         shopId: req.owner.shopId,
@@ -460,13 +424,17 @@ async function getOwnerProfile(req, res) {
         pickup: req.owner.pickup,
         categories: req.owner.categories,
         products: req.owner.products,
-        payment: req.owner.payment,
+        payment: {
+          provider: req.owner.payment?.provider,
+          upiId: req.owner.payment?.upiId || '',
+          rmaApprovalStatus: req.owner.payment?.rmaApprovalStatus,
+        },
       },
     });
   } catch (error) {
     console.error('Get owner profile failed:', error.message);
 
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Server error',
     });
   }

@@ -17,6 +17,7 @@ import {
   updateOwnerOrderStatus,
   fetchDeliveryPartners,
   startRmaDispatch,
+  confirmDirectUpiPayment,
 } from './utils/ownerOrdersApi';
 
 import { listenForOwnerNotifications } from '../../../firebase/ownerNotifications';
@@ -193,6 +194,45 @@ function OwnerOrders() {
       console.error('Update order status failed:', error);
 
       alert('Unable to connect to server');
+    }
+  };
+
+  const handleConfirmDirectUpiPayment = async (order) => {
+    if (!order) return;
+
+    const confirmed = window.confirm(
+      `Have you verified that ₹${Number(
+        order.customerPayableAmount ?? order.totalPrice,
+      ).toFixed(
+        2,
+      )} was received in your bank or UPI app for order ${order.orderId}?`,
+    );
+
+    if (!confirmed) return;
+
+    try {
+      const data = await confirmDirectUpiPayment(order.orderId);
+
+      const updatedOrder = data.order;
+
+      setOrders((currentOrders) =>
+        currentOrders.map((currentOrder) =>
+          currentOrder.orderId === updatedOrder.orderId
+            ? { ...currentOrder, ...updatedOrder }
+            : currentOrder,
+        ),
+      );
+
+      setSelectedOrder((currentOrder) =>
+        currentOrder?.orderId === updatedOrder.orderId
+          ? { ...currentOrder, ...updatedOrder }
+          : currentOrder,
+      );
+
+      alert('UPI payment confirmed successfully.');
+    } catch (error) {
+      console.error('Confirm Direct UPI payment failed:', error);
+      alert(error.message || 'Unable to confirm UPI payment.');
     }
   };
 
@@ -533,6 +573,7 @@ function OwnerOrders() {
                   handleStatusChange={handleStatusChange}
                   openDeliveryAssignment={openDeliveryAssignment}
                   openRejectionModal={openRejectionModal}
+                  onConfirmDirectUpiPayment={handleConfirmDirectUpiPayment}
                 />
               ))
             )}
