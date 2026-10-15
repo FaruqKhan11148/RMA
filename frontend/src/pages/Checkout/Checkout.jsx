@@ -362,6 +362,16 @@ function Checkout() {
 
   const shop = cartItems[0];
 
+  const directUpiPayload = directUpiOrder
+    ? `upi://pay?pa=${encodeURIComponent(
+        directUpiOrder.shopUpiId.trim(),
+      )}&pn=${encodeURIComponent(
+        shop.shopName || 'RMA Shop',
+      )}&am=${Number(directUpiOrder.amount).toFixed(2)}&cu=INR&tn=${encodeURIComponent(
+        `RMA Order ${directUpiOrder.orderId}`,
+      )}`
+    : '';
+
   return (
     <main className="checkout">
       <FlashMessage
@@ -385,14 +395,7 @@ function Checkout() {
             Exact amount: <strong>₹{directUpiOrder.amount.toFixed(2)}</strong>
           </p>
 
-          <a
-            className="place_order_button"
-            href={`upi://pay?pa=${encodeURIComponent(
-              directUpiOrder.shopUpiId.trim(),
-            )}&pn=${encodeURIComponent(
-              shop.shopName || 'RMA Shop',
-            )}&am=${Number(directUpiOrder.amount).toFixed(2)}&cu=INR`}
-          >
+          <a className="place_order_button" href={directUpiPayload}>
             Pay using UPI
           </a>
 
@@ -400,13 +403,7 @@ function Checkout() {
             <h3>Or scan to pay</h3>
 
             <QRCodeSVG
-              value={`upi://pay?pa=${encodeURIComponent(
-                directUpiOrder.shopUpiId,
-              )}&pn=${encodeURIComponent(
-                shop.shopName || 'RMA Shop',
-              )}&am=${directUpiOrder.amount.toFixed(2)}&cu=INR&tn=${encodeURIComponent(
-                `RMA Order ${directUpiOrder.orderId}`,
-              )}`}
+              value={directUpiPayload}
               size={220}
               level="M"
               includeMargin
