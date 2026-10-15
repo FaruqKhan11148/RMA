@@ -384,7 +384,7 @@ function Checkout() {
       navigate(`/delivery-status/${directUpiOrder.orderId}`, {
         replace: true,
       });
-    }, 3500);
+    }, 6000);
 
     return () => clearTimeout(timeoutId);
   }, [paymentFlowStatus, directUpiOrder, navigate]);
@@ -578,9 +578,11 @@ function Checkout() {
         am: Number(directUpiOrder.amount).toFixed(2),
         cu: 'INR',
         tr: String(directUpiOrder.orderId).slice(0, 35),
-        tn: 'RMA Order',
+        tn: `RMA Order ${directUpiOrder.orderId}`,
       }).toString()}`
     : '';
+
+  console.log('RMA UPI payload:', directUpiPayload);
 
   return (
     <main className="checkout">

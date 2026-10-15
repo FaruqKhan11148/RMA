@@ -1,3 +1,5 @@
+import './OwnerOrderCard.css';
+
 function OwnerOrderCard({
   order,
   setSelectedOrder,

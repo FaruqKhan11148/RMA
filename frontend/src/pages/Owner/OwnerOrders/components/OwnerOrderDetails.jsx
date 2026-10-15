@@ -1,3 +1,5 @@
+import './OwnerOrderDetails.css';
+
 import { useCallback, useEffect, useState } from 'react';
 import OrderLocationMap from '../../../../components/map/OrderLocationMap';
 import {
@@ -327,16 +329,7 @@ function OwnerOrderDetails({ order, setSelectedOrder }) {
           const canSubmit = refund.status === 'APPROVED' && refund.activeRefund;
 
           return (
-            <div
-              className="owner_order_refund"
-              key={refund._id}
-              style={{
-                marginTop: '16px',
-                padding: '16px',
-                border: '1px solid #dfe5df',
-                borderRadius: '10px',
-              }}
-            >
+            <div className="owner_order_refund" key={refund._id}>
               <div className="owner_order_details_rows">
                 <div>
                   <span>Refund Amount</span>
@@ -419,11 +412,6 @@ function OwnerOrderDetails({ order, setSelectedOrder }) {
                   onSubmit={(event) => {
                     event.preventDefault();
                     handleRefundSubmit(refund);
-                  }}
-                  style={{
-                    display: 'grid',
-                    gap: '12px',
-                    marginTop: '16px',
                   }}
                 >
                   <h3>Submit Refund Transfer Details</h3>
