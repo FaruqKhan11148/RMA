@@ -1,0 +1,432 @@
+/* =========================================================
+   OWNER SHOP SKELETON
+   ========================================================= */
+
+.owner_shop_skeleton_page {
+  overflow: hidden;
+}
+
+.owner_shop_skeleton_page .owner_shop_skeleton_line {
+  display: block;
+  flex-shrink: 0;
+  border-radius: 7px;
+  background: linear-gradient(90deg, #e5eee7 25%, #f5f9f6 50%, #e5eee7 75%);
+  background-size: 200% 100%;
+  animation: owner-shop-skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+/* Header */
+
+.owner_shop_skeleton_header {
+  min-height: 145px;
+}
+
+.owner_shop_skeleton_header .skeleton_status {
+  width: 105px;
+  height: 26px;
+  border-radius: 999px;
+}
+
+.owner_shop_skeleton_header .skeleton_heading {
+  width: min(340px, 85%);
+  height: 34px;
+  margin-top: 11px;
+}
+
+.owner_shop_skeleton_header .skeleton_shop_id {
+  width: 145px;
+  height: 15px;
+  margin-top: 10px;
+}
+
+.owner_shop_skeleton_header .skeleton_description {
+  width: min(430px, 90%);
+  height: 12px;
+  margin-top: 13px;
+}
+
+.owner_shop_skeleton_header .skeleton_description_short {
+  width: min(300px, 70%);
+  height: 12px;
+  margin-top: 7px;
+}
+
+/* Section headings */
+
+.owner_shop_skeleton_section_heading {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+}
+
+.owner_shop_skeleton_page .skeleton_section_title {
+  width: 175px;
+  height: 21px;
+}
+
+.owner_shop_skeleton_page .skeleton_section_subtitle {
+  width: 230px;
+  max-width: 75%;
+  height: 12px;
+}
+
+/* Overview cards */
+
+.owner_shop_skeleton_page .owner_shop_overview_card {
+  gap: 12px;
+}
+
+.owner_shop_skeleton_page .skeleton_overview_icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+}
+
+.owner_shop_skeleton_page .skeleton_overview_content {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  gap: 8px;
+}
+
+.owner_shop_skeleton_page .skeleton_overview_label {
+  width: 75px;
+  max-width: 100%;
+  height: 11px;
+}
+
+.owner_shop_skeleton_page .skeleton_overview_value {
+  width: 48px;
+  height: 21px;
+}
+
+/* Customer-facing shop banner */
+
+.owner_shop_skeleton_page .owner_shop_skeleton_customer {
+  max-width: 1180px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.owner_shop_skeleton_page .skeleton_customer_icon {
+  width: 45px;
+  height: 45px;
+  border-radius: 12px;
+}
+
+.owner_shop_skeleton_page .skeleton_customer_title {
+  width: 190px;
+  max-width: 100%;
+  height: 15px;
+}
+
+.owner_shop_skeleton_page .skeleton_customer_description {
+  width: min(330px, 90%);
+  height: 12px;
+  margin-top: 4px;
+}
+
+.owner_shop_skeleton_page .skeleton_customer_button {
+  width: 125px;
+  height: 39px;
+  border-radius: 9px;
+}
+
+/* Services */
+
+.owner_shop_skeleton_page .owner_shop_service {
+  min-height: 70px;
+}
+
+.owner_shop_skeleton_page .skeleton_service_icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+}
+
+.owner_shop_skeleton_page .skeleton_service_content {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  gap: 8px;
+}
+
+.owner_shop_skeleton_page .skeleton_service_title {
+  width: 150px;
+  max-width: 90%;
+  height: 14px;
+}
+
+.owner_shop_skeleton_page .skeleton_service_description {
+  width: min(230px, 90%);
+  height: 11px;
+}
+
+.owner_shop_skeleton_page .skeleton_service_status {
+  width: 75px;
+  height: 25px;
+  border-radius: 999px;
+}
+
+/* Address */
+
+.owner_shop_skeleton_page .skeleton_address_icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+}
+
+.owner_shop_skeleton_page .skeleton_address_content {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  gap: 9px;
+}
+
+.owner_shop_skeleton_page .skeleton_address_title {
+  width: 155px;
+  max-width: 90%;
+  height: 14px;
+}
+
+.owner_shop_skeleton_page .skeleton_address_line {
+  width: min(450px, 95%);
+  height: 12px;
+}
+
+.owner_shop_skeleton_page .skeleton_address_line_short {
+  width: min(300px, 75%);
+  height: 12px;
+}
+
+.owner_shop_skeleton_page .skeleton_address_meta {
+  width: 180px;
+  max-width: 70%;
+  height: 10px;
+  margin-top: 2px;
+}
+
+/* Products */
+
+.owner_shop_skeleton_page .skeleton_products_action {
+  width: 90px;
+  height: 32px;
+  border-radius: 8px;
+}
+
+.owner_shop_skeleton_page .skeleton_product_image {
+  width: 58px;
+  height: 58px;
+  border-radius: 9px;
+}
+
+.owner_shop_skeleton_page .skeleton_product_content {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  gap: 7px;
+}
+
+.owner_shop_skeleton_page .skeleton_product_title {
+  width: 145px;
+  max-width: 95%;
+  height: 13px;
+}
+
+.owner_shop_skeleton_page .skeleton_product_category {
+  width: 85px;
+  height: 10px;
+}
+
+.owner_shop_skeleton_page .skeleton_product_price {
+  width: 65px;
+  height: 13px;
+}
+
+/* Animation */
+
+@keyframes owner-shop-skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Dark theme */
+
+[data-theme='dark'] .owner_shop_skeleton_page .owner_shop_skeleton_line {
+  background: linear-gradient(90deg, #29372e 25%, #394a3d 50%, #29372e 75%);
+  background-size: 200% 100%;
+}
+
+/* Tablet */
+
+@media (max-width: 850px) {
+  .owner_shop_skeleton_page .skeleton_overview_icon {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 480px) {
+  .owner_shop_skeleton_header {
+    min-height: 125px;
+  }
+
+  .owner_shop_skeleton_header .skeleton_status {
+    width: 95px;
+    height: 24px;
+  }
+
+  .owner_shop_skeleton_header .skeleton_heading {
+    width: 240px;
+    max-width: 90%;
+    height: 27px;
+  }
+
+  .owner_shop_skeleton_header .skeleton_shop_id {
+    width: 125px;
+    height: 13px;
+  }
+
+  .owner_shop_skeleton_page .skeleton_section_title {
+    width: 145px;
+    height: 18px;
+  }
+
+  .owner_shop_skeleton_page .skeleton_section_subtitle {
+    width: 190px;
+    height: 10px;
+  }
+
+  .owner_shop_skeleton_page .skeleton_overview_icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+  }
+
+  .owner_shop_skeleton_page .skeleton_overview_label {
+    width: 65px;
+    height: 9px;
+  }
+
+  .owner_shop_skeleton_page .skeleton_overview_value {
+    width: 40px;
+    height: 18px;
+  }
+
+  .owner_shop_skeleton_page .skeleton_customer_icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .owner_shop_skeleton_page .skeleton_customer_title {
+    width: 135px;
+    height: 13px;
+  }
+
+  .owner_shop_skeleton_page .skeleton_customer_description {
+    width: 145px;
+    max-width: 100%;
+    height: 10px;
+  }
+
+  .owner_shop_skeleton_page .skeleton_customer_button {
+    width: 90px;
+    height: 36px;
+  }
+
+  .owner_shop_skeleton_page .skeleton_service_icon,
+  .owner_shop_skeleton_page .skeleton_address_icon {
+    width: 35px;
+    height: 35px;
+  }
+
+  .owner_shop_skeleton_page .skeleton_service_title {
+    width: 110px;
+    height: 12px;
+  }
+
+  .owner_shop_skeleton_page .skeleton_service_description {
+    width: 135px;
+    height: 9px;
+  }
+
+  .owner_shop_skeleton_page .skeleton_service_status {
+    width: 62px;
+    height: 22px;
+  }
+
+  .owner_shop_skeleton_page .skeleton_address_title {
+    width: 120px;
+    height: 12px;
+  }
+
+  .owner_shop_skeleton_page .skeleton_address_line {
+    height: 10px;
+  }
+
+  .owner_shop_skeleton_page .skeleton_address_line_short {
+    height: 10px;
+  }
+
+  .owner_shop_skeleton_page .skeleton_address_meta {
+    width: 135px;
+    height: 9px;
+  }
+
+  .owner_shop_skeleton_page .skeleton_products_action {
+    width: 75px;
+    height: 29px;
+  }
+
+  .owner_shop_skeleton_page .skeleton_product_image {
+    width: 52px;
+    height: 52px;
+  }
+
+  .owner_shop_skeleton_page .skeleton_product_title {
+    width: 125px;
+    height: 11px;
+  }
+
+  .owner_shop_skeleton_page .skeleton_product_category {
+    width: 75px;
+    height: 9px;
+  }
+
+  .owner_shop_skeleton_page .skeleton_product_price {
+    width: 55px;
+    height: 12px;
+  }
+}
+
+/* Very small phones */
+
+@media (max-width: 360px) {
+  .owner_shop_skeleton_page .skeleton_customer_description {
+    display: none;
+  }
+
+  .owner_shop_skeleton_page .skeleton_customer_button {
+    width: 78px;
+  }
+
+  .owner_shop_skeleton_page .skeleton_overview_icon {
+    width: 31px;
+    height: 31px;
+  }
+}
+
+/* Reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  .owner_shop_skeleton_page .owner_shop_skeleton_line {
+    animation: none;
+  }
+}

@@ -11,6 +11,8 @@ import OwnerShopServices from './components/OwnerShopServices';
 import OwnerShopAddress from './components/OwnerShopAddress';
 import OwnerShopProducts from './components/OwnerShopProducts';
 
+import OwnerShopSkeleton from './components/OwnerShopSkeleton';
+
 const API_URL =
   window.location.hostname === 'localhost' ||
   window.location.hostname === '127.0.0.1'
@@ -113,14 +115,7 @@ function OwnerShop() {
   };
 
   if (loading) {
-    return (
-      <main className="owner_shop_page">
-        <div className="owner_shop_loading">
-          <div className="owner_shop_spinner" />
-          <p>Loading your shop...</p>
-        </div>
-      </main>
-    );
+    return <OwnerShopSkeleton />;
   }
 
   if (error || !shopOwner) {

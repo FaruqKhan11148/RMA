@@ -1220,3 +1220,187 @@
     line-height: 1.5;
   }
 }
+
+/* ========================================
+   OFFERS SKELETON LOADING
+======================================== */
+
+.rma_skeleton_line {
+  display: block;
+  max-width: 100%;
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #e8eee9 25%, #f5f7f5 50%, #e8eee9 75%);
+  background-size: 200% 100%;
+  animation: rma_skeleton_shimmer 1.4s ease-in-out infinite;
+}
+
+.rma_skeleton_title {
+  height: 25px;
+  margin: 8px 0;
+}
+
+.rma_skeleton_amount {
+  height: 34px;
+  border-radius: 8px;
+}
+
+.rma_skeleton_bar {
+  height: 9px;
+  margin: 13px 0;
+  border-radius: 20px;
+}
+
+.rma_skeleton_button {
+  height: 46px;
+  margin-top: 20px;
+  border-radius: 10px;
+}
+
+.order_reward_skeleton_heading {
+  flex: 1;
+  min-width: 0;
+}
+
+.order_reward_skeleton_heading .rma_skeleton_line {
+  margin-bottom: 12px;
+}
+
+.order_reward_skeleton_heading .rma_skeleton_title {
+  margin: 14px 0;
+}
+
+.rma_skeleton_circle {
+  display: flex;
+  flex: 0 0 190px;
+  width: 190px;
+  height: 190px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #edf2ed;
+}
+
+.rma_skeleton_circle > div {
+  display: flex;
+  width: 145px;
+  height: 145px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border: 12px solid #f8faf8;
+  border-radius: 50%;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.order_reward_skeleton_info {
+  flex: 1;
+  min-width: 0;
+}
+
+.order_reward_skeleton_info > .rma_skeleton_line {
+  margin-bottom: 12px;
+}
+
+.order_reward_skeleton_status {
+  align-items: center;
+}
+
+.rma_skeleton_icon {
+  flex-shrink: 0;
+  height: 42px;
+  border-radius: 50%;
+}
+
+.order_reward_skeleton_status > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.order_reward_skeleton_status > div .rma_skeleton_line {
+  margin-bottom: 9px;
+}
+
+.order_reward_skeleton .offer_business_day .rma_skeleton_line {
+  margin-bottom: 10px;
+}
+
+.referral_code_skeleton {
+  width: 170px;
+  height: 24px;
+  margin-top: 10px;
+}
+
+.referral_reward_card .referral_id_box > div {
+  min-width: 0;
+}
+
+@keyframes rma_skeleton_shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Dark mode */
+
+[data-theme='dark'] .rma_skeleton_line {
+  background: linear-gradient(90deg, #303a32 25%, #414d43 50%, #303a32 75%);
+  background-size: 200% 100%;
+}
+
+[data-theme='dark'] .rma_skeleton_circle {
+  background: #303a32;
+}
+
+[data-theme='dark'] .rma_skeleton_circle > div {
+  border-color: #252d27;
+  background: #252d27;
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+  .order_reward_skeleton .offer_card_top {
+    gap: 16px;
+  }
+
+  .order_reward_skeleton .rma_skeleton_amount {
+    width: 75px !important;
+  }
+
+  .rma_skeleton_circle {
+    flex-basis: 170px;
+    width: 170px;
+    height: 170px;
+    align-self: center;
+  }
+
+  .rma_skeleton_circle > div {
+    width: 130px;
+    height: 130px;
+  }
+
+  .order_reward_skeleton_status {
+    align-items: flex-start;
+  }
+
+  .order_reward_skeleton_status > div {
+    overflow: hidden;
+  }
+
+  .referral_code_skeleton {
+    width: 150px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rma_skeleton_line {
+    animation: none;
+  }
+}

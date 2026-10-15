@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { fetchReferralProgress } from './utils/offersApi';
+import ReferralDetailsSkeleton from './components/ReferralDetailsSkeleton';
 
 function ReferralDetails() {
   const navigate = useNavigate();
@@ -39,11 +40,7 @@ function ReferralDetails() {
   }, [ownerId]);
 
   if (loading) {
-    return (
-      <div className="referral_details_page">
-        <p>Loading referral details...</p>
-      </div>
-    );
+    return <ReferralDetailsSkeleton />;
   }
 
   if (error) {

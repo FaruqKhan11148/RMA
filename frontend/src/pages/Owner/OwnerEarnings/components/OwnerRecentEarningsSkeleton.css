@@ -1,0 +1,262 @@
+/* =========================================
+   RECENT EARNINGS SKELETON
+========================================= */
+
+.owner_recent_earnings_skeleton {
+  --recent-skeleton-base: #e5eae7;
+  --recent-skeleton-highlight: #f7faf8;
+}
+
+.owner_recent_earnings_skeleton .recent_skeleton-line {
+  display: block;
+  height: 12px;
+  border-radius: 7px;
+  background: linear-gradient(
+    100deg,
+    var(--recent-skeleton-base) 25%,
+    var(--recent-skeleton-highlight) 50%,
+    var(--recent-skeleton-base) 75%
+  );
+  background-size: 200% 100%;
+  animation: ownerEarningsSkeletonShimmer 1.5s ease-in-out infinite;
+}
+
+/* Header */
+
+.owner_recent_earnings_skeleton .recent_skeleton-back {
+  width: 145px;
+  height: 16px;
+  margin-bottom: 24px;
+}
+
+.owner_recent_earnings_skeleton .recent_skeleton-title {
+  width: 190px;
+  height: 27px;
+  margin-bottom: 12px;
+}
+
+.owner_recent_earnings_skeleton .recent_skeleton-subtitle {
+  width: min(290px, 90%);
+  margin-bottom: 24px;
+}
+
+/* Filter */
+
+.owner_recent_earnings_skeleton .recent_skeleton-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.owner_recent_earnings_skeleton .recent_skeleton-filter-label {
+  width: 190px;
+}
+
+.owner_recent_earnings_skeleton .recent_skeleton-select {
+  width: 100%;
+  height: 44px;
+  border-radius: 10px;
+}
+
+/* Summary */
+
+.owner_recent_earnings_skeleton .owner-earnings-filter-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.owner_recent_earnings_skeleton .recent_skeleton-summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.owner_recent_earnings_skeleton .recent_skeleton-summary-label {
+  width: 90%;
+}
+
+.owner_recent_earnings_skeleton .recent_skeleton-summary-value {
+  width: 65%;
+  height: 20px;
+}
+
+/* Archive toolbar */
+
+.owner_recent_earnings_skeleton .recent_skeleton-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.owner_recent_earnings_skeleton .recent_skeleton-toolbar-label {
+  width: 180px;
+}
+
+.owner_recent_earnings_skeleton .recent_skeleton-toolbar-button {
+  width: 155px;
+  height: 40px;
+  border-radius: 9px;
+}
+
+/* Orders */
+
+.owner_recent_earnings_skeleton .recent_skeleton-section-title {
+  width: 165px;
+  height: 22px;
+  margin-bottom: 18px;
+}
+
+.owner_recent_earnings_skeleton .owner_earnings_order_list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.owner_recent_earnings_skeleton .recent_skeleton-order-card {
+  padding: 18px;
+  border: 1px solid var(--rma-border, #e5e7eb);
+  border-radius: 14px;
+  background: var(--rma-card, #fff);
+}
+
+.owner_recent_earnings_skeleton .recent_skeleton-order-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.owner_recent_earnings_skeleton .recent_skeleton-order-id {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.owner_recent_earnings_skeleton .recent_skeleton-order-label {
+  width: 65px;
+  height: 10px;
+}
+
+.owner_recent_earnings_skeleton .recent_skeleton-order-value {
+  width: 145px;
+  max-width: 90%;
+  height: 17px;
+}
+
+.owner_recent_earnings_skeleton .recent_skeleton-status {
+  width: 78px;
+  height: 25px;
+  border-radius: 20px;
+}
+
+.owner_recent_earnings_skeleton .recent_skeleton-order-details {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--rma-border, #e5e7eb);
+}
+
+.owner_recent_earnings_skeleton .recent_skeleton-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.owner_recent_earnings_skeleton .recent_skeleton-detail-label {
+  width: 85%;
+  height: 10px;
+}
+
+.owner_recent_earnings_skeleton .recent_skeleton-detail-value {
+  width: 90%;
+  height: 16px;
+}
+
+.owner_recent_earnings_skeleton .recent_skeleton-order-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 16px;
+}
+
+.owner_recent_earnings_skeleton .recent_skeleton-date {
+  width: 125px;
+  height: 10px;
+}
+
+.owner_recent_earnings_skeleton .recent_skeleton-view {
+  width: 100px;
+  height: 13px;
+}
+
+/* Dark theme */
+
+[data-theme='dark'] .owner_recent_earnings_skeleton {
+  --recent-skeleton-base: #303a35;
+  --recent-skeleton-highlight: #46534b;
+}
+
+[data-theme='dark']
+  .owner_recent_earnings_skeleton
+  .recent_skeleton-order-card {
+  border-color: var(--rma-border, #374151);
+  background: var(--rma-card, #1f2937);
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+  .owner_recent_earnings_skeleton .owner-earnings-filter-summary {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .owner_recent_earnings_skeleton .recent_skeleton-summary-item {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .owner_recent_earnings_skeleton .recent_skeleton-summary-label {
+    width: 55%;
+  }
+
+  .owner_recent_earnings_skeleton .recent_skeleton-summary-value {
+    width: 25%;
+  }
+
+  .owner_recent_earnings_skeleton .recent_skeleton-order-card {
+    padding: 14px;
+  }
+
+  .owner_recent_earnings_skeleton .recent_skeleton-order-details {
+    gap: 8px;
+  }
+
+  .owner_recent_earnings_skeleton .recent_skeleton-detail-label {
+    width: 100%;
+  }
+
+  .owner_recent_earnings_skeleton .recent_skeleton-toolbar-button {
+    width: 145px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .owner_recent_earnings_skeleton .recent_skeleton-line {
+    animation: none;
+  }
+}

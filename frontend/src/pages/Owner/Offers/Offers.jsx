@@ -47,6 +47,7 @@ function Offers() {
 
   const [referralCode, setReferralCode] = useState('');
   const [copied, setCopied] = useState(false);
+  const [loadingReferralCode, setLoadingReferralCode] = useState(true);
 
   const [referralProgress, setReferralProgress] = useState(null);
   const [loadingReferrals, setLoadingReferrals] = useState(true);
@@ -121,16 +122,21 @@ function Offers() {
 
   useEffect(() => {
     if (!shopOwner?.id) {
+      setLoadingReferralCode(false);
       return;
     }
 
     const loadReferralCode = async () => {
       try {
+        setLoadingReferralCode(true);
+
         const data = await fetchReferralCode(shopOwner.id);
 
         setReferralCode(data.referralCode || '');
       } catch (error) {
         console.error('Fetch referral code failed:', error);
+      } finally {
+        setLoadingReferralCode(false);
       }
     };
 
@@ -263,6 +269,7 @@ function Offers() {
         referralCode={referralCode}
         copied={copied}
         handleCopyReferralCode={handleCopyReferralCode}
+        loadingReferralCode={loadingReferralCode}
         referralProgress={referralProgress}
         loadingReferrals={loadingReferrals}
         referralError={referralError}

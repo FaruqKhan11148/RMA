@@ -9,6 +9,7 @@ import ManageOrdersCard from './components/ManageOrdersCard';
 import NewOrders from './components/NewOrders';
 import RecentOrders from './components/RecentOrders';
 import RejectOrderModal from './components/RejectOrderModal';
+import OwnerDashboardSkeleton from './components/OwnerDashboardSkeleton';
 
 import {
   fetchOwnerOrders,
@@ -190,11 +191,7 @@ function OwnerDashboard() {
   }
 
   if (loading) {
-    return (
-      <main className="owner_dashboard">
-        <h1>Loading orders...</h1>
-      </main>
-    );
+    return <OwnerDashboardSkeleton />;
   }
 
   if (error) {

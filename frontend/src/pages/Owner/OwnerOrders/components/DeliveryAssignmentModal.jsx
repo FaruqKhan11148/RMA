@@ -1,3 +1,5 @@
+import DeliveryPartnersSkeleton from './DeliveryPartnersSkeleton';
+
 function DeliveryAssignmentModal({
   showDeliveryModal,
   selectedDeliveryOrder,
@@ -188,9 +190,7 @@ function DeliveryAssignmentModal({
             </div>
 
             {loadingDeliveryPartners ? (
-              <div className="delivery_partner_loading">
-                Loading delivery partners...
-              </div>
+              <DeliveryPartnersSkeleton />
             ) : deliveryPartners.SHOP?.length === 0 ? (
               <div className="delivery_partner_empty">
                 <strong>No shop delivery partner available</strong>

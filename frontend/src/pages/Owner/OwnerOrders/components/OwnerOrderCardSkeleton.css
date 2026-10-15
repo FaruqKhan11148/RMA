@@ -1,0 +1,194 @@
+.owner_order_card_skeleton {
+  cursor: default;
+  pointer-events: none;
+}
+
+.owner_order_card_skeleton:hover {
+  border-color: var(--rma-border);
+  box-shadow:
+    0 5px 18px rgba(13, 65, 39, 0.055),
+    0 1px 3px rgba(13, 65, 39, 0.04);
+  transform: none;
+}
+
+.owner_order_card_skeleton::before {
+  opacity: 0.65;
+}
+
+.owner_order_card_skeleton .owner_skeleton_line,
+.owner_order_card_skeleton .owner_skeleton_block {
+  display: block;
+  flex-shrink: 0;
+  background: linear-gradient(90deg, #e5eee7 25%, #f5f9f6 50%, #e5eee7 75%);
+  background-size: 200% 100%;
+  animation: owner-order-skeleton-shimmer 1.4s ease-in-out infinite;
+  border: 0;
+}
+
+.owner_order_card_skeleton .owner_skeleton_line {
+  height: 12px;
+  border-radius: 6px;
+}
+
+.owner_order_card_skeleton .owner_skeleton_block {
+  height: 28px;
+  border-radius: 8px;
+}
+
+/* Order ID and status */
+
+.owner_order_card_skeleton .skeleton_order_id {
+  width: 105px;
+  height: 15px;
+}
+
+.owner_order_card_skeleton .skeleton_status {
+  width: 88px;
+}
+
+/* Customer */
+
+.owner_order_card_skeleton .skeleton_customer_name {
+  width: 55%;
+  max-width: 220px;
+  height: 20px;
+}
+
+.owner_order_card_skeleton .skeleton_customer_phone {
+  width: 36%;
+  max-width: 145px;
+}
+
+/* Payment */
+
+.owner_order_card_skeleton .skeleton_payment_label {
+  width: 76px;
+}
+
+.owner_order_card_skeleton .skeleton_payment_value {
+  width: 105px;
+  max-width: 48%;
+}
+
+/* Summary */
+
+.owner_order_card_skeleton .owner_order_summary > div > span {
+  background-color: transparent;
+}
+
+.owner_order_card_skeleton .skeleton_summary_label {
+  width: 58px;
+}
+
+.owner_order_card_skeleton .skeleton_summary_value {
+  width: 90px;
+  max-width: 90%;
+  height: 19px;
+}
+
+/* Items */
+
+.owner_order_card_skeleton .skeleton_items_heading {
+  width: 100px;
+  height: 14px;
+}
+
+.owner_order_card_skeleton .skeleton_item_name {
+  width: 55%;
+  max-width: 220px;
+}
+
+.owner_order_card_skeleton .skeleton_item_price {
+  width: 65px;
+}
+
+/* Delivery metadata */
+
+.owner_order_card_skeleton .skeleton_meta_badge {
+  width: 78px;
+}
+
+.owner_order_card_skeleton .skeleton_distance_badge {
+  width: 100px;
+}
+
+/* Delivery partner */
+
+.owner_order_card_skeleton .skeleton_partner_title {
+  width: 110px;
+}
+
+.owner_order_card_skeleton .skeleton_partner_description {
+  width: 190px;
+  max-width: 100%;
+}
+
+.owner_order_card_skeleton .skeleton_partner_status {
+  width: 95px;
+}
+
+/* Actions */
+
+.owner_order_card_skeleton .skeleton_action_button {
+  width: 110px;
+  min-height: 42px;
+  height: 42px;
+}
+
+.owner_order_card_skeleton .skeleton_view_button {
+  width: 115px;
+  min-height: 42px;
+  height: 42px;
+  margin-left: auto;
+}
+
+@keyframes owner-order-skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .owner_order_card_skeleton .skeleton_payment_label {
+    width: 68px;
+  }
+
+  .owner_order_card_skeleton .skeleton_payment_value {
+    width: 90px;
+  }
+
+  .owner_order_card_skeleton .skeleton_partner_status {
+    width: 85px;
+  }
+
+  .owner_order_card_skeleton .skeleton_action_button,
+  .owner_order_card_skeleton .skeleton_view_button {
+    flex: 1 1 100px;
+    width: auto;
+  }
+
+  .owner_order_card_skeleton .skeleton_view_button {
+    margin-left: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .owner_order_card_skeleton .owner_skeleton_line,
+  .owner_order_card_skeleton .owner_skeleton_block {
+    animation: none;
+  }
+}
+
+[data-theme='dark'] .owner_order_card_skeleton .owner_skeleton_line,
+[data-theme='dark'] .owner_order_card_skeleton .owner_skeleton_block {
+  background: linear-gradient(90deg, #29372e 25%, #394a3d 50%, #29372e 75%);
+  background-size: 200% 100%;
+}
+
+[data-theme='dark'] .owner_order_card_skeleton:hover {
+  border-color: var(--rma-border);
+}

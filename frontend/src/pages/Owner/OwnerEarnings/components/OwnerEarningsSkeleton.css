@@ -1,0 +1,272 @@
+/* =========================================
+   OWNER EARNINGS SKELETON
+========================================= */
+
+.owner_earnings_skeleton {
+  --earnings-skeleton-base: #e5eae7;
+  --earnings-skeleton-highlight: #f7faf8;
+}
+
+.owner_earnings_skeleton .earnings_skeleton-line,
+.owner_earnings_skeleton .earnings_skeleton-circle,
+.owner_earnings_skeleton .earnings_skeleton-chevron {
+  background: linear-gradient(
+    100deg,
+    var(--earnings-skeleton-base) 25%,
+    var(--earnings-skeleton-highlight) 50%,
+    var(--earnings-skeleton-base) 75%
+  );
+  background-size: 200% 100%;
+  animation: ownerEarningsSkeletonShimmer 1.5s ease-in-out infinite;
+}
+
+.owner_earnings_skeleton .earnings_skeleton-line {
+  display: block;
+  height: 12px;
+  border-radius: 7px;
+}
+
+/* Header */
+
+.owner_earnings_skeleton .earnings_skeleton-title {
+  width: 145px;
+  height: 27px;
+  margin-bottom: 12px;
+}
+
+.owner_earnings_skeleton .earnings_skeleton-subtitle {
+  width: min(290px, 85%);
+  height: 13px;
+  margin-bottom: 24px;
+}
+
+/* Today's earnings hero */
+
+.owner_earnings_skeleton .earnings_skeleton-hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  min-height: 215px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.owner_earnings_skeleton .earnings_skeleton-circle {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.owner_earnings_skeleton .earnings_skeleton-hero .earnings_skeleton-circle {
+  width: 52px;
+  height: 52px;
+  background: rgba(255, 255, 255, 0.25);
+  animation: ownerEarningsSkeletonShimmer 1.5s ease-in-out infinite;
+}
+
+.owner_earnings_skeleton .earnings_skeleton-label {
+  width: 115px;
+  height: 13px;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.owner_earnings_skeleton .earnings_skeleton-amount {
+  width: 180px;
+  height: 34px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.owner_earnings_skeleton .earnings_skeleton-description {
+  width: min(245px, 90%);
+  height: 11px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.owner_earnings_skeleton .earnings_skeleton-orders {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 95px;
+  height: 25px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Period cards */
+
+.owner_earnings_skeleton .owner_earnings_period_card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 13px;
+  min-height: 135px;
+}
+
+.owner_earnings_skeleton .earnings_skeleton-stat-icon {
+  width: 38px;
+  height: 38px;
+}
+
+.owner_earnings_skeleton .earnings_skeleton-stat-label {
+  width: 100px;
+  max-width: 85%;
+}
+
+.owner_earnings_skeleton .earnings_skeleton-stat-value {
+  width: 125px;
+  max-width: 95%;
+  height: 21px;
+}
+
+/* Money section */
+
+.owner_earnings_skeleton .earnings_skeleton-section-title {
+  width: 75px;
+  height: 22px;
+  margin: 26px 0 16px;
+}
+
+.owner_earnings_skeleton .owner_earnings_money_list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.owner_earnings_skeleton .owner_earnings_money_item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 78px;
+  pointer-events: none;
+}
+
+.owner_earnings_skeleton .earnings_skeleton-money-icon {
+  width: 42px;
+  height: 42px;
+}
+
+.owner_earnings_skeleton .earnings_skeleton-money-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.owner_earnings_skeleton .earnings_skeleton-money-heading {
+  width: 125px;
+  max-width: 90%;
+}
+
+.owner_earnings_skeleton .earnings_skeleton-money-value {
+  width: 90px;
+  height: 10px;
+}
+
+.owner_earnings_skeleton .earnings_skeleton-chevron {
+  width: 9px;
+  height: 9px;
+  margin-right: 5px;
+  border-radius: 2px;
+}
+
+/* Navigation cards */
+
+.owner_earnings_skeleton .earnings_skeleton-navigation-title {
+  width: 190px;
+  height: 22px;
+  margin: 26px 0 12px;
+}
+
+.owner_earnings_skeleton .earnings_skeleton-navigation-description {
+  width: min(280px, 90%);
+  margin-bottom: 18px;
+}
+
+.owner_earnings_skeleton .owner_earnings_navigation_grid {
+  gap: 12px;
+}
+
+.owner_earnings_skeleton .owner_earnings_navigation_card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 82px;
+  pointer-events: none;
+}
+
+.owner_earnings_skeleton .earnings_skeleton-navigation-icon {
+  width: 42px;
+  height: 42px;
+}
+
+.owner_earnings_skeleton .earnings_skeleton-navigation-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.owner_earnings_skeleton .earnings_skeleton-navigation-heading {
+  width: 150px;
+  max-width: 90%;
+}
+
+.owner_earnings_skeleton .earnings_skeleton-navigation-subtitle {
+  width: 190px;
+  max-width: 100%;
+  height: 10px;
+}
+
+@keyframes ownerEarningsSkeletonShimmer {
+  from {
+    background-position: 100% 0;
+  }
+
+  to {
+    background-position: -100% 0;
+  }
+}
+
+/* Dark theme */
+
+[data-theme='dark'] .owner_earnings_skeleton {
+  --earnings-skeleton-base: #303a35;
+  --earnings-skeleton-highlight: #46534b;
+}
+
+/* Mobile */
+
+@media (max-width: 480px) {
+  .owner_earnings_skeleton .earnings_skeleton-hero {
+    min-height: 205px;
+    gap: 13px;
+  }
+
+  .owner_earnings_skeleton .owner_earnings_period_card {
+    min-height: 125px;
+  }
+
+  .owner_earnings_skeleton .owner_earnings_money_item {
+    min-height: 72px;
+  }
+
+  .owner_earnings_skeleton .owner_earnings_navigation_card {
+    min-height: 76px;
+  }
+}
+
+/* Accessibility */
+
+@media (prefers-reduced-motion: reduce) {
+  .owner_earnings_skeleton .earnings_skeleton-line,
+  .owner_earnings_skeleton .earnings_skeleton-circle,
+  .owner_earnings_skeleton .earnings_skeleton-chevron {
+    animation: none;
+  }
+}

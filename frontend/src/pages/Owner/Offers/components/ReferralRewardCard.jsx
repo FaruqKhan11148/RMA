@@ -1,6 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 
-function ReferralRewardCard({ referralCode, copied, handleCopyReferralCode }) {
+function ReferralRewardCard({
+  referralCode,
+  copied,
+  handleCopyReferralCode,
+  loadingReferralCode,
+}) {
   const navigate = useNavigate();
 
   return (
@@ -25,13 +30,20 @@ function ReferralRewardCard({ referralCode, copied, handleCopyReferralCode }) {
         <div>
           <span>Your Permanent Referral Code</span>
 
-          <strong>{referralCode || 'Loading...'}</strong>
+          {loadingReferralCode ? (
+            <span
+              className="rma_skeleton_line referral_code_skeleton"
+              aria-label="Loading referral code"
+            />
+          ) : (
+            <strong>{referralCode || 'Unavailable'}</strong>
+          )}
         </div>
 
         <button
           type="button"
           onClick={handleCopyReferralCode}
-          disabled={!referralCode}
+          disabled={loadingReferralCode || !referralCode}
         >
           {copied ? 'Copied' : 'Copy Code'}
         </button>

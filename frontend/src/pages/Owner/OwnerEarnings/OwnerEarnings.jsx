@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import OwnerEarningsHeader from './components/OwnerEarningsHeader';
 import OwnerEarningsTotal from './components/OwnerEarningsTotal';
 import OwnerEarningsCards from './components/OwnerEarningsCards';
+import OwnerEarningsSkeleton from './components/OwnerEarningsSkeleton';
 
 import { fetchOwnerEarnings } from './utils/ownerEarningsApi';
 
@@ -58,14 +59,7 @@ function OwnerEarnings() {
   }, []);
 
   if (loading) {
-    return (
-      <main className="owner_earnings_page">
-        <div className="owner_earnings_loading">
-          <div className="owner_earnings_spinner" />
-          <p>Loading earnings...</p>
-        </div>
-      </main>
-    );
+    return <OwnerEarningsSkeleton />;
   }
 
   if (error) {

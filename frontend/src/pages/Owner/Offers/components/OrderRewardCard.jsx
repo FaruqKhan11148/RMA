@@ -1,3 +1,5 @@
+import OrderRewardSkeleton from './OrderRewardSkeleton';
+
 function OrderRewardCard({
   loadingOrders,
   completedOrders,
@@ -17,6 +19,10 @@ function OrderRewardCard({
   navigate,
 }) {
   const displayReward = Number(rewardAmount || 0).toFixed(2);
+
+  if (loadingOrders) {
+    return <OrderRewardSkeleton />;
+  }
 
   return (
     <section className="offer_card order_reward_card">

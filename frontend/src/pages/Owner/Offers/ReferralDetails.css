@@ -502,3 +502,129 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ========================================
+   REFERRAL DETAILS SKELETON
+======================================== */
+
+.referral_details_skeleton .referral_skeleton_back {
+  height: 14px;
+  margin-bottom: 20px;
+}
+
+.referral_details_skeleton .referral_page_header > .rma_skeleton_line {
+  margin-bottom: 10px;
+}
+
+.referral_details_skeleton .referral_page_header .rma_skeleton_title {
+  height: 29px;
+  margin: 8px 0 12px;
+}
+
+.referral_details_skeleton .referral_code_skeleton_card {
+  min-height: 115px;
+}
+
+.referral_details_skeleton .referral_code_skeleton_card > div {
+  min-width: 0;
+}
+
+.referral_details_skeleton .referral_skeleton_code {
+  height: 27px;
+  margin-top: 10px;
+}
+
+.referral_details_skeleton .referral_skeleton_copy {
+  height: 40px;
+  border-radius: 10px;
+}
+
+.referral_details_skeleton .referral_summary_card > .rma_skeleton_line {
+  margin-bottom: 10px;
+}
+
+.referral_details_skeleton .referral_skeleton_value {
+  height: 29px;
+  margin: 12px 0;
+}
+
+.referral_details_skeleton .referrals_section_header > .rma_skeleton_line {
+  margin-bottom: 10px;
+}
+
+.referral_details_skeleton .referrals_section_header .rma_skeleton_title {
+  height: 25px;
+  margin: 8px 0 12px;
+}
+
+.referral_details_skeleton .referral_skeleton_shop {
+  flex: 1;
+  min-width: 0;
+}
+
+.referral_details_skeleton .referral_skeleton_shop .rma_skeleton_line {
+  margin-bottom: 10px;
+}
+
+.referral_details_skeleton .referral_skeleton_status {
+  height: 29px;
+  border-radius: 20px;
+}
+
+.referral_details_skeleton .referral_progress_item .referral_progress_label {
+  margin-bottom: 10px;
+}
+
+.referral_details_skeleton .referral_partner_status .rma_skeleton_line {
+  margin-bottom: 8px;
+}
+
+.referral_details_skeleton .referral_earning_box .rma_skeleton_line {
+  margin-bottom: 10px;
+}
+
+.referral_details_skeleton .referral_period_box .rma_skeleton_line {
+  margin-bottom: 5px;
+}
+
+/* Dark mode */
+
+[data-theme='dark'] .referral_details_skeleton .referral_code_skeleton_card {
+  background: #203a27;
+  border-color: #35583a;
+}
+
+/* Mobile */
+
+@media (max-width: 768px) {
+  .referral_details_skeleton .referral_code_skeleton_card {
+    gap: 18px;
+  }
+
+  .referral_details_skeleton .referral_skeleton_copy {
+    width: 100% !important;
+  }
+
+  .referral_details_skeleton .referral_skeleton_status {
+    align-self: flex-start;
+  }
+
+  .referral_details_skeleton .referral_earning_box {
+    min-height: 65px;
+  }
+}
+
+@media (max-width: 480px) {
+  .referral_details_skeleton .referral_code_skeleton_card {
+    min-height: 140px;
+    padding: 17px;
+  }
+
+  .referral_details_skeleton .referral_summary_card {
+    min-height: 105px;
+  }
+
+  .referral_details_skeleton .referral_progress_card {
+    padding: 17px;
+  }
+}

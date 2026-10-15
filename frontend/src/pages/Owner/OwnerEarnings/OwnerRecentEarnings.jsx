@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import OwnerRecentOrders from './components/OwnerRecentOrders';
 import { fetchOwnerEarnings } from './utils/ownerEarningsApi';
+import OwnerRecentEarningsSkeleton from './components/OwnerRecentEarningsSkeleton';
 
 function OwnerRecentEarnings() {
   const navigate = useNavigate();
@@ -96,10 +97,7 @@ function OwnerRecentEarnings() {
       </div>
 
       {loading ? (
-        <div className="owner_earnings_loading">
-          <div className="owner_earnings_spinner" />
-          <p>Loading recent earnings...</p>
-        </div>
+        <OwnerRecentEarningsSkeleton />
       ) : error ? (
         <div className="owner_earnings_error">
           <h2>Unable to load recent earnings</h2>
