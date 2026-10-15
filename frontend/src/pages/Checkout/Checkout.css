@@ -2372,3 +2372,134 @@
     font-size: 17px;
   }
 }
+
+.direct-upi-qr {
+  margin: 24px 0;
+  padding: 20px;
+  border: 1px solid #e2e8e2;
+  border-radius: 16px;
+  background: #fff;
+  text-align: center;
+}
+
+.direct-upi-qr-image {
+  display: inline-flex;
+  margin: 16px auto;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+}
+
+.direct-upi-qr-image svg {
+  display: block;
+  width: min(280px, 100%);
+  height: auto;
+}
+
+.direct-upi-instructions {
+  max-width: 420px;
+  margin: 20px auto;
+  padding-left: 24px;
+  text-align: left;
+  line-height: 1.8;
+}
+
+.direct-upi-qr .place_order_button {
+  width: 100%;
+  max-width: 420px;
+  margin: 12px auto;
+}
+
+.direct-upi-shop-details {
+  width: 100%;
+  max-width: 420px;
+  margin: 18px auto;
+  padding: 16px;
+  text-align: left;
+  background: #f5faf5;
+  border: 1px solid #d9e8d9;
+  border-radius: 12px;
+  overflow-wrap: anywhere;
+}
+
+.direct-upi-shop-details h4 {
+  margin: 0 0 12px;
+  color: #245c35;
+}
+
+.direct-upi-shop-details p {
+  margin: 8px 0;
+  line-height: 1.5;
+}
+
+.direct-upi-shop-details .direct-upi-verification-note {
+  margin-top: 12px;
+  color: #555;
+  font-size: 13px;
+}
+
+.direct-upi-copy-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 12px 0;
+  padding: 12px;
+  background: #ffffff;
+  border: 1px solid #d9e8d9;
+  border-radius: 10px;
+}
+
+.direct-upi-copy-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.direct-upi-copy-info span {
+  color: #666;
+  font-size: 12px;
+}
+
+.direct-upi-copy-info strong {
+  color: #222;
+  font-size: 17px;
+  overflow-wrap: anywhere;
+}
+
+.direct-upi-copy-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 9px 12px;
+  color: #176b35;
+  background: #edf8ef;
+  border: 1px solid #b9ddc1;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.direct-upi-copy-button:hover {
+  background: #dff1e3;
+}
+
+@media (max-width: 380px) {
+  .direct-upi-copy-row {
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .direct-upi-copy-info strong {
+    font-size: 15px;
+  }
+
+  .direct-upi-copy-button {
+    padding: 8px;
+  }
+}

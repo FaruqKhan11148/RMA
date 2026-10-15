@@ -2,7 +2,7 @@ import './Checkout.css';
 
 import FlashMessage from '../../components/FlashMessage/FlashMessage';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useCart } from '../../context/CartContext';
@@ -71,6 +71,65 @@ function Checkout() {
     payuCharges: 0,
     customerPayableAmount: 0,
   });
+
+  const qrRef = useRef(null);
+
+  const handleSaveUpiQr = () => {
+    const svg = qrRef.current?.querySelector('svg');
+
+    if (!svg || !directUpiOrder) {
+      setError('Unable to generate the payment QR. Please try again.');
+      return;
+    }
+
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const blob = new Blob([svgData], {
+      type: 'image/svg+xml;charset=utf-8',
+    });
+    const url = URL.createObjectURL(blob);
+    const image = new Image();
+
+    image.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 660;
+      canvas.height = 660;
+
+      const context = canvas.getContext('2d');
+      context.fillStyle = '#ffffff';
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      context.drawImage(image, 20, 20, 620, 620);
+
+      URL.revokeObjectURL(url);
+
+      canvas.toBlob((pngBlob) => {
+        if (!pngBlob) {
+          setError('Unable to save the payment QR.');
+          return;
+        }
+
+        const downloadUrl = URL.createObjectURL(pngBlob);
+        const link = document.createElement('a');
+
+        link.href = downloadUrl;
+        link.download = `RMA-Payment-${directUpiOrder.orderId}.png`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
+        setFlashMessage(
+          'QR saved. Open PhonePe and upload it from your gallery.',
+        );
+      }, 'image/png');
+    };
+
+    image.onerror = () => {
+      URL.revokeObjectURL(url);
+      setError('Unable to prepare the payment QR. Please try again.');
+    };
+
+    image.src = url;
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -260,7 +319,9 @@ function Checkout() {
       // Direct UPI orders do not use Cashfree.
       if (order.paymentProvider === 'DIRECT_UPI') {
         if (!order.shopUpiId) {
-          throw new Error('The shop has not configured its UPI ID.');
+          throw new Error(
+            'The shop has not configured a UPI ID for QR payments.',
+          );
         }
 
         const payableAmount = Number(
@@ -274,6 +335,8 @@ function Checkout() {
         setDirectUpiOrder({
           orderId: order.orderId,
           shopUpiId: order.shopUpiId,
+          shopBankName: order.shopBankName || '',
+          shopUpiMobileNumber: order.shopUpiMobileNumber || '',
           amount: payableAmount,
         });
 
@@ -362,16 +425,6 @@ function Checkout() {
 
   const shop = cartItems[0];
 
-  // const directUpiPayload = directUpiOrder
-  //   ? `upi://pay?pa=${encodeURIComponent(
-  //       directUpiOrder.shopUpiId.trim(),
-  //     )}&pn=${encodeURIComponent(
-  //       shop.shopName || 'RMA Shop',
-  //     )}&am=${Number(directUpiOrder.amount).toFixed(2)}&cu=INR&tn=${encodeURIComponent(
-  //       `RMA Order ${directUpiOrder.orderId}`,
-  //     )}`
-  //   : '';
-
   const directUpiPayload = directUpiOrder
     ? `upi://pay?${new URLSearchParams({
         pa: directUpiOrder.shopUpiId.trim(),
@@ -394,49 +447,97 @@ function Checkout() {
 
       {directUpiOrder && (
         <section className="direct-upi-payment">
-          <h2>Pay the shop using UPI</h2>
-
-          <p>Order ID: {directUpiOrder.orderId}</p>
-
-          <p>
-            UPI ID: <strong>{directUpiOrder.shopUpiId}</strong>
-          </p>
-
-          <p>
-            Exact amount: <strong>₹{directUpiOrder.amount.toFixed(2)}</strong>
-          </p>
-
-          <button
-            type="button"
-            className="place_order_button"
-            onClick={() => {
-              if (!directUpiOrder?.shopUpiId || !directUpiPayload) {
-                setError('Shop UPI payment details are unavailable.');
-                return;
-              }
-
-              window.location.href = directUpiPayload;
-            }}
-          >
-            Pay using UPI
-          </button>
-
           <div className="direct-upi-qr">
-            <h3>Or scan to pay</h3>
+            <h3>Pay using PhonePe</h3>
 
-            <QRCodeSVG
-              value={directUpiPayload}
-              size={220}
-              level="M"
-              includeMargin
-            />
+            <p>
+              Order ID: <strong>{directUpiOrder.orderId}</strong>
+            </p>
 
-            <p>Scan this QR code with your UPI app.</p>
+            <p>
+              Pay exactly <strong>₹{directUpiOrder.amount.toFixed(2)}</strong>
+            </p>
+
+            <div className="direct-upi-shop-details">
+              <h4>Shop Payment Details</h4>
+
+              {directUpiOrder.shopBankName && (
+                <p>
+                  Bank: <strong>{directUpiOrder.shopBankName}</strong>
+                </p>
+              )}
+
+              {directUpiOrder.shopUpiMobileNumber && (
+                <div className="direct-upi-copy-row">
+                  <div className="direct-upi-copy-info">
+                    <span>UPI-linked mobile number</span>
+                    <strong>{directUpiOrder.shopUpiMobileNumber}</strong>
+                  </div>
+
+                  <button
+                    type="button"
+                    className="direct-upi-copy-button"
+                    onClick={async () => {
+                      try {
+                        await navigator.clipboard.writeText(
+                          directUpiOrder.shopUpiMobileNumber,
+                        );
+                        setFlashMessage('UPI mobile number copied!');
+                      } catch {
+                        setFlashMessage(
+                          'Unable to copy the number. Please copy it manually.',
+                        );
+                      }
+                    }}
+                    aria-label="Copy UPI-linked mobile number"
+                    title="Copy mobile number"
+                  >
+                    <icon name="copy" size="18px" />
+                    <span>Copy</span>
+                  </button>
+                </div>
+              )}
+
+              <p className="direct-upi-verification-note">
+                Verify the shop's payment details before paying.
+              </p>
+            </div>
+
+            <div ref={qrRef} className="direct-upi-qr-image">
+              <QRCodeSVG
+                value={directUpiPayload}
+                size={280}
+                level="M"
+                includeMargin
+                bgColor="#ffffff"
+                fgColor="#000000"
+              />
+            </div>
+
+            <button
+              type="button"
+              className="place_order_button"
+              onClick={handleSaveUpiQr}
+            >
+              Save QR & Pay with PhonePe
+            </button>
+
+            <ol className="direct-upi-instructions">
+              <li>Save the QR image to your phone.</li>
+              <li>Open PhonePe and choose Scan QR.</li>
+              <li>Choose the gallery or upload-image option.</li>
+              <li>Select the saved RMA payment QR.</li>
+              <li>Verify the shop name and exact amount before paying.</li>
+            </ol>
+
+            <p>
+              If PhonePe displays a different recipient or amount, do not pay.
+            </p>
           </div>
 
           <p>
-            After paying, the shop must verify the payment in its bank or UPI
-            app. Your order is not marked as paid automatically.
+            After payment, the shop must verify the transfer. Your order remains
+            pending until the shop confirms it.
           </p>
 
           <button

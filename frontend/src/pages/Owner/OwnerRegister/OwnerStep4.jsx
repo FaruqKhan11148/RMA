@@ -28,6 +28,10 @@ function OwnerStep4() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const [bankName, setBankName] = useState('');
+  const [upiMobileNumber, setUpiMobileNumber] = useState('');
+  const [upiId, setUpiId] = useState('');
+
   if (!ownerData) {
     return (
       <main className="owner_step4">
@@ -137,6 +141,12 @@ function OwnerStep4() {
           setConfirmAccountNumber={setConfirmAccountNumber}
           ifscCode={ifscCode}
           setIfscCode={setIfscCode}
+          bankName={bankName}
+          setBankName={setBankName}
+          upiMobileNumber={upiMobileNumber}
+          setUpiMobileNumber={setUpiMobileNumber}
+          upiId={upiId}
+          setUpiId={setUpiId}
         />
 
         <SecuritySection />

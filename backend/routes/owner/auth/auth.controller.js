@@ -22,6 +22,11 @@ async function registerOwner(req, res) {
       products,
       location,
       referralCode,
+      bankHolderName,
+      bankAccountNumber,
+      ifscCode,
+      bankName,
+      upiMobileNumber,
       upiId,
     } = req.body;
 
@@ -32,15 +37,61 @@ async function registerOwner(req, res) {
       });
     }
 
-    // Validate direct UPI payment details
     const normalizedUpiId =
       typeof upiId === 'string' ? upiId.trim().toLowerCase() : '';
 
+    const normalizedBankName =
+      typeof bankName === 'string' ? bankName.trim() : '';
+
+    const normalizedUpiMobileNumber =
+      typeof upiMobileNumber === 'string'
+        ? upiMobileNumber.replace(/\D/g, '')
+        : '';
+
+    const normalizedBankHolderName =
+      typeof bankHolderName === 'string' ? bankHolderName.trim() : '';
+
+    const normalizedBankAccountNumber =
+      typeof bankAccountNumber === 'string' ? bankAccountNumber.trim() : '';
+
+    const normalizedIfscCode =
+      typeof ifscCode === 'string' ? ifscCode.trim().toUpperCase() : '';
+
     const upiRegex = /^[a-zA-Z0-9._-]{2,256}@[a-zA-Z0-9.-]{2,64}$/;
 
-    if (!upiRegex.test(normalizedUpiId)) {
+    if (normalizedUpiId && !upiRegex.test(normalizedUpiId)) {
       return res.status(400).json({
         message: 'Please enter a valid UPI ID',
+      });
+    }
+
+    if (!normalizedBankName) {
+      return res.status(400).json({
+        message: 'Bank name is required',
+      });
+    }
+
+    if (!/^\d{10}$/.test(normalizedUpiMobileNumber)) {
+      return res.status(400).json({
+        message: 'Enter a valid 10-digit UPI-linked mobile number',
+      });
+    }
+
+    if (!normalizedBankHolderName) {
+      return res.status(400).json({
+        message: 'Account holder name is required',
+      });
+    }
+
+    if (!/^\d{9,18}$/.test(normalizedBankAccountNumber)) {
+      return res.status(400).json({
+        message: 'Enter a valid bank account number',
+      });
+    }
+
+    if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(normalizedIfscCode)) {
+      return res.status(400).json({
+        message: 'Enter a valid IFSC code',
       });
     }
 
@@ -144,9 +195,15 @@ async function registerOwner(req, res) {
       // DIRECT OWNER UPI PAYMENT
       payment: {
         provider: 'DIRECT_UPI',
+
+        bankName: normalizedBankName,
+        upiMobileNumber: normalizedUpiMobileNumber,
         upiId: normalizedUpiId,
 
-        // Retained for compatibility with existing approval workflows
+        bankHolderName: normalizedBankHolderName,
+        bankAccountNumber: normalizedBankAccountNumber,
+        ifscCode: normalizedIfscCode,
+
         rmaApprovalStatus: 'PENDING',
         onboardingStatus: 'NOT_STARTED',
         kycStatus: 'NOT_STARTED',

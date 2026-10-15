@@ -188,6 +188,18 @@ const ownerSchema = new mongoose.Schema(
         lowercase: true,
       },
 
+      upiMobileNumber: {
+        type: String,
+        default: '',
+        trim: true,
+      },
+
+      bankName: {
+        type: String,
+        default: '',
+        trim: true,
+      },
+
       accountId: {
         type: String,
         default: null,

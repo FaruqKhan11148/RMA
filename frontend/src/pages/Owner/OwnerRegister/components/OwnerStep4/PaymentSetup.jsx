@@ -3,11 +3,11 @@ function PaymentSetup() {
     <section className="payment_setup">
       <div className="payment_icon">₹</div>
 
-      <h2>Bank Account Details</h2>
+      <h2>Shop Payment Details</h2>
 
       <p>
-        Enter the bank account where your future shop settlements will be
-        received.
+        Enter your bank and UPI details so customers can identify your shop's
+        payment account when placing an order.
       </p>
     </section>
   );
