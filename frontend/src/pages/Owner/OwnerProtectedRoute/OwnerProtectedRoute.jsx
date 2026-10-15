@@ -56,14 +56,6 @@ function OwnerProtectedRoute() {
     verifyOwner();
   }, []);
 
-  if (checkingAuth) {
-    return (
-      <main>
-        <p>Checking owner session...</p>
-      </main>
-    );
-  }
-
   if (!authenticated) {
     return <Navigate to="/owner/login" replace />;
   }
