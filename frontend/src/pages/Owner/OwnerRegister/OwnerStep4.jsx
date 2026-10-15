@@ -81,6 +81,25 @@ function OwnerStep4() {
         throw new Error('Enter a valid IFSC code');
       }
 
+      if (!bankName.trim()) {
+        throw new Error('Bank name is required');
+      }
+
+      const normalizedUpiMobile = upiMobileNumber.replace(/\D/g, '');
+
+      if (!/^\d{10}$/.test(normalizedUpiMobile)) {
+        throw new Error('Enter a valid 10-digit UPI-linked mobile number');
+      }
+
+      const normalizedUpiId = upiId.trim().toLowerCase();
+
+      if (
+        normalizedUpiId &&
+        !/^[a-z0-9._-]{2,256}@[a-z0-9.-]{2,64}$/.test(normalizedUpiId)
+      ) {
+        throw new Error('Please enter a valid UPI ID');
+      }
+
       // ========================================
       // FINAL OWNER DATA
       // ========================================
@@ -89,10 +108,12 @@ function OwnerStep4() {
         ...ownerData,
 
         bankHolderName: trimmedHolderName,
-
         bankAccountNumber: trimmedAccountNumber,
-
         ifscCode: normalizedIfsc,
+
+        bankName: bankName.trim(),
+        upiMobileNumber: upiMobileNumber.replace(/\D/g, ''),
+        upiId: upiId.trim().toLowerCase(),
       };
 
       console.log('FINAL OWNER DATA:', finalOwnerData);
