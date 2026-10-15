@@ -362,14 +362,25 @@ function Checkout() {
 
   const shop = cartItems[0];
 
+  // const directUpiPayload = directUpiOrder
+  //   ? `upi://pay?pa=${encodeURIComponent(
+  //       directUpiOrder.shopUpiId.trim(),
+  //     )}&pn=${encodeURIComponent(
+  //       shop.shopName || 'RMA Shop',
+  //     )}&am=${Number(directUpiOrder.amount).toFixed(2)}&cu=INR&tn=${encodeURIComponent(
+  //       `RMA Order ${directUpiOrder.orderId}`,
+  //     )}`
+  //   : '';
+
   const directUpiPayload = directUpiOrder
-    ? `upi://pay?pa=${encodeURIComponent(
-        directUpiOrder.shopUpiId.trim(),
-      )}&pn=${encodeURIComponent(
-        shop.shopName || 'RMA Shop',
-      )}&am=${Number(directUpiOrder.amount).toFixed(2)}&cu=INR&tn=${encodeURIComponent(
-        `RMA Order ${directUpiOrder.orderId}`,
-      )}`
+    ? `upi://pay?${new URLSearchParams({
+        pa: directUpiOrder.shopUpiId.trim(),
+        pn: shop.shopName || 'RMA Shop',
+        am: Number(directUpiOrder.amount).toFixed(2),
+        cu: 'INR',
+        tr: String(directUpiOrder.orderId).slice(0, 35),
+        tn: 'RMA Order',
+      }).toString()}`
     : '';
 
   return (
@@ -395,9 +406,20 @@ function Checkout() {
             Exact amount: <strong>₹{directUpiOrder.amount.toFixed(2)}</strong>
           </p>
 
-          <a className="place_order_button" href={directUpiPayload}>
+          <button
+            type="button"
+            className="place_order_button"
+            onClick={() => {
+              if (!directUpiOrder?.shopUpiId || !directUpiPayload) {
+                setError('Shop UPI payment details are unavailable.');
+                return;
+              }
+
+              window.location.href = directUpiPayload;
+            }}
+          >
             Pay using UPI
-          </a>
+          </button>
 
           <div className="direct-upi-qr">
             <h3>Or scan to pay</h3>
