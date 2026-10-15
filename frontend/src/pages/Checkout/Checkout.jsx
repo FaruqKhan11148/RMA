@@ -17,6 +17,7 @@ import OrderSummary from './components/OrderSummary';
 import SecureNote from './components/SecureNote';
 import LocationSheet from './components/LocationSheet';
 
+import { fetchOrderById } from '../DeliveryStatus/utils/deliveryStatusApi';
 import { QRCodeSVG } from 'qrcode.react';
 import { load } from '@cashfreepayments/cashfree-js';
 
@@ -63,6 +64,11 @@ function Checkout() {
   const [deliveryCharge, setDeliveryCharge] = useState(0);
 
   const [deliveryLoading, setDeliveryLoading] = useState(false);
+
+  const [paymentFlowStatus, setPaymentFlowStatus] = useState('idle');
+  const [paymentCheckError, setPaymentCheckError] = useState('');
+  const [showPaymentOverlay, setShowPaymentOverlay] = useState(false);
+  const paymentSuccessHandled = useRef(false);
 
   const [payuPricing, setPayuPricing] = useState({
     baseAmount: 0,
@@ -268,6 +274,121 @@ function Checkout() {
     });
   }, [location.state, navigate]);
 
+  const checkDirectUpiPayment = async () => {
+    if (!directUpiOrder || paymentSuccessHandled.current) {
+      return;
+    }
+
+    try {
+      setPaymentCheckError('');
+
+      const data = await fetchOrderById(directUpiOrder.orderId);
+      const latestOrder = data?.order;
+
+      if (!latestOrder) {
+        throw new Error('Order details were not returned by the server.');
+      }
+
+      if (latestOrder.paymentStatus === 'Paid') {
+        paymentSuccessHandled.current = true;
+        setPaymentFlowStatus('success');
+        return;
+      }
+
+      if (['Failed', 'Refunded'].includes(latestOrder.paymentStatus)) {
+        setPaymentCheckError(
+          latestOrder.paymentStatus === 'Refunded'
+            ? 'This payment has been refunded.'
+            : 'The order payment has failed. Please contact the shop.',
+        );
+        return;
+      }
+
+      setPaymentFlowStatus('waiting');
+    } catch (error) {
+      console.error('Direct UPI payment status check failed:', error);
+      setPaymentCheckError(
+        'Unable to check payment status. We will try again automatically.',
+      );
+      setPaymentFlowStatus('waiting');
+    }
+  };
+
+  useEffect(() => {
+    if (paymentFlowStatus !== 'waiting' || !directUpiOrder) {
+      return undefined;
+    }
+
+    let cancelled = false;
+    let timeoutId;
+
+    const pollPaymentStatus = async () => {
+      if (cancelled || paymentSuccessHandled.current) {
+        return;
+      }
+
+      try {
+        const data = await fetchOrderById(directUpiOrder.orderId);
+        const latestOrder = data?.order;
+
+        if (latestOrder?.paymentStatus === 'Paid') {
+          if (!cancelled) {
+            paymentSuccessHandled.current = true;
+            setPaymentCheckError('');
+            setPaymentFlowStatus('success');
+          }
+          return;
+        }
+
+        if (['Failed', 'Refunded'].includes(latestOrder?.paymentStatus)) {
+          if (!cancelled) {
+            setPaymentCheckError(
+              latestOrder.paymentStatus === 'Refunded'
+                ? 'This payment has been refunded.'
+                : 'The order payment has failed. Please contact the shop.',
+            );
+            setPaymentFlowStatus('idle');
+          }
+          return;
+        }
+      } catch (error) {
+        console.error('Payment polling failed:', error);
+
+        if (!cancelled) {
+          setPaymentCheckError(
+            'Unable to check payment status. We will retry shortly.',
+          );
+        }
+      }
+
+      if (!cancelled && !paymentSuccessHandled.current) {
+        timeoutId = setTimeout(pollPaymentStatus, 3000);
+      }
+    };
+
+    // Check immediately, then repeat every three seconds if still pending.
+    pollPaymentStatus();
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timeoutId);
+    };
+  }, [paymentFlowStatus, directUpiOrder]);
+
+  useEffect(() => {
+    if (paymentFlowStatus !== 'success' || !directUpiOrder) {
+      return undefined;
+    }
+
+    const timeoutId = setTimeout(() => {
+      navigate(`/delivery-status/${directUpiOrder.orderId}`, {
+        replace: true,
+      });
+    }, 3500);
+
+    return () => clearTimeout(timeoutId);
+  }, [paymentFlowStatus, directUpiOrder, navigate]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -317,6 +438,7 @@ function Checkout() {
         shopUpiId: order?.shopUpiId,
         shopBankName: order?.shopBankName,
         shopUpiMobileNumber: order?.shopUpiMobileNumber,
+        shopBankHolderName: order?.shopBankHolderName,
       });
 
       if (!order?.orderId) {
@@ -344,6 +466,7 @@ function Checkout() {
           shopUpiId: order.shopUpiId,
           shopBankName: order.shopBankName || '',
           shopUpiMobileNumber: order.shopUpiMobileNumber || '',
+          shopBankHolderName: order.shopBankHolderName || '',
           amount: payableAmount,
         });
 
@@ -426,6 +549,22 @@ function Checkout() {
     }
   };
 
+  if (
+    directUpiOrder &&
+    (paymentFlowStatus === 'success' ||
+      (showPaymentOverlay && paymentFlowStatus === 'waiting'))
+  ) {
+    return (
+      <DirectUpiPaymentOverlay
+        status={paymentFlowStatus}
+        amount={directUpiOrder.amount}
+        orderId={directUpiOrder.orderId}
+        error={paymentCheckError}
+        onBack={() => setShowPaymentOverlay(false)}
+      />
+    );
+  }
+
   if (cartItems.length === 0) {
     return <CheckoutEmpty onExploreShops={() => navigate('/find-shop')} />;
   }
@@ -455,29 +594,52 @@ function Checkout() {
       {directUpiOrder && (
         <section className="direct-upi-payment">
           <div className="direct-upi-qr">
-            <h3>Pay using PhonePe</h3>
+            <div className="direct-upi-header">
+              <span className="direct-upi-brand">RMA</span>
+              <span className="direct-upi-secure">
+                <icon name="shield-check" size="15px" />
+                Direct UPI Payment
+              </span>
+            </div>
 
-            <p>
-              Order ID: <strong>{directUpiOrder.orderId}</strong>
+            <h3>Complete your payment</h3>
+            <p className="direct-upi-subtitle">
+              Scan the QR using PhonePe to pay the shop directly.
             </p>
 
-            <p>
-              Pay exactly <strong>₹{directUpiOrder.amount.toFixed(2)}</strong>
-            </p>
+            <div className="direct-upi-order-summary">
+              <span>Order ID</span>
+              <strong>{directUpiOrder.orderId}</strong>
+              <div className="direct-upi-amount">
+                <span>Amount to pay</span>
+                <strong>₹{directUpiOrder.amount.toFixed(2)}</strong>
+              </div>
+            </div>
 
             <div className="direct-upi-shop-details">
-              <h4>Shop Payment Details</h4>
+              <h4>
+                <icon name="store" size="18px" />
+                Shop payment details
+              </h4>
+
+              {directUpiOrder.shopBankHolderName && (
+                <div className="direct-upi-detail-row">
+                  <span>Account holder</span>
+                  <strong>{directUpiOrder.shopBankHolderName}</strong>
+                </div>
+              )}
 
               {directUpiOrder.shopBankName && (
-                <p>
-                  Bank: <strong>{directUpiOrder.shopBankName}</strong>
-                </p>
+                <div className="direct-upi-detail-row">
+                  <span>Bank name</span>
+                  <strong>{directUpiOrder.shopBankName}</strong>
+                </div>
               )}
 
               {directUpiOrder.shopUpiMobileNumber && (
                 <div className="direct-upi-copy-row">
                   <div className="direct-upi-copy-info">
-                    <span>UPI-linked mobile number</span>
+                    <span>UPI-linked mobile</span>
                     <strong>{directUpiOrder.shopUpiMobileNumber}</strong>
                   </div>
 
@@ -499,26 +661,31 @@ function Checkout() {
                     aria-label="Copy UPI-linked mobile number"
                     title="Copy mobile number"
                   >
-                    <icon name="copy" size="18px" />
+                    <icon name="copy" size="17px" />
                     <span>Copy</span>
                   </button>
                 </div>
               )}
 
               <p className="direct-upi-verification-note">
-                Verify the shop's payment details before paying.
+                <icon name="info" size="16px" />
+                Always verify the recipient and amount in PhonePe before paying.
               </p>
             </div>
 
-            <div ref={qrRef} className="direct-upi-qr-image">
-              <QRCodeSVG
-                value={directUpiPayload}
-                size={280}
-                level="M"
-                includeMargin
-                bgColor="#ffffff"
-                fgColor="#000000"
-              />
+            <div className="direct-upi-qr-panel">
+              <div className="direct-upi-qr-image" ref={qrRef}>
+                <QRCodeSVG
+                  value={directUpiPayload}
+                  size={240}
+                  level="M"
+                  includeMargin
+                  bgColor="#ffffff"
+                  fgColor="#000000"
+                />
+              </div>
+              <strong>Scan to pay</strong>
+              <span>Use PhonePe's Scan QR option</span>
             </div>
 
             <button
@@ -526,35 +693,68 @@ function Checkout() {
               className="place_order_button"
               onClick={handleSaveUpiQr}
             >
+              <icon name="download" size="18px" />
               Save QR & Pay with PhonePe
             </button>
 
-            <ol className="direct-upi-instructions">
-              <li>Save the QR image to your phone.</li>
-              <li>Open PhonePe and choose Scan QR.</li>
-              <li>Choose the gallery or upload-image option.</li>
-              <li>Select the saved RMA payment QR.</li>
-              <li>Verify the shop name and exact amount before paying.</li>
-            </ol>
+            <div className="direct-upi-instructions">
+              <h4>How to pay</h4>
+              <ol>
+                <li>Save the payment QR to your phone.</li>
+                <li>Open PhonePe and select Scan QR.</li>
+                <li>Choose the gallery or upload-image option.</li>
+                <li>Select the saved RMA QR code.</li>
+                <li>Verify the recipient and amount, then complete payment.</li>
+              </ol>
+            </div>
 
-            <p>
-              If PhonePe displays a different recipient or amount, do not pay.
+            <p className="direct-upi-warning">
+              If the recipient or amount is different, cancel the payment.
             </p>
           </div>
 
-          <p>
-            After payment, the shop must verify the transfer. Your order remains
-            pending until the shop confirms it.
-          </p>
+          <div className="direct-upi-pending">
+            <icon name="clock-3" size="20px" />
+
+            <div>
+              <strong>Waiting for shop confirmation</strong>
+              <p>
+                After completing your payment, tap the button below. RMA will
+                automatically check for confirmation from the shop.
+              </p>
+            </div>
+          </div>
+
+          {paymentCheckError && paymentFlowStatus === 'idle' && (
+            <p className="upi-poll-error" role="alert">
+              {paymentCheckError}
+            </p>
+          )}
 
           <button
             type="button"
-            className="place_order_button"
+            className="place_order_button direct-upi-status-button"
+            onClick={() => {
+              setShowPaymentOverlay(true);
+              checkDirectUpiPayment();
+            }}
+            disabled={
+              paymentFlowStatus === 'waiting' || paymentFlowStatus === 'success'
+            }
+          >
+            <icon name="check-circle" size="18px" />
+            I've Paid — Check Status
+          </button>
+
+          <button
+            type="button"
+            className="direct-upi-secondary-button"
             onClick={() =>
               navigate(`/delivery-status/${directUpiOrder.orderId}`)
             }
           >
             View Order Status
+            <icon name="arrow-right" size="18px" />
           </button>
         </section>
       )}
@@ -651,6 +851,98 @@ function Checkout() {
         />
       )}
     </main>
+  );
+}
+
+function DirectUpiPaymentOverlay({ status, amount, orderId, error, onBack }) {
+  const navigate = useNavigate();
+
+  if (status === 'idle') {
+    return null;
+  }
+
+  if (status === 'success') {
+    return (
+      <div
+        className="upi-payment-overlay upi-payment-success"
+        role="status"
+        aria-live="polite"
+      >
+        <div className="upi-confetti" aria-hidden="true">
+          {Array.from({ length: 36 }, (_, index) => (
+            <span
+              key={index}
+              style={{
+                '--confetti-index': index,
+                '--confetti-delay': `${(index % 9) * 0.08}s`,
+              }}
+            />
+          ))}
+        </div>
+
+        <div className="upi-success-content">
+          <div className="upi-success-check">
+            <svg viewBox="0 0 64 64" aria-hidden="true">
+              <circle cx="32" cy="32" r="29" />
+              <path d="M18 33 L27 42 L46 22" />
+            </svg>
+          </div>
+
+          <p className="upi-overlay-eyebrow">RMA PAYMENT</p>
+          <h1>Payment Successful!</h1>
+          <p className="upi-success-amount">₹{Number(amount).toFixed(2)}</p>
+          <p className="upi-success-description">
+            Your shop has confirmed your payment.
+          </p>
+          <p className="upi-success-order">Order ID: {orderId}</p>
+          <div className="upi-redirect-message">
+            Taking you to your order status…
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="upi-payment-overlay upi-payment-waiting"
+      role="status"
+      aria-live="polite"
+    >
+      <div className="upi-waiting-content">
+        <div className="upi-waiting-spinner" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </div>
+
+        <p className="upi-overlay-eyebrow">RMA PAYMENT</p>
+        <h1>Awaiting shop confirmation</h1>
+        <p>
+          We’re checking whether the shop has received your UPI payment. Keep
+          this page open while we verify the status.
+        </p>
+
+        <div className="upi-waiting-amount">₹{Number(amount).toFixed(2)}</div>
+
+        <p className="upi-success-order">Order ID: {orderId}</p>
+
+        <button
+          type="button"
+          className="upi-back-checkout-button"
+          onClick={onBack}
+        >
+          ← Back to Checkout
+        </button>
+
+        {error && <p className="upi-poll-error">{error}</p>}
+
+        <div className="upi-polling-indicator">
+          <span />
+          Checking payment status automatically
+        </div>
+      </div>
+    </div>
   );
 }
 

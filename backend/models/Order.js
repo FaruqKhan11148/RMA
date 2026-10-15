@@ -468,6 +468,12 @@ const orderSchema = new mongoose.Schema(
       default: 'PAYU',
     },
 
+    shopBankHolderName: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+
     shopUpiId: {
       type: String,
       default: null,

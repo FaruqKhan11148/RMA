@@ -249,6 +249,11 @@ async function createOrder(req, res) {
     const shopBankName =
       paymentProvider === 'DIRECT_UPI' ? owner.payment.bankName || '' : '';
 
+    const shopBankHolderName =
+      paymentProvider === 'DIRECT_UPI'
+        ? owner.payment?.bankHolderName || ''
+        : '';
+
     const shopUpiMobileNumber =
       paymentProvider === 'DIRECT_UPI'
         ? owner.payment.upiMobileNumber || ''
@@ -568,6 +573,7 @@ async function createOrder(req, res) {
       shopUpiId,
       shopBankName,
       shopUpiMobileNumber,
+      shopBankHolderName,
 
       ownerPaymentConfirmation: {
         status: paymentProvider === 'DIRECT_UPI' ? 'PENDING' : 'NOT_REQUIRED',
