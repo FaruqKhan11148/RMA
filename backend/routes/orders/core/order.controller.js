@@ -237,11 +237,30 @@ async function createOrder(req, res) {
       });
     }
 
-    // Direct UPI requires a configured UPI destination.
+    // ==========================================
+    // SHOP PAYMENT DETAILS
+    // ==========================================
+
     const shopUpiId =
       paymentProvider === 'DIRECT_UPI'
         ? owner.payment.upiId.trim().toLowerCase()
         : null;
+
+    const shopBankName =
+      paymentProvider === 'DIRECT_UPI' ? owner.payment.bankName || '' : '';
+
+    const shopUpiMobileNumber =
+      paymentProvider === 'DIRECT_UPI'
+        ? owner.payment.upiMobileNumber || ''
+        : '';
+
+    console.log('DIRECT UPI OWNER PAYMENT DEBUG:', {
+      paymentProvider,
+      bankName: owner.payment?.bankName,
+      upiMobileNumber: owner.payment?.upiMobileNumber,
+      shopBankName,
+      shopUpiMobileNumber,
+    });
 
     // ==========================================
     // CALCULATE ORDER AMOUNTS ON BACKEND
@@ -515,7 +534,6 @@ async function createOrder(req, res) {
         address: customer.address?.trim() || '',
       },
 
-
       orderType,
 
       // Snapshot shop pickup location
@@ -548,6 +566,8 @@ async function createOrder(req, res) {
       // Payment configuration snapshot
       paymentProvider,
       shopUpiId,
+      shopBankName,
+      shopUpiMobileNumber,
 
       ownerPaymentConfirmation: {
         status: paymentProvider === 'DIRECT_UPI' ? 'PENDING' : 'NOT_REQUIRED',

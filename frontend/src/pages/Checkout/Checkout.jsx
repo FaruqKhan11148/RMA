@@ -312,6 +312,13 @@ function Checkout() {
 
       console.log('RMA ORDER CREATED:', order);
 
+      console.log('DIRECT UPI DEBUG:', {
+        paymentProvider: order?.paymentProvider,
+        shopUpiId: order?.shopUpiId,
+        shopBankName: order?.shopBankName,
+        shopUpiMobileNumber: order?.shopUpiMobileNumber,
+      });
+
       if (!order?.orderId) {
         throw new Error('Order was created but no order ID was returned.');
       }

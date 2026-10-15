@@ -475,6 +475,16 @@ const orderSchema = new mongoose.Schema(
       lowercase: true,
     },
 
+    shopBankName: {
+      type: String,
+      default: '',
+    },
+
+    shopUpiMobileNumber: {
+      type: String,
+      default: '',
+    },
+
     // Customer's UPI ID used as the destination for manual refunds.
     // Capture this from the customer and snapshot it on the order.
     customerRefundUpiId: {
