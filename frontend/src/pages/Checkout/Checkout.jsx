@@ -391,9 +391,7 @@ function Checkout() {
               directUpiOrder.shopUpiId.trim(),
             )}&pn=${encodeURIComponent(
               shop.shopName || 'RMA Shop',
-            )}&am=${Number(directUpiOrder.amount).toFixed(2)}&cu=INR&tn=${encodeURIComponent(
-              `RMA Order ${directUpiOrder.orderId}`,
-            )}`}
+            )}&am=${Number(directUpiOrder.amount).toFixed(2)}&cu=INR`}
           >
             Pay using UPI
           </a>
