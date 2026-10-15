@@ -855,8 +855,6 @@ function Checkout() {
 }
 
 function DirectUpiPaymentOverlay({ status, amount, orderId, error, onBack }) {
-  const navigate = useNavigate();
-
   if (status === 'idle') {
     return null;
   }
@@ -875,6 +873,7 @@ function DirectUpiPaymentOverlay({ status, amount, orderId, error, onBack }) {
               style={{
                 '--confetti-index': index,
                 '--confetti-delay': `${(index % 9) * 0.08}s`,
+                '--confetti-left': `${(index * 37 + 11) % 100}%`,
               }}
             />
           ))}

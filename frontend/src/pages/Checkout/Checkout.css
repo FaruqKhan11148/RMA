@@ -2793,7 +2793,7 @@
 .upi-confetti span {
   position: absolute;
   top: -20px;
-  left: calc((var(--confetti-index) * 37 + 11) % 100 * 1%);
+  left: var(--confetti-left);
   width: 8px;
   height: 14px;
   border-radius: 2px;
