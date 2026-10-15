@@ -114,3 +114,59 @@ export const confirmDirectUpiPayment = async (orderId, reference = '') => {
 
   return data;
 };
+
+export const fetchOwnerRefundRequests = async (orderId) => {
+  const ownerToken = localStorage.getItem('rma_owner_token');
+
+  const response = await fetch(
+    `${API_URL}api/orders/owner/${encodeURIComponent(orderId)}/refunds`,
+    {
+      headers: {
+        ...(ownerToken ? { Authorization: `Bearer ${ownerToken}` } : {}),
+      },
+      credentials: 'include',
+    },
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Failed to load refund requests');
+  }
+
+  return data.refunds || [];
+};
+
+export const markOwnerRefundAsSent = async (
+  orderId,
+  refundId,
+  { reference, evidenceUrl, refundSentAt, reason },
+) => {
+  const ownerToken = localStorage.getItem('rma_owner_token');
+
+  const response = await fetch(
+    `${API_URL}api/orders/owner/${encodeURIComponent(orderId)}/refund/${encodeURIComponent(refundId)}/mark-sent`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(ownerToken ? { Authorization: `Bearer ${ownerToken}` } : {}),
+      },
+      credentials: 'include',
+      body: JSON.stringify({
+        reference,
+        evidenceUrl,
+        refundSentAt,
+        reason,
+      }),
+    },
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Failed to submit refund transfer details');
+  }
+
+  return data;
+};

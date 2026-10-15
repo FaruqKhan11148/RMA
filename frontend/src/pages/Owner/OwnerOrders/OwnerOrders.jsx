@@ -79,6 +79,7 @@ function OwnerOrders() {
 
   const [rejectionReason, setRejectionReason] = useState('');
   const [rejectionDescription, setRejectionDescription] = useState('');
+  const [paymentReceived, setPaymentReceived] = useState(null);
 
   const [rejectingOrder, setRejectingOrder] = useState(false);
 
@@ -119,6 +120,7 @@ function OwnerOrders() {
     setSelectedRejectionOrder(order);
     setRejectionReason('');
     setRejectionDescription('');
+    setPaymentReceived(null);
     setShowRejectionModal(true);
   };
 
@@ -132,40 +134,62 @@ function OwnerOrders() {
       return;
     }
 
+    const requiresPaymentDecision =
+      selectedRejectionOrder.paymentProvider === 'DIRECT_UPI' &&
+      selectedRejectionOrder.paymentMethod === 'DIRECT_UPI' &&
+      selectedRejectionOrder.paymentStatus !== 'Paid' &&
+      selectedRejectionOrder.ownerPaymentConfirmation?.status !== 'CONFIRMED';
+
+    if (requiresPaymentDecision && typeof paymentReceived !== 'boolean') {
+      alert(
+        'Please confirm whether you received the payment in your bank or UPI app.',
+      );
+      return;
+    }
+
     try {
       setRejectingOrder(true);
+
+      const payload = {
+        rejectionReason: rejectionReason.trim(),
+        rejectionDescription: rejectionDescription.trim(),
+      };
+
+      if (requiresPaymentDecision) {
+        payload.paymentReceived = paymentReceived;
+      }
 
       const data = await updateOwnerOrderStatus(
         selectedRejectionOrder.orderId,
         'Rejected',
-        {
-          rejectionReason: rejectionReason.trim(),
-          rejectionDescription: rejectionDescription.trim(),
-        },
+        payload,
       );
+
+      const updatedOrder = data.order;
 
       setOrders((currentOrders) =>
         currentOrders.map((order) =>
-          order.orderId === selectedRejectionOrder.orderId
-            ? {
-                ...order,
-                status: data.order.status,
-                rejectionReason: data.order.rejectionReason,
-                rejectionDescription: data.order.rejectionDescription,
-              }
+          order.orderId === updatedOrder.orderId
+            ? { ...order, ...updatedOrder }
             : order,
         ),
+      );
+
+      setSelectedOrder((currentOrder) =>
+        currentOrder?.orderId === updatedOrder.orderId
+          ? { ...currentOrder, ...updatedOrder }
+          : currentOrder,
       );
 
       setShowRejectionModal(false);
       setSelectedRejectionOrder(null);
       setRejectionReason('');
       setRejectionDescription('');
+      setPaymentReceived(null);
 
-      console.log('Order rejected:', data.order);
+      console.log('Order rejected:', updatedOrder);
     } catch (error) {
       console.error('Reject order failed:', error);
-
       alert(error.message || 'Unable to reject order');
     } finally {
       setRejectingOrder(false);
@@ -606,6 +630,8 @@ function OwnerOrders() {
         setRejectionReason={setRejectionReason}
         rejectionDescription={rejectionDescription}
         setRejectionDescription={setRejectionDescription}
+        paymentReceived={paymentReceived}
+        setPaymentReceived={setPaymentReceived}
         rejectingOrder={rejectingOrder}
         setShowRejectionModal={setShowRejectionModal}
         confirmRejectOrder={confirmRejectOrder}

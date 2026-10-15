@@ -50,6 +50,24 @@ function OwnerOrderCard({
     return '';
   };
 
+  const paymentProvider = order.paymentProvider || 'UNKNOWN';
+
+  const isDirectUpi = paymentProvider === 'DIRECT_UPI';
+
+  const paymentConfirmed =
+    order.ownerPaymentConfirmation?.status === 'CONFIRMED' &&
+    order.paymentStatus === 'Paid';
+
+  const paymentStatusLabel = paymentConfirmed
+    ? 'Payment received'
+    : order.paymentStatus === 'Paid'
+      ? 'Paid — verify confirmation'
+      : isDirectUpi
+        ? 'Awaiting UPI verification'
+        : order.paymentStatus || 'Payment pending';
+
+  const paymentReference = order.ownerPaymentConfirmation?.reference;
+
   return (
     <div className="owner_order_card" onClick={() => setSelectedOrder(order)}>
       {/* TOP */}
@@ -74,6 +92,53 @@ function OwnerOrderCard({
         <p>{order.customer.phone}</p>
       </div>
 
+      {/* PAYMENT VERIFICATION */}
+
+      <div className="owner_order_payment_summary">
+        <div className="owner_order_payment_row">
+          <span>Payment</span>
+
+          <strong>{isDirectUpi ? 'Direct UPI' : paymentProvider}</strong>
+        </div>
+
+        <div className="owner_order_payment_row">
+          <span>Payment status</span>
+
+          <strong
+            className={
+              paymentConfirmed
+                ? 'owner_payment_status confirmed'
+                : 'owner_payment_status pending'
+            }
+          >
+            {paymentStatusLabel}
+          </strong>
+        </div>
+
+        {paymentReference && (
+          <div className="owner_order_payment_row">
+            <span>Recorded reference</span>
+
+            <strong>{paymentReference}</strong>
+          </div>
+        )}
+
+        {isDirectUpi && order.shopUpiId && (
+          <div className="owner_order_payment_row">
+            <span>Shop UPI ID</span>
+
+            <strong>{order.shopUpiId}</strong>
+          </div>
+        )}
+
+        {isDirectUpi && !paymentConfirmed && (
+          <p className="owner_order_payment_hint">
+            Check your bank or UPI app for the matching incoming payment before
+            confirming receipt.
+          </p>
+        )}
+      </div>
+
       {/* SUMMARY */}
 
       <div className="owner_order_summary">
@@ -93,6 +158,30 @@ function OwnerOrderCard({
 
           <strong>₹{Number(order.totalPrice || 0).toFixed(2)}</strong>
         </div>
+      </div>
+
+      {/* ORDER ITEMS */}
+
+      <div className="owner_order_items_preview">
+        <strong>Order items</strong>
+
+        {order.items?.map((item, index) => (
+          <div
+            className="owner_order_item_preview"
+            key={`${item.productId || item.productName}-${index}`}
+          >
+            <span>
+              {item.productName} × {item.quantity} {item.unit || ''}
+            </span>
+
+            <strong>
+              ₹
+              {(Number(item.price || 0) * Number(item.quantity || 0)).toFixed(
+                2,
+              )}
+            </strong>
+          </div>
+        ))}
       </div>
 
       {/* ORDER META */}
@@ -137,35 +226,54 @@ function OwnerOrderCard({
         className="owner_order_card_footer"
         onClick={(event) => event.stopPropagation()}
       >
-        {order.paymentProvider === 'DIRECT_UPI' &&
-          order.ownerPaymentConfirmation?.status === 'PENDING' &&
-          order.status === 'Pending' && (
-            <button
-              type="button"
-              className="accept_order_button"
-              onClick={() => onConfirmDirectUpiPayment(order)}
-            >
-              Confirm UPI Payment
-            </button>
+        {order.status === 'Pending' &&
+          order.paymentProvider === 'DIRECT_UPI' &&
+          order.ownerPaymentConfirmation?.status !== 'CONFIRMED' && (
+            <div className="owner_upi_payment_gate">
+              <p>
+                Verify the customer's UPI payment in your bank app before
+                confirming receipt.
+              </p>
+
+              <button
+                type="button"
+                className="accept_order_button"
+                onClick={() => onConfirmDirectUpiPayment(order)}
+              >
+                Confirm UPI Payment
+              </button>
+
+              <button
+                type="button"
+                className="reject_order_button"
+                onClick={() => openRejectionModal(order)}
+              >
+                Reject Order
+              </button>
+            </div>
           )}
 
-        {order.status === 'Pending' && (
-          <>
-            <button
-              className="reject_order_button"
-              onClick={() => openRejectionModal(order)}
-            >
-              Reject
-            </button>
+        {order.status === 'Pending' &&
+          (order.paymentProvider !== 'DIRECT_UPI' ||
+            order.ownerPaymentConfirmation?.status === 'CONFIRMED') && (
+            <>
+              <button
+                type="button"
+                className="reject_order_button"
+                onClick={() => openRejectionModal(order)}
+              >
+                Reject
+              </button>
 
-            <button
-              className="accept_order_button"
-              onClick={() => handleStatusChange(order.orderId, 'Accepted')}
-            >
-              Accept
-            </button>
-          </>
-        )}
+              <button
+                type="button"
+                className="accept_order_button"
+                onClick={() => handleStatusChange(order.orderId, 'Accepted')}
+              >
+                Accept
+              </button>
+            </>
+          )}
 
         {order.status === 'Accepted' && (
           <button

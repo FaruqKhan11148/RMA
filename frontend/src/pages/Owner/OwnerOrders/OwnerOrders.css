@@ -2841,3 +2841,135 @@
     font-size: 12.5px;
   }
 }
+
+/* Payment summary */
+.owner_order_payment_summary {
+  margin: 14px 0;
+  padding: 12px 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.owner_order_payment_row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.owner_order_payment_row > span {
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.owner_order_payment_row > strong {
+  color: #1e293b;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: right;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+
+.owner_order_payment_row .owner_payment_status {
+  font-weight: 700;
+}
+
+.owner_payment_status.confirmed {
+  color: #15803d;
+}
+
+.owner_payment_status.pending {
+  color: #b45309;
+}
+
+.owner_order_payment_hint {
+  margin: 3px 0 0;
+  padding-top: 9px;
+  border-top: 1px solid #e2e8f0;
+  color: #92400e;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* Individual items in the order */
+.owner_order_items_preview {
+  margin: 12px 0;
+  padding: 12px 14px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.owner_order_items_preview > strong {
+  display: block;
+  margin-bottom: 10px;
+  color: #1e293b;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.owner_order_item_preview {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  border-top: 1px solid #f1f5f9;
+}
+
+.owner_order_item_preview:first-of-type {
+  border-top: none;
+}
+
+.owner_order_item_preview > span {
+  color: #475569;
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+
+.owner_order_item_preview > strong {
+  flex-shrink: 0;
+  color: #166534;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Mobile layout */
+@media (max-width: 480px) {
+  .owner_order_payment_summary,
+  .owner_order_items_preview {
+    padding: 10px 11px;
+    margin: 10px 0;
+  }
+
+  .owner_order_payment_row {
+    gap: 8px;
+    font-size: 12px;
+  }
+
+  .owner_order_payment_row > strong {
+    font-size: 12px;
+  }
+
+  .owner_order_payment_hint {
+    font-size: 11px;
+  }
+
+  .owner_order_item_preview {
+    gap: 8px;
+  }
+
+  .owner_order_item_preview > span,
+  .owner_order_item_preview > strong {
+    font-size: 12px;
+  }
+}

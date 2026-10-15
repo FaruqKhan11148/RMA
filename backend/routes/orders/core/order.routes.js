@@ -12,6 +12,7 @@ const {
   startRmaDispatch,
   confirmDirectUpiPayment,
   markOwnerRefundSent,
+  getOwnerRefundRequests,
 } = require('./order.controller');
 
 const router = express.Router();
@@ -39,10 +40,12 @@ router.patch(
 );
 
 router.patch(
-  '/:orderId/refund/:refundId/mark-sent',
+  '/owner/:orderId/refund/:refundId/mark-sent',
   ownerAuth,
   markOwnerRefundSent,
 );
+
+router.get('/owner/:orderId/refunds', ownerAuth, getOwnerRefundRequests);
 
 router.get('/:orderId', getOrderById);
 

@@ -475,6 +475,33 @@ async function createOrder(req, res) {
       paymentMethod,
     });
 
+    // ==========================================
+    // OPTIONAL CUSTOMER REFUND UPI ID
+    // ==========================================
+
+    const rawRefundUpiId = customer.refundUpiId;
+
+    let validatedRefundUpiId = null;
+
+    if (
+      rawRefundUpiId !== undefined &&
+      rawRefundUpiId !== null &&
+      String(rawRefundUpiId).trim() !== ''
+    ) {
+      const refundUpiId = String(rawRefundUpiId).trim().toLowerCase();
+
+      // Basic UPI ID validation; this does not verify ownership.
+      const upiIdPattern = /^[a-z0-9._-]{2,256}@[a-z0-9.-]{2,64}$/i;
+
+      if (refundUpiId.length > 100 || !upiIdPattern.test(refundUpiId)) {
+        return res.status(400).json({
+          message: 'Please enter a valid refund UPI ID or leave it blank.',
+        });
+      }
+
+      validatedRefundUpiId = refundUpiId;
+    }
+
     const order = await Order.create({
       orderId: `RMA${Date.now()}`,
 
@@ -482,7 +509,13 @@ async function createOrder(req, res) {
       guestId: storedGuestId,
 
       ownerId,
-      customer,
+      customer: {
+        name: customer.name.trim(),
+        phone: customer.phone.trim(),
+        address: customer.address?.trim() || '',
+      },
+
+
       orderType,
 
       // Snapshot shop pickup location
@@ -690,7 +723,8 @@ async function updateOrderStatus(req, res) {
 
   try {
     const { orderId } = req.params;
-    const { status, rejectionReason, rejectionDescription } = req.body;
+    const { status, rejectionReason, rejectionDescription, paymentReceived } =
+      req.body;
 
     const allowedStatuses = [
       'Pending',
@@ -954,11 +988,23 @@ async function updateOrderStatus(req, res) {
       order.rejectionDescription = rejectionDescription?.trim() || null;
 
       // Track Direct UPI refunds for manual processing.
-      if (
+      const isDirectUpiOrder =
         order.paymentProvider === 'DIRECT_UPI' &&
-        order.paymentMethod === 'DIRECT_UPI' &&
-        order.paymentStatus === 'Paid'
-      ) {
+        order.paymentMethod === 'DIRECT_UPI';
+
+      if (isDirectUpiOrder) {
+        const paymentAlreadyConfirmed =
+          order.ownerPaymentConfirmation?.status === 'CONFIRMED' &&
+          order.paymentStatus === 'Paid';
+
+        if (!paymentAlreadyConfirmed && typeof paymentReceived !== 'boolean') {
+          return res.status(409).json({
+            code: 'DIRECT_UPI_PAYMENT_CHECK_REQUIRED',
+            message:
+              'Verify the customer payment in your bank/UPI app and select whether the money was received.',
+          });
+        }
+
         const session = await mongoose.startSession();
 
         try {
@@ -968,13 +1014,86 @@ async function updateOrderStatus(req, res) {
             );
 
             if (!transactionalOrder) {
-              throw new Error('Order not found during refund processing');
+              const error = new Error('Order not found during rejection');
+              error.statusCode = 404;
+              throw error;
+            }
+
+            if (String(transactionalOrder.ownerId) !== String(req.owner._id)) {
+              const error = new Error(
+                'You are not authorized to reject this order',
+              );
+              error.statusCode = 403;
+              throw error;
             }
 
             if (transactionalOrder.status !== 'Pending') {
-              throw new Error(
+              const error = new Error(
                 `Order cannot be rejected because it is already ${transactionalOrder.status}`,
               );
+              error.statusCode = 409;
+              throw error;
+            }
+
+            const transactionPaymentConfirmed =
+              transactionalOrder.ownerPaymentConfirmation?.status ===
+                'CONFIRMED' && transactionalOrder.paymentStatus === 'Paid';
+
+            if (!transactionPaymentConfirmed) {
+              if (paymentReceived === true) {
+                const confirmedAt = new Date();
+                const previousPaymentStatus = transactionalOrder.paymentStatus;
+                const previousConfirmationStatus =
+                  transactionalOrder.ownerPaymentConfirmation?.status ||
+                  'PENDING';
+
+                transactionalOrder.ownerPaymentConfirmation = {
+                  status: 'CONFIRMED',
+                  confirmedAt,
+                  reference:
+                    transactionalOrder.ownerPaymentConfirmation?.reference ||
+                    null,
+                };
+
+                transactionalOrder.paymentStatus = 'Paid';
+                transactionalOrder.paidAt = confirmedAt;
+
+                await transactionalOrder.save({ session });
+
+                await recordPaymentAudit({
+                  order: transactionalOrder,
+                  actorType: 'OWNER',
+                  actorId: req.owner._id,
+                  action: 'PAYMENT_CONFIRMED',
+                  previousStatus: previousPaymentStatus,
+                  newStatus: 'Paid',
+                  reason:
+                    'Owner verified payment receipt while rejecting the order',
+                  reference:
+                    transactionalOrder.ownerPaymentConfirmation.reference,
+                  metadata: {
+                    previousConfirmationStatus,
+                    confirmationStatus: 'CONFIRMED',
+                    paymentProvider: transactionalOrder.paymentProvider,
+                    paymentMethod: transactionalOrder.paymentMethod,
+                  },
+                  session,
+                });
+              } else {
+                // Owner explicitly confirmed no payment was received.
+                // Reject without creating a refund obligation.
+                transactionalOrder.rejectedAt = new Date();
+                transactionalOrder.rejectionReason = rejectionReason.trim();
+                transactionalOrder.rejectionDescription =
+                  rejectionDescription?.trim() || null;
+                transactionalOrder.status = 'Rejected';
+
+                await transactionalOrder.save({ session });
+
+                Object.assign(order, transactionalOrder.toObject());
+                orderSavedInTransaction = true;
+                return;
+              }
             }
 
             const refundAmount =
@@ -995,9 +1114,11 @@ async function updateOrderStatus(req, res) {
             }).session(session);
 
             if (existingRefund) {
-              throw new Error(
+              const error = new Error(
                 'An active refund request already exists for this order',
               );
+              error.statusCode = 409;
+              throw error;
             }
 
             const previousRefundStatus =
@@ -1011,7 +1132,7 @@ async function updateOrderStatus(req, res) {
                   requestedByType: 'OWNER',
                   requestedById: req.owner._id,
                   amount: refundAmount,
-                  reason: transactionalOrder.rejectionReason,
+                  reason: rejectionReason.trim(),
                   status: 'REQUESTED',
                   activeRefund: true,
                 },
@@ -1019,16 +1140,34 @@ async function updateOrderStatus(req, res) {
               { session },
             );
 
+            transactionalOrder.rejectedAt = new Date();
+            transactionalOrder.rejectionReason = rejectionReason.trim();
+            transactionalOrder.rejectionDescription =
+              rejectionDescription?.trim() || null;
+
             transactionalOrder.refundStatus = 'Pending';
             transactionalOrder.refundAmount = refundAmount;
             transactionalOrder.refundType = 'FULL';
-            transactionalOrder.refundReason =
-              transactionalOrder.rejectionReason;
+            transactionalOrder.refundReason = rejectionReason.trim();
             transactionalOrder.refundInitiatedAt = new Date();
             transactionalOrder.settlementStatus = 'NotRequired';
-
-            // Keep rejection and refund records consistent.
             transactionalOrder.status = 'Rejected';
+
+            await recordPaymentAudit({
+              order: transactionalOrder,
+              actorType: 'OWNER',
+              actorId: req.owner._id,
+              action: 'PAYMENT_NOT_RECEIVED_CONFIRMED',
+              previousStatus: transactionalOrder.paymentStatus,
+              newStatus: transactionalOrder.paymentStatus,
+              reason: 'Owner verified that payment was not received',
+              metadata: {
+                paymentProvider: transactionalOrder.paymentProvider,
+                paymentMethod: transactionalOrder.paymentMethod,
+                rejectionReason: rejectionReason.trim(),
+              },
+              session,
+            });
 
             await transactionalOrder.save({ session });
 
@@ -1039,7 +1178,7 @@ async function updateOrderStatus(req, res) {
               action: 'REFUND_REQUESTED',
               previousStatus: previousRefundStatus,
               newStatus: 'Pending',
-              reason: transactionalOrder.rejectionReason,
+              reason: rejectionReason.trim(),
               metadata: {
                 refundId: String(refund._id),
                 amount: refundAmount,
@@ -1048,17 +1187,12 @@ async function updateOrderStatus(req, res) {
               session,
             });
 
-            // Use the transactionally updated document below.
             Object.assign(order, transactionalOrder.toObject());
-
             orderSavedInTransaction = true;
           });
         } catch (refundError) {
-          if (
-            refundError.message ===
-            'An active refund request already exists for this order'
-          ) {
-            return res.status(409).json({
+          if (refundError.statusCode) {
+            return res.status(refundError.statusCode).json({
               message: refundError.message,
             });
           }
@@ -1931,6 +2065,49 @@ async function markOwnerRefundSent(req, res) {
   }
 }
 
+async function getOwnerRefundRequests(req, res) {
+  try {
+    const { orderId } = req.params;
+
+    const order = await Order.findOne({ orderId }).select(
+      '_id orderId ownerId',
+    );
+
+    if (!order) {
+      return res.status(404).json({
+        message: 'Order not found.',
+      });
+    }
+
+    if (String(order.ownerId) !== String(req.owner._id)) {
+      return res.status(403).json({
+        message: 'You are not authorized to view refunds for this order.',
+      });
+    }
+
+    const refunds = await PaymentRefund.find({
+      order: order._id,
+      orderId: order.orderId,
+    })
+      .select(
+        '_id orderId amount reason status activeRefund shopResponse refundReference refundEvidenceUrl refundSentAt verifiedAt adminNotes createdAt updatedAt',
+      )
+      .sort({ createdAt: -1 })
+      .lean();
+
+    return res.status(200).json({
+      success: true,
+      refunds,
+    });
+  } catch (error) {
+    console.error('Get owner refund requests failed:', error);
+
+    return res.status(500).json({
+      message: 'Unable to load refund requests.',
+    });
+  }
+}
+
 module.exports = {
   initiatePayURefund,
   calculateDistanceKm,
@@ -1943,4 +2120,5 @@ module.exports = {
   startRmaDispatch,
   confirmDirectUpiPayment,
   markOwnerRefundSent,
+  getOwnerRefundRequests,
 };

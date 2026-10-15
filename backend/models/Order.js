@@ -475,6 +475,16 @@ const orderSchema = new mongoose.Schema(
       lowercase: true,
     },
 
+    // Customer's UPI ID used as the destination for manual refunds.
+    // Capture this from the customer and snapshot it on the order.
+    customerRefundUpiId: {
+      type: String,
+      default: null,
+      trim: true,
+      lowercase: true,
+      maxlength: 100,
+    },
+
     // Owner's confirmation of direct UPI payment receipt.
     ownerPaymentConfirmation: {
       status: {

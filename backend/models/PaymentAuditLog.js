@@ -31,6 +31,7 @@ const paymentAuditLogSchema = new mongoose.Schema(
       type: String,
       enum: [
         'PAYMENT_CONFIRMED',
+        'PAYMENT_NOT_RECEIVED_CONFIRMED',
         'PAYMENT_DISPUTED',
         'REFUND_REQUESTED',
         'REFUND_UNDER_REVIEW',

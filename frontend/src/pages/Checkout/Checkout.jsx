@@ -388,8 +388,12 @@ function Checkout() {
           <a
             className="place_order_button"
             href={`upi://pay?pa=${encodeURIComponent(
-              directUpiOrder.shopUpiId,
-            )}&pn=${encodeURIComponent(shop.shopName || 'RMA Shop')}&am=${directUpiOrder.amount.toFixed(2)}&cu=INR&tn=${encodeURIComponent(`RMA Order ${directUpiOrder.orderId}`)}`}
+              directUpiOrder.shopUpiId.trim(),
+            )}&pn=${encodeURIComponent(
+              shop.shopName || 'RMA Shop',
+            )}&am=${Number(directUpiOrder.amount).toFixed(2)}&cu=INR&tn=${encodeURIComponent(
+              `RMA Order ${directUpiOrder.orderId}`,
+            )}`}
           >
             Pay using UPI
           </a>

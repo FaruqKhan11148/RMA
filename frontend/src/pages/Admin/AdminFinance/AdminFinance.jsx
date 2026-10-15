@@ -13,6 +13,7 @@ import FinanceWithdrawals from './components/Withdrawals/FinanceWithdrawals';
 import RmaAccount from './components/RmaAccount/RmaAccount';
 import OwnerAccounts from './components/OwnerAccounts/OwnerAccounts';
 import DeliveryPartnerAccounts from './components/DeliveryPartnerAccounts/DeliveryPartnerAccounts';
+import AdminRefunds from './components/Refunds/AdminRefunds';
 
 import { fetchFinanceData } from './utils/Finance/financeApi';
 
@@ -140,6 +141,18 @@ function AdminFinance() {
         >
           Withdrawals
         </button>
+
+        <button
+          type="button"
+          className={
+            activeSection === 'refunds'
+              ? 'finance-center-nav-item active'
+              : 'finance-center-nav-item'
+          }
+          onClick={() => setActiveSection('refunds')}
+        >
+          Refunds
+        </button>
       </div>
 
       {activeSection === 'rma-account' ? (
@@ -150,6 +163,8 @@ function AdminFinance() {
         <DeliveryPartnerAccounts />
       ) : activeSection === 'withdrawals' ? (
         <FinanceWithdrawals />
+      ) : activeSection === 'refunds' ? (
+        <AdminRefunds />
       ) : (
         <>
           {error && <div className="finance-error">{error}</div>}
