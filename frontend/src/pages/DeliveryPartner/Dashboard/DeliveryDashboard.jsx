@@ -202,8 +202,6 @@ function DeliveryDashboard() {
     }
   };
 
-  const activeOrders = dashboard.activeOrders;
-
   return (
     <main className="delivery_dashboard">
       <DeliveryDashboardHeader partnerName={partnerName} isOnline={isOnline} />
