@@ -24,6 +24,11 @@ export const getActiveOrders = (dashboardStats, activeSection) => {
   }
 
   if (activeSection === 'pending') {
+    // Active accepted orders can have been created on an earlier day.
+    if (Array.isArray(dashboardStats?.activeOrders)) {
+      return dashboardStats.activeOrders;
+    }
+
     return dashboardStats?.orders?.pending || [];
   }
 

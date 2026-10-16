@@ -1,5 +1,6 @@
 import './DeliveryOrders.css';
 import { useCallback, useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 import DeliveryLogin from './components/DeliveryLogin';
 import DeliveryOtpLogin from './components/DeliveryOtpLogin';
@@ -8,6 +9,8 @@ import DeliveryDashboardTabs from './components/DeliveryDashboardTabs';
 import DeliveryOrdersList from './components/DeliveryOrdersList';
 import DeliveryOrderDetails from './components/DeliveryOrderDetails';
 import DeliveryAssignmentRequests from './components/DeliveryAssignmentRequests';
+
+import DeliveryOrdersSkeleton from './components/DeliveryOrdersSkeleton';
 
 import {
   requestDeliveryOtp,
@@ -41,6 +44,9 @@ function DeliveryOrders() {
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState('');
 
+  const [searchParams, setSearchParams] = useSearchParams();
+  const requestedOrderId = searchParams.get('orderId');
+
   const [deliveryPerson, setDeliveryPerson] = useState(getStoredDeliveryPerson);
 
   const [loginStep, setLoginStep] = useState(getInitialLoginStep);
@@ -60,15 +66,15 @@ function DeliveryOrders() {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
+  const [dashboardLoading, setDashboardLoading] = useState(true);
+
   // DELIVERY PARTNER LOCATION TRACKING
 
   useEffect(() => {
-    if (loginStep !== 'dashboard') {
-      return;
-    }
+    if (loginStep !== 'dashboard') return;
 
     if (!navigator.geolocation) {
-      setError('Location tracking is not supported on this device.');
+      setError('GPS tracking is not supported on this device.');
       return;
     }
 
@@ -81,56 +87,81 @@ function DeliveryOrders() {
 
     const watchId = navigator.geolocation.watchPosition(
       async (position) => {
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
+        const { latitude, longitude, accuracy } = position.coords;
 
-        setCurrentLocation({
+        console.log('Delivery GPS reading:', {
           latitude,
           longitude,
+          accuracyMeters: accuracy,
+          timestamp: new Date(position.timestamp).toISOString(),
         });
 
-        console.log('Delivery boy GPS:', {
-          latitude,
-          longitude,
-        });
+        if (
+          !Number.isFinite(latitude) ||
+          !Number.isFinite(longitude) ||
+          !Number.isFinite(accuracy) ||
+          latitude < -90 ||
+          latitude > 90 ||
+          longitude < -180 ||
+          longitude > 180
+        ) {
+          setError('Invalid GPS coordinates. Please retry.');
+          return;
+        }
+
+        if (accuracy > 100) {
+          setError(
+            `GPS accuracy is approximately ${Math.round(accuracy)} metres. ` +
+              'Move near a window or use a phone with GPS, then retry.',
+          );
+          return;
+        }
+
+        setCurrentLocation({ latitude, longitude });
+        setError('');
 
         try {
-          await fetch(`${API_URL}api/delivery/location`, {
+          const response = await fetch(`${API_URL}api/delivery/location`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
               Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({
-              latitude,
-              longitude,
-            }),
+            body: JSON.stringify({ latitude, longitude }),
           });
+
+          const result = await response.json().catch(() => ({}));
+
+          if (!response.ok) {
+            console.error('Location update rejected:', response.status, result);
+            setError(result.message || 'Unable to save your GPS location.');
+          }
         } catch (locationError) {
           console.error('Delivery location update failed:', locationError);
+          setError('Unable to send your GPS location. Check your connection.');
         }
       },
       (locationError) => {
         console.error('GPS error:', locationError);
 
-        if (locationError.code === 1) {
-          setError('Location permission is required for delivery tracking.');
-        } else if (locationError.code === 2) {
-          setError('Unable to determine your current location.');
-        } else if (locationError.code === 3) {
-          setError('Location request timed out.');
-        }
+        setError(
+          locationError.code === 1
+            ? 'Location permission is required for delivery tracking.'
+            : locationError.code === 2
+              ? 'Unable to determine your current location.'
+              : locationError.code === 3
+                ? 'GPS request timed out. Please retry.'
+                : 'Unable to get your current location.',
+        );
       },
       {
         enableHighAccuracy: true,
-        maximumAge: 5000,
-        timeout: 10000,
+        maximumAge: 0,
+        timeout: 20000,
       },
     );
 
-    return () => {
-      navigator.geolocation.clearWatch(watchId);
-    };
+    return () => navigator.geolocation.clearWatch(watchId);
   }, [loginStep]);
 
   // GET PENDING DELIVERY ASSIGNMENTS
@@ -164,6 +195,18 @@ function DeliveryOrders() {
       setLoadingAssignments(false);
     }
   }, []);
+
+  useEffect(() => {
+    if (loginStep !== 'dashboard') return undefined;
+
+    const intervalId = window.setInterval(() => {
+      if (document.visibilityState === 'visible') {
+        loadPendingAssignments();
+      }
+    }, 15000);
+
+    return () => window.clearInterval(intervalId);
+  }, [loginStep, loadPendingAssignments]);
 
   useEffect(() => {
     const handleServiceWorkerMessage = (event) => {
@@ -240,6 +283,31 @@ function DeliveryOrders() {
     };
   }, [loginStep, loadPendingAssignments]);
 
+  useEffect(() => {
+    if (!requestedOrderId || !dashboardStats) return;
+
+    const orderGroups = [
+      dashboardStats.activeOrders,
+      dashboardStats.orders?.today,
+      dashboardStats.orders?.pending,
+      dashboardStats.orders?.completedToday,
+      dashboardStats.orders?.allDelivered,
+    ];
+
+    const order = orderGroups
+      .filter(Array.isArray)
+      .flat()
+      .find((item) => item.orderId === requestedOrderId);
+
+    if (!order) return;
+
+    setSelectedOrder(order);
+
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete('orderId');
+    setSearchParams(nextParams, { replace: true });
+  }, [requestedOrderId, dashboardStats, searchParams, setSearchParams]);
+
   // REQUEST DELIVERY LOGIN OTP
 
   const handleRequestOtp = async () => {
@@ -315,45 +383,53 @@ function DeliveryOrders() {
 
   // GET DELIVERY DASHBOARD
 
+  // GET DELIVERY DASHBOARD
+
   useEffect(() => {
     if (loginStep !== 'dashboard') {
       return;
     }
 
+    let cancelled = false;
+
     const loadDashboard = async () => {
+      setDashboardLoading(true);
+
       try {
         const token = localStorage.getItem('delivery_token');
 
         if (!token) {
+          if (!cancelled) {
+            setError('Delivery login session not found.');
+          }
           return;
         }
 
         const data = await fetchDeliveryDashboard(token);
 
-        console.log('Delivery dashboard stats:', data);
-
-        console.log(
-          'DELIVERY TODAY ORDER STATUS:',
-          JSON.stringify(
-            data.orders?.today?.map((order) => ({
-              orderId: order.orderId,
-              status: order.status,
-              deliveryAssignmentStatus: order.deliveryAssignmentStatus,
-              deliveryAssignmentType: order.deliveryAssignmentType,
-              deliveryPersonId: order.deliveryPersonId,
-            })),
-            null,
-            2,
-          ),
-        );
-
-        setDashboardStats(data);
+        if (!cancelled) {
+          setDashboardStats(data);
+        }
       } catch (dashboardError) {
         console.error('Fetch delivery dashboard failed:', dashboardError);
+
+        if (!cancelled) {
+          setError(
+            dashboardError.message || 'Unable to load delivery dashboard',
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setDashboardLoading(false);
+        }
       }
     };
 
     loadDashboard();
+
+    return () => {
+      cancelled = true;
+    };
   }, [loginStep]);
 
   useEffect(() => {
@@ -564,12 +640,16 @@ function DeliveryOrders() {
         onLogout={handleLogout}
       />
 
-      {dashboardStats && (
-        <DeliveryDashboardTabs
-          dashboardStats={dashboardStats}
-          activeSection={activeSection}
-          onSectionChange={setActiveSection}
-        />
+      {dashboardLoading ? (
+        <DeliveryOrdersSkeleton variant="tabs" />
+      ) : (
+        dashboardStats && (
+          <DeliveryDashboardTabs
+            dashboardStats={dashboardStats}
+            activeSection={activeSection}
+            onSectionChange={setActiveSection}
+          />
+        )
       )}
 
       {error && <p className="delivery_error_message">{error}</p>}
@@ -583,11 +663,15 @@ function DeliveryOrders() {
         onReject={handleRejectAssignment}
       />
 
-      <DeliveryOrdersList
-        orders={activeOrders}
-        activeSection={activeSection}
-        onSelectOrder={setSelectedOrder}
-      />
+      {dashboardLoading ? (
+        <DeliveryOrdersSkeleton variant="orders" />
+      ) : (
+        <DeliveryOrdersList
+          orders={activeOrders}
+          activeSection={activeSection}
+          onSelectOrder={setSelectedOrder}
+        />
+      )}
     </main>
   );
 }

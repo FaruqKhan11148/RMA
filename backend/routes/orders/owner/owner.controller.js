@@ -333,6 +333,233 @@ async function getOwnerOrders(req, res) {
   }
 }
 
+// ==========================================
+// GET DELIVERY-CHARGE PAYMENT DETAILS
+// ==========================================
+
+async function getDeliveryChargePayment(req, res) {
+  try {
+    const { orderId } = req.params;
+    const authenticatedOwnerId = req.owner?._id;
+
+    if (!authenticatedOwnerId) {
+      return res.status(401).json({
+        message: 'Owner authentication required',
+      });
+    }
+
+    const order = await Order.findOne({
+      orderId,
+      ownerId: authenticatedOwnerId,
+      orderType: 'delivery',
+    }).populate('deliveryPersonId', 'name phone bankAccount.paymentUpiId');
+
+    if (!order) {
+      return res.status(404).json({
+        message: 'Delivery order not found',
+      });
+    }
+
+    if (
+      !order.deliveryPersonId ||
+      order.deliveryAssignmentStatus !== 'ACCEPTED'
+    ) {
+      return res.status(400).json({
+        message:
+          'The order must have an assigned delivery partner who accepted it',
+      });
+    }
+
+    const upiId = order.deliveryPersonId.bankAccount?.paymentUpiId;
+
+    if (!upiId) {
+      return res.status(400).json({
+        message: 'The assigned delivery partner has not added a UPI ID',
+      });
+    }
+
+    // Initialize the payment record only when it has not been initialized.
+    // Never reset an owner-marked or DP-confirmed payment.
+    if (
+      !order.deliveryChargePayment ||
+      order.deliveryChargePayment.status === 'NOT_REQUIRED'
+    ) {
+      order.deliveryChargePayment = {
+        status: 'PENDING',
+        amount: Number(order.deliveryCharge || 0),
+        upiId,
+        requestedAt: new Date(),
+      };
+
+      await order.save();
+    }
+
+    return res.status(200).json({
+      success: true,
+      payment: {
+        orderId: order.orderId,
+        amount: Number(order.deliveryChargePayment.amount || 0),
+        upiId: order.deliveryChargePayment.upiId || upiId,
+        status: order.deliveryChargePayment.status,
+        requestedAt: order.deliveryChargePayment.requestedAt,
+        ownerMarkedPaidAt: order.deliveryChargePayment.ownerMarkedPaidAt,
+        confirmedAt: order.deliveryChargePayment.confirmedAt,
+        deliveryPerson: {
+          name: order.deliveryPersonId.name,
+          phone: order.deliveryPersonId.phone,
+        },
+      },
+    });
+  } catch (error) {
+    console.error('Get delivery-charge payment failed:', error);
+
+    return res.status(500).json({
+      message: 'Failed to get delivery-charge payment details',
+    });
+  }
+}
+
+// ==========================================
+// OWNER MARKS DELIVERY-CHARGE TRANSFER AS SENT
+// ==========================================
+
+async function markDeliveryChargePaymentSent(req, res) {
+  try {
+    const { orderId } = req.params;
+    const authenticatedOwnerId = req.owner?._id;
+
+    if (!authenticatedOwnerId) {
+      return res.status(401).json({
+        message: 'Owner authentication required',
+      });
+    }
+
+    const order = await Order.findOne({
+      orderId,
+      ownerId: authenticatedOwnerId,
+      orderType: 'delivery',
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        message: 'Delivery order not found',
+      });
+    }
+
+    if (
+      !order.deliveryPersonId ||
+      order.deliveryAssignmentStatus !== 'ACCEPTED'
+    ) {
+      return res.status(400).json({
+        message: 'An accepted delivery assignment is required',
+      });
+    }
+
+    const payment = order.deliveryChargePayment;
+
+    if (!payment || payment.status === 'NOT_REQUIRED') {
+      return res.status(400).json({
+        message: 'Retrieve the delivery payment details before marking it sent',
+      });
+    }
+
+    if (payment.status === 'CONFIRMED') {
+      return res.status(409).json({
+        message: 'The delivery partner has already confirmed receipt',
+        status: payment.status,
+      });
+    }
+
+    if (payment.status === 'OWNER_MARKED_PAID') {
+      return res.status(409).json({
+        message: 'You have already marked this payment as sent',
+        status: payment.status,
+      });
+    }
+
+    if (payment.status !== 'PENDING') {
+      return res.status(400).json({
+        message: `Cannot mark payment sent from status ${payment.status}`,
+      });
+    }
+
+    // Keep the amount and UPI ID from the saved order record.
+    // Do not accept either value from the frontend.
+    payment.status = 'OWNER_MARKED_PAID';
+    payment.ownerMarkedPaidAt = new Date();
+
+    await order.save();
+
+    return res.status(200).json({
+      success: true,
+      message:
+        'Payment marked as sent. The delivery partner must verify receipt.',
+      payment: {
+        orderId: order.orderId,
+        amount: payment.amount,
+        upiId: payment.upiId,
+        status: payment.status,
+        ownerMarkedPaidAt: payment.ownerMarkedPaidAt,
+      },
+    });
+  } catch (error) {
+    console.error('Mark delivery-charge payment sent failed:', error);
+
+    return res.status(500).json({
+      message: 'Failed to mark delivery-charge payment as sent',
+    });
+  }
+}
+
+// ==========================================
+// GET DELIVERY-CHARGE PAYMENT STATUS
+// ==========================================
+
+async function getDeliveryChargePaymentStatus(req, res) {
+  try {
+    const { orderId } = req.params;
+    const authenticatedOwnerId = req.owner?._id;
+
+    if (!authenticatedOwnerId) {
+      return res.status(401).json({
+        message: 'Owner authentication required',
+      });
+    }
+
+    const order = await Order.findOne({
+      orderId,
+      ownerId: authenticatedOwnerId,
+      orderType: 'delivery',
+    }).select(
+      'orderId deliveryCharge deliveryPersonId deliveryAssignmentStatus deliveryChargePayment',
+    );
+
+    if (!order) {
+      return res.status(404).json({
+        message: 'Delivery order not found',
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      payment: {
+        orderId: order.orderId,
+        amount: order.deliveryChargePayment?.amount ?? order.deliveryCharge,
+        status: order.deliveryChargePayment?.status || 'NOT_REQUIRED',
+        ownerMarkedPaidAt:
+          order.deliveryChargePayment?.ownerMarkedPaidAt || null,
+        confirmedAt: order.deliveryChargePayment?.confirmedAt || null,
+      },
+    });
+  } catch (error) {
+    console.error('Get delivery-charge payment status failed:', error);
+
+    return res.status(500).json({
+      message: 'Failed to get delivery-charge payment status',
+    });
+  }
+}
+
 async function getReferralProgress(req, res) {
   try {
     const { ownerId } = req.params;
@@ -474,4 +701,8 @@ module.exports = {
   getReferralProgress,
   testFinalizeReferralQualification,
   archiveOwnerEarnings,
+
+  getDeliveryChargePayment,
+  markDeliveryChargePaymentSent,
+  getDeliveryChargePaymentStatus,
 };

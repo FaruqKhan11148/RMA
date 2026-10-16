@@ -170,3 +170,52 @@ export const markOwnerRefundAsSent = async (
 
   return data;
 };
+
+export const fetchDeliveryChargePayment = async (orderId) => {
+  const ownerToken = localStorage.getItem('rma_owner_token');
+
+  const response = await fetch(
+    `${API_URL}api/orders/owner/orders/${encodeURIComponent(orderId)}/delivery-charge-payment`,
+    {
+      headers: {
+        ...(ownerToken ? { Authorization: `Bearer ${ownerToken}` } : {}),
+      },
+      credentials: 'include',
+    },
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Failed to load delivery-charge payment');
+  }
+
+  return data;
+};
+
+export const markDeliveryChargePaymentSent = async (orderId) => {
+  const ownerToken = localStorage.getItem('rma_owner_token');
+
+  const response = await fetch(
+    `${API_URL}api/orders/owner/orders/${encodeURIComponent(orderId)}/delivery-charge-payment/mark-sent`,
+    {
+      method: 'POST',
+      headers: {
+        ...(ownerToken ? { Authorization: `Bearer ${ownerToken}` } : {}),
+      },
+      credentials: 'include',
+    },
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    const error = new Error(
+      data.message || 'Failed to mark delivery-charge payment as sent',
+    );
+    error.status = response.status;
+    throw error;
+  }
+
+  return data;
+};

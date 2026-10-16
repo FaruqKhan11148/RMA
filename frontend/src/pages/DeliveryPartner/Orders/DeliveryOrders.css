@@ -5180,3 +5180,31 @@
   cursor: not-allowed;
   opacity: 0.65;
 }
+
+.delivery_charge_payment {
+  border: 1px solid #d7e6dc;
+  border-radius: 12px;
+  background: #f7faf8;
+}
+
+.delivery_charge_amount {
+  font-size: 16px;
+}
+
+.delivery_payment_qr {
+  display: flex;
+  justify-content: center;
+  margin: 18px 0;
+  padding: 16px;
+  background: #fff;
+  border-radius: 10px;
+}
+
+.delivery_payment_error {
+  color: #b42318;
+}
+
+.delivery_payment_confirmed {
+  color: #167344;
+  font-weight: 600;
+}

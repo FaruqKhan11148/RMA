@@ -1,0 +1,253 @@
+.delivery_orders_skeleton {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.delivery_orders_skeleton_block {
+  flex-shrink: 0;
+  background: linear-gradient(90deg, #e8ede9 25%, #f5f7f5 50%, #e8ede9 75%);
+  background-size: 200% 100%;
+  border-radius: 6px;
+  animation: delivery_orders_shimmer 1.4s ease-in-out infinite;
+}
+
+/* Dashboard tabs */
+
+.delivery_tabs_skeleton {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.delivery_tab_skeleton {
+  min-width: 0;
+  min-height: 85px;
+  padding: 16px 17px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 12px;
+  background: #ffffff;
+  border: 1px solid #e1e7e2;
+  border-radius: 14px;
+}
+
+.delivery_tab_label_skeleton {
+  width: 65%;
+  height: 11px;
+}
+
+.delivery_tab_count_skeleton {
+  width: 45px;
+  height: 25px;
+}
+
+/* Orders list */
+
+.delivery_order_list_skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.delivery_order_heading_skeleton {
+  width: 155px;
+  height: 22px;
+  margin: 4px 0 4px;
+}
+
+.delivery_order_card_skeleton {
+  box-sizing: border-box;
+  padding: 22px;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #e2e8e3;
+  border-radius: 16px;
+  box-shadow: 0 7px 22px rgba(23, 32, 24, 0.035);
+}
+
+/* Order ID and status */
+
+.delivery_order_top_skeleton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e5eae6;
+}
+
+.delivery_order_id_skeleton {
+  width: 145px;
+  max-width: 60%;
+  height: 16px;
+}
+
+.delivery_order_status_skeleton {
+  width: 95px;
+  height: 25px;
+  border-radius: 999px;
+}
+
+/* Customer information */
+
+.delivery_order_info_skeleton {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 18px 0;
+}
+
+.delivery_customer_name_skeleton {
+  width: 48%;
+  max-width: 240px;
+  height: 22px;
+}
+
+.delivery_customer_info_skeleton {
+  width: 42%;
+  max-width: 200px;
+  height: 13px;
+}
+
+.delivery_customer_address_skeleton {
+  width: 75%;
+  max-width: 430px;
+  height: 13px;
+}
+
+/* Items */
+
+.delivery_order_items_skeleton {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #f7faf7;
+  border: 1px solid #e1e7e2;
+  border-radius: 11px;
+}
+
+.delivery_item_line_skeleton {
+  width: 75%;
+  max-width: 300px;
+  height: 13px;
+}
+
+.delivery_item_line_skeleton.short {
+  width: 48%;
+  max-width: 190px;
+}
+
+/* Total and action */
+
+.delivery_order_footer_skeleton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 15px;
+}
+
+.delivery_order_total_skeleton {
+  width: 100px;
+  height: 24px;
+}
+
+.delivery_order_button_skeleton {
+  width: 155px;
+  max-width: 45%;
+  height: 47px;
+  border-radius: 10px;
+}
+
+/* Dark mode */
+
+[data-theme='dark'] .delivery_orders_skeleton_block {
+  background: linear-gradient(90deg, #303630 25%, #414841 50%, #303630 75%);
+  background-size: 200% 100%;
+}
+
+[data-theme='dark'] .delivery_tab_skeleton,
+[data-theme='dark'] .delivery_order_card_skeleton {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .delivery_order_top_skeleton {
+  border-bottom-color: var(--rma-border);
+}
+
+[data-theme='dark'] .delivery_order_items_skeleton {
+  background: var(--rma-bg-secondary);
+  border-color: var(--rma-border);
+}
+
+/* Mobile */
+
+@media (max-width: 700px) {
+  .delivery_tabs_skeleton {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .delivery_tab_skeleton {
+    min-height: 75px;
+    padding: 13px;
+  }
+
+  .delivery_order_card_skeleton {
+    padding: 17px;
+    border-radius: 14px;
+  }
+
+  .delivery_order_button_skeleton {
+    width: 125px;
+  }
+}
+
+@media (max-width: 380px) {
+  .delivery_tab_skeleton {
+    padding: 12px;
+  }
+
+  .delivery_order_card_skeleton {
+    padding: 14px;
+  }
+
+  .delivery_order_id_skeleton {
+    width: 115px;
+  }
+
+  .delivery_order_status_skeleton {
+    width: 78px;
+  }
+
+  .delivery_order_button_skeleton {
+    width: 105px;
+    height: 43px;
+  }
+}
+
+/* Accessibility */
+
+@keyframes delivery_orders_shimmer {
+  from {
+    background-position: 100% 0;
+  }
+
+  to {
+    background-position: -100% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .delivery_orders_skeleton_block {
+    animation: none;
+  }
+}

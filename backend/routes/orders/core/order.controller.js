@@ -387,7 +387,8 @@ async function createOrder(req, res) {
       }
 
       // deliveryCharge = Number((18 + 8 * deliveryDistance).toFixed(2));
-      deliveryCharge = 0;
+      deliveryCharge = Number((2 + 0 * deliveryDistance).toFixed(2));
+      // deliveryCharge = 0;
     }
 
     // ==========================================
@@ -1890,8 +1891,8 @@ async function previewDeliveryCharge(req, res) {
 
     // RMA delivery pricing:
     // ₹18 base + ₹8 per kilometre
-    // const deliveryCharge = Number((18 + 8 * deliveryDistance).toFixed(2));
-    const deliveryCharge = 0;
+    const deliveryCharge = Number((2 + 0 * deliveryDistance).toFixed(2));
+    // const deliveryCharge = 0;
 
     return res.status(200).json({
       deliveryDistance: Number(deliveryDistance.toFixed(2)),

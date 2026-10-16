@@ -44,6 +44,25 @@ function Navbar() {
     };
   }, []);
 
+  const handleProfileClick = () => {
+    const deliveryToken = localStorage.getItem('delivery_token');
+    const deliveryPerson = localStorage.getItem('delivery_person');
+
+    if (deliveryToken && deliveryPerson) {
+      navigate('/delivery/profile');
+      return;
+    }
+
+    const owner = localStorage.getItem('rma_owner');
+
+    if (owner) {
+      navigate('/owner/profile');
+      return;
+    }
+
+    navigate('/customer/profile');
+  };
+
   return (
     <header
       className={[
@@ -106,7 +125,7 @@ function Navbar() {
         <button
           type="button"
           className="rma_navbar_profile"
-          onClick={() => navigate('/profile')}
+          onClick={handleProfileClick}
           aria-label="Profile"
         >
           <svg

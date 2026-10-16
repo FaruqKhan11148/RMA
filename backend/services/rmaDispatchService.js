@@ -5,6 +5,7 @@ const { createAndSendNotification } = require('./notificationService');
 
 const DISPATCH_LOCATION_MAX_AGE_MS = 10 * 60 * 1000;
 const DP_TO_SHOP_MAX_DISTANCE_KM = 5;
+const MAX_ACTIVE_ORDERS_PER_TRIP = 6;
 
 function calculateDistanceKm(lat1, lon1, lat2, lon2) {
   const earthRadiusKm = 6371;
@@ -20,9 +21,39 @@ function calculateDistanceKm(lat1, lon1, lat2, lon2) {
       Math.cos(toRadians(lat2)) *
       Math.sin(longitudeDifference / 2) ** 2;
 
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const clampedA = Math.min(1, Math.max(0, a));
+  const c = 2 * Math.atan2(Math.sqrt(clampedA), Math.sqrt(1 - clampedA));
 
   return earthRadiusKm * c;
+}
+
+// ==========================================
+// COUNT ACTIVE ACCEPTED ORDERS
+// ==========================================
+
+async function getActiveOrderCounts(deliveryPersonIds) {
+  if (!deliveryPersonIds.length) {
+    return new Map();
+  }
+
+  const activeOrders = await Order.aggregate([
+    {
+      $match: {
+        deliveryPersonId: { $in: deliveryPersonIds },
+        deliveryAssignmentStatus: 'ACCEPTED',
+        status: { $in: ['Ready', 'OutForDelivery'] },
+        orderType: 'delivery',
+      },
+    },
+    {
+      $group: {
+        _id: '$deliveryPersonId',
+        count: { $sum: 1 },
+      },
+    },
+  ]);
+
+  return new Map(activeOrders.map((entry) => [String(entry._id), entry.count]));
 }
 
 // ==========================================
@@ -35,27 +66,27 @@ async function findEligibleRmaDeliveryPartners(
 ) {
   const locationCutoff = new Date(Date.now() - DISPATCH_LOCATION_MAX_AGE_MS);
 
-  const excludedIds = new Set(
-    excludedDeliveryPersonIds.map((id) => String(id)),
-  );
+  const excludedIds = new Set(excludedDeliveryPersonIds.map(String));
 
+  const shopLatitude = Number(order.pickupLocation?.latitude);
+  const shopLongitude = Number(order.pickupLocation?.longitude);
+
+  if (!Number.isFinite(shopLatitude) || !Number.isFinite(shopLongitude)) {
+    return [];
+  }
+
+  // AVAILABLE partners can receive orders.
+  // BUSY partners can also receive orders if they
+  // still have capacity in their current trip.
   const partners = await DeliveryPerson.find({
     deliveryType: 'RMA',
     applicationStatus: 'APPROVED',
     isActive: true,
-    availabilityStatus: 'AVAILABLE',
+    availabilityStatus: { $in: ['AVAILABLE', 'BUSY'] },
 
-    'currentLocation.latitude': {
-      $ne: null,
-    },
-
-    'currentLocation.longitude': {
-      $ne: null,
-    },
-
-    'currentLocation.updatedAt': {
-      $gte: locationCutoff,
-    },
+    'currentLocation.latitude': { $ne: null },
+    'currentLocation.longitude': { $ne: null },
+    'currentLocation.updatedAt': { $gte: locationCutoff },
   })
     .select(
       'name phone deliveryType applicationStatus isActive availabilityStatus currentLocation',
@@ -66,68 +97,23 @@ async function findEligibleRmaDeliveryPartners(
     return [];
   }
 
-  // ==========================================
-  // V1 ACTIVE DELIVERY CHECK
-  // ==========================================
-  //
-  // For V1, an RMA DP already handling an active
-  // delivery is excluded from a new dispatch.
-  //
-  // IMPORTANT:
-  // This is intentionally isolated here so later
-  // we can replace it with batch/route compatibility.
-  //
-
-  const activeOrders = await Order.find({
-    deliveryPersonId: {
-      $in: partners.map((partner) => partner._id),
-    },
-
-    deliveryAssignmentType: 'RMA',
-
-    deliveryAssignmentStatus: 'ACCEPTED',
-
-    status: 'OutForDelivery',
-  })
-    .select('deliveryPersonId')
-    .lean();
-
-  const busyPartnerIds = new Set(
-    activeOrders.map((activeOrder) => String(activeOrder.deliveryPersonId)),
+  const activeOrderCounts = await getActiveOrderCounts(
+    partners.map((partner) => partner._id),
   );
-
-  // ==========================================
-  // SHOP LOCATION
-  // ==========================================
-
-  const shopLatitude = Number(order.pickupLocation?.latitude);
-
-  const shopLongitude = Number(order.pickupLocation?.longitude);
-
-  if (!Number.isFinite(shopLatitude) || !Number.isFinite(shopLongitude)) {
-    return [];
-  }
-
-  // ==========================================
-  // FILTER + CALCULATE DISTANCE
-  // ==========================================
 
   return partners
     .filter((partner) => {
       const partnerId = String(partner._id);
 
-      // Do not offer this order again to a DP who
-      // already rejected it.
+      // Don't immediately offer the same order back
+      // to a partner who rejected it.
       if (excludedIds.has(partnerId)) {
         return false;
       }
 
-      // V1: DP already handling an active delivery.
-      if (busyPartnerIds.has(partnerId)) {
-        return false;
-      }
+      const activeCount = activeOrderCounts.get(partnerId) || 0;
 
-      return true;
+      return activeCount < MAX_ACTIVE_ORDERS_PER_TRIP;
     })
     .map((partner) => {
       const partnerLatitude = Number(partner.currentLocation?.latitude);
@@ -141,10 +127,7 @@ async function findEligibleRmaDeliveryPartners(
         shopLongitude,
       );
 
-      return {
-        partner,
-        distance,
-      };
+      return { partner, distance };
     })
     .filter(
       (candidate) =>
@@ -171,56 +154,68 @@ async function offerRmaOrderToNextPartner(
     return {
       success: false,
       status: 'NO_PARTNER_AVAILABLE',
-      message: 'No RMA delivery partner is currently available nearby',
+      message:
+        'No eligible RMA delivery partner with available trip capacity was found nearby.',
     };
   }
 
-  // ==========================================
-  // TRY CANDIDATES IN ORDER
-  // ==========================================
-
   for (const candidate of candidates) {
-    const deliveryPerson = await DeliveryPerson.findById(candidate.partner._id);
+    // Recheck the partner immediately before offering.
+    const deliveryPerson = await DeliveryPerson.findOne({
+      _id: candidate.partner._id,
+      deliveryType: 'RMA',
+      applicationStatus: 'APPROVED',
+      isActive: true,
+      availabilityStatus: { $in: ['AVAILABLE', 'BUSY'] },
+      'currentLocation.updatedAt': {
+        $gte: new Date(Date.now() - DISPATCH_LOCATION_MAX_AGE_MS),
+      },
+    });
 
     if (!deliveryPerson) {
       continue;
     }
 
-    // Re-check the partner because their state may
-    // have changed between candidate discovery and
-    // this point.
-    if (
-      deliveryPerson.deliveryType !== 'RMA' ||
-      deliveryPerson.applicationStatus !== 'APPROVED' ||
-      !deliveryPerson.isActive ||
-      deliveryPerson.availabilityStatus !== 'AVAILABLE'
-    ) {
+    const activeOrderCounts = await getActiveOrderCounts([deliveryPerson._id]);
+
+    const activeCount = activeOrderCounts.get(String(deliveryPerson._id)) || 0;
+
+    if (activeCount >= MAX_ACTIVE_ORDERS_PER_TRIP) {
       continue;
     }
 
-    // ==========================================
-    // ASSIGN PENDING OFFER
-    // ==========================================
+    // Prevent overwriting an order that another dispatch
+    // operation has already reassigned or changed.
+    const updatedOrder = await Order.findOneAndUpdate(
+      {
+        _id: order._id,
+        deliveryAssignmentType: 'RMA',
+        deliveryAssignmentStatus: { $in: ['PENDING', 'REJECTED'] },
+        status: 'Ready',
+        orderType: 'delivery',
+      },
+      {
+        $set: {
+          deliveryAssignmentType: 'RMA',
+          deliveryPersonId: deliveryPerson._id,
+          deliveryAssignmentStatus: 'PENDING',
+          deliveryPickupStatus: 'PENDING',
+          deliveryOtp: null,
+          deliveryOtpGeneratedAt: null,
+          otpVerified: false,
+        },
+      },
+      { new: true },
+    );
 
-    order.deliveryAssignmentType = 'RMA';
-
-    order.deliveryPersonId = deliveryPerson._id;
-
-    order.deliveryAssignmentStatus = 'PENDING';
-
-    order.deliveryPickupStatus = 'PENDING';
-
-    order.deliveryOtp = null;
-
-    order.deliveryOtpGeneratedAt = null;
-
-    order.otpVerified = false;
-
-    await order.save();
-
-    // ==========================================
-    // NOTIFY DELIVERY PARTNER
-    // ==========================================
+    if (!updatedOrder) {
+      return {
+        success: false,
+        status: 'ORDER_ASSIGNMENT_CHANGED',
+        message:
+          'The order assignment changed before a delivery partner could be selected.',
+      };
+    }
 
     try {
       await createAndSendNotification({
@@ -228,13 +223,15 @@ async function offerRmaOrderToNextPartner(
         recipientId: deliveryPerson._id,
         type: 'DELIVERY_ASSIGNMENT_REQUEST',
         title: 'New Delivery Request',
-        message: `Order ${order.orderId} is waiting for your response.`,
-        orderId: order.orderId,
+        message: `Order ${updatedOrder.orderId} is waiting for your response.`,
+        orderId: updatedOrder.orderId,
         data: {
           screen: 'delivery-orders',
-          orderId: order.orderId,
+          orderId: updatedOrder.orderId,
           assignmentStatus: 'PENDING',
           deliveryAssignmentType: 'RMA',
+          activeOrderCount: activeCount,
+          maxActiveOrders: MAX_ACTIVE_ORDERS_PER_TRIP,
         },
       });
     } catch (notificationError) {
@@ -249,17 +246,16 @@ async function offerRmaOrderToNextPartner(
       status: 'WAITING_FOR_ACCEPTANCE',
       deliveryPersonId: deliveryPerson._id,
       distance: Number(candidate.distance.toFixed(4)),
+      activeOrderCount: activeCount,
+      maxActiveOrders: MAX_ACTIVE_ORDERS_PER_TRIP,
     };
   }
-
-  // ==========================================
-  // NO VALID PARTNER REMAINED
-  // ==========================================
 
   return {
     success: false,
     status: 'NO_PARTNER_AVAILABLE',
-    message: 'No RMA delivery partner is currently available nearby',
+    message:
+      'No eligible RMA delivery partner with available trip capacity was found nearby.',
   };
 }
 
@@ -269,6 +265,8 @@ async function offerRmaOrderToNextPartner(
 
 module.exports = {
   calculateDistanceKm,
+  getActiveOrderCounts,
   findEligibleRmaDeliveryPartners,
   offerRmaOrderToNextPartner,
+  MAX_ACTIVE_ORDERS_PER_TRIP,
 };

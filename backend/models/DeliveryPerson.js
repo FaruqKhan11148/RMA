@@ -316,6 +316,14 @@ const deliveryPersonSchema = new mongoose.Schema(
         trim: true,
       },
 
+      paymentUpiId: {
+        type: String,
+        default: null,
+        trim: true,
+        lowercase: true,
+        maxlength: 100,
+      },
+
       accountNumber: {
         type: String,
         default: null,
@@ -390,6 +398,11 @@ const deliveryPersonSchema = new mongoose.Schema(
       type: String,
       enum: ['OFFLINE', 'AVAILABLE', 'BUSY'],
       default: 'OFFLINE',
+    },
+
+    assignmentLockVersion: {
+      type: Number,
+      default: 0,
     },
 
     lastOnlineAt: {

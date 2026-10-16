@@ -16,6 +16,7 @@ function ApplicationBank() {
     ifsc: '',
     bankName: '',
     proofImageUrl: '',
+    paymentUpiId: '',
   });
 
   const [loading, setLoading] = useState(true);
@@ -36,6 +37,7 @@ function ApplicationBank() {
           ifsc: application?.bankAccount?.ifsc || '',
           bankName: application?.bankAccount?.bankName || '',
           proofImageUrl: application?.bankAccount?.proofImageUrl || '',
+          paymentUpiId: application?.bankAccount?.paymentUpiId || '',
         });
       } catch (loadError) {
         console.error('Failed to load bank application:', loadError);
@@ -68,6 +70,7 @@ function ApplicationBank() {
     const ifsc = bank.ifsc.trim().toUpperCase();
     const bankName = bank.bankName.trim();
     const proofImageUrl = bank.proofImageUrl.trim();
+    const paymentUpiId = bank.paymentUpiId.trim().toLowerCase();
 
     if (!accountHolderName) {
       setError('Please enter the account holder name.');
@@ -81,6 +84,16 @@ function ApplicationBank() {
 
     if (!/^\d{9,18}$/.test(accountNumber)) {
       setError('Please enter a valid bank account number.');
+      return;
+    }
+
+    if (!paymentUpiId) {
+      setError('Please enter your UPI ID to receive delivery-charge payments.');
+      return;
+    }
+
+    if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+$/.test(paymentUpiId)) {
+      setError('Please enter a valid UPI ID, for example name@oksbi.');
       return;
     }
 
@@ -113,6 +126,7 @@ function ApplicationBank() {
         ifsc,
         bankName,
         proofImageUrl,
+        paymentUpiId,
       });
 
       setTimeout(() => {
@@ -154,10 +168,10 @@ function ApplicationBank() {
         <div className="application_bank_header">
           <div className="application_bank_icon">₹</div>
 
-          <h1>Bank Details</h1>
-
+          <h1>Bank &amp; UPI Details</h1>
           <p>
-            Add the bank account where your delivery earnings will be settled.
+            Add your bank account for earnings settlements and your UPI ID for
+            receiving delivery-charge payments from shop owners.
           </p>
         </div>
 
@@ -246,6 +260,34 @@ function ApplicationBank() {
               disabled={saving}
               autoComplete="organization"
             />
+          </div>
+
+          <div className="application_bank_field">
+            <label htmlFor="bank-payment-upi-id">
+              UPI ID for Receiving Payments
+            </label>
+
+            <input
+              id="bank-payment-upi-id"
+              name="paymentUpiId"
+              type="text"
+              placeholder="Example: yourname@oksbi"
+              value={bank.paymentUpiId}
+              onChange={(event) => {
+                setBank((previous) => ({
+                  ...previous,
+                  paymentUpiId: event.target.value.trimStart(),
+                }));
+              }}
+              disabled={saving}
+              autoComplete="off"
+              maxLength={100}
+            />
+
+            <small>
+              Use the UPI ID linked to your own bank account. Verify it in your
+              UPI app.
+            </small>
           </div>
 
           <div className="application_bank_field">

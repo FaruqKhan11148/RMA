@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
+import { QRCodeSVG } from 'qrcode.react';
 
 import OrderLocationMap from '../../../../components/map/OrderLocationMap';
 
 import {
   fetchDeliveryRoute,
   collectDeliveryOrder,
+  fetchDeliveryChargePayment,
+  confirmDeliveryChargePayment,
 } from '../utils/deliveryOrdersApi';
 
 function DeliveryOrderDetails({
@@ -20,6 +23,13 @@ function DeliveryOrderDetails({
   const [routeError, setRouteError] = useState('');
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
   const [collecting, setCollecting] = useState(false);
+
+  const [deliveryPayment, setDeliveryPayment] = useState(
+    order.deliveryChargePayment || null,
+  );
+  const [paymentLoading, setPaymentLoading] = useState(false);
+  const [confirmingPayment, setConfirmingPayment] = useState(false);
+  const [paymentError, setPaymentError] = useState('');
 
   const isCollected = order.deliveryPickupStatus === 'COLLECTED';
 
@@ -79,8 +89,100 @@ function DeliveryOrderDetails({
     destination?.longitude,
   ]);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadDeliveryPayment = async () => {
+      if (
+        order.orderType !== 'delivery' ||
+        order.deliveryAssignmentStatus !== 'ACCEPTED' ||
+        order.deliveryPickupStatus === 'COLLECTED'
+      ) {
+        return;
+      }
+
+      try {
+        setPaymentLoading(true);
+        setPaymentError('');
+
+        const token = localStorage.getItem('delivery_token');
+        const data = await fetchDeliveryChargePayment(token, order.orderId);
+
+        if (!cancelled) {
+          setDeliveryPayment(
+            data.deliveryChargePayment ||
+              data.order?.deliveryChargePayment ||
+              data,
+          );
+        }
+      } catch (error) {
+        if (!cancelled) {
+          console.error('Failed to load delivery-charge payment:', error);
+          setPaymentError(error.message || 'Unable to load payment details.');
+        }
+      } finally {
+        if (!cancelled) {
+          setPaymentLoading(false);
+        }
+      }
+    };
+
+    loadDeliveryPayment();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    order.orderId,
+    order.orderType,
+    order.deliveryAssignmentStatus,
+    order.deliveryPickupStatus,
+  ]);
+
+  const handleConfirmDeliveryPayment = async () => {
+    if (confirmingPayment) return;
+
+    const confirmed = window.confirm(
+      'Have you checked your bank or UPI app and verified that the delivery charge was credited?',
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setConfirmingPayment(true);
+      setPaymentError('');
+
+      const token = localStorage.getItem('delivery_token');
+      const data = await confirmDeliveryChargePayment(token, order.orderId);
+
+      setDeliveryPayment(
+        data.deliveryChargePayment || {
+          ...deliveryPayment,
+          status: 'CONFIRMED',
+          confirmedAt: new Date().toISOString(),
+        },
+      );
+
+      alert(
+        'Delivery-charge receipt confirmed. You can now collect the order.',
+      );
+    } catch (error) {
+      console.error('Failed to confirm delivery-charge payment:', error);
+      setPaymentError(error.message || 'Unable to confirm payment.');
+    } finally {
+      setConfirmingPayment(false);
+    }
+  };
+
   const handleCollectOrder = async () => {
     if (collecting) {
+      return;
+    }
+
+    if (deliveryPayment?.status !== 'CONFIRMED') {
+      alert(
+        'Confirm receipt of the delivery charge before collecting this order.',
+      );
       return;
     }
 
@@ -275,6 +377,78 @@ function DeliveryOrderDetails({
           <strong>₹{Number(order.totalPrice || 0).toFixed(2)}</strong>
         </div>
       </section>
+
+      {!isCollected &&
+        order.deliveryAssignmentStatus === 'ACCEPTED' &&
+        order.deliveryPickupStatus === 'PENDING' &&
+        order.status === 'Ready' && (
+          <section className="delivery_details_section delivery_charge_payment">
+            <h3>Delivery Charge Payment</h3>
+
+            <p className="delivery_charge_amount">
+              Amount to receive:{' '}
+              <strong>
+                ₹
+                {Number(
+                  deliveryPayment?.amount ?? order.deliveryCharge ?? 0,
+                ).toFixed(2)}
+              </strong>
+            </p>
+
+            {paymentLoading ? (
+              <p>Loading your payment details...</p>
+            ) : paymentError ? (
+              <p className="delivery_payment_error" role="alert">
+                {paymentError}
+              </p>
+            ) : deliveryPayment?.status === 'CONFIRMED' ? (
+              <p className="delivery_payment_confirmed">
+                Payment received and confirmed. You can collect the order.
+              </p>
+            ) : deliveryPayment?.status === 'PENDING' &&
+              deliveryPayment?.upiId ? (
+              <>
+                <div className="delivery_payment_qr">
+                  <QRCodeSVG
+                    value={`upi://pay?pa=${encodeURIComponent(
+                      deliveryPayment.upiId,
+                    )}&am=${Number(deliveryPayment.amount).toFixed(
+                      2,
+                    )}&cu=INR&tn=${encodeURIComponent(
+                      `RMA delivery charge ${order.orderId}`,
+                    )}`}
+                    size={220}
+                    level="M"
+                    includeMargin
+                  />
+                </div>
+
+                <p>
+                  Show this QR code to the shop owner. Ask them to pay the exact
+                  amount, then verify the credit in your own UPI or bank app.
+                </p>
+
+                <p>
+                  Your UPI ID: <strong>{deliveryPayment.upiId}</strong>
+                </p>
+
+                <button
+                  type="button"
+                  className="delivery_collect_button"
+                  onClick={handleConfirmDeliveryPayment}
+                  disabled={confirmingPayment}
+                >
+                  {confirmingPayment ? 'Confirming...' : 'Payment Received'}
+                </button>
+              </>
+            ) : (
+              <p>
+                Payment details are not available yet. Please refresh or try
+                again.
+              </p>
+            )}
+          </section>
+        )}
 
       {!isCollected &&
         order.deliveryAssignmentStatus === 'ACCEPTED' &&

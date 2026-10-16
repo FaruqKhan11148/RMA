@@ -8,6 +8,8 @@ import EarningsSummary from './components/EarningsSummary';
 import RecentEarnings from './components/RecentEarnings';
 import EarningsOptions from './components/EarningsOptions';
 
+import DeliveryEarningsSkeleton from './components/DeliveryEarningsSkeleton';
+
 import { fetchEarnings } from './utils/earningsApi';
 
 function DeliveryEarnings() {
@@ -57,15 +59,10 @@ function DeliveryEarnings() {
       <EarningsHeader />
 
       {loading ? (
-        <section className="delivery_earnings_empty">
-          <strong>Loading earnings...</strong>
-
-          <p>Please wait.</p>
-        </section>
+        <DeliveryEarningsSkeleton />
       ) : error ? (
-        <section className="delivery_earnings_empty">
+        <section className="delivery_earnings_empty" role="alert">
           <strong>{error}</strong>
-
           <p>Please try again later.</p>
         </section>
       ) : (

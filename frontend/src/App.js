@@ -183,7 +183,7 @@ function AppLayout() {
   useEffect(() => {
     const checkCustomerLogin = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/customers/me`, {
+        const response = await fetch(`${API_URL}api/customers/me`, {
           credentials: 'include',
         });
 
@@ -296,7 +296,8 @@ function AppLayout() {
     !isAdminRoute &&
     (isDeliveryRoute ||
       (hasDeliverySession &&
-        (location.pathname === '/profile' ||
+        (location.pathname === '/customer/profile' ||
+          location.pathname === '/owner/profile' ||
           location.pathname === '/notifications')));
 
   const showCustomerFooter =
@@ -350,7 +351,12 @@ function AppLayout() {
           <Route path="/orders" element={<Orders />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route
-            path="/profile"
+            path="/customer/profile"
+            element={<Profile onRoleChange={setProfileRole} />}
+          />
+
+          <Route
+            path="/owner/profile"
             element={<Profile onRoleChange={setProfileRole} />}
           />
 

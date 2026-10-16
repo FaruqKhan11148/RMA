@@ -1,0 +1,263 @@
+.delivery_earnings_skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.earnings_skeleton_block {
+  flex-shrink: 0;
+  background: linear-gradient(90deg, #e9edea 25%, #f5f7f5 50%, #e9edea 75%);
+  background-size: 200% 100%;
+  border-radius: 7px;
+  animation: earnings_skeleton_shimmer 1.4s ease-in-out infinite;
+}
+
+/* Total earnings */
+
+.earnings_skeleton_total {
+  min-height: 190px;
+  padding: 26px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  background: #16803a;
+  border-radius: 20px;
+}
+
+.earnings_skeleton_total .earnings_skeleton_block {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.earnings_skeleton_icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+}
+
+.earnings_skeleton_label {
+  width: 115px;
+  height: 12px;
+}
+
+.earnings_skeleton_amount {
+  width: 175px;
+  height: 34px;
+}
+
+.earnings_skeleton_caption {
+  width: 145px;
+  height: 11px;
+}
+
+/* Today / week cards */
+
+.earnings_skeleton_summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.earnings_skeleton_card {
+  min-width: 0;
+  min-height: 125px;
+  padding: 17px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 16px;
+}
+
+.earnings_skeleton_small_icon {
+  width: 37px;
+  height: 37px;
+  border-radius: 10px;
+}
+
+.earnings_skeleton_card_label {
+  width: 75%;
+  height: 11px;
+}
+
+.earnings_skeleton_card_amount {
+  width: 85%;
+  max-width: 125px;
+  height: 23px;
+}
+
+/* Shared section headings */
+
+.earnings_skeleton_options,
+.earnings_skeleton_recent {
+  margin-top: 10px;
+}
+
+.earnings_skeleton_heading {
+  width: 145px;
+  height: 19px;
+  margin-bottom: 12px;
+}
+
+/* Earnings options */
+
+.earnings_skeleton_option_group,
+.earnings_skeleton_recent_group {
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #e1e5e2;
+  border-radius: 16px;
+}
+
+.earnings_skeleton_option {
+  min-height: 76px;
+  padding: 15px 18px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.earnings_skeleton_option:last-child {
+  border-bottom: none;
+}
+
+.earnings_skeleton_option_icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+}
+
+.earnings_skeleton_option_text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.earnings_skeleton_option_title {
+  width: 55%;
+  height: 13px;
+}
+
+.earnings_skeleton_option_caption {
+  width: 80%;
+  max-width: 200px;
+  height: 10px;
+}
+
+.earnings_skeleton_arrow {
+  width: 9px;
+  height: 17px;
+}
+
+/* Recent earnings */
+
+.earnings_skeleton_recent_row {
+  min-height: 68px;
+  padding: 15px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.earnings_skeleton_recent_row:last-child {
+  border-bottom: none;
+}
+
+.earnings_skeleton_recent_details {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.earnings_skeleton_recent_title {
+  width: 65%;
+  max-width: 180px;
+  height: 13px;
+}
+
+.earnings_skeleton_recent_caption {
+  width: 45%;
+  max-width: 120px;
+  height: 10px;
+}
+
+.earnings_skeleton_recent_amount {
+  width: 65px;
+  height: 15px;
+}
+
+/* Dark mode */
+
+[data-theme='dark'] .earnings_skeleton_block {
+  background: linear-gradient(90deg, #303630 25%, #414841 50%, #303630 75%);
+  background-size: 200% 100%;
+}
+
+[data-theme='dark'] .earnings_skeleton_total {
+  background: var(--rma-primary);
+}
+
+[data-theme='dark'] .earnings_skeleton_total .earnings_skeleton_block {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+[data-theme='dark'] .earnings_skeleton_card,
+[data-theme='dark'] .earnings_skeleton_option_group,
+[data-theme='dark'] .earnings_skeleton_recent_group {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+}
+
+[data-theme='dark'] .earnings_skeleton_option,
+[data-theme='dark'] .earnings_skeleton_recent_row {
+  border-bottom-color: var(--rma-border);
+}
+
+/* Small mobile screens */
+
+@media (max-width: 380px) {
+  .earnings_skeleton_card {
+    padding: 14px;
+  }
+
+  .earnings_skeleton_option {
+    padding: 15px 14px;
+    gap: 13px;
+  }
+
+  .earnings_skeleton_recent_row {
+    padding: 14px;
+  }
+
+  .earnings_skeleton_amount {
+    width: 155px;
+  }
+}
+
+/* Accessibility */
+
+@keyframes earnings_skeleton_shimmer {
+  from {
+    background-position: 100% 0;
+  }
+
+  to {
+    background-position: -100% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .earnings_skeleton_block {
+    animation: none;
+  }
+}

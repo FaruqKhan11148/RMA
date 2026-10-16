@@ -516,6 +516,7 @@ const getRmaDeliveryApplication = async (req, res) => {
               accountNumber: deliveryPerson.bankAccount.accountNumber,
               ifsc: deliveryPerson.bankAccount.ifsc,
               bankName: deliveryPerson.bankAccount.bankName,
+              paymentUpiId: deliveryPerson.bankAccount.paymentUpiId || '',
               proofImageUrl: deliveryPerson.bankAccount.proofImageUrl,
               status: deliveryPerson.bankAccount.status,
               rejectionReason: deliveryPerson.bankAccount.rejectionReason,
@@ -579,10 +580,20 @@ const updateRmaDeliveryApplication = async (req, res) => {
       });
     }
 
-    // Do not allow editing after final approval.
-    if (deliveryPerson.applicationStatus === 'APPROVED') {
+    // Approved partners may update only their UPI ID.
+    // All other application edits remain blocked.
+    const isApproved = deliveryPerson.applicationStatus === 'APPROVED';
+    const isUpiOnlyUpdate =
+      section === 'bankAccount' &&
+      data &&
+      typeof data === 'object' &&
+      !Array.isArray(data) &&
+      Object.keys(data).length === 1 &&
+      Object.keys(data)[0] === 'paymentUpiId';
+
+    if (isApproved && !isUpiOnlyUpdate) {
       return res.status(403).json({
-        message: 'Approved applications cannot be edited',
+        message: 'Approved applications can update their UPI ID only.',
       });
     }
 
@@ -764,6 +775,23 @@ const updateRmaDeliveryApplication = async (req, res) => {
     // BANK ACCOUNT
     // ------------------------------------------
     if (section === 'bankAccount') {
+      if (data.paymentUpiId !== undefined) {
+        const paymentUpiId = String(data.paymentUpiId).trim().toLowerCase();
+
+        if (
+          paymentUpiId.length > 100 ||
+          !/^[a-z0-9][a-z0-9._-]{1,254}@[a-z0-9][a-z0-9.-]{1,63}$/.test(
+            paymentUpiId,
+          )
+        ) {
+          return res.status(400).json({
+            message: 'Please enter a valid UPI ID.',
+          });
+        }
+
+        deliveryPerson.bankAccount.paymentUpiId = paymentUpiId;
+      }
+
       if (data.accountHolderName !== undefined) {
         deliveryPerson.bankAccount.accountHolderName = String(
           data.accountHolderName,
@@ -792,8 +820,11 @@ const updateRmaDeliveryApplication = async (req, res) => {
         ).trim();
       }
 
-      deliveryPerson.bankAccount.status = 'PENDING';
-      deliveryPerson.bankAccount.rejectionReason = null;
+      // Changing only the UPI ID must not reset bank verification.
+      if (!isUpiOnlyUpdate) {
+        deliveryPerson.bankAccount.status = 'PENDING';
+        deliveryPerson.bankAccount.rejectionReason = null;
+      }
     }
 
     // If an application was sent back for corrections,
@@ -945,6 +976,10 @@ const submitRmaDeliveryApplication = async (req, res) => {
     // ------------------------------------------
     if (!deliveryPerson.bankAccount?.accountHolderName) {
       missingFields.push('Bank account holder name');
+    }
+
+    if (!deliveryPerson.bankAccount?.paymentUpiId) {
+      missingFields.push('UPI ID');
     }
 
     if (!deliveryPerson.bankAccount?.accountNumber) {

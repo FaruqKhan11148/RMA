@@ -1,0 +1,234 @@
+.delivery_history_skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.history_skeleton_block {
+  flex-shrink: 0;
+  background: linear-gradient(90deg, #e9edea 25%, #f5f7f5 50%, #e9edea 75%);
+  background-size: 200% 100%;
+  border-radius: 6px;
+  animation: history_skeleton_shimmer 1.4s ease-in-out infinite;
+}
+
+.history_skeleton_card {
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 17px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.025);
+}
+
+/* Order header */
+
+.history_skeleton_top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 15px 15px 13px;
+}
+
+.history_skeleton_order {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.history_skeleton_icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+}
+
+.history_skeleton_order_info {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.history_skeleton_order_id {
+  width: 120px;
+  max-width: 100%;
+  height: 13px;
+}
+
+.history_skeleton_date {
+  width: 85px;
+  height: 10px;
+}
+
+.history_skeleton_status {
+  width: 70px;
+  height: 23px;
+  border-radius: 999px;
+}
+
+/* Delivery details */
+
+.history_skeleton_details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 17px 10px;
+  padding: 13px 15px;
+  border-top: 1px solid #eeeeee;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.history_skeleton_detail {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.history_skeleton_detail_icon {
+  width: 17px;
+  height: 17px;
+  border-radius: 5px;
+}
+
+.history_skeleton_detail_info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.history_skeleton_detail_label {
+  width: 55%;
+  max-width: 65px;
+  height: 9px;
+}
+
+.history_skeleton_detail_value {
+  width: 85%;
+  max-width: 105px;
+  height: 11px;
+}
+
+/* Customer */
+
+.history_skeleton_customer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 15px;
+}
+
+.history_skeleton_customer_label {
+  width: 55px;
+  height: 10px;
+}
+
+.history_skeleton_customer_name {
+  width: 105px;
+  max-width: 55%;
+  height: 12px;
+}
+
+/* Earnings */
+
+.history_skeleton_bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 15px;
+  background: #fafcfb;
+}
+
+.history_skeleton_earning_label {
+  width: 100px;
+  height: 10px;
+}
+
+.history_skeleton_earning_amount {
+  width: 65px;
+  height: 15px;
+}
+
+/* Tablet */
+
+@media (min-width: 500px) {
+  .history_skeleton_card {
+    border-radius: 18px;
+  }
+}
+
+/* Small phones */
+
+@media (max-width: 380px) {
+  .history_skeleton_top {
+    padding: 14px;
+  }
+
+  .history_skeleton_icon {
+    width: 35px;
+    height: 35px;
+  }
+
+  .history_skeleton_order_id {
+    width: 100px;
+  }
+
+  .history_skeleton_status {
+    width: 63px;
+  }
+
+  .history_skeleton_details {
+    padding: 12px 14px;
+    gap: 15px 8px;
+  }
+
+  .history_skeleton_customer,
+  .history_skeleton_bottom {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+}
+
+/* Dark mode */
+
+[data-theme='dark'] .history_skeleton_block {
+  background: linear-gradient(90deg, #303630 25%, #414841 50%, #303630 75%);
+  background-size: 200% 100%;
+}
+
+[data-theme='dark'] .history_skeleton_card {
+  background: var(--rma-card);
+  border-color: var(--rma-border);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='dark'] .history_skeleton_details {
+  border-top-color: var(--rma-border);
+  border-bottom-color: var(--rma-border);
+}
+
+[data-theme='dark'] .history_skeleton_bottom {
+  background: var(--rma-bg-secondary);
+}
+
+/* Accessibility */
+
+@keyframes history_skeleton_shimmer {
+  from {
+    background-position: 100% 0;
+  }
+
+  to {
+    background-position: -100% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .history_skeleton_block {
+    animation: none;
+  }
+}

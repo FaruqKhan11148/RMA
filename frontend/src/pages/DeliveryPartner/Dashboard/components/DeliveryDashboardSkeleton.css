@@ -1,0 +1,336 @@
+.delivery_dashboard_skeleton {
+  --delivery-skeleton-base: #e9ece9;
+  --delivery-skeleton-highlight: #f7f9f7;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_line,
+.delivery_dashboard_skeleton .delivery_skeleton_block,
+.delivery_dashboard_skeleton .delivery_skeleton_badge,
+.delivery_dashboard_skeleton .delivery_skeleton_toggle,
+.delivery_dashboard_skeleton .delivery_skeleton_active_badge,
+.delivery_dashboard_skeleton .delivery_skeleton_count,
+.delivery_dashboard_skeleton .delivery_skeleton_button {
+  position: relative;
+  overflow: hidden;
+  background: var(--delivery-skeleton-base);
+  border-radius: 7px;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_line::after,
+.delivery_dashboard_skeleton .delivery_skeleton_block::after,
+.delivery_dashboard_skeleton .delivery_skeleton_badge::after,
+.delivery_dashboard_skeleton .delivery_skeleton_toggle::after,
+.delivery_dashboard_skeleton .delivery_skeleton_active_badge::after,
+.delivery_dashboard_skeleton .delivery_skeleton_count::after,
+.delivery_dashboard_skeleton .delivery_skeleton_button::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--delivery-skeleton-highlight),
+    transparent
+  );
+  animation: delivery_dashboard_shimmer 1.35s ease-in-out infinite;
+}
+
+/* Header */
+
+.delivery_dashboard_skeleton .delivery_skeleton_header_text {
+  flex: 1;
+  min-width: 0;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_greeting {
+  width: 88px;
+  height: 12px;
+  margin-bottom: 9px;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_title {
+  width: min(210px, 85%);
+  height: 29px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_subtitle {
+  width: min(175px, 75%);
+  height: 12px;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_badge {
+  width: 80px;
+  height: 29px;
+  flex-shrink: 0;
+  border-radius: 999px;
+}
+
+/* Availability */
+
+.delivery_dashboard_skeleton .delivery_skeleton_status_icon {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 12px;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_status_content {
+  flex: 1;
+  min-width: 0;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_status_title {
+  width: min(150px, 90%);
+  height: 13px;
+  margin-bottom: 8px;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_status_text {
+  width: min(210px, 95%);
+  height: 10px;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_toggle {
+  width: 45px;
+  height: 25px;
+  flex-shrink: 0;
+  border-radius: 999px;
+}
+
+/* Summary */
+
+.delivery_dashboard_skeleton .delivery_skeleton_summary_icon {
+  width: 35px;
+  height: 35px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_summary_icon.earnings {
+  background: #dcebe0;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_summary_icon.deliveries {
+  background: #dfe8f1;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_summary_icon.completed {
+  background: #dcefe5;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_label {
+  width: 75%;
+  height: 10px;
+  margin-bottom: 9px;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_value {
+  width: 55%;
+  height: 21px;
+  border-radius: 5px;
+}
+
+/* Sections */
+
+.delivery_dashboard_skeleton .delivery_skeleton_section_title {
+  width: 145px;
+  height: 20px;
+  border-radius: 5px;
+}
+
+/* Active delivery */
+
+.delivery_dashboard_skeleton .delivery_skeleton_active_top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_active_info {
+  flex: 1;
+  min-width: 0;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_active_label {
+  width: 80px;
+  height: 10px;
+  margin-bottom: 8px;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_active_title {
+  width: min(180px, 95%);
+  height: 16px;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_active_badge {
+  width: 83px;
+  height: 25px;
+  flex-shrink: 0;
+  border-radius: 999px;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_detail {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_detail_icon {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+  border-radius: 5px;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_detail_text {
+  width: 65%;
+  height: 12px;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_detail_text.long {
+  width: 85%;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_button {
+  width: 100%;
+  height: 39px;
+  margin-top: 15px;
+  border-radius: 11px;
+}
+
+/* Requests */
+
+.delivery_dashboard_skeleton .delivery_skeleton_count {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  border-radius: 999px;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_request_icon {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 12px;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_request_content {
+  flex: 1;
+  min-width: 0;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_request_title {
+  width: min(165px, 85%);
+  height: 14px;
+  margin-bottom: 9px;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_request_text {
+  width: min(215px, 95%);
+  height: 11px;
+}
+
+/* Area */
+
+.delivery_dashboard_skeleton .delivery_skeleton_area_icon {
+  width: 43px;
+  height: 43px;
+  flex-shrink: 0;
+  border-radius: 12px;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_area_content {
+  flex: 1;
+  min-width: 0;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_area_title {
+  width: min(145px, 85%);
+  height: 14px;
+  margin-bottom: 10px;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_area_text {
+  width: 95%;
+  height: 11px;
+  margin-bottom: 7px;
+}
+
+.delivery_dashboard_skeleton .delivery_skeleton_area_text.short {
+  width: 65%;
+  margin-bottom: 0;
+}
+
+/* Dark mode */
+
+[data-theme='dark'] .delivery_dashboard_skeleton {
+  --delivery-skeleton-base: #29312c;
+  --delivery-skeleton-highlight: #3a463e;
+}
+
+[data-theme='dark']
+  .delivery_dashboard_skeleton
+  .delivery_skeleton_summary_icon.earnings {
+  background: #263d2d;
+}
+
+[data-theme='dark']
+  .delivery_dashboard_skeleton
+  .delivery_skeleton_summary_icon.deliveries {
+  background: #263647;
+}
+
+[data-theme='dark']
+  .delivery_dashboard_skeleton
+  .delivery_skeleton_summary_icon.completed {
+  background: #244033;
+}
+
+/* Small screens */
+
+@media (max-width: 380px) {
+  .delivery_dashboard_skeleton .delivery_skeleton_title {
+    height: 26px;
+  }
+
+  .delivery_dashboard_skeleton .delivery_skeleton_status_icon {
+    width: 39px;
+    height: 39px;
+  }
+
+  .delivery_dashboard_skeleton .delivery_skeleton_toggle {
+    width: 42px;
+    height: 24px;
+  }
+
+  .delivery_dashboard_skeleton .delivery_skeleton_summary_icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .delivery_dashboard_skeleton .delivery_skeleton_value {
+    height: 19px;
+  }
+}
+
+@keyframes delivery_dashboard_shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .delivery_dashboard_skeleton .delivery_skeleton_line::after,
+  .delivery_dashboard_skeleton .delivery_skeleton_block::after,
+  .delivery_dashboard_skeleton .delivery_skeleton_badge::after,
+  .delivery_dashboard_skeleton .delivery_skeleton_toggle::after,
+  .delivery_dashboard_skeleton .delivery_skeleton_active_badge::after,
+  .delivery_dashboard_skeleton .delivery_skeleton_count::after,
+  .delivery_dashboard_skeleton .delivery_skeleton_button::after {
+    animation: none;
+  }
+}

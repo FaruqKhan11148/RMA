@@ -520,6 +520,65 @@ const orderSchema = new mongoose.Schema(
     },
 
     // =========================
+    // OWNER → DELIVERY PARTNER PAYMENT
+    // =========================
+
+    deliveryChargePayment: {
+      status: {
+        type: String,
+        enum: [
+          'NOT_REQUIRED',
+          'PENDING',
+          'OWNER_MARKED_PAID',
+          'CONFIRMED',
+          'DISPUTED',
+        ],
+        default: 'NOT_REQUIRED',
+      },
+
+      amount: {
+        type: Number,
+        default: 0,
+        min: 0,
+      },
+
+      upiId: {
+        type: String,
+        default: null,
+        trim: true,
+        lowercase: true,
+      },
+
+      reference: {
+        type: String,
+        default: null,
+        trim: true,
+        maxlength: 100,
+      },
+
+      requestedAt: {
+        type: Date,
+        default: null,
+      },
+
+      ownerMarkedPaidAt: {
+        type: Date,
+        default: null,
+      },
+
+      confirmedAt: {
+        type: Date,
+        default: null,
+      },
+
+      confirmedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'DeliveryPerson',
+        default: null,
+      },
+    },
+
+    // =========================
     // PAYMENT
     // =========================
 

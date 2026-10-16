@@ -22,7 +22,7 @@ const getHeaders = () => {
 };
 
 export const updateRmaApplication = async (section, data) => {
-  const response = await fetch(`${API_URL}/delivery/rma/application`, {
+  const response = await fetch(`${API_URL}api/delivery/rma/application`, {
     method: 'PATCH',
     headers: getHeaders(),
     body: JSON.stringify({
@@ -41,7 +41,7 @@ export const updateRmaApplication = async (section, data) => {
 };
 
 export const fetchRmaApplication = async () => {
-  const response = await fetch(`${API_URL}/delivery/rma/application`, {
+  const response = await fetch(`${API_URL}api/delivery/rma/application`, {
     method: 'GET',
     headers: getHeaders(),
   });
@@ -56,7 +56,7 @@ export const fetchRmaApplication = async () => {
 };
 
 export const submitRmaApplication = async () => {
-  const response = await fetch(`${API_URL}/delivery/rma/application/submit`, {
+  const response = await fetch(`${API_URL}api/delivery/rma/application/submit`, {
     method: 'PATCH',
     headers: getHeaders(),
   });

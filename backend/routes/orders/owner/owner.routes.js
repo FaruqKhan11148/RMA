@@ -9,6 +9,9 @@ const {
   getReferralProgress,
   testFinalizeReferralQualification,
   archiveOwnerEarnings,
+  getDeliveryChargePayment,
+  markDeliveryChargePaymentSent,
+  getDeliveryChargePaymentStatus,
 } = require('./owner.controller');
 
 const router = express.Router();
@@ -51,6 +54,24 @@ router.post(
   '/owner/:ownerId/earnings/archive',
   ownerAuth,
   archiveOwnerEarnings,
+);
+
+router.get(
+  '/owner/orders/:orderId/delivery-charge-payment',
+  ownerAuth,
+  getDeliveryChargePayment,
+);
+
+router.post(
+  '/owner/orders/:orderId/delivery-charge-payment/mark-sent',
+  ownerAuth,
+  markDeliveryChargePaymentSent,
+);
+
+router.get(
+  '/owner/orders/:orderId/delivery-charge-payment/status',
+  ownerAuth,
+  getDeliveryChargePaymentStatus,
 );
 
 module.exports = router;

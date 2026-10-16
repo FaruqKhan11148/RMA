@@ -7,6 +7,7 @@ const {
   rejectDeliveryAssignment,
   getPendingDeliveryAssignments,
   collectDeliveryOrder,
+  confirmDeliveryChargePayment,
 } = require('./assignment.controller');
 
 const router = express.Router();
@@ -26,5 +27,11 @@ router.post(
 );
 
 router.patch('/orders/:orderId/collect', deliveryAuth, collectDeliveryOrder);
+
+router.post(
+  '/orders/:orderId/delivery-charge-payment/confirm',
+  deliveryAuth,
+  confirmDeliveryChargePayment,
+);
 
 module.exports = router;

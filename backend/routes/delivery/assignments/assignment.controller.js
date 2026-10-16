@@ -57,6 +57,16 @@ const collectDeliveryOrder = async (req, res) => {
       });
     }
 
+    if (order.deliveryChargePayment?.status !== 'CONFIRMED') {
+      return res.status(403).json({
+        code: 'DELIVERY_CHARGE_NOT_CONFIRMED',
+        message:
+          'Confirm that the delivery charge was received before collecting this order.',
+        deliveryChargePaymentStatus:
+          order.deliveryChargePayment?.status || 'NOT_REQUIRED',
+      });
+    }
+
     if (order.deliveryPickupStatus === 'COLLECTED') {
       return res.status(400).json({
         message: 'This order has already been collected',
@@ -299,6 +309,34 @@ const acceptDeliveryAssignment = async (req, res) => {
     }
 
     // ==========================================
+    // VALIDATE DELIVERY PARTNER UPI
+    // ==========================================
+
+    const deliveryPartnerUpiId = deliveryPerson.bankAccount?.paymentUpiId
+      ?.trim()
+      .toLowerCase();
+
+    if (!deliveryPartnerUpiId) {
+      return res.status(400).json({
+        code: 'DELIVERY_PARTNER_UPI_REQUIRED',
+        message:
+          'Please add your UPI ID to your delivery partner profile before accepting deliveries.',
+      });
+    }
+
+    // ==========================================
+    // VALIDATE DELIVERY CHARGE
+    // ==========================================
+
+    const deliveryCharge = Number(order.deliveryCharge);
+
+    if (!Number.isFinite(deliveryCharge) || deliveryCharge < 0) {
+      return res.status(400).json({
+        message: 'The delivery charge for this order is invalid.',
+      });
+    }
+
+    // ==========================================
     // RMA DP AVAILABILITY CHECK
     // ==========================================
 
@@ -337,23 +375,45 @@ const acceptDeliveryAssignment = async (req, res) => {
 
     order.deliveryAssignmentStatus = 'ACCEPTED';
 
-    // IMPORTANT:
-    // DP has accepted the job, but has NOT collected
-    // the order from the shop yet.
+    // DP accepted the order but has not collected it.
     order.deliveryPickupStatus = 'PENDING';
-
-    // Keep the order in Ready state until the DP
-    // actually collects it from the shop.
     order.status = 'Ready';
 
-    // No delivery OTP yet.
-    // OTP will be generated after "I've Collected".
+    // ==========================================
+    // INITIALIZE DELIVERY-CHARGE PAYMENT
+    // ==========================================
 
+    // Snapshot the assigned DP's UPI ID and this
+    // order's delivery charge for payment.
+    //
+    // The owner pays the DP directly using a UPI app.
+    // The DP must verify the incoming payment manually.
+
+    order.deliveryChargePayment = {
+      status: 'PENDING',
+      amount: deliveryCharge,
+      upiId: deliveryPartnerUpiId,
+      reference: null,
+      requestedAt: now,
+      ownerMarkedPaidAt: null,
+      confirmedAt: null,
+      confirmedBy: null,
+    };
+
+    // ==========================================
+    // RESET DELIVERY OTP
+    // ==========================================
+
+    // Generate the customer delivery OTP only after
+    // the DP actually collects the order.
     order.deliveryOtp = null;
     order.deliveryOtpGeneratedAt = null;
     order.otpVerified = false;
 
-    // DP is now busy.
+    // ==========================================
+    // UPDATE DP AVAILABILITY
+    // ==========================================
+
     deliveryPerson.availabilityStatus = 'BUSY';
     deliveryPerson.lastAvailabilityChangedAt = now;
 
@@ -370,7 +430,7 @@ const acceptDeliveryAssignment = async (req, res) => {
         recipientId: order.ownerId,
         type: 'DELIVERY_ASSIGNMENT_ACCEPTED',
         title: 'Delivery Accepted',
-        message: `Delivery partner accepted order ${order.orderId}.`,
+        message: `Delivery partner accepted order ${order.orderId}. Delivery charge: ₹${deliveryCharge.toFixed(2)}.`,
         orderId: order.orderId,
         data: {
           screen: 'orders',
@@ -380,6 +440,8 @@ const acceptDeliveryAssignment = async (req, res) => {
           deliveryPersonId: deliveryPerson.deliveryPersonId,
           deliveryPersonName: deliveryPerson.name,
           deliveryPersonPhone: deliveryPerson.phone,
+          deliveryCharge: String(deliveryCharge),
+          deliveryChargePaymentStatus: 'PENDING',
         },
       });
     } catch (notificationError) {
@@ -389,40 +451,23 @@ const acceptDeliveryAssignment = async (req, res) => {
       );
     }
 
-    // // ==========================================
-    // // NOTIFY CUSTOMER
-    // // ==========================================
-
-    // if (order.customerId) {
-    //   try {
-    //     await createAndSendNotification({
-    //       recipientType: 'customer',
-    //       recipientId: order.customerId,
-    //       type: 'ORDER_OUT_FOR_DELIVERY',
-    //       title: 'Order On The Way',
-    //       message: `Your order ${order.orderId} is out for delivery.`,
-    //       orderId: order.orderId,
-    //       data: {
-    //         screen: 'order-status',
-    //         orderId: order.orderId,
-    //       },
-    //     });
-    //   } catch (notificationError) {
-    //     console.error(
-    //       'Customer delivery notification failed:',
-    //       notificationError,
-    //     );
-    //   }
-    // }
+    // ==========================================
+    // RESPONSE
+    // ==========================================
 
     return res.status(200).json({
       success: true,
       message: 'Delivery accepted successfully',
       order,
       availabilityStatus: deliveryPerson.availabilityStatus,
+      deliveryChargePayment: {
+        status: order.deliveryChargePayment.status,
+        amount: order.deliveryChargePayment.amount,
+        upiId: order.deliveryChargePayment.upiId,
+      },
     });
   } catch (error) {
-    console.error('Accept delivery assignment failed:', error.message);
+    console.error('Accept delivery assignment failed:', error);
 
     return res.status(500).json({
       message: 'Server error',
@@ -647,9 +692,124 @@ const getPendingDeliveryAssignments = async (req, res) => {
   }
 };
 
+// ==========================================
+// CONFIRM DELIVERY-CHARGE PAYMENT RECEIVED
+// ==========================================
+
+const confirmDeliveryChargePayment = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const deliveryPersonId = req.deliveryPerson?._id;
+
+    if (!deliveryPersonId) {
+      return res.status(401).json({
+        message: 'Delivery partner authentication required',
+      });
+    }
+
+    const deliveryPerson = await DeliveryPerson.findById(deliveryPersonId);
+
+    if (!deliveryPerson) {
+      return res.status(404).json({
+        message: 'Delivery partner not found',
+      });
+    }
+
+    if (
+      !deliveryPerson.isActive ||
+      deliveryPerson.applicationStatus !== 'APPROVED'
+    ) {
+      return res.status(403).json({
+        message: 'Your delivery partner account is not approved and active',
+      });
+    }
+
+    const order = await Order.findOne({
+      orderId,
+      deliveryPersonId: deliveryPerson._id,
+      orderType: 'delivery',
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        message: 'Assigned delivery order not found',
+      });
+    }
+
+    if (order.deliveryAssignmentStatus !== 'ACCEPTED') {
+      return res.status(400).json({
+        message: 'You must accept this delivery assignment first',
+      });
+    }
+
+    const payment = order.deliveryChargePayment;
+
+    if (!payment || payment.status !== 'PENDING') {
+      if (payment?.status === 'CONFIRMED') {
+        return res.status(409).json({
+          message: 'Delivery-charge payment has already been confirmed',
+          status: payment.status,
+        });
+      }
+
+      return res.status(400).json({
+        message: 'This delivery-charge payment is not awaiting confirmation',
+        status: payment?.status || 'NOT_REQUIRED',
+      });
+    }
+
+    // Never trust a client-supplied amount or UPI ID.
+    // Verify against the saved order and assigned partner.
+    const now = new Date();
+
+    order.deliveryChargePayment.status = 'CONFIRMED';
+    order.deliveryChargePayment.confirmedAt = now;
+    order.deliveryChargePayment.confirmedBy = deliveryPerson._id;
+
+    await order.save();
+
+    // Notify the owner. Notification failure must not undo confirmation.
+    try {
+      await createAndSendNotification({
+        recipientType: 'owner',
+        recipientId: order.ownerId,
+        type: 'DELIVERY_CHARGE_PAYMENT_CONFIRMED',
+        title: 'Delivery Payment Received',
+        message: `Your delivery partner confirmed receipt of ₹${Number(
+          order.deliveryChargePayment.amount,
+        ).toFixed(2)} for order ${order.orderId}.`,
+        orderId: order.orderId,
+        data: {
+          screen: 'orders',
+          orderId: order.orderId,
+          deliveryChargePaymentStatus: 'CONFIRMED',
+        },
+      });
+    } catch (notificationError) {
+      console.error(
+        'Delivery-charge confirmation notification failed:',
+        notificationError,
+      );
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Delivery-charge payment receipt confirmed',
+      deliveryChargePayment: order.deliveryChargePayment,
+    });
+  } catch (error) {
+    console.error('Confirm delivery-charge payment failed:', error);
+
+    return res.status(500).json({
+      message: 'Unable to confirm delivery-charge payment',
+    });
+  }
+};
+
 module.exports = {
   acceptDeliveryAssignment,
   rejectDeliveryAssignment,
   getPendingDeliveryAssignments,
   collectDeliveryOrder,
+  confirmDeliveryChargePayment,
 };

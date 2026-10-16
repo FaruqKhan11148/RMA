@@ -113,14 +113,15 @@ function DeliveryApplication() {
       {
         key: 'bankAccount',
         number: 6,
-        title: 'Bank Account',
-        description: 'Account details for delivery earnings',
+        title: 'Bank Account & UPI',
+        description: 'Bank details and UPI ID for receiving payments',
         completed:
           Boolean(application?.bankAccount?.accountHolderName) &&
           Boolean(application?.bankAccount?.accountNumber) &&
           Boolean(application?.bankAccount?.ifsc) &&
           Boolean(application?.bankAccount?.bankName) &&
-          Boolean(application?.bankAccount?.proofImageUrl),
+          Boolean(application?.bankAccount?.proofImageUrl) &&
+          Boolean(application?.bankAccount?.paymentUpiId?.trim()),
         path: '/delivery-partner/application/bank',
       },
     ],

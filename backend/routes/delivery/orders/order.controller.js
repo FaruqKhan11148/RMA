@@ -10,19 +10,18 @@ const getDeliveryOrders = async (req, res) => {
 
     const orders = await Order.find({
       deliveryPersonId: deliveryPerson._id,
-      status: 'OutForDelivery',
       orderType: 'delivery',
+      deliveryAssignmentStatus: 'ACCEPTED',
+      status: { $in: ['Ready', 'OutForDelivery'] },
     })
       .populate('ownerId', 'ownerName shopName phone shopId location')
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: 1 });
 
-    res.status(200).json({
-      orders,
-    });
+    return res.status(200).json({ orders });
   } catch (error) {
     console.error('Get delivery orders failed:', error);
 
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Server error',
     });
   }
@@ -46,36 +45,49 @@ const getDeliveryDashboard = async (req, res) => {
       orderType: 'delivery',
     };
 
-    // TODAY'S ORDERS
-    const todayOrders = await Order.find({
+    const activeQuery = {
       ...baseQuery,
-      createdAt: {
-        $gte: startOfToday,
-        $lte: endOfToday,
-      },
-    })
-      .populate('ownerId', 'ownerName shopName phone shopId location')
-      .sort({ createdAt: -1 });
+      deliveryAssignmentStatus: 'ACCEPTED',
+      status: { $in: ['Ready', 'OutForDelivery'] },
+    };
 
-    // PENDING DELIVERIES
+    const [todayOrders, activeOrders, allDeliveredOrders] = await Promise.all([
+      Order.find({
+        ...baseQuery,
+        createdAt: {
+          $gte: startOfToday,
+          $lte: endOfToday,
+        },
+      })
+        .populate('ownerId', 'ownerName shopName phone shopId location')
+        .sort({ createdAt: -1 }),
+
+      Order.find(activeQuery)
+        .populate('ownerId', 'ownerName shopName phone shopId location')
+        .sort({ createdAt: 1 }),
+
+      Order.find({
+        ...baseQuery,
+        status: 'Completed',
+      })
+        .populate('ownerId', 'ownerName shopName phone shopId location')
+        .sort({ completedAt: -1 }),
+    ]);
+
     const pendingOrders = todayOrders.filter(
-      (order) => order.status === 'OutForDelivery',
+      (order) =>
+        order.deliveryAssignmentStatus === 'ACCEPTED' &&
+        ['Ready', 'OutForDelivery'].includes(order.status),
     );
 
-    // COMPLETED TODAY
     const completedTodayOrders = todayOrders.filter(
       (order) => order.status === 'Completed',
     );
 
-    // ALL-TIME DELIVERED ORDERS
-    const allDeliveredOrders = await Order.find({
-      ...baseQuery,
-      status: 'Completed',
-    })
-      .populate('ownerId', 'ownerName shopName phone shopId location')
-      .sort({ completedAt: -1 });
+    const activeOrderCount = activeOrders.length;
+    const maxActiveOrders = 6;
 
-    res.status(200).json({
+    return res.status(200).json({
       today: {
         orders: todayOrders.length,
         pending: pendingOrders.length,
@@ -93,6 +105,14 @@ const getDeliveryDashboard = async (req, res) => {
         allDelivered: allDeliveredOrders,
       },
 
+      activeOrders,
+
+      workload: {
+        active: activeOrderCount,
+        maximum: maxActiveOrders,
+        availableSlots: Math.max(0, maxActiveOrders - activeOrderCount),
+      },
+
       summary: {
         distance: null,
         earnings: null,
@@ -101,7 +121,7 @@ const getDeliveryDashboard = async (req, res) => {
   } catch (error) {
     console.error('Get delivery dashboard failed:', error);
 
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Server error',
     });
   }

@@ -12,12 +12,16 @@ function OwnerProtectedRoute() {
   const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
+    let active = true;
+
     const verifyOwner = async () => {
       const token = localStorage.getItem('rma_owner_token');
 
       if (!token) {
-        setAuthenticated(false);
-        setCheckingAuth(false);
+        if (active) {
+          setAuthenticated(false);
+          setCheckingAuth(false);
+        }
         return;
       }
 
@@ -30,12 +34,15 @@ function OwnerProtectedRoute() {
         });
 
         if (!response.ok) {
-          throw new Error('Owner authentication failed');
+          throw new Error(
+            `Owner authentication failed: HTTP ${response.status}`,
+          );
         }
 
         const data = await response.json();
 
-        // Keep owner information fresh after refresh
+        if (!active) return;
+
         if (data.owner) {
           localStorage.setItem('rma_owner', JSON.stringify(data.owner));
         }
@@ -44,17 +51,27 @@ function OwnerProtectedRoute() {
       } catch (error) {
         console.error('Owner authentication failed:', error);
 
-        localStorage.removeItem('rma_owner');
-        localStorage.removeItem('rma_owner_token');
-
-        setAuthenticated(false);
+        if (active) {
+          // Preserve localStorage credentials while diagnosing the issue.
+          setAuthenticated(false);
+        }
       } finally {
-        setCheckingAuth(false);
+        if (active) {
+          setCheckingAuth(false);
+        }
       }
     };
 
     verifyOwner();
+
+    return () => {
+      active = false;
+    };
   }, []);
+
+  if (checkingAuth) {
+    return <div>Verifying owner session...</div>;
+  }
 
   if (!authenticated) {
     return <Navigate to="/owner/login" replace />;

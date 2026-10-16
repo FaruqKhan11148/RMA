@@ -8,6 +8,8 @@ import HistoryError from './components/HistoryError';
 import HistoryEmpty from './components/HistoryEmpty';
 import HistoryList from './components/HistoryList';
 
+import HistorySkeleton from './components/HistorySkeleton';
+
 import { fetchDeliveryHistory } from './utils/historyApi';
 
 function DeliveryHistory() {
@@ -46,7 +48,7 @@ function DeliveryHistory() {
     <main className="delivery_history_page">
       <HistoryHeader orderCount={orders.length} />
 
-      {loading && <HistoryLoading />}
+      {loading && <HistorySkeleton />}
 
       {!loading && error && <HistoryError error={error} />}
 
