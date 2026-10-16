@@ -693,6 +693,77 @@ const getPendingDeliveryAssignments = async (req, res) => {
 };
 
 // ==========================================
+// GET DELIVERY-CHARGE PAYMENT DETAILS
+// ==========================================
+
+const getDeliveryChargePayment = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const deliveryPersonId = req.deliveryPerson?._id;
+
+    if (!deliveryPersonId) {
+      return res.status(401).json({
+        message: 'Delivery partner authentication required',
+      });
+    }
+
+    const deliveryPerson = await DeliveryPerson.findById(deliveryPersonId);
+
+    if (!deliveryPerson) {
+      return res.status(404).json({
+        message: 'Delivery partner not found',
+      });
+    }
+
+    if (
+      !deliveryPerson.isActive ||
+      deliveryPerson.applicationStatus !== 'APPROVED'
+    ) {
+      return res.status(403).json({
+        message: 'Your delivery partner account is not approved and active',
+      });
+    }
+
+    const order = await Order.findOne({
+      orderId,
+      deliveryPersonId: deliveryPerson._id,
+      orderType: 'delivery',
+    }).select(
+      'orderId status deliveryAssignmentStatus deliveryPickupStatus deliveryCharge deliveryChargePayment',
+    );
+
+    if (!order) {
+      return res.status(404).json({
+        message: 'Assigned delivery order not found',
+      });
+    }
+
+    if (order.deliveryAssignmentStatus !== 'ACCEPTED') {
+      return res.status(400).json({
+        message: 'Accept this delivery assignment first',
+      });
+    }
+
+    if (!order.deliveryChargePayment) {
+      return res.status(404).json({
+        message: 'Delivery-charge payment details are not available',
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      deliveryChargePayment: order.deliveryChargePayment,
+    });
+  } catch (error) {
+    console.error('Get delivery-charge payment failed:', error);
+
+    return res.status(500).json({
+      message: 'Unable to load delivery-charge payment details',
+    });
+  }
+};
+
+// ==========================================
 // CONFIRM DELIVERY-CHARGE PAYMENT RECEIVED
 // ==========================================
 
@@ -812,4 +883,5 @@ module.exports = {
   getPendingDeliveryAssignments,
   collectDeliveryOrder,
   confirmDeliveryChargePayment,
+  getDeliveryChargePayment,
 };
