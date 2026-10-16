@@ -203,7 +203,6 @@ function DeliveryDashboard() {
   };
 
   const activeOrders = dashboard.activeOrders;
-  const activeDelivery = activeOrders[0] || null;
 
   return (
     <main className="delivery_dashboard">

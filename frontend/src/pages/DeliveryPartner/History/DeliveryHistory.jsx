@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import './DeliveryHistory.css';
 
 import HistoryHeader from './components/HistoryHeader';
-import HistoryLoading from './components/HistoryLoading';
 import HistoryError from './components/HistoryError';
 import HistoryEmpty from './components/HistoryEmpty';
 import HistoryList from './components/HistoryList';

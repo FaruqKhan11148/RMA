@@ -1,12 +1,5 @@
 import './OwnerOrderCard.css';
 
-import { useState } from 'react';
-import { QRCodeSVG } from 'qrcode.react';
-import {
-  fetchDeliveryChargePayment,
-  markDeliveryChargePaymentSent,
-} from '../utils/ownerOrdersApi';
-
 function OwnerOrderCard({
   order,
   setSelectedOrder,
