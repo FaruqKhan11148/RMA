@@ -1474,6 +1474,22 @@ async function createDeliveryAssignment(req, res) {
       });
     }
 
+    console.log('[OWNER ASSIGNMENT DEBUG]', {
+      orderId: order.orderId,
+      selectedDeliveryPersonId: String(selectedDeliveryPerson._id),
+      deliveryType: selectedDeliveryPerson.deliveryType,
+      availabilityStatus: selectedDeliveryPerson.availabilityStatus,
+      applicationStatus: selectedDeliveryPerson.applicationStatus,
+      isActive: selectedDeliveryPerson.isActive,
+      locationUpdatedAt: selectedDeliveryPerson.currentLocation?.updatedAt,
+      activeOrders: await Order.countDocuments({
+        deliveryPersonId: selectedDeliveryPerson._id,
+        orderType: 'delivery',
+        deliveryAssignmentStatus: 'ACCEPTED',
+        status: { $in: ['Ready', 'OutForDelivery'] },
+      }),
+    });
+
     // ==========================================
     // RMA DELIVERY PARTNER VALIDATION
     // ==========================================
