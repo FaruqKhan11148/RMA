@@ -56,7 +56,7 @@ function CustomerLogin() {
 
       console.log('Customer login successful:', data.customer);
 
-      navigate(redirect || '/profile');
+      navigate(redirect || '/customer/profile');
     } catch (error) {
       console.error('Customer login error:', error);
 

@@ -97,10 +97,39 @@ async function findEligibleRmaDeliveryPartners(
     return [];
   }
 
+  console.log('[RMA DISPATCH] Shop pickup:', {
+    latitude: shopLatitude,
+    longitude: shopLongitude,
+  });
+
+  console.log(
+    '[RMA DISPATCH] Eligible-status partners:',
+    partners.map((partner) => ({
+      id: String(partner._id),
+      availabilityStatus: partner.availabilityStatus,
+      currentLocation: partner.currentLocation,
+    })),
+  );
+
   const activeOrderCounts = await getActiveOrderCounts(
     partners.map((partner) => partner._id),
   );
 
+  console.log(
+    '[RMA DISPATCH] Partner distances:',
+    partners.map((partner) => ({
+      id: String(partner._id),
+      activeOrderCount: activeOrderCounts.get(String(partner._id)) || 0,
+      distanceKm: calculateDistanceKm(
+        Number(partner.currentLocation?.latitude),
+        Number(partner.currentLocation?.longitude),
+        shopLatitude,
+        shopLongitude,
+      ),
+    })),
+  );
+
+  
   return partners
     .filter((partner) => {
       const partnerId = String(partner._id);
