@@ -1682,66 +1682,55 @@ async function startRmaDispatch(req, res) {
     // ==========================================
 
     const locationCutoff = new Date(Date.now() - 10 * 60 * 1000);
+    const MAX_ACTIVE_ORDERS_PER_TRIP = 6;
 
     const rmaPartners = await DeliveryPerson.find({
       deliveryType: 'RMA',
       applicationStatus: 'APPROVED',
       isActive: true,
-      availabilityStatus: 'AVAILABLE',
+      availabilityStatus: { $in: ['AVAILABLE', 'BUSY'] },
 
-      'currentLocation.latitude': {
-        $ne: null,
-      },
-
-      'currentLocation.longitude': {
-        $ne: null,
-      },
-
-      'currentLocation.updatedAt': {
-        $gte: locationCutoff,
-      },
+      'currentLocation.latitude': { $ne: null },
+      'currentLocation.longitude': { $ne: null },
+      'currentLocation.updatedAt': { $gte: locationCutoff },
     })
       .select(
         'name phone deliveryType applicationStatus isActive availabilityStatus currentLocation',
       )
       .lean();
 
-    // ==========================================
-    // REMOVE PARTNERS ALREADY HANDLING ORDERS
-    //
-    // V1:
-    // One active delivery order per DP.
-    //
-    // IMPORTANT:
-    // This is only a V1 dispatch restriction.
-    // The architecture will later support multiple
-    // compatible orders in one delivery trip.
-    // ==========================================
-
-    const activeOrders = await Order.find({
-      deliveryPersonId: {
-        $in: rmaPartners.map((partner) => partner._id),
+    // Count all accepted active delivery orders, including
+    // orders waiting for pickup and orders already in transit.
+    const activeOrders = await Order.aggregate([
+      {
+        $match: {
+          deliveryPersonId: {
+            $in: rmaPartners.map((partner) => partner._id),
+          },
+          orderType: 'delivery',
+          deliveryAssignmentStatus: 'ACCEPTED',
+          status: { $in: ['Ready', 'OutForDelivery'] },
+        },
       },
+      {
+        $group: {
+          _id: '$deliveryPersonId',
+          count: { $sum: 1 },
+        },
+      },
+    ]);
 
-      deliveryAssignmentType: 'RMA',
-
-      deliveryAssignmentStatus: 'ACCEPTED',
-
-      status: 'OutForDelivery',
-    })
-      .select('deliveryPersonId')
-      .lean();
-
-    const busyPartnerIds = new Set(
-      activeOrders.map((activeOrder) => String(activeOrder.deliveryPersonId)),
+    const activeOrderCounts = new Map(
+      activeOrders.map((item) => [String(item._id), item.count]),
     );
 
-    // ==========================================
-    // CALCULATE DP → SHOP DISTANCE
-    // ==========================================
-
+    // Keep partners who have room for another order.
     const eligiblePartners = rmaPartners
-      .filter((partner) => !busyPartnerIds.has(String(partner._id)))
+      .filter((partner) => {
+        const activeCount = activeOrderCounts.get(String(partner._id)) || 0;
+
+        return activeCount < MAX_ACTIVE_ORDERS_PER_TRIP;
+      })
       .map((partner) => {
         const distance = calculateDistanceKm(
           Number(partner.currentLocation.latitude),
@@ -1750,12 +1739,12 @@ async function startRmaDispatch(req, res) {
           Number(order.pickupLocation.longitude),
         );
 
-        return {
-          partner,
-          distance,
-        };
+        return { partner, distance };
       })
-      .filter((candidate) => candidate.distance <= 5)
+      .filter(
+        (candidate) =>
+          Number.isFinite(candidate.distance) && candidate.distance <= 5,
+      )
       .sort((a, b) => a.distance - b.distance);
 
     // ==========================================
@@ -1766,7 +1755,8 @@ async function startRmaDispatch(req, res) {
       return res.status(409).json({
         success: false,
         code: 'NO_RMA_DELIVERY_PARTNER',
-        message: 'No RMA delivery partner is currently available nearby',
+        message:
+          'No eligible RMA delivery partner with available capacity was found nearby.',
       });
     }
 
@@ -1801,7 +1791,7 @@ async function startRmaDispatch(req, res) {
     if (
       selectedDeliveryPerson.applicationStatus !== 'APPROVED' ||
       !selectedDeliveryPerson.isActive ||
-      selectedDeliveryPerson.availabilityStatus !== 'AVAILABLE'
+      !['AVAILABLE', 'BUSY'].includes(selectedDeliveryPerson.availabilityStatus)
     ) {
       return res.status(409).json({
         message: 'Selected delivery partner is no longer available',

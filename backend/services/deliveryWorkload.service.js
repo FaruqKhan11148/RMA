@@ -38,27 +38,27 @@ async function getActiveDeliveryOrders(deliveryPersonId) {
 // Never change a manually OFFLINE delivery partner to an online status.
 async function refreshDeliveryAvailability(deliveryPersonId) {
   const activeCount = await getActiveDeliveryOrderCount(deliveryPersonId);
-
   const deliveryPerson = await DeliveryPerson.findById(deliveryPersonId);
 
   if (!deliveryPerson) {
+    return { activeCount, availabilityStatus: null };
+  }
+
+  // Preserve an intentional offline status.
+  if (deliveryPerson.availabilityStatus === 'OFFLINE') {
     return {
       activeCount,
-      availabilityStatus: null,
+      availabilityStatus: 'OFFLINE',
     };
   }
 
-  let nextStatus = deliveryPerson.availabilityStatus;
-
-  if (nextStatus !== 'OFFLINE') {
-    nextStatus =
-      activeCount >= MAX_ACTIVE_ORDERS_PER_TRIP ? 'BUSY' : 'AVAILABLE';
-  }
+  // A partner becomes BUSY only after reaching the six-order limit.
+  const nextStatus =
+    activeCount >= MAX_ACTIVE_ORDERS_PER_TRIP ? 'BUSY' : 'AVAILABLE';
 
   if (nextStatus !== deliveryPerson.availabilityStatus) {
     deliveryPerson.availabilityStatus = nextStatus;
     deliveryPerson.lastAvailabilityChangedAt = new Date();
-
     await deliveryPerson.save();
   }
 

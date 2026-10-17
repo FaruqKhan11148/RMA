@@ -223,10 +223,15 @@ const collectDeliveryOrder = async (req, res) => {
 
     await order.save();
 
-    const availabilityStatus =
-      deliveryPerson.deliveryType === 'RMA'
-        ? await refreshRmaDeliveryPersonAvailability(deliveryPerson._id)
-        : deliveryPerson.availabilityStatus;
+    let availabilityStatus = deliveryPerson.availabilityStatus;
+
+    if (deliveryPerson.deliveryType === 'RMA') {
+      const availability = await refreshDeliveryAvailability(
+        deliveryPerson._id,
+      );
+
+      availabilityStatus = availability.availabilityStatus;
+    }
 
     if (order.customerId) {
       try {
@@ -415,13 +420,12 @@ const acceptDeliveryAssignment = async (req, res) => {
     // ==========================================
 
     if (deliveryPerson.deliveryType === 'RMA') {
-      const activeOrderCount = await Order.countDocuments({
-        deliveryPersonId: deliveryPerson._id,
-        orderType: 'delivery',
-        deliveryAssignmentStatus: 'ACCEPTED',
-        status: { $in: ['Ready', 'OutForDelivery'] },
-        _id: { $ne: order._id },
-      });
+      const activeOrderCount =
+        (await getActiveDeliveryOrderCount(deliveryPerson._id)) -
+        (order.deliveryAssignmentStatus === 'ACCEPTED' &&
+        ['Ready', 'OutForDelivery'].includes(order.status)
+          ? 1
+          : 0);
 
       if (activeOrderCount >= MAX_ACTIVE_ORDERS_PER_TRIP) {
         return res.status(409).json({
@@ -538,7 +542,7 @@ const acceptDeliveryAssignment = async (req, res) => {
       success: true,
       message: 'Delivery accepted successfully',
       order,
-      availabilityStatus: deliveryPerson.availabilityStatus,
+      availabilityStatus,
       deliveryChargePayment: {
         status: order.deliveryChargePayment.status,
         amount: order.deliveryChargePayment.amount,
@@ -658,12 +662,12 @@ const rejectDeliveryAssignment = async (req, res) => {
     // ==========================================
 
     if (isRmaAssignment) {
-      await refreshRmaDeliveryPersonAvailability(deliveryPerson._id);
+      // Recalculate availability using the shared six-order rule.
+      const availability = await refreshDeliveryAvailability(
+        deliveryPerson._id,
+      );
 
-      // ==========================================
-      // FIND NEXT RMA PARTNER
-      // ==========================================
-
+      // Find the next eligible RMA delivery partner.
       const dispatchResult = await offerRmaOrderToNextPartner(order, [
         deliveryPerson._id,
       ]);
