@@ -1485,7 +1485,29 @@ async function createDeliveryAssignment(req, res) {
         });
       }
 
-      if (selectedDeliveryPerson.availabilityStatus !== 'AVAILABLE') {
+      const MAX_ACTIVE_ORDERS_PER_TRIP = 6;
+
+      const activeOrderCount = await Order.countDocuments({
+        deliveryPersonId: selectedDeliveryPerson._id,
+        orderType: 'delivery',
+        deliveryAssignmentStatus: 'ACCEPTED',
+        status: { $in: ['Ready', 'OutForDelivery'] },
+      });
+
+      if (activeOrderCount >= MAX_ACTIVE_ORDERS_PER_TRIP) {
+        return res.status(409).json({
+          message:
+            'Selected RMA delivery partner has reached the maximum active-order capacity',
+          activeOrderCount,
+          maxActiveOrders: MAX_ACTIVE_ORDERS_PER_TRIP,
+        });
+      }
+
+      if (
+        !['AVAILABLE', 'BUSY'].includes(
+          selectedDeliveryPerson.availabilityStatus,
+        )
+      ) {
         return res.status(400).json({
           message: 'Selected RMA delivery partner is no longer available',
         });
