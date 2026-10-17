@@ -111,49 +111,67 @@ const getAvailableDeliveryPartners = async (req, res) => {
       deliveryType: 'RMA',
       isActive: true,
       applicationStatus: 'APPROVED',
-      availabilityStatus: 'AVAILABLE',
-      'currentLocation.latitude': {
-        $ne: null,
-      },
-      'currentLocation.longitude': {
-        $ne: null,
-      },
-      'currentLocation.updatedAt': {
-        $gte: locationCutoff,
-      },
+      availabilityStatus: { $in: ['AVAILABLE', 'BUSY'] },
+      'currentLocation.latitude': { $ne: null },
+      'currentLocation.longitude': { $ne: null },
+      'currentLocation.updatedAt': { $gte: locationCutoff },
     })
       .select(
         'name phone deliveryType isActive applicationStatus availabilityStatus currentLocation',
       )
       .lean();
 
-    /*
-     * Calculate distance from shop to each RMA partner.
-     */
-    const eligibleRmaPartners = rmaPartners
-      .map((partner) => {
-        const distance = getDistanceInKm(
-          shopLatitude,
-          shopLongitude,
-          partner.currentLocation.latitude,
-          partner.currentLocation.longitude,
-        );
+    const eligibleRmaPartners = [];
 
-        return {
-          id: partner._id,
-          name: partner.name,
-          phone: partner.phone,
-          deliveryType: partner.deliveryType,
-          isActive: partner.isActive,
-          applicationStatus: partner.applicationStatus,
-          availabilityStatus: partner.availabilityStatus,
-          distance: Number(distance.toFixed(4)),
-          currentLocation: partner.currentLocation,
-        };
-      })
-      .filter((partner) => partner.distance <= 5)
-      .sort((a, b) => a.distance - b.distance)
-      .slice(0, 5);
+    for (const partner of rmaPartners) {
+      const latitude = partner.currentLocation?.latitude;
+      const longitude = partner.currentLocation?.longitude;
+
+      if (
+        typeof latitude !== 'number' ||
+        typeof longitude !== 'number' ||
+        !Number.isFinite(latitude) ||
+        !Number.isFinite(longitude)
+      ) {
+        continue;
+      }
+
+      const distance = getDistanceInKm(
+        shopLatitude,
+        shopLongitude,
+        latitude,
+        longitude,
+      );
+
+      if (distance > 5) continue;
+
+      const activeOrders = await Order.countDocuments({
+        deliveryPersonId: partner._id,
+        orderType: 'delivery',
+        deliveryAssignmentStatus: 'ACCEPTED',
+        status: { $in: ['Ready', 'OutForDelivery'] },
+      });
+
+      if (activeOrders >= 6) continue;
+
+      eligibleRmaPartners.push({
+        id: partner._id,
+        name: partner.name,
+        phone: partner.phone,
+        deliveryType: partner.deliveryType,
+        isActive: partner.isActive,
+        applicationStatus: partner.applicationStatus,
+        availabilityStatus: partner.availabilityStatus,
+        activeOrders,
+        remainingCapacity: 6 - activeOrders,
+        distance: Number(distance.toFixed(4)),
+        currentLocation: partner.currentLocation,
+      });
+    }
+
+    eligibleRmaPartners.sort((a, b) => a.distance - b.distance);
+
+    const nearestEligibleRmaPartners = eligibleRmaPartners.slice(0, 5);
 
     return res.status(200).json({
       success: true,
@@ -179,7 +197,7 @@ const getAvailableDeliveryPartners = async (req, res) => {
         availabilityStatus: partner.availabilityStatus,
       })),
 
-      rmaPartners: eligibleRmaPartners,
+      rmaPartners: nearestEligibleRmaPartners,
     });
   } catch (error) {
     console.error('Get available delivery partners error:', error);
