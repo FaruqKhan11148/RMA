@@ -418,7 +418,7 @@ const assignRmaDeliveryPartner = async (req, res) => {
       });
     }
 
-    if (deliveryPerson.availabilityStatus !== 'AVAILABLE') {
+    if (!['AVAILABLE', 'BUSY'].includes(deliveryPerson.availabilityStatus)) {
       return res.status(400).json({
         message: 'Delivery partner is not currently available',
       });
@@ -457,24 +457,24 @@ const assignRmaDeliveryPartner = async (req, res) => {
     }
 
     // ========================================================
-    // CHECK ACTIVE DELIVERY
-    //
-    // V1:
-    // One RMA delivery partner can handle one active delivery.
+    // CHECK ACTIVE ORDER CAPACITY
     // ========================================================
 
-    const activeOrder = await Order.findOne({
+    const MAX_ACTIVE_ORDERS_PER_TRIP = 6;
+
+    const activeOrderCount = await Order.countDocuments({
       deliveryPersonId: deliveryPerson._id,
       orderType: 'delivery',
-      status: 'OutForDelivery',
       deliveryAssignmentStatus: 'ACCEPTED',
-      deliveryPickupStatus: 'COLLECTED',
-    }).select('orderId');
+      status: { $in: ['Ready', 'OutForDelivery'] },
+    });
 
-    if (activeOrder) {
+    if (activeOrderCount >= MAX_ACTIVE_ORDERS_PER_TRIP) {
       return res.status(409).json({
-        message: 'Delivery partner already has an active delivery',
-        activeOrderId: activeOrder.orderId,
+        message:
+          'Delivery partner has reached the maximum active-order capacity',
+        activeOrderCount,
+        maxActiveOrders: MAX_ACTIVE_ORDERS_PER_TRIP,
       });
     }
 

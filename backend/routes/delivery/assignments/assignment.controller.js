@@ -341,7 +341,7 @@ const acceptDeliveryAssignment = async (req, res) => {
     // ==========================================
 
     if (deliveryPerson.deliveryType === 'RMA') {
-      if (deliveryPerson.availabilityStatus !== 'AVAILABLE') {
+      if (!['AVAILABLE', 'BUSY'].includes(deliveryPerson.availabilityStatus)) {
         return res.status(409).json({
           message: 'You are no longer available for this delivery',
         });
@@ -363,6 +363,30 @@ const acceptDeliveryAssignment = async (req, res) => {
       ) {
         return res.status(409).json({
           message: 'Your current location is outdated',
+        });
+      }
+    }
+
+    // ==========================================
+    // CHECK ACTIVE ORDER CAPACITY
+    // ==========================================
+
+    const MAX_ACTIVE_ORDERS_PER_TRIP = 6;
+
+    if (deliveryPerson.deliveryType === 'RMA') {
+      const activeOrderCount = await Order.countDocuments({
+        deliveryPersonId: deliveryPerson._id,
+        orderType: 'delivery',
+        deliveryAssignmentStatus: 'ACCEPTED',
+        status: { $in: ['Ready', 'OutForDelivery'] },
+        _id: { $ne: order._id },
+      });
+
+      if (activeOrderCount >= MAX_ACTIVE_ORDERS_PER_TRIP) {
+        return res.status(409).json({
+          message: 'You have reached the maximum active-order capacity',
+          activeOrderCount,
+          maxActiveOrders: MAX_ACTIVE_ORDERS_PER_TRIP,
         });
       }
     }
