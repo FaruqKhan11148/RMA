@@ -1,5 +1,9 @@
 const DeliveryPerson = require('../../../models/DeliveryPerson');
 
+const {
+  getActiveDeliveryOrderCount,
+} = require('../../../services/deliveryWorkload.service');
+
 const getDeliveryAvailability = async (req, res) => {
   try {
     const deliveryPerson = await DeliveryPerson.findById(
@@ -65,13 +69,18 @@ const updateDeliveryAvailability = async (req, res) => {
       });
     }
 
-    if (
-      availabilityStatus === 'OFFLINE' &&
-      deliveryPerson.availabilityStatus === 'BUSY'
-    ) {
-      return res.status(409).json({
-        message: 'You cannot go offline while you have an active delivery',
-      });
+    if (availabilityStatus === 'OFFLINE') {
+      const activeOrderCount = await getActiveDeliveryOrderCount(
+        deliveryPerson._id,
+      );
+
+      if (activeOrderCount > 0) {
+        return res.status(409).json({
+          message:
+            'You cannot go offline while you have active deliveries. Complete your assigned deliveries first.',
+          activeOrderCount,
+        });
+      }
     }
 
     if (availabilityStatus === deliveryPerson.availabilityStatus) {

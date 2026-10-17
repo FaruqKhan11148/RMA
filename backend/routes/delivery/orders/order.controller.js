@@ -1,5 +1,9 @@
 const Order = require('../../../models/Order');
 
+const {
+  MAX_ACTIVE_ORDERS_PER_TRIP,
+} = require('../../../services/deliveryWorkload.service');
+
 // ==========================================
 // GET DELIVERY ORDERS
 // FOR LOGGED-IN DELIVERY PERSON
@@ -85,7 +89,7 @@ const getDeliveryDashboard = async (req, res) => {
     );
 
     const activeOrderCount = activeOrders.length;
-    const maxActiveOrders = 6;
+    const maxActiveOrders = MAX_ACTIVE_ORDERS_PER_TRIP;
 
     return res.status(200).json({
       today: {

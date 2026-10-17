@@ -213,7 +213,7 @@ const getEligibleRmaDeliveryPartners = async (req, res) => {
       deliveryType: 'RMA',
       applicationStatus: 'APPROVED',
       isActive: true,
-      availabilityStatus: 'AVAILABLE',
+      availabilityStatus: { $in: ['AVAILABLE', 'BUSY'] },
 
       'currentLocation.latitude': {
         $ne: null,
