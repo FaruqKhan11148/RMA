@@ -1,7 +1,6 @@
 import {
   UserRound,
   Phone,
-  Store,
   LogOut,
   ChevronRight,
   LayoutDashboard,
@@ -12,7 +11,6 @@ import {
   Palette,
   CircleHelp,
   Info,
-  Truck,
   MapPin,
 } from 'lucide-react';
 
@@ -34,7 +32,7 @@ function DeliveryProfile() {
 
   const partnerName = deliveryPartner?.name || 'Delivery Partner';
   const phone = deliveryPartner?.phone || '—';
-  const shopId = deliveryPartner?.shopId || '—';
+  // const shopId = deliveryPartner?.shopId || '—';
 
   const isOnline = ['AVAILABLE', 'BUSY'].includes(
     deliveryPartner?.availabilityStatus,
