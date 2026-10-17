@@ -1646,7 +1646,10 @@ async function startRmaDispatch(req, res) {
       });
     }
 
-    if (!order.pickupLocation?.latitude || !order.pickupLocation?.longitude) {
+    if (
+      order.pickupLocation?.latitude == null ||
+      order.pickupLocation?.longitude == null
+    ) {
       return res.status(400).json({
         message: 'Shop pickup location is unavailable',
       });
@@ -1689,67 +1692,108 @@ async function startRmaDispatch(req, res) {
       applicationStatus: 'APPROVED',
       isActive: true,
       availabilityStatus: { $in: ['AVAILABLE', 'BUSY'] },
-
-      'currentLocation.latitude': { $ne: null },
-      'currentLocation.longitude': { $ne: null },
-      'currentLocation.updatedAt': { $gte: locationCutoff },
     })
       .select(
         'name phone deliveryType applicationStatus isActive availabilityStatus currentLocation',
       )
       .lean();
 
-    // Count all accepted active delivery orders, including
-    // orders waiting for pickup and orders already in transit.
-    const activeOrders = await Order.aggregate([
-      {
-        $match: {
-          deliveryPersonId: {
-            $in: rmaPartners.map((partner) => partner._id),
+    // Count active accepted orders for every eligible account,
+    // including orders waiting for pickup and those in transit.
+    const activeOrders = rmaPartners.length
+      ? await Order.aggregate([
+          {
+            $match: {
+              deliveryPersonId: {
+                $in: rmaPartners.map((partner) => partner._id),
+              },
+              orderType: 'delivery',
+              deliveryAssignmentStatus: 'ACCEPTED',
+              status: { $in: ['Ready', 'OutForDelivery'] },
+            },
           },
-          orderType: 'delivery',
-          deliveryAssignmentStatus: 'ACCEPTED',
-          status: { $in: ['Ready', 'OutForDelivery'] },
-        },
-      },
-      {
-        $group: {
-          _id: '$deliveryPersonId',
-          count: { $sum: 1 },
-        },
-      },
-    ]);
+          {
+            $group: {
+              _id: '$deliveryPersonId',
+              count: { $sum: 1 },
+            },
+          },
+        ])
+      : [];
 
     const activeOrderCounts = new Map(
       activeOrders.map((item) => [String(item._id), item.count]),
     );
 
-    // Keep partners who have room for another order.
-    const eligiblePartners = rmaPartners
-      .filter((partner) => {
-        const activeCount = activeOrderCounts.get(String(partner._id)) || 0;
+    const candidates = rmaPartners.map((partner) => {
+      const latitude = Number(partner.currentLocation?.latitude);
+      const longitude = Number(partner.currentLocation?.longitude);
 
-        return activeCount < MAX_ACTIVE_ORDERS_PER_TRIP;
-      })
-      .map((partner) => {
-        const distance = calculateDistanceKm(
-          Number(partner.currentLocation.latitude),
-          Number(partner.currentLocation.longitude),
-          Number(order.pickupLocation.latitude),
-          Number(order.pickupLocation.longitude),
-        );
+      const updatedAt = partner.currentLocation?.updatedAt;
+      const locationTime = updatedAt ? new Date(updatedAt).getTime() : NaN;
 
-        return { partner, distance };
-      })
+      const hasValidCoordinates =
+        partner.currentLocation?.latitude != null &&
+        partner.currentLocation?.longitude != null &&
+        Number.isFinite(latitude) &&
+        Number.isFinite(longitude) &&
+        latitude >= -90 &&
+        latitude <= 90 &&
+        longitude >= -180 &&
+        longitude <= 180;
+
+      const hasFreshLocation =
+        Number.isFinite(locationTime) &&
+        locationTime >= locationCutoff.getTime() &&
+        locationTime <= Date.now();
+
+      const activeCount = activeOrderCounts.get(String(partner._id)) || 0;
+
+      const distance = hasValidCoordinates
+        ? calculateDistanceKm(
+            latitude,
+            longitude,
+            Number(order.pickupLocation.latitude),
+            Number(order.pickupLocation.longitude),
+          )
+        : Infinity;
+
+      return {
+        partner,
+        activeCount,
+        hasValidCoordinates,
+        hasFreshLocation,
+        distance,
+      };
+    });
+
+    const eligiblePartners = candidates
       .filter(
         (candidate) =>
-          Number.isFinite(candidate.distance) && candidate.distance <= 5,
+          candidate.hasValidCoordinates &&
+          candidate.hasFreshLocation &&
+          candidate.activeCount < MAX_ACTIVE_ORDERS_PER_TRIP &&
+          Number.isFinite(candidate.distance) &&
+          candidate.distance <= 5,
       )
       .sort((a, b) => a.distance - b.distance);
 
-    // ==========================================
-    // NO PARTNER AVAILABLE
-    // ==========================================
+    // Temporary diagnostics: inspect backend logs after trying dispatch.
+    console.log('[RMA DISPATCH DIAGNOSTICS]', {
+      orderId: order.orderId,
+      totalApprovedActiveRmaPartners: rmaPartners.length,
+      candidates: candidates.map((candidate) => ({
+        partnerId: String(candidate.partner._id),
+        availabilityStatus: candidate.partner.availabilityStatus,
+        activeOrders: candidate.activeCount,
+        hasValidCoordinates: candidate.hasValidCoordinates,
+        hasFreshLocation: candidate.hasFreshLocation,
+        distanceKm: Number.isFinite(candidate.distance)
+          ? Number(candidate.distance.toFixed(2))
+          : null,
+      })),
+      eligiblePartnerCount: eligiblePartners.length,
+    });
 
     if (eligiblePartners.length === 0) {
       return res.status(409).json({
