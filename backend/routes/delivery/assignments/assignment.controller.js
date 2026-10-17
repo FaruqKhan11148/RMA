@@ -6,8 +6,45 @@ const {
 } = require('../../../services/notificationService');
 
 const {
+  refreshDeliveryAvailability,
+  MAX_ACTIVE_ORDERS_PER_TRIP,
+} = require('../../../services/deliveryWorkload.service');
+
+const {
   offerRmaOrderToNextPartner,
 } = require('../../../services/rmaDispatchService');
+
+const refreshRmaDeliveryPersonAvailability = async (deliveryPersonId) => {
+  const deliveryPerson = await DeliveryPerson.findById(deliveryPersonId);
+
+  if (!deliveryPerson || deliveryPerson.deliveryType !== 'RMA') {
+    return null;
+  }
+
+  // Never automatically bring a manually offline DP online.
+  if (deliveryPerson.availabilityStatus === 'OFFLINE') {
+    return 'OFFLINE';
+  }
+
+  const activeOrderCount = await Order.countDocuments({
+    deliveryPersonId: deliveryPerson._id,
+    orderType: 'delivery',
+    deliveryAssignmentStatus: 'ACCEPTED',
+    status: { $in: ['Ready', 'OutForDelivery'] },
+  });
+
+  const nextStatus =
+    activeOrderCount >= MAX_ACTIVE_ORDERS_PER_TRIP ? 'BUSY' : 'AVAILABLE';
+
+  if (deliveryPerson.availabilityStatus !== nextStatus) {
+    deliveryPerson.availabilityStatus = nextStatus;
+    deliveryPerson.lastAvailabilityChangedAt = new Date();
+
+    await deliveryPerson.save();
+  }
+
+  return nextStatus;
+};
 
 // ==========================================
 // COLLECT DELIVERY ORDER
@@ -186,6 +223,11 @@ const collectDeliveryOrder = async (req, res) => {
 
     await order.save();
 
+    const availabilityStatus =
+      deliveryPerson.deliveryType === 'RMA'
+        ? await refreshRmaDeliveryPersonAvailability(deliveryPerson._id)
+        : deliveryPerson.availabilityStatus;
+
     if (order.customerId) {
       try {
         await createAndSendNotification({
@@ -229,6 +271,7 @@ const collectDeliveryOrder = async (req, res) => {
       success: true,
       message: 'Order collected successfully',
       order,
+      availabilityStatus,
     });
   } catch (error) {
     console.error('Collect delivery order failed:', error.message);
@@ -371,8 +414,6 @@ const acceptDeliveryAssignment = async (req, res) => {
     // CHECK ACTIVE ORDER CAPACITY
     // ==========================================
 
-    const MAX_ACTIVE_ORDERS_PER_TRIP = 6;
-
     if (deliveryPerson.deliveryType === 'RMA') {
       const activeOrderCount = await Order.countDocuments({
         deliveryPersonId: deliveryPerson._id,
@@ -438,11 +479,25 @@ const acceptDeliveryAssignment = async (req, res) => {
     // UPDATE DP AVAILABILITY
     // ==========================================
 
-    deliveryPerson.availabilityStatus = 'BUSY';
-    deliveryPerson.lastAvailabilityChangedAt = now;
-
-    await deliveryPerson.save();
     await order.save();
+
+    let availabilityStatus = deliveryPerson.availabilityStatus;
+
+    if (deliveryPerson.deliveryType === 'RMA') {
+      const availability = await refreshDeliveryAvailability(
+        deliveryPerson._id,
+      );
+
+      availabilityStatus = availability.availabilityStatus;
+    } else {
+      // Keep existing SHOP delivery-partner behavior.
+      deliveryPerson.availabilityStatus = 'BUSY';
+      deliveryPerson.lastAvailabilityChangedAt = now;
+
+      await deliveryPerson.save();
+
+      availabilityStatus = deliveryPerson.availabilityStatus;
+    }
 
     // ==========================================
     // NOTIFY OWNER
@@ -603,10 +658,7 @@ const rejectDeliveryAssignment = async (req, res) => {
     // ==========================================
 
     if (isRmaAssignment) {
-      deliveryPerson.availabilityStatus = 'AVAILABLE';
-      deliveryPerson.lastAvailabilityChangedAt = new Date();
-
-      await deliveryPerson.save();
+      await refreshRmaDeliveryPersonAvailability(deliveryPerson._id);
 
       // ==========================================
       // FIND NEXT RMA PARTNER

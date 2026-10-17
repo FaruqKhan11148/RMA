@@ -34,7 +34,8 @@ async function getActiveDeliveryOrders(deliveryPersonId) {
     .sort({ createdAt: 1 });
 }
 
-// Recalculate availability without taking a DP offline unexpectedly.
+// Recalculate availability based on the maximum active order limit.
+// Never change a manually OFFLINE delivery partner to an online status.
 async function refreshDeliveryAvailability(deliveryPersonId) {
   const activeCount = await getActiveDeliveryOrderCount(deliveryPersonId);
 
@@ -49,17 +50,15 @@ async function refreshDeliveryAvailability(deliveryPersonId) {
 
   let nextStatus = deliveryPerson.availabilityStatus;
 
-  if (activeCount > 0) {
-    // A partner with active work remains online and busy.
-    nextStatus = 'BUSY';
-  } else if (deliveryPerson.availabilityStatus === 'BUSY') {
-    // Once all active work is finished, the partner can receive orders again.
-    nextStatus = 'AVAILABLE';
+  if (nextStatus !== 'OFFLINE') {
+    nextStatus =
+      activeCount >= MAX_ACTIVE_ORDERS_PER_TRIP ? 'BUSY' : 'AVAILABLE';
   }
 
   if (nextStatus !== deliveryPerson.availabilityStatus) {
     deliveryPerson.availabilityStatus = nextStatus;
     deliveryPerson.lastAvailabilityChangedAt = new Date();
+
     await deliveryPerson.save();
   }
 
