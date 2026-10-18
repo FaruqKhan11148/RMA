@@ -7,11 +7,15 @@ import ApplicationHeader from './components/ApplicationHeader';
 import ApplicationProgress from './components/ApplicationProgress';
 import ApplicationSectionCard from './components/ApplicationSectionCard';
 import ApplicationSubmit from './components/ApplicationSubmit';
+import RmaDeliveryAgreement from './components/RmaDeliveryAgreement';
 
 import {
   fetchRmaApplication,
   submitRmaApplication,
+  acceptRmaDeliveryAgreement,
 } from './utils/applicationApi';
+
+const RMA_AGREEMENT_VERSION = 'RMA-DP-1.0';
 
 function DeliveryApplication() {
   const navigate = useNavigate();
@@ -23,6 +27,10 @@ function DeliveryApplication() {
   const [error, setError] = useState('');
   const [submitError, setSubmitError] = useState('');
   const [missingFields, setMissingFields] = useState([]);
+
+  const [showAgreement, setShowAgreement] = useState(false);
+  const [acceptingAgreement, setAcceptingAgreement] = useState(false);
+  const [agreementError, setAgreementError] = useState('');
 
   useEffect(() => {
     const loadApplication = async () => {
@@ -130,6 +138,46 @@ function DeliveryApplication() {
 
   const allSectionsCompleted = sections.every((section) => section.completed);
 
+  const agreementAccepted =
+    application?.agreement?.accepted === true &&
+    application?.agreement?.version === RMA_AGREEMENT_VERSION &&
+    Boolean(application?.agreement?.acceptedAt);
+
+  const handleAcceptAgreement = async () => {
+    try {
+      setAcceptingAgreement(true);
+      setAgreementError('');
+
+      await acceptRmaDeliveryAgreement();
+
+      const updatedApplication = await fetchRmaApplication();
+      setApplication(updatedApplication);
+
+      if (
+        updatedApplication?.agreement?.accepted === true &&
+        updatedApplication?.agreement?.version === RMA_AGREEMENT_VERSION
+      ) {
+        setShowAgreement(false);
+      } else {
+        setAgreementError(
+          'Acceptance could not be confirmed. Please reload and try again.',
+        );
+      }
+    } catch (acceptError) {
+      console.error('RMA agreement acceptance failed:', acceptError);
+      setAgreementError(
+        acceptError.message || 'Unable to save your agreement acceptance.',
+      );
+    } finally {
+      setAcceptingAgreement(false);
+    }
+  };
+
+  const handleOpenAgreement = () => {
+    setAgreementError('');
+    setShowAgreement(true);
+  };
+
   const handleSubmit = async () => {
     try {
       setSubmitting(true);
@@ -194,6 +242,22 @@ function DeliveryApplication() {
 
   const isRejected = applicationStatus === 'REJECTED';
 
+  if (showAgreement && !isSubmitted && !isApproved && !isRejected) {
+    return (
+      <main className="delivery_application_page">
+        <div className="delivery_application_container">
+          <RmaDeliveryAgreement
+            accepted={agreementAccepted}
+            accepting={acceptingAgreement}
+            error={agreementError}
+            onAccept={handleAcceptAgreement}
+            onBack={() => setShowAgreement(false)}
+          />
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="delivery_application_page">
       <div className="delivery_application_container">
@@ -238,6 +302,8 @@ function DeliveryApplication() {
               error={submitError}
               missingFields={missingFields}
               onSubmit={handleSubmit}
+              agreementAccepted={agreementAccepted}
+              onReviewAgreement={handleOpenAgreement}
             />
           )}
 

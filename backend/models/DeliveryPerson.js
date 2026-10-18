@@ -138,6 +138,27 @@ const deliveryPersonSchema = new mongoose.Schema(
     },
 
     // ==========================================
+    // RMA DELIVERY PARTNER AGREEMENT
+    // ==========================================
+    agreement: {
+      accepted: {
+        type: Boolean,
+        default: false,
+      },
+
+      version: {
+        type: String,
+        default: null,
+        trim: true,
+      },
+
+      acceptedAt: {
+        type: Date,
+        default: null,
+      },
+    },
+
+    // ==========================================
     // KYC
     // ==========================================
     kyc: {

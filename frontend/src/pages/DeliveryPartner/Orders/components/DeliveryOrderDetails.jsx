@@ -49,41 +49,64 @@ function DeliveryOrderDetails({
   const distance = isCollected ? order.deliveryDistance : null;
 
   useEffect(() => {
-    const loadRoute = async () => {
+    let cancelled = false;
+    let intervalId;
+    let requestInProgress = false;
+
+    const loadRoute = async (showLoader = false) => {
+      if (requestInProgress) return;
+
+      if (destination?.latitude == null || destination?.longitude == null) {
+        setRouteLoading(false);
+        setRouteError(
+          isCollected
+            ? 'Customer delivery location is not available for this order.'
+            : 'Shop pickup location is not available for this order.',
+        );
+        return;
+      }
+
+      requestInProgress = true;
+
       try {
-        setRouteLoading(true);
+        if (showLoader && !cancelled) {
+          setRouteLoading(true);
+        }
+
         setRouteError('');
-        setRoute(null);
 
         const token = localStorage.getItem('delivery_token');
 
-        const data = await fetchDeliveryRoute(token, order.orderId, {
-          destinationType: isCollected ? 'customer' : 'pickup',
-        });
+        const data = await fetchDeliveryRoute(token, order.orderId);
 
-        setRoute(data.route);
+        if (!cancelled && data.route) {
+          setRoute(data.route);
+        }
       } catch (error) {
         console.error('Failed to fetch delivery route:', error);
 
-        setRouteError(error.message);
+        if (!cancelled) {
+          setRouteError(error.message || 'Unable to refresh delivery route.');
+        }
       } finally {
-        setRouteLoading(false);
+        requestInProgress = false;
+
+        if (!cancelled && showLoader) {
+          setRouteLoading(false);
+        }
       }
     };
 
-    if (
-      destination?.latitude !== undefined &&
-      destination?.longitude !== undefined
-    ) {
-      loadRoute();
-    } else {
-      setRouteLoading(false);
-      setRouteError(
-        isCollected
-          ? 'Customer delivery location is not available for this order.'
-          : 'Shop pickup location is not available for this order.',
-      );
-    }
+    loadRoute(true);
+
+    intervalId = setInterval(() => {
+      loadRoute(false);
+    }, 15000);
+
+    return () => {
+      cancelled = true;
+      clearInterval(intervalId);
+    };
   }, [
     order.orderId,
     order.deliveryPickupStatus,
@@ -476,20 +499,27 @@ function DeliveryOrderDetails({
                       />
                     </div>
 
-                    <p>
-                      Show this QR code to the shop owner. The owner must pay
-                      RMA the exact amount shown above. Do not confirm or
-                      collect the payment yourself.
-                    </p>
+                    <div className="rma_collection_instructions">
+                      <p className="rma_collection_intro">
+                        Show this QR code to the shop owner and ask them to pay
+                        the exact amount shown above.
+                      </p>
 
-                    <p>
-                      RMA UPI ID: <strong>{rmaCollectionPayment.upiId}</strong>
-                    </p>
+                      <div className="rma_collection_warning">
+                        <strong>Important</strong>
+                        <p>Do not confirm or collect the payment yourself.</p>
+                      </div>
 
-                    <p>
-                      Collection will be enabled after RMA admin verifies the
-                      payment.
-                    </p>
+                      <div className="rma_collection_upi">
+                        <span>RMA UPI ID</span>
+                        <strong>{rmaCollectionPayment.upiId}</strong>
+                      </div>
+
+                      <p className="rma_collection_note">
+                        Collection will be enabled after RMA admin verifies the
+                        payment.
+                      </p>
+                    </div>
                   </>
                 ) : (
                   <p>

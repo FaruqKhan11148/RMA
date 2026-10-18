@@ -63,9 +63,40 @@ const updateDeliveryAvailability = async (req, res) => {
       });
     }
 
-    if (deliveryPerson.applicationStatus !== 'APPROVED') {
+    if (
+      deliveryPerson.deliveryType === 'RMA' &&
+      deliveryPerson.applicationStatus !== 'APPROVED'
+    ) {
+      const status = deliveryPerson.applicationStatus;
+
+      const applicationMessages = {
+        INCOMPLETE:
+          'Complete your RMA Delivery Partner application before going online.',
+        SUBMITTED:
+          'Your application has been submitted and is awaiting review.',
+        UNDER_REVIEW:
+          'Your application is under review. You can go online after approval.',
+        CORRECTION_REQUIRED:
+          deliveryPerson.correctionReason ||
+          'Your application needs corrections. Update and resubmit it before going online.',
+        REJECTED:
+          deliveryPerson.rejectionReason ||
+          'Your application has been rejected. Please contact RMA support.',
+      };
+
       return res.status(403).json({
-        message: 'Your delivery partner application is not approved',
+        code: 'RMA_APPLICATION_NOT_APPROVED',
+        applicationStatus: status,
+        message:
+          applicationMessages[status] ||
+          'Your RMA Delivery Partner application must be approved before going online.',
+        action: 'COMPLETE_APPLICATION',
+      });
+    }
+
+    if (deliveryPerson.deliveryType !== 'RMA' && !deliveryPerson.isActive) {
+      return res.status(403).json({
+        message: 'Your delivery partner account is inactive',
       });
     }
 

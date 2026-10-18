@@ -5208,3 +5208,78 @@
   color: #167344;
   font-weight: 600;
 }
+
+.rma_collection_instructions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.rma_collection_intro {
+  margin: 0;
+  color: #44534a;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.rma_collection_warning {
+  padding: 10px 12px;
+  border: 1px solid #f0dfb5;
+  border-radius: 9px;
+  background: #fff9eb;
+}
+
+.rma_collection_warning strong {
+  display: block;
+  margin-bottom: 3px;
+  color: #8a5b08;
+  font-size: 12px;
+}
+
+.rma_collection_warning p {
+  margin: 0;
+  color: #725a2d;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.rma_collection_upi {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 11px 12px;
+  border: 1px solid #dce9df;
+  border-radius: 9px;
+  background: #f5faf6;
+}
+
+.rma_collection_upi span {
+  color: #64746a;
+  font-size: 12px;
+}
+
+.rma_collection_upi strong {
+  color: #18753b;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.rma_collection_note {
+  margin: 0;
+  color: #68776e;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+@media (max-width: 480px) {
+  .rma_collection_instructions {
+    gap: 10px;
+  }
+
+  .rma_collection_intro {
+    font-size: 13px;
+  }
+}

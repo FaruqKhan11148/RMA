@@ -10,6 +10,7 @@ import ActiveDelivery from './components/ActiveDelivery';
 import DeliveryRequests from './components/DeliveryRequests';
 import DeliveryArea from './components/DeliveryArea';
 import DeliveryDashboardSkeleton from './components/DeliveryDashboardSkeleton';
+import { fetchRmaApplication } from '../Application/utils/applicationApi';
 
 import {
   fetchDeliveryDashboard,
@@ -54,6 +55,9 @@ function DeliveryDashboard() {
   const [refreshing, setRefreshing] = useState(false);
   const [updatingAvailability, setUpdatingAvailability] = useState(false);
   const [error, setError] = useState('');
+
+  const [applicationNotice, setApplicationNotice] = useState(null);
+  const [checkingApplication, setCheckingApplication] = useState(false);
 
   const loadDashboard = useCallback(
     async ({ showLoader = false } = {}) => {
@@ -148,13 +152,104 @@ function DeliveryDashboard() {
   const todayEarnings = calculateTodayEarnings(dashboard.orders.completedToday);
 
   const handleToggleOnline = async () => {
-    if (updatingAvailability) return;
+    if (updatingAvailability || checkingApplication) return;
 
     const token = localStorage.getItem('delivery_token');
 
     if (!token) {
       navigate('/delivery/rma-login');
       return;
+    }
+
+    // Only check application eligibility when trying to go online.
+    if (!isOnline) {
+      try {
+        setError('');
+        setCheckingApplication(true);
+
+        // Fetch the latest application status from the backend.
+        const application = await fetchRmaApplication();
+        const status = application?.applicationStatus;
+
+        if (status !== 'APPROVED') {
+          const notices = {
+            INCOMPLETE: {
+              title: 'Complete Your Application',
+              message:
+                'Please complete your personal details and upload all required documents before going online.',
+              action: 'Complete Application',
+            },
+            SUBMITTED: {
+              title: 'Application Under Review',
+              message:
+                'Your application has been submitted. RMA must approve it before you can receive delivery assignments.',
+              action: 'View Application',
+            },
+            UNDER_REVIEW: {
+              title: 'Application Under Review',
+              message:
+                'RMA is reviewing your details and documents. You can go online after your application is approved.',
+              action: 'View Application',
+            },
+            CORRECTION_REQUIRED: {
+              title: 'Changes Required',
+              message:
+                application?.correctionReason ||
+                'Please correct the requested details and resubmit your application.',
+              action: 'Update Application',
+            },
+            REJECTED: {
+              title: 'Application Rejected',
+              message:
+                application?.rejectionReason ||
+                'Your application was rejected. Please contact RMA support for guidance.',
+              action: 'View Application',
+            },
+          };
+
+          setApplicationNotice(
+            notices[status] || {
+              title: 'Application Approval Required',
+              message:
+                'Your application status could not be confirmed as approved. Please check your application before going online.',
+              action: 'View Application',
+            },
+          );
+
+          return;
+        }
+
+        // Keep the latest status locally as well.
+        const storedPartner = localStorage.getItem('delivery_person');
+
+        if (storedPartner) {
+          const parsedPartner = JSON.parse(storedPartner);
+          const updatedPartner = {
+            ...parsedPartner,
+            applicationStatus: 'APPROVED',
+          };
+
+          localStorage.setItem(
+            'delivery_person',
+            JSON.stringify(updatedPartner),
+          );
+
+          setDeliveryPartner(updatedPartner);
+        }
+      } catch (applicationError) {
+        console.error('Unable to verify DP application:', applicationError);
+
+        setApplicationNotice({
+          title: 'Unable to Verify Application',
+          message:
+            'We could not verify your application status. Please try again before going online.',
+          action: 'Open Application',
+        });
+
+        return;
+      } finally {
+        setCheckingApplication(false);
+      }
     }
 
     const nextStatus = isOnline ? 'OFFLINE' : 'AVAILABLE';
@@ -207,6 +302,46 @@ function DeliveryDashboard() {
       <DeliveryDashboardHeader partnerName={partnerName} isOnline={isOnline} />
 
       <DeliveryStatusCard isOnline={isOnline} onToggle={handleToggleOnline} />
+
+      {applicationNotice && (
+        <div
+          className="dp_application_modal_overlay"
+          onClick={() => setApplicationNotice(null)}
+        >
+          <section
+            className="dp_application_modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="dp_application_modal_title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="dp_application_modal_icon">!</div>
+
+            <h2 id="dp_application_modal_title">{applicationNotice.title}</h2>
+
+            <p>{applicationNotice.message}</p>
+
+            <button
+              type="button"
+              className="dp_application_modal_primary"
+              onClick={() => {
+                setApplicationNotice(null);
+                navigate('/delivery/rma/application');
+              }}
+            >
+              {applicationNotice.action}
+            </button>
+
+            <button
+              type="button"
+              className="dp_application_modal_secondary"
+              onClick={() => setApplicationNotice(null)}
+            >
+              Not now
+            </button>
+          </section>
+        </div>
+      )}
 
       {loading ? (
         <DeliveryDashboardSkeleton />

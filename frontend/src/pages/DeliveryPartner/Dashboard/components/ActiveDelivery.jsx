@@ -124,7 +124,7 @@ function ActiveDelivery({ activeDelivery, activeOrders, onViewDelivery }) {
                 onClick={() => onViewDelivery?.(order.orderId)}
                 disabled={!order.orderId || !onViewDelivery}
               >
-                <Truck size={17} />
+                <Truck size={17} style={{marginBottom:"-5px", marginRight:"7px"}}/>
                 View Delivery
               </button>
             </article>

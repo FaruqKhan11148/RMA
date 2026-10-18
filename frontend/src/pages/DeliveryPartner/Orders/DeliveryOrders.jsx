@@ -87,7 +87,8 @@ function DeliveryOrders() {
 
     const watchId = navigator.geolocation.watchPosition(
       async (position) => {
-        const { latitude, longitude, accuracy } = position.coords;
+        const { latitude, longitude, accuracy, heading, speed } =
+          position.coords;
 
         console.log('Delivery GPS reading:', {
           latitude,
@@ -117,7 +118,14 @@ function DeliveryOrders() {
           return;
         }
 
-        setCurrentLocation({ latitude, longitude });
+        setCurrentLocation({
+          latitude,
+          longitude,
+          accuracy,
+          heading,
+          speed,
+          timestamp: position.timestamp,
+        });
         setError('');
 
         try {

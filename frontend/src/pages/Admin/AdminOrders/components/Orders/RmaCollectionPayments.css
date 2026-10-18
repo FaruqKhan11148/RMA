@@ -1,0 +1,189 @@
+/* RmaCollectionPayments.css */
+
+.rma-collection-payments {
+  width: 100%;
+  min-width: 0;
+  color: #1f2937;
+  font-family: inherit;
+}
+
+.rma-collection-payments h2 {
+  margin: 0 0 10px;
+  color: #166534;
+  font-size: 22px;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.rma-collection-payments > p {
+  margin: 0 0 18px;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.rma-collection-payments > p[role='alert'],
+.rma-collection-payments > p[role='status'] {
+  padding: 12px 14px;
+  border: 1px solid;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.rma-collection-payments > p[role='alert'] {
+  color: #b91c1c;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.rma-collection-payments > p[role='status'] {
+  color: #166534;
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.rma-collection-payment-row {
+  position: relative;
+  margin: 0 0 16px;
+  padding: 22px;
+  overflow-wrap: anywhere;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-left: 4px solid #16a34a;
+  border-radius: 14px;
+  box-shadow: 0 3px 12px rgb(15 23 42 / 4%);
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.rma-collection-payment-row:hover {
+  border-color: #bbf7d0;
+  box-shadow: 0 6px 20px rgb(15 23 42 / 7%);
+}
+
+.rma-collection-payment-row h3 {
+  margin: 0 0 18px;
+  padding-bottom: 14px;
+  color: #111827;
+  font-size: 17px;
+  font-weight: 750;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.rma-collection-payment-row p {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0;
+  padding: 10px 0;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.5;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.rma-collection-payment-row p strong {
+  color: #166534;
+  font-size: 19px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.rma-collection-payment-row p:last-of-type {
+  border-bottom: none;
+}
+
+.rma-collection-payment-row button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 46px;
+  margin-top: 18px;
+  padding: 12px 18px;
+  color: #fff;
+  background: #15803d;
+  border: 1px solid #15803d;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.rma-collection-payment-row button:hover:not(:disabled) {
+  background: #166534;
+  box-shadow: 0 4px 12px rgb(22 101 52 / 20%);
+}
+
+.rma-collection-payment-row button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.rma-collection-payment-row button:focus-visible {
+  outline: 3px solid #86efac;
+  outline-offset: 3px;
+}
+
+.rma-collection-payment-row button:disabled {
+  color: #94a3b8;
+  background: #e2e8f0;
+  border-color: #e2e8f0;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+@media (min-width: 768px) {
+  .rma-collection-payment-row {
+    padding: 24px 26px;
+  }
+
+  .rma-collection-payment-row button {
+    width: auto;
+    min-width: 230px;
+  }
+}
+
+@media (max-width: 480px) {
+  .rma-collection-payments h2 {
+    font-size: 19px;
+  }
+
+  .rma-collection-payment-row {
+    padding: 16px 14px;
+    border-radius: 12px;
+  }
+
+  .rma-collection-payment-row h3 {
+    font-size: 15px;
+  }
+
+  .rma-collection-payment-row p {
+    gap: 10px;
+    font-size: 12px;
+  }
+
+  .rma-collection-payment-row p strong {
+    font-size: 17px;
+  }
+
+  .rma-collection-payment-row button {
+    min-height: 44px;
+    padding: 11px 12px;
+    font-size: 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rma-collection-payment-row,
+  .rma-collection-payment-row button {
+    transition: none;
+  }
+}

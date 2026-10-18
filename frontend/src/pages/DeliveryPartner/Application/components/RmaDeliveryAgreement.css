@@ -1,0 +1,166 @@
+.rma_dp_agreement_page {
+  width: 100%;
+  max-width: 820px;
+  margin: 0 auto 32px;
+  color: #17251d;
+}
+
+.rma_dp_agreement_back {
+  border: 0;
+  background: transparent;
+  color: #247b43;
+  font: inherit;
+  font-weight: 600;
+  padding: 10px 0;
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+
+.rma_dp_agreement_header {
+  margin-bottom: 20px;
+}
+
+.rma_dp_agreement_eyebrow {
+  margin: 0 0 8px;
+  color: #27834a;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.rma_dp_agreement_header h1 {
+  margin: 0 0 10px;
+  font-size: clamp(24px, 4vw, 32px);
+  line-height: 1.25;
+}
+
+.rma_dp_agreement_header > p:not(.rma_dp_agreement_eyebrow) {
+  color: #5d6b62;
+  line-height: 1.6;
+}
+
+.rma_dp_agreement_version {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: #edf7ef;
+  color: #216b3b;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.rma_dp_agreement_scroll_hint,
+.rma_dp_agreement_read_notice {
+  color: #58665d;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.rma_dp_agreement_scroll_hint {
+  margin-bottom: 10px;
+}
+
+.rma_dp_agreement_body {
+  height: min(55vh, 520px);
+  min-height: 280px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 22px;
+  border: 1px solid #dce5de;
+  border-radius: 12px;
+  background: #fff;
+  line-height: 1.7;
+  scrollbar-gutter: stable;
+}
+
+.rma_dp_agreement_body h2 {
+  margin: 22px 0 8px;
+  color: #1d6537;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.rma_dp_agreement_body h2:first-child {
+  margin-top: 0;
+}
+
+.rma_dp_agreement_body p {
+  margin: 0 0 14px;
+  color: #37463c;
+  font-size: 14px;
+}
+
+.rma_dp_agreement_final_note {
+  padding-top: 10px;
+  font-weight: 700;
+}
+
+.rma_dp_agreement_acceptance {
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid #dce5de;
+  border-radius: 12px;
+  background: #f8fbf8;
+}
+
+.rma_dp_agreement_checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #26372b;
+  font-size: 14px;
+  line-height: 1.6;
+  cursor: pointer;
+}
+
+.rma_dp_agreement_checkbox input {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: #27834a;
+}
+
+.rma_dp_agreement_accept_button {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 16px;
+  border: 0;
+  border-radius: 8px;
+  background: #218344;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.rma_dp_agreement_accept_button:disabled {
+  background: #a8b8ad;
+  cursor: not-allowed;
+}
+
+.rma_dp_agreement_error {
+  margin: 12px 0 0;
+  color: #b42318;
+  font-size: 13px;
+}
+
+.rma_dp_agreement_saved {
+  margin-top: 12px;
+  color: #216b3b;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+@media (max-width: 600px) {
+  .rma_dp_agreement_body {
+    height: 52vh;
+    min-height: 260px;
+    padding: 16px;
+  }
+
+  .rma_dp_agreement_acceptance {
+    padding: 14px;
+  }
+}

@@ -27,44 +27,30 @@
 }
 
 /* =========================================================
-   DELIVERY PARTNER — GOOGLE MAP STYLE CIRCLE
-   ========================================================= */
+   DELIVERY PARTNER — DIRECTIONAL TRIANGLE
+========================================================= */
 
 .delivery_partner_map_icon_wrapper {
   background: transparent !important;
   border: none !important;
 }
 
-.delivery_partner_map_icon {
-  position: relative;
-
+.delivery_partner_map_arrow_wrap {
   width: 42px;
   height: 42px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
-  border-radius: 50%;
-
-  background: rgba(30, 136, 229, 0.16);
-
-  animation: delivery_partner_location_pulse 2s ease-out infinite;
+  transform-origin: center center;
+  transition: transform 0.25s linear;
 }
 
-.delivery_partner_map_dot {
-  width: 17px;
-  height: 17px;
-
-  border-radius: 50%;
-
-  background: #1a73e8;
-
-  border: 3px solid #ffffff;
-
-  box-shadow:
-    0 1px 4px rgba(0, 0, 0, 0.35),
-    0 0 0 1px rgba(26, 115, 232, 0.2);
+.delivery_partner_map_arrow {
+  width: 36px;
+  height: 36px;
+  display: block;
+  overflow: visible;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
 }
 
 /* =========================================================
@@ -188,4 +174,34 @@
   line-height: 1;
 
   transform: rotate(45deg);
+}
+
+/* MAP ROTATION CONTROLS */
+
+.map_rotation_controls {
+  position: absolute;
+  right: 12px;
+  bottom: 24px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.map_rotation_controls button {
+  width: 42px;
+  height: 42px;
+  border: 1px solid #d7ded9;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #202820;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  font-size: 22px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.order_location_map {
+  position: relative;
+  touch-action: pan-x pan-y;
 }

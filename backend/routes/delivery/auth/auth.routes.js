@@ -14,6 +14,7 @@ const {
   getRmaDeliveryApplication,
   updateRmaDeliveryApplication,
   submitRmaDeliveryApplication,
+  acceptRmaDeliveryAgreement,
 } = require('./auth.controller');
 
 const router = express.Router();
@@ -27,6 +28,11 @@ router.post('/logout', deliveryAuth, logoutDeliveryPerson);
 router.post('/verify-otp', verifyDeliveryOtp);
 router.get('/rma/application', deliveryAuth, getRmaDeliveryApplication);
 router.patch('/rma/application', deliveryAuth, updateRmaDeliveryApplication);
+router.post(
+  '/rma/application/agreement/accept',
+  deliveryAuth,
+  acceptRmaDeliveryAgreement,
+);
 router.patch(
   '/rma/application/submit',
   deliveryAuth,

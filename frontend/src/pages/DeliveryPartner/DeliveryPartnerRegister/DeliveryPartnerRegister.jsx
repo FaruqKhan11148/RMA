@@ -17,7 +17,6 @@ function DeliveryPartnerRegister() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -57,7 +56,14 @@ function DeliveryPartnerRegister() {
         throw new Error(data.message || 'Unable to submit your application.');
       }
 
-      setSuccess(true);
+      navigate('/delivery/rma-login', {
+        replace: true,
+        state: {
+          phone: trimmedPhone,
+          message:
+            'Registration successful! Verify your mobile number to continue your application.',
+        },
+      });
     } catch (submitError) {
       console.error('RMA delivery partner registration failed:', submitError);
 
@@ -69,33 +75,6 @@ function DeliveryPartnerRegister() {
       setLoading(false);
     }
   };
-
-  if (success) {
-    return (
-      <main className="delivery_partner_register">
-        <section className="delivery_partner_success">
-          <div className="delivery_partner_success_icon">✓</div>
-
-          <h1>Application Submitted</h1>
-
-          <p>Thanks for your interest in becoming an RMA Delivery Partner.</p>
-
-          <p>
-            Your application has been submitted successfully and is waiting for
-            approval from RMA.
-          </p>
-
-          <button
-            type="button"
-            className="delivery_partner_primary_button"
-            onClick={() => navigate('/')}
-          >
-            Back to RMA
-          </button>
-        </section>
-      </main>
-    );
-  }
 
   return (
     <main className="delivery_partner_register">

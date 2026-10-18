@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './RMADeliveryLogin.css';
 
 import PhoneLoginForm from './components/PhoneLoginForm';
@@ -13,14 +13,17 @@ import {
 
 function RMADeliveryLogin() {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const [phone, setPhone] = useState('');
+  const [phone, setPhone] = useState(location.state?.phone || '');
   const [otp, setOtp] = useState('');
   const [loginStep, setLoginStep] = useState('login');
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState(
+    location.state?.message || '',
+  );
   const [generatedOtp, setGeneratedOtp] = useState('');
 
   const handleRequestOtp = async () => {
@@ -112,7 +115,7 @@ function RMADeliveryLogin() {
           type="button"
           className="rma_delivery_back"
           onClick={() => navigate(-1)}
-        > 
+        >
           ← Back
         </button>
 

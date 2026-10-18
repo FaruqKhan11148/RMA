@@ -1,3 +1,5 @@
+import './RmaCollectionPayments.css';
+
 import { useState } from 'react';
 import { confirmRmaCollectionPayment } from '../../utils/Orders/ordersApi';
 

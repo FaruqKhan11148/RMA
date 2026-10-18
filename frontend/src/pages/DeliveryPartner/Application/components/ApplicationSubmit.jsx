@@ -5,6 +5,8 @@ function ApplicationSubmit({
   error,
   missingFields,
   onSubmit,
+  agreementAccepted,
+  onReviewAgreement,
 }) {
   if (application?.applicationStatus === 'UNDER_REVIEW') {
     return (
@@ -72,15 +74,26 @@ function ApplicationSubmit({
       <button
         type="button"
         className="application_submit_primary"
-        onClick={onSubmit}
+        onClick={agreementAccepted ? onSubmit : onReviewAgreement}
         disabled={!canSubmit || submitting}
       >
-        {submitting ? 'Submitting Application...' : 'Submit Application'}
+        {submitting
+          ? 'Submitting Application...'
+          : agreementAccepted
+            ? 'Submit Application'
+            : 'Review Agreement'}
       </button>
 
       {!canSubmit && !submitting && (
         <p className="application_submit_hint">
-          Please complete all application sections before submitting.
+          Please complete all application sections before continuing.
+        </p>
+      )}
+
+      {canSubmit && !agreementAccepted && (
+        <p className="application_submit_hint">
+          Review and accept the RMA Delivery Partner Agreement before submitting
+          your application for review.
         </p>
       )}
     </section>

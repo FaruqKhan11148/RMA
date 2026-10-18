@@ -1,6 +1,6 @@
 import './OrderLocationMap.css';
 
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import {
   MapContainer,
@@ -50,23 +50,35 @@ const rmaLocationIcon = L.divIcon({
   iconAnchor: [22, 54],
 });
 
-// =========================================================
-// DELIVERY PARTNER CIRCULAR ICON
-// =========================================================
+/* =========================================================
+   DELIVERY PARTNER DIRECTIONAL TRIANGLE
+========================================================= */
 
-const deliveryPartnerIcon = L.divIcon({
-  className: 'delivery_partner_map_icon_wrapper',
-
-  html: `
-    <div class="delivery_partner_map_icon">
-      <div class="delivery_partner_map_dot"></div>
-    </div>
-  `,
-
-  iconSize: [42, 42],
-  iconAnchor: [21, 21],
-  popupAnchor: [0, -21],
-});
+const deliveryPartnerIcon = (heading = 0) =>
+  L.divIcon({
+    className: 'delivery_partner_map_icon_wrapper',
+    html: `
+      <div class="delivery_partner_map_arrow_wrap"
+           style="transform: rotate(${heading}deg)">
+        <svg
+          class="delivery_partner_map_arrow"
+          viewBox="0 0 40 40"
+          aria-hidden="true"
+        >
+          <path
+            d="M20 3 L35 34 L20 27 L5 34 Z"
+            fill="#1a73e8"
+            stroke="#ffffff"
+            stroke-width="2.5"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </div>
+    `,
+    iconSize: [42, 42],
+    iconAnchor: [21, 21],
+    popupAnchor: [0, -21],
+  });
 
 // =========================================================
 // MAP RESIZE HANDLER
@@ -82,6 +94,78 @@ function MapResizeHandler() {
 
     return () => clearTimeout(resizeTimer);
   }, [map]);
+
+  return null;
+}
+
+function MapRotationHandler({ rotation, setRotation }) {
+  const map = useMap();
+  const gestureRef = useRef(null);
+
+  useEffect(() => {
+    const container = map.getContainer();
+    const pane = map.getPane('mapPane');
+
+    if (!pane) return;
+
+    pane.style.transformOrigin = '50% 50%';
+    pane.style.rotate = `${rotation}deg`;
+
+    return () => {
+      pane.style.rotate = '';
+    };
+  }, [map, rotation]);
+
+  useEffect(() => {
+    const container = map.getContainer();
+
+    const getAngle = (touches) =>
+      Math.atan2(
+        touches[1].clientY - touches[0].clientY,
+        touches[1].clientX - touches[0].clientX,
+      ) *
+      (180 / Math.PI);
+
+    const onTouchStart = (event) => {
+      if (event.touches.length !== 2) return;
+
+      gestureRef.current = {
+        startAngle: getAngle(event.touches),
+        startRotation: rotation,
+      };
+    };
+
+    const onTouchMove = (event) => {
+      if (event.touches.length !== 2 || !gestureRef.current) return;
+
+      event.preventDefault();
+
+      const currentAngle = getAngle(event.touches);
+      const delta = currentAngle - gestureRef.current.startAngle;
+
+      setRotation(
+        (((gestureRef.current.startRotation + delta) % 360) + 360) % 360,
+      );
+    };
+
+    const onTouchEnd = (event) => {
+      if (event.touches.length < 2) {
+        gestureRef.current = null;
+      }
+    };
+
+    container.addEventListener('touchstart', onTouchStart, { passive: true });
+    container.addEventListener('touchmove', onTouchMove, { passive: false });
+    container.addEventListener('touchend', onTouchEnd);
+    container.addEventListener('touchcancel', onTouchEnd);
+
+    return () => {
+      container.removeEventListener('touchstart', onTouchStart);
+      container.removeEventListener('touchmove', onTouchMove);
+      container.removeEventListener('touchend', onTouchEnd);
+      container.removeEventListener('touchcancel', onTouchEnd);
+    };
+  }, [map, rotation, setRotation]);
 
   return null;
 }
@@ -146,7 +230,14 @@ function OrderLocationMapContent({
       ===================================================== */}
 
       {deliveryBoyPosition && (
-        <Marker position={deliveryBoyPosition} icon={deliveryPartnerIcon}>
+        <Marker
+          position={deliveryBoyPosition}
+          icon={deliveryPartnerIcon(
+            Number.isFinite(currentLocation?.heading)
+              ? currentLocation.heading
+              : 0,
+          )}
+        >
           <Popup>Delivery Partner — Current Location</Popup>
         </Marker>
       )}
@@ -166,6 +257,7 @@ function OrderLocationMap({
   fullscreen = false,
 }) {
   const customerPosition = [latitude, longitude];
+  const [rotation, setRotation] = useState(0);
 
   return (
     <div
@@ -177,9 +269,37 @@ function OrderLocationMap({
         center={customerPosition}
         zoom={14}
         scrollWheelZoom={true}
-        zoomControl={true}
+        zoomControl={false}
         className="order_location_leaflet_map"
       >
+        <div className="map_rotation_controls">
+          <button
+            type="button"
+            onClick={() => setRotation((value) => (value - 15 + 360) % 360)}
+            aria-label="Rotate map left"
+          >
+            ↶
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setRotation(0)}
+            aria-label="Reset map rotation"
+          >
+            N
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setRotation((value) => (value + 15) % 360)}
+            aria-label="Rotate map right"
+          >
+            ↷
+          </button>
+        </div>
+
+        <MapRotationHandler rotation={rotation} setRotation={setRotation} />
+
         <OrderLocationMapContent
           latitude={latitude}
           longitude={longitude}

@@ -56,10 +56,13 @@ export const fetchRmaApplication = async () => {
 };
 
 export const submitRmaApplication = async () => {
-  const response = await fetch(`${API_URL}api/delivery/rma/application/submit`, {
-    method: 'PATCH',
-    headers: getHeaders(),
-  });
+  const response = await fetch(
+    `${API_URL}api/delivery/rma/application/submit`,
+    {
+      method: 'PATCH',
+      headers: getHeaders(),
+    },
+  );
 
   const data = await response.json();
 
@@ -74,4 +77,25 @@ export const submitRmaApplication = async () => {
   }
 
   return data;
+};
+
+export const acceptRmaDeliveryAgreement = async () => {
+  const response = await fetch(
+    `${API_URL}api/delivery/rma/application/agreement/accept`,
+    {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({}),
+    },
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || 'Unable to accept the RMA Delivery Partner Agreement.',
+    );
+  }
+
+  return data.agreement;
 };

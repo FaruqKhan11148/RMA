@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 
+const RMA_DELIVERY_AGREEMENT_VERSION = 'RMA-DP-1.0';
 const DeliveryPerson = require('../../../models/DeliveryPerson');
 const Owner = require('../../../models/Owner');
 
@@ -114,18 +115,14 @@ const registerRmaDeliveryPartner = async (req, res) => {
 
     const deliveryPerson = await DeliveryPerson.create({
       deliveryType: 'RMA',
-
       ownerId: null,
       shopId: null,
-
-      name: trimmedName,
-      phone: trimmedPhone,
+      name,
+      phone,
 
       isActive: false,
-
-      // Application is immediately available for admin review
-      applicationStatus: 'UNDER_REVIEW',
-      submittedAt: new Date(),
+      applicationStatus: 'INCOMPLETE',
+      submittedAt: null,
 
       availabilityStatus: 'OFFLINE',
     });
@@ -529,6 +526,13 @@ const getRmaDeliveryApplication = async (req, res) => {
         correctionReason: deliveryPerson.correctionReason,
         rejectionReason: deliveryPerson.rejectionReason,
         reviewedAt: deliveryPerson.reviewedAt,
+
+        // RMA Delivery Partner Agreement
+        agreement: {
+          accepted: deliveryPerson.agreement?.accepted === true,
+          version: deliveryPerson.agreement?.version || null,
+          acceptedAt: deliveryPerson.agreement?.acceptedAt || null,
+        },
       },
     });
   } catch (error) {
@@ -851,6 +855,70 @@ const updateRmaDeliveryApplication = async (req, res) => {
   }
 };
 
+// ACCEPT RMA DELIVERY PARTNER AGREEMENT
+const acceptRmaDeliveryAgreement = async (req, res) => {
+  try {
+    const deliveryPerson = req.deliveryPerson;
+
+    if (!deliveryPerson) {
+      return res.status(401).json({
+        message: 'Delivery partner authentication required',
+      });
+    }
+
+    if (deliveryPerson.deliveryType !== 'RMA') {
+      return res.status(403).json({
+        message: 'This account is not an RMA delivery partner',
+      });
+    }
+
+    if (deliveryPerson.applicationStatus === 'APPROVED') {
+      return res.status(400).json({
+        message: 'Your application has already been approved',
+      });
+    }
+
+    if (
+      deliveryPerson.applicationStatus === 'SUBMITTED' ||
+      deliveryPerson.applicationStatus === 'UNDER_REVIEW'
+    ) {
+      return res.status(400).json({
+        message: 'Your application has already been submitted for review',
+      });
+    }
+
+    if (deliveryPerson.applicationStatus === 'REJECTED') {
+      return res.status(400).json({
+        message: 'This application cannot accept the agreement',
+      });
+    }
+
+    // Record acceptance using the server's timestamp.
+    deliveryPerson.agreement = {
+      accepted: true,
+      version: RMA_DELIVERY_AGREEMENT_VERSION,
+      acceptedAt: new Date(),
+    };
+
+    await deliveryPerson.save();
+
+    return res.status(200).json({
+      message: 'RMA Delivery Partner Agreement accepted successfully',
+      agreement: {
+        accepted: deliveryPerson.agreement.accepted,
+        version: deliveryPerson.agreement.version,
+        acceptedAt: deliveryPerson.agreement.acceptedAt,
+      },
+    });
+  } catch (error) {
+    console.error('Accept RMA delivery agreement error:', error);
+
+    return res.status(500).json({
+      message: 'Server error',
+    });
+  }
+};
+
 const submitRmaDeliveryApplication = async (req, res) => {
   try {
     const deliveryPerson = req.deliveryPerson;
@@ -1009,6 +1077,22 @@ const submitRmaDeliveryApplication = async (req, res) => {
     }
 
     // ------------------------------------------
+    // AGREEMENT ACCEPTANCE
+    // ------------------------------------------
+    if (
+      deliveryPerson.agreement?.accepted !== true ||
+      deliveryPerson.agreement?.version !== RMA_DELIVERY_AGREEMENT_VERSION ||
+      !deliveryPerson.agreement?.acceptedAt
+    ) {
+      return res.status(400).json({
+        message:
+          'Please read and accept the current RMA Delivery Partner Agreement before submitting.',
+        missingFields: ['RMA Delivery Partner Agreement'],
+        requiresAgreement: true,
+      });
+    }
+
+    // ------------------------------------------
     // SUBMIT
     // ------------------------------------------
     deliveryPerson.applicationStatus = 'UNDER_REVIEW';
@@ -1047,4 +1131,5 @@ module.exports = {
   getRmaDeliveryApplication,
   updateRmaDeliveryApplication,
   submitRmaDeliveryApplication,
+  acceptRmaDeliveryAgreement,
 };
