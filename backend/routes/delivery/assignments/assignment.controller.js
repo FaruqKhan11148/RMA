@@ -829,30 +829,87 @@ const getDeliveryChargePayment = async (req, res) => {
       });
     }
 
-    const payment = order.rmaCollectionPayment;
+    // Read the RMA UPI ID from the backend environment.
+    const rmaUpiId = process.env.RMA_COLLECTION_UPI_ID?.trim();
 
-    if (!payment || !payment.upiId || Number(payment.amount) <= 0) {
-      return res.status(200).json({
-        success: true,
-        payment: {
-          orderId: order.orderId,
-          amount: Number(payment?.amount || 0),
-          upiId: payment?.upiId || null,
-          status: payment?.status || 'PENDING',
-          reference: payment?.reference || null,
-          ownerMarkedPaidAt: payment?.ownerMarkedPaidAt || null,
-          confirmedAt: payment?.confirmedAt || null,
-        },
+    if (!rmaUpiId) {
+      console.error(
+        'RMA_COLLECTION_UPI_ID is missing from the backend environment',
+      );
+
+      return res.status(503).json({
+        success: false,
+        message: 'RMA payment configuration is unavailable',
       });
+    }
+
+    const subtotal = Number(order.subtotal);
+    const deliveryCharge = Number(order.deliveryCharge);
+
+    if (
+      !Number.isFinite(subtotal) ||
+      subtotal < 0 ||
+      !Number.isFinite(deliveryCharge) ||
+      deliveryCharge < 0
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid order payment amounts',
+      });
+    }
+
+    // RMA collects the delivery charge plus 2.5% of the item subtotal.
+    const rmaFee = Math.round(subtotal * 0.025 * 100) / 100;
+    const amount = Math.round((deliveryCharge + rmaFee) * 100) / 100;
+
+    let payment = order.rmaCollectionPayment;
+
+    // Initialize payment details if they are missing or invalid.
+    if (!payment) {
+      order.rmaCollectionPayment = {
+        status: 'PENDING',
+        amount,
+        upiId: rmaUpiId,
+        reference: null,
+        requestedAt: new Date(),
+        ownerMarkedPaidAt: null,
+        confirmedAt: null,
+        confirmedBy: null,
+      };
+
+      await order.save();
+      payment = order.rmaCollectionPayment;
+    } else {
+      const paymentStatus = payment.status || 'PENDING';
+
+      // Only refresh payment configuration while it is still pending.
+      // Never overwrite a payment already marked as sent or confirmed.
+      if (paymentStatus === 'PENDING') {
+        const needsUpdate =
+          !payment.upiId ||
+          Number(payment.amount) <= 0 ||
+          payment.upiId !== rmaUpiId ||
+          Number(payment.amount) !== amount;
+
+        if (needsUpdate) {
+          payment.amount = amount;
+          payment.upiId = rmaUpiId;
+          payment.requestedAt = payment.requestedAt || new Date();
+
+          await order.save();
+        }
+      }
+
+      payment = order.rmaCollectionPayment;
     }
 
     return res.status(200).json({
       success: true,
       payment: {
         orderId: order.orderId,
-        amount: Number(payment.amount),
-        upiId: payment.upiId,
-        status: payment.status,
+        amount: Number(payment.amount || 0),
+        upiId: payment.upiId || null,
+        status: payment.status || 'PENDING',
         reference: payment.reference || null,
         ownerMarkedPaidAt: payment.ownerMarkedPaidAt || null,
         confirmedAt: payment.confirmedAt || null,
@@ -862,6 +919,7 @@ const getDeliveryChargePayment = async (req, res) => {
     console.error('Get RMA collection payment failed:', error);
 
     return res.status(500).json({
+      success: false,
       message: 'Unable to load RMA collection payment details',
     });
   }
