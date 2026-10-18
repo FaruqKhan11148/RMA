@@ -193,7 +193,10 @@ export const fetchDeliveryChargePayment = async (orderId) => {
   return data;
 };
 
-export const markDeliveryChargePaymentSent = async (orderId) => {
+export const markDeliveryChargePaymentSent = async (
+  orderId,
+  reference = '',
+) => {
   const ownerToken = localStorage.getItem('rma_owner_token');
 
   const response = await fetch(
@@ -201,9 +204,11 @@ export const markDeliveryChargePaymentSent = async (orderId) => {
     {
       method: 'POST',
       headers: {
+        'Content-Type': 'application/json',
         ...(ownerToken ? { Authorization: `Bearer ${ownerToken}` } : {}),
       },
       credentials: 'include',
+      body: JSON.stringify({ reference }),
     },
   );
 

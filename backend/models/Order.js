@@ -582,10 +582,20 @@ const orderSchema = new mongoose.Schema(
     // OWNER → RMA COLLECTION
     // =========================
 
+    // =========================
+    // OWNER + DP → RMA COLLECTION
+    // =========================
+
     rmaCollectionPayment: {
       status: {
         type: String,
-        enum: ['PENDING', 'OWNER_MARKED_PAID', 'CONFIRMED', 'DISPUTED'],
+        enum: [
+          'PENDING',
+          'OWNER_MARKED_PAID',
+          'BOTH_MARKED_PAID',
+          'CONFIRMED',
+          'DISPUTED',
+        ],
         default: 'PENDING',
       },
 
@@ -614,11 +624,25 @@ const orderSchema = new mongoose.Schema(
         default: null,
       },
 
+      // Owner confirms they initiated the payment.
       ownerMarkedPaidAt: {
         type: Date,
         default: null,
       },
 
+      // DP acknowledges the owner's payment claim.
+      dpAcknowledgedAt: {
+        type: Date,
+        default: null,
+      },
+
+      dpAcknowledgedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'DeliveryPerson',
+        default: null,
+      },
+
+      // Admin verifies the actual incoming bank transaction.
       confirmedAt: {
         type: Date,
         default: null,
@@ -628,6 +652,14 @@ const orderSchema = new mongoose.Schema(
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Admin',
         default: null,
+      },
+
+      // Optional reason recorded when payment needs investigation.
+      disputeReason: {
+        type: String,
+        default: null,
+        trim: true,
+        maxlength: 500,
       },
     },
 

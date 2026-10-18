@@ -2,9 +2,12 @@ import './OwnerOrderDetails.css';
 
 import { useCallback, useEffect, useState } from 'react';
 import OrderLocationMap from '../../../../components/map/OrderLocationMap';
+
 import {
   fetchOwnerRefundRequests,
   markOwnerRefundAsSent,
+  fetchDeliveryChargePayment,
+  markDeliveryChargePaymentSent,
 } from '../utils/ownerOrdersApi';
 
 function OwnerOrderDetails({ order, setSelectedOrder }) {
@@ -14,6 +17,13 @@ function OwnerOrderDetails({ order, setSelectedOrder }) {
   const [submittingRefundId, setSubmittingRefundId] = useState('');
   const [refundSuccess, setRefundSuccess] = useState('');
   const [refundForms, setRefundForms] = useState({});
+
+  const [rmaPayment, setRmaPayment] = useState(null);
+  const [rmaPaymentLoading, setRmaPaymentLoading] = useState(false);
+  const [rmaPaymentError, setRmaPaymentError] = useState('');
+  const [rmaPaymentReference, setRmaPaymentReference] = useState('');
+  const [markingRmaPaymentSent, setMarkingRmaPaymentSent] = useState(false);
+  const [rmaPaymentMessage, setRmaPaymentMessage] = useState('');
 
   const loadRefunds = useCallback(async () => {
     setRefundLoading(true);
@@ -127,6 +137,76 @@ function OwnerOrderDetails({ order, setSelectedOrder }) {
     const date = new Date(value);
 
     return Number.isNaN(date.getTime()) ? '—' : date.toLocaleString();
+  };
+
+  const isRmaDeliveryOrder =
+    order.orderType === 'delivery' &&
+    order.deliveryAssignmentType === 'RMA' &&
+    order.deliveryAssignmentStatus === 'ACCEPTED' &&
+    Boolean(order.deliveryPersonId);
+
+  const loadRmaPayment = useCallback(async () => {
+    if (!isRmaDeliveryOrder) {
+      setRmaPayment(null);
+      return;
+    }
+
+    setRmaPaymentLoading(true);
+    setRmaPaymentError('');
+
+    try {
+      const data = await fetchDeliveryChargePayment(order.orderId);
+
+      setRmaPayment(data.payment || data);
+    } catch (error) {
+      setRmaPaymentError(
+        error.message || 'Unable to load RMA payment details.',
+      );
+    } finally {
+      setRmaPaymentLoading(false);
+    }
+  }, [order.orderId, isRmaDeliveryOrder]);
+
+  useEffect(() => {
+    loadRmaPayment();
+  }, [loadRmaPayment]);
+
+  const handleMarkRmaPaymentSent = async () => {
+    if (!rmaPayment || markingRmaPaymentSent) return;
+
+    const amount = Number(rmaPayment.amount || 0);
+
+    const confirmed = window.confirm(
+      `Have you actually sent ₹${amount.toFixed(2)} to the RMA UPI ID? Only confirm after completing the transfer in your UPI app.`,
+    );
+
+    if (!confirmed) return;
+
+    setMarkingRmaPaymentSent(true);
+    setRmaPaymentError('');
+    setRmaPaymentMessage('');
+
+    try {
+      const data = await markDeliveryChargePaymentSent(
+        order.orderId,
+        rmaPaymentReference.trim(),
+      );
+
+      setRmaPayment(data.payment || null);
+      setRmaPaymentMessage(
+        data.message ||
+          'Payment marked as sent. Waiting for delivery partner acknowledgement and RMA admin verification.',
+      );
+      setRmaPaymentReference('');
+
+      await loadRmaPayment();
+    } catch (error) {
+      setRmaPaymentError(
+        error.message || 'Unable to mark RMA payment as sent.',
+      );
+    } finally {
+      setMarkingRmaPaymentSent(false);
+    }
   };
 
   return (
@@ -544,6 +624,118 @@ function OwnerOrderDetails({ order, setSelectedOrder }) {
           </div>
         )}
       </section>
+
+      {isRmaDeliveryOrder && (
+        <section className="owner_order_details_section">
+          <h2>RMA Delivery Payment</h2>
+
+          {rmaPaymentLoading && <p>Loading RMA payment details…</p>}
+
+          {rmaPaymentError && <p role="alert">{rmaPaymentError}</p>}
+
+          {rmaPaymentMessage && <p role="status">{rmaPaymentMessage}</p>}
+
+          {!rmaPaymentLoading && rmaPayment && (
+            <>
+              <div className="owner_order_details_rows">
+                <div>
+                  <span>Amount to Pay RMA</span>
+                  <strong>₹{Number(rmaPayment.amount || 0).toFixed(2)}</strong>
+                </div>
+
+                <div>
+                  <span>RMA UPI ID</span>
+                  <strong>{rmaPayment.upiId || 'Unavailable'}</strong>
+                </div>
+
+                <div>
+                  <span>Payment Status</span>
+                  <strong>{rmaPayment.status || 'PENDING'}</strong>
+                </div>
+
+                {rmaPayment.reference && (
+                  <div>
+                    <span>Transaction Reference</span>
+                    <strong>{rmaPayment.reference}</strong>
+                  </div>
+                )}
+              </div>
+
+              {rmaPayment.status === 'PENDING' && (
+                <form
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    handleMarkRmaPaymentSent();
+                  }}
+                >
+                  <p>
+                    Pay the amount above to the RMA UPI ID using your UPI app.
+                    Only mark it as sent after completing the transfer. Your
+                    confirmation is not proof of receipt; RMA admin will verify
+                    the actual payment.
+                  </p>
+
+                  <label>
+                    UPI Transaction Reference (optional)
+                    <input
+                      type="text"
+                      maxLength={100}
+                      value={rmaPaymentReference}
+                      onChange={(event) =>
+                        setRmaPaymentReference(event.target.value)
+                      }
+                      placeholder="Enter UPI transaction reference"
+                    />
+                  </label>
+
+                  <button
+                    type="submit"
+                    disabled={
+                      markingRmaPaymentSent ||
+                      Number(rmaPayment.amount || 0) <= 0 ||
+                      !rmaPayment.upiId
+                    }
+                  >
+                    {markingRmaPaymentSent
+                      ? 'Submitting…'
+                      : `I've Sent ₹${Number(rmaPayment.amount || 0).toFixed(
+                          2,
+                        )}`}
+                  </button>
+                </form>
+              )}
+
+              {rmaPayment.status === 'OWNER_MARKED_PAID' && (
+                <p>
+                  You marked the payment as sent. Waiting for delivery partner
+                  acknowledgement and RMA admin verification.
+                </p>
+              )}
+
+              {rmaPayment.status === 'BOTH_MARKED_PAID' && (
+                <p>
+                  Both parties have acknowledged the payment. Waiting for RMA
+                  admin to verify the actual transaction.
+                </p>
+              )}
+
+              {rmaPayment.status === 'CONFIRMED' && (
+                <p>
+                  RMA admin has verified the payment. The delivery partner can
+                  proceed according to the delivery workflow.
+                </p>
+              )}
+
+              {rmaPayment.status === 'DISPUTED' && (
+                <p>
+                  This payment is under review. Contact RMA admin before
+                  proceeding.
+                </p>
+              )}
+            </>
+          )}
+        </section>
+      )}
 
       <section className="owner_order_details_section">
         <h2>Order Timeline</h2>
