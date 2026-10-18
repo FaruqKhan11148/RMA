@@ -103,7 +103,6 @@ function MapRotationHandler({ rotation, setRotation }) {
   const gestureRef = useRef(null);
 
   useEffect(() => {
-    const container = map.getContainer();
     const pane = map.getPane('mapPane');
 
     if (!pane) return;
