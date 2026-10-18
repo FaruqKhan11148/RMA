@@ -119,6 +119,24 @@ const ownerSchema = new mongoose.Schema(
       required: true,
     },
 
+    // SHOP OWNER AGREEMENT ACCEPTANCE
+
+    termsAccepted: {
+      type: Boolean,
+      default: false,
+    },
+
+    termsVersion: {
+      type: String,
+      default: null,
+      trim: true,
+    },
+
+    termsAcceptedAt: {
+      type: Date,
+      default: null,
+    },
+
     fcmTokens: [
       {
         type: String,

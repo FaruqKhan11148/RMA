@@ -579,6 +579,59 @@ const orderSchema = new mongoose.Schema(
     },
 
     // =========================
+    // OWNER → RMA COLLECTION
+    // =========================
+
+    rmaCollectionPayment: {
+      status: {
+        type: String,
+        enum: ['PENDING', 'OWNER_MARKED_PAID', 'CONFIRMED', 'DISPUTED'],
+        default: 'PENDING',
+      },
+
+      amount: {
+        type: Number,
+        default: 0,
+        min: 0,
+      },
+
+      upiId: {
+        type: String,
+        default: null,
+        trim: true,
+        lowercase: true,
+      },
+
+      reference: {
+        type: String,
+        default: null,
+        trim: true,
+        maxlength: 100,
+      },
+
+      requestedAt: {
+        type: Date,
+        default: null,
+      },
+
+      ownerMarkedPaidAt: {
+        type: Date,
+        default: null,
+      },
+
+      confirmedAt: {
+        type: Date,
+        default: null,
+      },
+
+      confirmedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Admin',
+        default: null,
+      },
+    },
+
+    // =========================
     // PAYMENT
     // =========================
 

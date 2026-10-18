@@ -7,7 +7,6 @@ const {
   rejectDeliveryAssignment,
   getPendingDeliveryAssignments,
   collectDeliveryOrder,
-  confirmDeliveryChargePayment,
   getDeliveryChargePayment,
 } = require('./assignment.controller');
 
@@ -33,12 +32,6 @@ router.get(
   '/orders/:orderId/delivery-charge-payment',
   deliveryAuth,
   getDeliveryChargePayment,
-);
-
-router.post(
-  '/orders/:orderId/delivery-charge-payment/confirm',
-  deliveryAuth,
-  confirmDeliveryChargePayment,
 );
 
 module.exports = router;

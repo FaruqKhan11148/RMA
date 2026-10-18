@@ -39,9 +39,7 @@ function Shop() {
         setLoading(true);
         setError('');
 
-        const response = await fetch(
-          `${API_URL}api/owners/shop/${shopId}`,
-        );
+        const response = await fetch(`${API_URL}api/owners/shop/${shopId}`);
 
         const data = await response.json();
 
@@ -74,6 +72,10 @@ function Shop() {
     fetchShop();
   }, [shopId, navigate]);
 
+  const handleBulkOrdersClick = () => {
+    navigate(`/shop/${shopId}/bulk-orders`);
+  };
+
   if (loading) {
     return (
       <main className="shop_not_found">
@@ -100,8 +102,11 @@ function Shop() {
     addToCart(product, shop);
   };
 
-  const filteredProducts =
-    selectedCategory === 'All'
+  const isBulkOrdersSelected = selectedCategory === 'Bulk Orders';
+
+  const filteredProducts = isBulkOrdersSelected
+    ? []
+    : selectedCategory === 'All'
       ? shop.products
       : shop.products.filter(
           (product) => product.category === selectedCategory,
@@ -120,9 +125,23 @@ function Shop() {
         categories={shop.categories}
         selectedCategory={selectedCategory}
         onCategoryChange={setSelectedCategory}
+        onBulkOrdersClick={handleBulkOrdersClick}
       />
 
-      <ShopProducts products={filteredProducts} onAddToCart={handleAddToCart} />
+      {isBulkOrdersSelected ? (
+        <section className="bulk_orders_placeholder">
+          <h2>Bulk Orders</h2>
+          <p>
+            For hotels, restaurants, shawarma shops, and other business buyers.
+          </p>
+          <p>Bulk ordering is coming soon.</p>
+        </section>
+      ) : (
+        <ShopProducts
+          products={filteredProducts}
+          onAddToCart={handleAddToCart}
+        />
+      )}
 
       {totalItems > 0 && cartItems.length > 0 && (
         <FloatingCartBar cartItems={cartItems} totalItems={totalItems} />

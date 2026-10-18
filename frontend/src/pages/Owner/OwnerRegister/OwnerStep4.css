@@ -1226,3 +1226,203 @@
 [data-theme='dark'] .bank_field input::placeholder {
   color: var(--rma-text-muted);
 }
+
+.owner_terms_acceptance {
+  margin: 20px 0;
+  padding: 14px;
+  border: 1px solid #dce5dd;
+  border-radius: 10px;
+  background: #f8fbf8;
+}
+
+.owner_terms_acceptance_label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #26352a;
+  font-size: 14px;
+  line-height: 1.6;
+  cursor: pointer;
+}
+
+.owner_terms_acceptance_label input {
+  flex-shrink: 0;
+  width: 17px;
+  height: 17px;
+  margin-top: 3px;
+  accent-color: #16803c;
+  cursor: pointer;
+}
+
+.owner_terms_acceptance_label a {
+  color: #16803c;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.owner_terms_acceptance_label a:hover {
+  color: #105c2b;
+}
+
+/* =========================================================
+   OWNER AGREEMENT — STEP 4
+   Opens the legal documents bottom-sheet modal
+   ========================================================= */
+
+.owner_terms_acceptance {
+  margin: 24px 0 20px;
+  padding: 16px;
+  box-sizing: border-box;
+
+  border: 1px solid #dce5dd;
+  border-radius: 12px;
+
+  background: #f8fbf8;
+}
+
+/* Open agreement button */
+
+.owner_terms_open_button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  width: 100%;
+  min-height: 48px;
+  padding: 13px 15px;
+  box-sizing: border-box;
+
+  border: 1px solid #cfe2d3;
+  border-radius: 10px;
+
+  background: #ffffff;
+  color: #16803a;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.owner_terms_open_button::after {
+  content: '›';
+  flex-shrink: 0;
+
+  font-size: 25px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.owner_terms_open_button:hover:not(:disabled) {
+  border-color: #16803a;
+  background: #f1faf3;
+  box-shadow: 0 3px 10px rgba(22, 128, 58, 0.07);
+}
+
+.owner_terms_open_button:focus-visible {
+  outline: 3px solid rgba(22, 128, 58, 0.2);
+  outline-offset: 2px;
+}
+
+.owner_terms_open_button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Acceptance confirmation */
+
+.owner_terms_acceptance_label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+
+  margin-top: 14px;
+
+  color: #344238;
+  font-size: 12px;
+  line-height: 1.6;
+
+  cursor: default;
+}
+
+.owner_terms_acceptance_label input {
+  flex-shrink: 0;
+
+  width: 17px;
+  height: 17px;
+  margin: 2px 0 0;
+
+  accent-color: #16803a;
+  cursor: default;
+}
+
+.owner_terms_acceptance_label span {
+  min-width: 0;
+}
+
+/* Dark mode */
+
+[data-theme='dark'] .owner_terms_acceptance {
+  border-color: var(--rma-border);
+  background: var(--rma-bg-secondary);
+}
+
+[data-theme='dark'] .owner_terms_open_button {
+  border-color: var(--rma-border);
+  background: var(--rma-card);
+  color: var(--rma-primary-light);
+}
+
+[data-theme='dark'] .owner_terms_open_button:hover:not(:disabled) {
+  border-color: var(--rma-primary);
+  background: rgba(22, 128, 58, 0.12);
+}
+
+[data-theme='dark'] .owner_terms_acceptance_label {
+  color: var(--rma-text-secondary);
+}
+
+/* Mobile */
+
+@media (max-width: 480px) {
+  .owner_terms_acceptance {
+    margin: 19px 0 16px;
+    padding: 12px;
+    border-radius: 10px;
+  }
+
+  .owner_terms_open_button {
+    min-height: 46px;
+    padding: 12px;
+
+    border-radius: 9px;
+    font-size: 12px;
+  }
+
+  .owner_terms_acceptance_label {
+    gap: 9px;
+    margin-top: 12px;
+
+    font-size: 11px;
+    line-height: 1.55;
+  }
+
+  .owner_terms_acceptance_label input {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .owner_terms_open_button {
+    transition: none;
+  }
+}

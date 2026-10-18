@@ -10,6 +10,8 @@ import BankDetails from './components/OwnerStep4/BankDetails';
 import SecuritySection from './components/OwnerStep4/SecuritySection';
 import SettlementVerification from './components/OwnerStep4/SettlementVerification';
 import OwnerStep4Actions from './components/OwnerStep4/OwnerStep4Actions';
+import FlashMessage from '../../../components/FlashMessage/FlashMessage';
+import OwnerTerms from '../../Owner/OwnerTerms/OwnerTerms';
 
 import registerOwner from './utils/ownerRegisterApi';
 
@@ -27,6 +29,14 @@ function OwnerStep4() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [ownerTermsAccepted, setOwnerTermsAccepted] = useState(
+    sessionStorage.getItem('rma_owner_terms_accepted') === 'true' &&
+      sessionStorage.getItem('rma_owner_terms_version') === 'owner-terms-v1',
+  );
+
+  const [showTermsModal, setShowTermsModal] = useState(false);
+
+  const [flashMessage, setFlashMessage] = useState('');
 
   const [bankName, setBankName] = useState('');
   const [upiMobileNumber, setUpiMobileNumber] = useState('');
@@ -53,6 +63,13 @@ function OwnerStep4() {
 
   const handleCreateShop = async () => {
     try {
+      if (!ownerTermsAccepted) {
+        setFlashMessage(
+          'Please accept the Shop Owner Agreement and Privacy Policy to continue.',
+        );
+        return;
+      }
+
       setLoading(true);
       setError('');
 
@@ -114,9 +131,11 @@ function OwnerStep4() {
         bankName: bankName.trim(),
         upiMobileNumber: upiMobileNumber.replace(/\D/g, ''),
         upiId: upiId.trim().toLowerCase(),
-      };
 
-      console.log('FINAL OWNER DATA:', finalOwnerData);
+        // Shop owner agreement acceptance
+        termsAccepted: true,
+        termsVersion: 'owner-terms-v1',
+      };
 
       const data = await registerOwner(finalOwnerData);
 
@@ -124,6 +143,8 @@ function OwnerStep4() {
 
       // Registration is complete
       sessionStorage.removeItem('rma_owner_registration');
+      sessionStorage.removeItem('rma_owner_terms_accepted');
+      sessionStorage.removeItem('rma_owner_terms_version');
 
       navigate('/owner/shop-created', {
         state: {
@@ -146,6 +167,11 @@ function OwnerStep4() {
 
   return (
     <main className="owner_step4">
+      <FlashMessage
+        message={flashMessage}
+        onClose={() => setFlashMessage('')}
+      />
+
       <section className="owner_step4_card">
         <OwnerStep4Header />
 
@@ -173,6 +199,42 @@ function OwnerStep4() {
         <SecuritySection />
 
         <SettlementVerification />
+
+        <div className="owner_terms_acceptance">
+          <button
+            type="button"
+            className="owner_terms_open_button"
+            onClick={() => setShowTermsModal(true)}
+            disabled={loading}
+          >
+            Read Shop Owner Agreement & Privacy Policy
+          </button>
+
+          <label className="owner_terms_acceptance_label">
+            <input type="checkbox" checked={ownerTermsAccepted} readOnly />
+
+            <span>
+              I have read and accepted the Shop Owner Agreement and Privacy
+              Policy.
+            </span>
+          </label>
+        </div>
+
+        {showTermsModal && (
+          <OwnerTerms
+            onAccept={() => {
+              sessionStorage.setItem('rma_owner_terms_accepted', 'true');
+              sessionStorage.setItem(
+                'rma_owner_terms_version',
+                'owner-terms-v1',
+              );
+
+              setOwnerTermsAccepted(true);
+              setShowTermsModal(false);
+            }}
+            onClose={() => setShowTermsModal(false)}
+          />
+        )}
 
         <OwnerStep4Actions
           error={error}

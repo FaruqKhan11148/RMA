@@ -104,3 +104,36 @@ export async function assignRmaDeliveryPartner(orderId, deliveryPersonId) {
 
   return data;
 }
+
+// ============================================================
+// CONFIRM RMA COLLECTION PAYMENT (ADMIN ONLY)
+// ============================================================
+
+export async function confirmRmaCollectionPayment(orderId) {
+  const response = await fetch(
+    `${API_URL}api/admin/orders/${encodeURIComponent(orderId)}/rma-collection-payment/confirm`,
+    {
+      method: 'PATCH',
+      credentials: 'include',
+    },
+  );
+
+  if (response.status === 401) {
+    const error = new Error('Admin authentication required');
+    error.status = 401;
+    throw error;
+  }
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    const error = new Error(
+      data.message || 'Failed to confirm RMA collection payment',
+    );
+
+    error.status = response.status;
+    throw error;
+  }
+
+  return data;
+}

@@ -9,6 +9,7 @@ import OrdersFinance from './components/Orders/OrdersFinance';
 import OrdersFilters from './components/Orders/OrdersFilters';
 import OrdersTable from './components/Orders/OrdersTable';
 import OrderDetailsModal from './components/Orders/OrderDetailsModal';
+import RmaCollectionPayments from './components/Orders/RmaCollectionPayments';
 
 import { fetchAdminOrders } from './utils/Orders/ordersApi';
 
@@ -188,6 +189,12 @@ function AdminOrders() {
         <>
           <OrdersStats stats={stats} />
 
+          <RmaCollectionPayments
+            orders={orders}
+            formatDate={formatDate}
+            onOrderUpdated={handleOrderUpdated}
+          />
+          
           <OrdersFinance stats={stats} />
 
           <OrdersFilters

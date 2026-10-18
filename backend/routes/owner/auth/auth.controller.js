@@ -28,7 +28,17 @@ async function registerOwner(req, res) {
       bankName,
       upiMobileNumber,
       upiId,
+      termsAccepted,
+      termsVersion,
     } = req.body;
+
+    // Validate Shop Owner Agreement acceptance
+    if (termsAccepted !== true || termsVersion !== 'owner-terms-v1') {
+      return res.status(400).json({
+        message:
+          'Please accept the current Shop Owner Agreement and Privacy Policy to continue.',
+      });
+    }
 
     // Check required fields
     if (!ownerName || !shopName || !email || !address || !phone || !password) {
@@ -178,6 +188,9 @@ async function registerOwner(req, res) {
       shopId,
       ownerName,
       shopName,
+      termsAccepted: true,
+      termsVersion: 'owner-terms-v1',
+      termsAcceptedAt: new Date(),
       description: description || '',
       address,
       phone,

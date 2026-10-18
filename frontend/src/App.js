@@ -94,6 +94,7 @@ import OwnerStep1 from './pages/Owner/OwnerRegister/OwnerStep1';
 import OwnerStep2 from './pages/Owner/OwnerRegister/OwnerStep2';
 import OwnerStep3 from './pages/Owner/OwnerRegister/OwnerStep3';
 import OwnerStep4 from './pages/Owner/OwnerRegister/OwnerStep4';
+import OwnerTerms from './pages/Owner/OwnerTerms/OwnerTerms';
 
 /* Owner Settings */
 import OwnerName from './pages/Owner/OwnerSettings/Account/OwnerName';
@@ -642,7 +643,7 @@ function AppLayout() {
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/rma-chat" element={<RMAChat />} />
-
+          <Route path="/owner-terms" element={<OwnerTerms />} />
           <Route path="/profile/appearance" element={<Appearance />} />
           <Route
             path="/owner/settings/shop-promotion"

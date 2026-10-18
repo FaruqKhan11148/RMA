@@ -176,31 +176,6 @@ export const collectDeliveryOrder = async (token, orderId) => {
   return data;
 };
 
-export const confirmDeliveryChargePayment = async (token, orderId) => {
-  const response = await fetch(
-    `${API_URL}api/delivery/orders/${encodeURIComponent(orderId)}/delivery-charge-payment/confirm`,
-    {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  );
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    const error = new Error(
-      data.message || 'Failed to confirm delivery-charge payment',
-    );
-    error.status = response.status;
-    error.code = data.code;
-    throw error;
-  }
-
-  return data;
-};
-
 export const fetchDeliveryChargePayment = async (token, orderId) => {
   const response = await fetch(
     `${API_URL}api/delivery/orders/${encodeURIComponent(orderId)}/delivery-charge-payment`,
@@ -215,7 +190,7 @@ export const fetchDeliveryChargePayment = async (token, orderId) => {
 
   if (!response.ok) {
     throw new Error(
-      data.message || 'Failed to load delivery-charge payment details',
+      data.message || 'Failed to load RMA collection payment details',
     );
   }
 

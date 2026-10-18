@@ -96,13 +96,13 @@ const collectDeliveryOrder = async (req, res) => {
       });
     }
 
-    if (order.deliveryChargePayment?.status !== 'CONFIRMED') {
+    if (order.rmaCollectionPayment?.status !== 'CONFIRMED') {
       return res.status(403).json({
-        code: 'DELIVERY_CHARGE_NOT_CONFIRMED',
+        code: 'RMA_PAYMENT_NOT_CONFIRMED',
         message:
-          'Confirm that the delivery charge was received before collecting this order.',
-        deliveryChargePaymentStatus:
-          order.deliveryChargePayment?.status || 'NOT_REQUIRED',
+          'RMA must verify the payment before you can collect this order.',
+        rmaCollectionPaymentStatus:
+          order.rmaCollectionPayment?.status || 'PENDING',
       });
     }
 
@@ -775,7 +775,7 @@ const getPendingDeliveryAssignments = async (req, res) => {
 };
 
 // ==========================================
-// GET DELIVERY-CHARGE PAYMENT DETAILS
+// GET RMA COLLECTION PAYMENT DETAILS
 // ==========================================
 
 const getDeliveryChargePayment = async (req, res) => {
@@ -811,7 +811,7 @@ const getDeliveryChargePayment = async (req, res) => {
       deliveryPersonId: deliveryPerson._id,
       orderType: 'delivery',
     }).select(
-      'orderId status deliveryAssignmentStatus deliveryPickupStatus deliveryCharge deliveryChargePayment',
+      'orderId status subtotal deliveryCharge deliveryAssignmentType deliveryAssignmentStatus deliveryPickupStatus rmaCollectionPayment',
     );
 
     if (!order) {
@@ -820,141 +820,49 @@ const getDeliveryChargePayment = async (req, res) => {
       });
     }
 
-    if (order.deliveryAssignmentStatus !== 'ACCEPTED') {
-      return res.status(400).json({
-        message: 'Accept this delivery assignment first',
-      });
-    }
-
-    if (!order.deliveryChargePayment) {
-      return res.status(404).json({
-        message: 'Delivery-charge payment details are not available',
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      deliveryChargePayment: order.deliveryChargePayment,
-    });
-  } catch (error) {
-    console.error('Get delivery-charge payment failed:', error);
-
-    return res.status(500).json({
-      message: 'Unable to load delivery-charge payment details',
-    });
-  }
-};
-
-// ==========================================
-// CONFIRM DELIVERY-CHARGE PAYMENT RECEIVED
-// ==========================================
-
-const confirmDeliveryChargePayment = async (req, res) => {
-  try {
-    const { orderId } = req.params;
-    const deliveryPersonId = req.deliveryPerson?._id;
-
-    if (!deliveryPersonId) {
-      return res.status(401).json({
-        message: 'Delivery partner authentication required',
-      });
-    }
-
-    const deliveryPerson = await DeliveryPerson.findById(deliveryPersonId);
-
-    if (!deliveryPerson) {
-      return res.status(404).json({
-        message: 'Delivery partner not found',
-      });
-    }
-
     if (
-      !deliveryPerson.isActive ||
-      deliveryPerson.applicationStatus !== 'APPROVED'
+      order.deliveryAssignmentType !== 'RMA' ||
+      order.deliveryAssignmentStatus !== 'ACCEPTED'
     ) {
-      return res.status(403).json({
-        message: 'Your delivery partner account is not approved and active',
-      });
-    }
-
-    const order = await Order.findOne({
-      orderId,
-      deliveryPersonId: deliveryPerson._id,
-      orderType: 'delivery',
-    });
-
-    if (!order) {
-      return res.status(404).json({
-        message: 'Assigned delivery order not found',
-      });
-    }
-
-    if (order.deliveryAssignmentStatus !== 'ACCEPTED') {
       return res.status(400).json({
-        message: 'You must accept this delivery assignment first',
+        message: 'An accepted RMA delivery assignment is required',
       });
     }
 
-    const payment = order.deliveryChargePayment;
+    const payment = order.rmaCollectionPayment;
 
-    if (!payment || payment.status !== 'PENDING') {
-      if (payment?.status === 'CONFIRMED') {
-        return res.status(409).json({
-          message: 'Delivery-charge payment has already been confirmed',
-          status: payment.status,
-        });
-      }
-
-      return res.status(400).json({
-        message: 'This delivery-charge payment is not awaiting confirmation',
-        status: payment?.status || 'NOT_REQUIRED',
-      });
-    }
-
-    // Never trust a client-supplied amount or UPI ID.
-    // Verify against the saved order and assigned partner.
-    const now = new Date();
-
-    order.deliveryChargePayment.status = 'CONFIRMED';
-    order.deliveryChargePayment.confirmedAt = now;
-    order.deliveryChargePayment.confirmedBy = deliveryPerson._id;
-
-    await order.save();
-
-    // Notify the owner. Notification failure must not undo confirmation.
-    try {
-      await createAndSendNotification({
-        recipientType: 'owner',
-        recipientId: order.ownerId,
-        type: 'DELIVERY_CHARGE_PAYMENT_CONFIRMED',
-        title: 'Delivery Payment Received',
-        message: `Your delivery partner confirmed receipt of ₹${Number(
-          order.deliveryChargePayment.amount,
-        ).toFixed(2)} for order ${order.orderId}.`,
-        orderId: order.orderId,
-        data: {
-          screen: 'orders',
+    if (!payment || !payment.upiId || Number(payment.amount) <= 0) {
+      return res.status(200).json({
+        success: true,
+        payment: {
           orderId: order.orderId,
-          deliveryChargePaymentStatus: 'CONFIRMED',
+          amount: Number(payment?.amount || 0),
+          upiId: payment?.upiId || null,
+          status: payment?.status || 'PENDING',
+          reference: payment?.reference || null,
+          ownerMarkedPaidAt: payment?.ownerMarkedPaidAt || null,
+          confirmedAt: payment?.confirmedAt || null,
         },
       });
-    } catch (notificationError) {
-      console.error(
-        'Delivery-charge confirmation notification failed:',
-        notificationError,
-      );
     }
 
     return res.status(200).json({
       success: true,
-      message: 'Delivery-charge payment receipt confirmed',
-      deliveryChargePayment: order.deliveryChargePayment,
+      payment: {
+        orderId: order.orderId,
+        amount: Number(payment.amount),
+        upiId: payment.upiId,
+        status: payment.status,
+        reference: payment.reference || null,
+        ownerMarkedPaidAt: payment.ownerMarkedPaidAt || null,
+        confirmedAt: payment.confirmedAt || null,
+      },
     });
   } catch (error) {
-    console.error('Confirm delivery-charge payment failed:', error);
+    console.error('Get RMA collection payment failed:', error);
 
     return res.status(500).json({
-      message: 'Unable to confirm delivery-charge payment',
+      message: 'Unable to load RMA collection payment details',
     });
   }
 };
@@ -964,6 +872,5 @@ module.exports = {
   rejectDeliveryAssignment,
   getPendingDeliveryAssignments,
   collectDeliveryOrder,
-  confirmDeliveryChargePayment,
   getDeliveryChargePayment,
 };

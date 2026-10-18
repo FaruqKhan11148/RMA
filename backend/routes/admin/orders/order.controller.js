@@ -68,6 +68,10 @@ const getAllOrders = async (req, res) => {
           'paymentOrderId',
           'paidAt',
 
+          'rmaFee',
+          'ownerAmount',
+          'rmaCollectionPayment',
+
           // OTP / Delivery
           'otpVerified',
           'deliveryOtpGeneratedAt',
@@ -558,8 +562,94 @@ const assignRmaDeliveryPartner = async (req, res) => {
   }
 };
 
+// ============================================================
+// CONFIRM RMA COLLECTION PAYMENT (ADMIN ONLY)
+// ============================================================
+
+const confirmRmaCollectionPayment = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+
+    const order = await Order.findOne({
+      orderId,
+      orderType: 'delivery',
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        message: 'Delivery order not found',
+      });
+    }
+
+    if (
+      order.deliveryAssignmentType !== 'RMA' ||
+      !order.deliveryPersonId ||
+      order.deliveryAssignmentStatus !== 'ACCEPTED'
+    ) {
+      return res.status(400).json({
+        message:
+          'An accepted RMA delivery assignment is required before confirming payment',
+      });
+    }
+
+    const payment = order.rmaCollectionPayment;
+
+    if (!payment) {
+      return res.status(400).json({
+        message: 'RMA collection payment has not been initialized',
+      });
+    }
+
+    if (payment.status === 'CONFIRMED') {
+      return res.status(409).json({
+        message: 'RMA collection payment is already confirmed',
+        paymentStatus: payment.status,
+      });
+    }
+
+    if (payment.status !== 'OWNER_MARKED_PAID') {
+      return res.status(400).json({
+        message:
+          'The owner must mark the payment as sent before admin verification',
+        paymentStatus: payment.status,
+      });
+    }
+
+    // IMPORTANT:
+    // The admin must independently verify the incoming transaction
+    // in the RMA bank/UPI account before calling this endpoint.
+
+    payment.status = 'CONFIRMED';
+    payment.confirmedAt = new Date();
+    payment.confirmedBy = req.admin._id;
+
+    await order.save();
+
+    return res.status(200).json({
+      message: 'RMA collection payment confirmed successfully',
+      orderId: order.orderId,
+      payment: {
+        status: payment.status,
+        amount: payment.amount,
+        upiId: payment.upiId,
+        reference: payment.reference,
+        ownerMarkedPaidAt: payment.ownerMarkedPaidAt,
+        confirmedAt: payment.confirmedAt,
+        confirmedBy: payment.confirmedBy,
+      },
+    });
+  } catch (error) {
+    console.error('Admin RMA collection payment confirmation error:', error);
+
+    return res.status(500).json({
+      message: 'Failed to confirm RMA collection payment',
+    });
+  }
+};
+
 module.exports = {
   getAllOrders,
   getEligibleRmaDeliveryPartners,
   assignRmaDeliveryPartner,
+  confirmRmaCollectionPayment,
 };

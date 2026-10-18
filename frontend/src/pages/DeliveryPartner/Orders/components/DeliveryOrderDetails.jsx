@@ -7,7 +7,6 @@ import {
   fetchDeliveryRoute,
   collectDeliveryOrder,
   fetchDeliveryChargePayment,
-  confirmDeliveryChargePayment,
 } from '../utils/deliveryOrdersApi';
 
 function DeliveryOrderDetails({
@@ -24,11 +23,10 @@ function DeliveryOrderDetails({
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
   const [collecting, setCollecting] = useState(false);
 
-  const [deliveryPayment, setDeliveryPayment] = useState(
-    order.deliveryChargePayment || null,
+  const [rmaCollectionPayment, setRmaCollectionPayment] = useState(
+    order.rmaCollectionPayment || null,
   );
   const [paymentLoading, setPaymentLoading] = useState(false);
-  const [confirmingPayment, setConfirmingPayment] = useState(false);
   const [paymentError, setPaymentError] = useState('');
 
   const isCollected = order.deliveryPickupStatus === 'COLLECTED';
@@ -91,10 +89,12 @@ function DeliveryOrderDetails({
 
   useEffect(() => {
     let cancelled = false;
+    let intervalId;
 
-    const loadDeliveryPayment = async () => {
+    const loadRmaCollectionPayment = async (showLoader = false) => {
       if (
         order.orderType !== 'delivery' ||
+        order.deliveryAssignmentType !== 'RMA' ||
         order.deliveryAssignmentStatus !== 'ACCEPTED' ||
         order.deliveryPickupStatus === 'COLLECTED'
       ) {
@@ -102,86 +102,61 @@ function DeliveryOrderDetails({
       }
 
       try {
-        setPaymentLoading(true);
+        if (showLoader) {
+          setPaymentLoading(true);
+        }
+
         setPaymentError('');
 
         const token = localStorage.getItem('delivery_token');
         const data = await fetchDeliveryChargePayment(token, order.orderId);
 
         if (!cancelled) {
-          setDeliveryPayment(
-            data.deliveryChargePayment ||
-              data.order?.deliveryChargePayment ||
-              data,
+          setRmaCollectionPayment(
+            data.payment ||
+              data.rmaCollectionPayment ||
+              data.order?.rmaCollectionPayment ||
+              null,
           );
         }
       } catch (error) {
         if (!cancelled) {
-          console.error('Failed to load delivery-charge payment:', error);
-          setPaymentError(error.message || 'Unable to load payment details.');
+          console.error('Failed to load RMA collection payment:', error);
+          setPaymentError(
+            error.message || 'Unable to load RMA payment details.',
+          );
         }
       } finally {
-        if (!cancelled) {
+        if (!cancelled && showLoader) {
           setPaymentLoading(false);
         }
       }
     };
 
-    loadDeliveryPayment();
+    loadRmaCollectionPayment(true);
+
+    intervalId = setInterval(() => {
+      loadRmaCollectionPayment(false);
+    }, 10000);
 
     return () => {
       cancelled = true;
+      clearInterval(intervalId);
     };
   }, [
     order.orderId,
     order.orderType,
+    order.deliveryAssignmentType,
     order.deliveryAssignmentStatus,
     order.deliveryPickupStatus,
   ]);
 
-  const handleConfirmDeliveryPayment = async () => {
-    if (confirmingPayment) return;
-
-    const confirmed = window.confirm(
-      'Have you checked your bank or UPI app and verified that the delivery charge was credited?',
-    );
-
-    if (!confirmed) return;
-
-    try {
-      setConfirmingPayment(true);
-      setPaymentError('');
-
-      const token = localStorage.getItem('delivery_token');
-      const data = await confirmDeliveryChargePayment(token, order.orderId);
-
-      setDeliveryPayment(
-        data.deliveryChargePayment || {
-          ...deliveryPayment,
-          status: 'CONFIRMED',
-          confirmedAt: new Date().toISOString(),
-        },
-      );
-
-      alert(
-        'Delivery-charge receipt confirmed. You can now collect the order.',
-      );
-    } catch (error) {
-      console.error('Failed to confirm delivery-charge payment:', error);
-      setPaymentError(error.message || 'Unable to confirm payment.');
-    } finally {
-      setConfirmingPayment(false);
-    }
-  };
-
   const handleCollectOrder = async () => {
-    if (collecting) {
-      return;
-    }
+    if (collecting) return;
 
-    if (deliveryPayment?.status !== 'CONFIRMED') {
+    if (rmaCollectionPayment?.status !== 'CONFIRMED') {
       alert(
-        'Confirm receipt of the delivery charge before collecting this order.',
+        'RMA admin must confirm the payment before you can collect this order.',
       );
       return;
     }
@@ -190,17 +165,13 @@ function DeliveryOrderDetails({
       setCollecting(true);
 
       const token = localStorage.getItem('delivery_token');
-
       const data = await collectDeliveryOrder(token, order.orderId);
 
-      if (data?.order) {
-        if (onCollected) {
-          onCollected(data.order);
-        }
+      if (data?.order && onCollected) {
+        onCollected(data.order);
       }
     } catch (error) {
       console.error('Failed to collect delivery order:', error);
-
       alert(error.message || 'Failed to collect order.');
     } finally {
       setCollecting(false);
@@ -379,43 +350,52 @@ function DeliveryOrderDetails({
       </section>
 
       {!isCollected &&
+        order.deliveryAssignmentType === 'RMA' &&
         order.deliveryAssignmentStatus === 'ACCEPTED' &&
         order.deliveryPickupStatus === 'PENDING' &&
         order.status === 'Ready' && (
           <section className="delivery_details_section delivery_charge_payment">
-            <h3>Delivery Charge Payment</h3>
+            <h3>RMA Payment Verification</h3>
 
             <p className="delivery_charge_amount">
-              Amount to receive:{' '}
+              Owner must pay RMA:{' '}
               <strong>
-                ₹
-                {Number(
-                  deliveryPayment?.amount ?? order.deliveryCharge ?? 0,
-                ).toFixed(2)}
+                ₹{Number(rmaCollectionPayment?.amount ?? 0).toFixed(2)}
               </strong>
             </p>
 
             {paymentLoading ? (
-              <p>Loading your payment details...</p>
+              <p>Loading RMA payment details...</p>
             ) : paymentError ? (
               <p className="delivery_payment_error" role="alert">
                 {paymentError}
               </p>
-            ) : deliveryPayment?.status === 'CONFIRMED' ? (
+            ) : rmaCollectionPayment?.status === 'CONFIRMED' ? (
               <p className="delivery_payment_confirmed">
-                Payment received and confirmed. You can collect the order.
+                RMA admin has confirmed payment. You can collect the order.
               </p>
-            ) : deliveryPayment?.status === 'PENDING' &&
-              deliveryPayment?.upiId ? (
+            ) : rmaCollectionPayment?.status === 'OWNER_MARKED_PAID' ? (
+              <p>
+                The shop owner has marked the payment as sent. Waiting for RMA
+                admin to verify receipt. You cannot collect the order yet.
+              </p>
+            ) : rmaCollectionPayment?.status === 'DISPUTED' ? (
+              <p className="delivery_payment_error" role="alert">
+                This payment is under review by RMA. Contact the administrator
+                before collecting the order.
+              </p>
+            ) : rmaCollectionPayment?.status === 'PENDING' &&
+              rmaCollectionPayment?.upiId &&
+              Number(rmaCollectionPayment?.amount) > 0 ? (
               <>
                 <div className="delivery_payment_qr">
                   <QRCodeSVG
                     value={`upi://pay?pa=${encodeURIComponent(
-                      deliveryPayment.upiId,
-                    )}&am=${Number(deliveryPayment.amount).toFixed(
+                      rmaCollectionPayment.upiId,
+                    )}&am=${Number(rmaCollectionPayment.amount).toFixed(
                       2,
                     )}&cu=INR&tn=${encodeURIComponent(
-                      `RMA delivery charge ${order.orderId}`,
+                      `RMA order ${order.orderId}`,
                     )}`}
                     size={220}
                     level="M"
@@ -424,27 +404,24 @@ function DeliveryOrderDetails({
                 </div>
 
                 <p>
-                  Show this QR code to the shop owner. Ask them to pay the exact
-                  amount, then verify the credit in your own UPI or bank app.
+                  Show this QR code to the shop owner. The owner must pay RMA
+                  the exact amount shown above. Do not confirm or collect the
+                  payment yourself.
                 </p>
 
                 <p>
-                  Your UPI ID: <strong>{deliveryPayment.upiId}</strong>
+                  RMA UPI ID: <strong>{rmaCollectionPayment.upiId}</strong>
                 </p>
 
-                <button
-                  type="button"
-                  className="delivery_collect_button"
-                  onClick={handleConfirmDeliveryPayment}
-                  disabled={confirmingPayment}
-                >
-                  {confirmingPayment ? 'Confirming...' : 'Payment Received'}
-                </button>
+                <p>
+                  Collection will be enabled after RMA admin verifies the
+                  payment.
+                </p>
               </>
             ) : (
               <p>
-                Payment details are not available yet. Please refresh or try
-                again.
+                RMA payment details are not available yet. Refresh or try again
+                later.
               </p>
             )}
           </section>
@@ -467,9 +444,15 @@ function DeliveryOrderDetails({
                 type="button"
                 className="delivery_collect_button"
                 onClick={handleCollectOrder}
-                disabled={collecting}
+                disabled={
+                  collecting || rmaCollectionPayment?.status !== 'CONFIRMED'
+                }
               >
-                {collecting ? 'Collecting...' : "I've Collected"}
+                {collecting
+                  ? 'Collecting...'
+                  : rmaCollectionPayment?.status === 'CONFIRMED'
+                    ? "I've Collected"
+                    : 'Waiting for RMA Payment'}
               </button>
             </div>
           </section>

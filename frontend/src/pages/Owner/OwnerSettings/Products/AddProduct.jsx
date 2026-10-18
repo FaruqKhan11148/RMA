@@ -2,6 +2,7 @@ import './AddProduct.css';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { optimizeCloudinaryImage } from '../../../../utils/optimizeCloudinaryImage';
 
 import productCatalogue from '../../../../data/productCatalogue';
 
@@ -175,7 +176,10 @@ function AddProduct() {
 
           unit: selectedCatalogueProduct.unit,
 
-          imageUrl: selectedCatalogueProduct.imageUrl,
+          imageUrl: optimizeCloudinaryImage(
+            selectedCatalogueProduct.imageUrl,
+            800,
+          ),
 
           isCustom: false,
         }),

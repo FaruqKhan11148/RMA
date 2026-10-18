@@ -334,7 +334,7 @@ async function getOwnerOrders(req, res) {
 }
 
 // ==========================================
-// GET DELIVERY-CHARGE PAYMENT DETAILS
+// GET RMA COLLECTION PAYMENT DETAILS
 // ==========================================
 
 async function getDeliveryChargePayment(req, res) {
@@ -352,7 +352,7 @@ async function getDeliveryChargePayment(req, res) {
       orderId,
       ownerId: authenticatedOwnerId,
       orderType: 'delivery',
-    }).populate('deliveryPersonId', 'name phone bankAccount.paymentUpiId');
+    });
 
     if (!order) {
       return res.status(404).json({
@@ -362,65 +362,95 @@ async function getDeliveryChargePayment(req, res) {
 
     if (
       !order.deliveryPersonId ||
+      order.deliveryAssignmentType !== 'RMA' ||
       order.deliveryAssignmentStatus !== 'ACCEPTED'
     ) {
       return res.status(400).json({
-        message:
-          'The order must have an assigned delivery partner who accepted it',
+        message: 'An accepted RMA delivery assignment is required',
       });
     }
 
-    const upiId = order.deliveryPersonId.bankAccount?.paymentUpiId;
+    const upiId = process.env.RMA_COLLECTION_UPI_ID?.trim();
 
     if (!upiId) {
-      return res.status(400).json({
-        message: 'The assigned delivery partner has not added a UPI ID',
+      console.error('RMA_COLLECTION_UPI_ID is not configured');
+
+      return res.status(503).json({
+        message: 'RMA payment details are temporarily unavailable',
       });
     }
 
-    // Initialize the payment record only when it has not been initialized.
-    // Never reset an owner-marked or DP-confirmed payment.
+    const deliveryCharge = Number(order.deliveryCharge || 0);
+    const rmaFee = Number((Number(order.subtotal || 0) * 0.025).toFixed(2));
+    const amount = Number((deliveryCharge + rmaFee).toFixed(2));
+
+    if (!Number.isFinite(amount) || amount <= 0) {
+      return res.status(400).json({
+        message: 'Invalid RMA collection amount',
+      });
+    }
+
+    const payment = order.rmaCollectionPayment;
+
     if (
-      !order.deliveryChargePayment ||
-      order.deliveryChargePayment.status === 'NOT_REQUIRED'
+      payment?.status === 'CONFIRMED' &&
+      (Number(payment.amount) !== amount || payment.upiId !== upiId)
     ) {
-      order.deliveryChargePayment = {
+      return res.status(409).json({
+        message:
+          'The confirmed payment does not match the current order amount. Admin review is required.',
+      });
+    }
+
+    if (!payment || !payment.upiId || Number(payment.amount) <= 0) {
+      order.rmaCollectionPayment = {
         status: 'PENDING',
-        amount: Number(order.deliveryCharge || 0),
+        amount,
         upiId,
         requestedAt: new Date(),
       };
-
-      await order.save();
+    } else if (payment.status === 'PENDING') {
+      // Refresh unsubmitted payment details if the order amount changes.
+      payment.amount = amount;
+      payment.upiId = upiId;
+      payment.requestedAt = payment.requestedAt || new Date();
+    } else if (Number(payment.amount) !== amount || payment.upiId !== upiId) {
+      return res.status(409).json({
+        message:
+          'Payment details have changed after the payment was marked sent. Admin review is required.',
+      });
     }
+
+    await order.save();
+
+    const savedPayment = order.rmaCollectionPayment;
 
     return res.status(200).json({
       success: true,
       payment: {
         orderId: order.orderId,
-        amount: Number(order.deliveryChargePayment.amount || 0),
-        upiId: order.deliveryChargePayment.upiId || upiId,
-        status: order.deliveryChargePayment.status,
-        requestedAt: order.deliveryChargePayment.requestedAt,
-        ownerMarkedPaidAt: order.deliveryChargePayment.ownerMarkedPaidAt,
-        confirmedAt: order.deliveryChargePayment.confirmedAt,
-        deliveryPerson: {
-          name: order.deliveryPersonId.name,
-          phone: order.deliveryPersonId.phone,
-        },
+        amount: Number(savedPayment.amount),
+        upiId: savedPayment.upiId,
+        status: savedPayment.status,
+        deliveryCharge,
+        rmaFee,
+        requestedAt: savedPayment.requestedAt,
+        ownerMarkedPaidAt: savedPayment.ownerMarkedPaidAt,
+        confirmedAt: savedPayment.confirmedAt,
+        reference: savedPayment.reference,
       },
     });
   } catch (error) {
-    console.error('Get delivery-charge payment failed:', error);
+    console.error('Get RMA collection payment failed:', error);
 
     return res.status(500).json({
-      message: 'Failed to get delivery-charge payment details',
+      message: 'Failed to get RMA collection payment details',
     });
   }
 }
 
 // ==========================================
-// OWNER MARKS DELIVERY-CHARGE TRANSFER AS SENT
+// OWNER MARKS RMA PAYMENT AS SENT
 // ==========================================
 
 async function markDeliveryChargePaymentSent(req, res) {
@@ -448,24 +478,25 @@ async function markDeliveryChargePaymentSent(req, res) {
 
     if (
       !order.deliveryPersonId ||
+      order.deliveryAssignmentType !== 'RMA' ||
       order.deliveryAssignmentStatus !== 'ACCEPTED'
     ) {
       return res.status(400).json({
-        message: 'An accepted delivery assignment is required',
+        message: 'An accepted RMA delivery assignment is required',
       });
     }
 
-    const payment = order.deliveryChargePayment;
+    const payment = order.rmaCollectionPayment;
 
-    if (!payment || payment.status === 'NOT_REQUIRED') {
+    if (!payment || !payment.upiId || Number(payment.amount) <= 0) {
       return res.status(400).json({
-        message: 'Retrieve the delivery payment details before marking it sent',
+        message: 'Retrieve the RMA payment details first',
       });
     }
 
     if (payment.status === 'CONFIRMED') {
       return res.status(409).json({
-        message: 'The delivery partner has already confirmed receipt',
+        message: 'RMA has already confirmed this payment',
         status: payment.status,
       });
     }
@@ -483,36 +514,46 @@ async function markDeliveryChargePaymentSent(req, res) {
       });
     }
 
-    // Keep the amount and UPI ID from the saved order record.
-    // Do not accept either value from the frontend.
+    // Optional UPI transaction reference supplied by the owner.
+    // This is supporting information, not proof of payment.
+    const reference =
+      typeof req.body?.reference === 'string'
+        ? req.body.reference.trim().slice(0, 100)
+        : '';
+
     payment.status = 'OWNER_MARKED_PAID';
     payment.ownerMarkedPaidAt = new Date();
+
+    if (reference) {
+      payment.reference = reference;
+    }
 
     await order.save();
 
     return res.status(200).json({
       success: true,
       message:
-        'Payment marked as sent. The delivery partner must verify receipt.',
+        'Payment marked as sent. RMA admin must verify receipt before delivery collection.',
       payment: {
         orderId: order.orderId,
         amount: payment.amount,
         upiId: payment.upiId,
         status: payment.status,
+        reference: payment.reference,
         ownerMarkedPaidAt: payment.ownerMarkedPaidAt,
       },
     });
   } catch (error) {
-    console.error('Mark delivery-charge payment sent failed:', error);
+    console.error('Mark RMA collection payment sent failed:', error);
 
     return res.status(500).json({
-      message: 'Failed to mark delivery-charge payment as sent',
+      message: 'Failed to mark RMA collection payment as sent',
     });
   }
 }
 
 // ==========================================
-// GET DELIVERY-CHARGE PAYMENT STATUS
+// GET RMA COLLECTION PAYMENT STATUS
 // ==========================================
 
 async function getDeliveryChargePaymentStatus(req, res) {
@@ -531,7 +572,7 @@ async function getDeliveryChargePaymentStatus(req, res) {
       ownerId: authenticatedOwnerId,
       orderType: 'delivery',
     }).select(
-      'orderId deliveryCharge deliveryPersonId deliveryAssignmentStatus deliveryChargePayment',
+      'orderId subtotal deliveryCharge deliveryPersonId deliveryAssignmentType deliveryAssignmentStatus rmaCollectionPayment',
     );
 
     if (!order) {
@@ -540,25 +581,31 @@ async function getDeliveryChargePaymentStatus(req, res) {
       });
     }
 
+    const payment = order.rmaCollectionPayment;
+
     return res.status(200).json({
       success: true,
       payment: {
         orderId: order.orderId,
-        amount: order.deliveryChargePayment?.amount ?? order.deliveryCharge,
-        status: order.deliveryChargePayment?.status || 'NOT_REQUIRED',
-        ownerMarkedPaidAt:
-          order.deliveryChargePayment?.ownerMarkedPaidAt || null,
-        confirmedAt: order.deliveryChargePayment?.confirmedAt || null,
+        deliveryCharge: Number(order.deliveryCharge || 0),
+        rmaFee: Number((Number(order.subtotal || 0) * 0.025).toFixed(2)),
+        amount: payment?.amount ?? null,
+        upiId: payment?.upiId ?? null,
+        status: payment?.status || 'PENDING',
+        reference: payment?.reference ?? null,
+        ownerMarkedPaidAt: payment?.ownerMarkedPaidAt ?? null,
+        confirmedAt: payment?.confirmedAt ?? null,
       },
     });
   } catch (error) {
-    console.error('Get delivery-charge payment status failed:', error);
+    console.error('Get RMA collection payment status failed:', error);
 
     return res.status(500).json({
-      message: 'Failed to get delivery-charge payment status',
+      message: 'Failed to get RMA collection payment status',
     });
   }
 }
+
 
 async function getReferralProgress(req, res) {
   try {

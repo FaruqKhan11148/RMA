@@ -1,3 +1,5 @@
+import { optimizeCloudinaryImage } from '../../../../../utils/optimizeCloudinaryImage';
+
 function CatalogueProducts({
   productCatalogue,
   selectedCategory,
@@ -48,7 +50,14 @@ function CatalogueProducts({
 
               return (
                 <div className="catalogue_product_card" key={product.productId}>
-                  <img src={product.imageUrl} alt={product.name} />
+                  <img
+                    src={optimizeCloudinaryImage(product.imageUrl, 300)}
+                    alt={product.name}
+                    loading="lazy"
+                    decoding="async"
+                    width="300"
+                    height="200"
+                  />
 
                   <div className="catalogue_product_info">
                     <h4>{product.name}</h4>

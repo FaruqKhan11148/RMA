@@ -1,3 +1,5 @@
+import { optimizeCloudinaryImage } from '../../../../utils/optimizeCloudinaryImage';
+
 import { Package } from 'lucide-react';
 
 function OwnerShopProducts({ availableProducts, previewProducts, navigate }) {
@@ -35,7 +37,12 @@ function OwnerShopProducts({ availableProducts, previewProducts, navigate }) {
           {previewProducts.map((product) => (
             <div className="owner_shop_product_card" key={product.productId}>
               {product.imageUrl ? (
-                <img src={product.imageUrl} alt={product.name} />
+                <img
+                  src={optimizeCloudinaryImage(product.imageUrl, 300)}
+                  alt={product.name}
+                  loading="lazy"
+                  decoding="async"
+                />
               ) : (
                 <div className="owner_shop_product_placeholder">
                   <Package size={22} />

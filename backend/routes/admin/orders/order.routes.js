@@ -6,6 +6,7 @@ const {
   getAllOrders,
   getEligibleRmaDeliveryPartners,
   assignRmaDeliveryPartner,
+  confirmRmaCollectionPayment,
 } = require('./order.controller');
 
 const router = express.Router();
@@ -32,6 +33,17 @@ router.patch(
   '/:orderId/rma-delivery-partner',
   adminAuth,
   assignRmaDeliveryPartner,
+);
+
+// ============================================================
+// CONFIRM RMA COLLECTION PAYMENT
+// PATCH /api/admin/orders/:orderId/rma-collection-payment/confirm
+// ============================================================
+
+router.patch(
+  '/:orderId/rma-collection-payment/confirm',
+  adminAuth,
+  confirmRmaCollectionPayment,
 );
 
 module.exports = router;

@@ -1,9 +1,16 @@
+import { optimizeCloudinaryImage } from '../../../../../../utils/optimizeCloudinaryImage';
+
 function EditProductPreview({ product, available }) {
   return (
     <div className="edit-product-preview">
       <div className="edit-product-image">
         {product.imageUrl ? (
-          <img src={product.imageUrl} alt={product.name} />
+          <img
+            src={optimizeCloudinaryImage(product.imageUrl, 300)}
+            alt={product.name}
+            loading="lazy"
+            decoding="async"
+          />
         ) : (
           <span>
             {product.category === 'Chicken'

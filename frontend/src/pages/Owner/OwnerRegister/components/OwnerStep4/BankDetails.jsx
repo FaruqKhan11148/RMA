@@ -62,7 +62,7 @@ function BankDetails({
       </div>
 
       <div className="bank_field">
-        <label htmlFor="upiId">UPI ID (Optional)</label>
+        <label htmlFor="upiId">UPI ID</label>
         <input
           id="upiId"
           type="text"
