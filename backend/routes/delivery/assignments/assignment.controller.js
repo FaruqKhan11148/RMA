@@ -925,10 +925,140 @@ const getDeliveryChargePayment = async (req, res) => {
   }
 };
 
+// ==========================================
+// DP ACKNOWLEDGES OWNER'S RMA PAYMENT CLAIM
+// ==========================================
+
+const acknowledgeRmaCollectionPayment = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const deliveryPersonId = req.deliveryPerson?._id;
+
+    if (!deliveryPersonId) {
+      return res.status(401).json({
+        success: false,
+        message: 'Delivery partner authentication required',
+      });
+    }
+
+    const deliveryPerson = await DeliveryPerson.findById(deliveryPersonId);
+
+    if (!deliveryPerson) {
+      return res.status(404).json({
+        success: false,
+        message: 'Delivery partner not found',
+      });
+    }
+
+    if (
+      !deliveryPerson.isActive ||
+      deliveryPerson.applicationStatus !== 'APPROVED'
+    ) {
+      return res.status(403).json({
+        success: false,
+        message: 'Your delivery partner account is not approved and active',
+      });
+    }
+
+    const order = await Order.findOne({
+      orderId,
+      deliveryPersonId: deliveryPerson._id,
+      orderType: 'delivery',
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: 'Assigned delivery order not found',
+      });
+    }
+
+    if (
+      order.deliveryAssignmentType !== 'RMA' ||
+      order.deliveryAssignmentStatus !== 'ACCEPTED'
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: 'An accepted RMA delivery assignment is required',
+      });
+    }
+
+    if (
+      order.status !== 'Ready' ||
+      order.deliveryPickupStatus === 'COLLECTED'
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: 'Payment acknowledgement is unavailable for this order',
+      });
+    }
+
+    const payment = order.rmaCollectionPayment;
+
+    if (!payment) {
+      return res.status(400).json({
+        success: false,
+        message: 'RMA collection payment has not been initialized',
+      });
+    }
+
+    if (payment.status === 'BOTH_MARKED_PAID') {
+      return res.status(200).json({
+        success: true,
+        message: 'Payment acknowledgement was already recorded',
+        payment: {
+          orderId: order.orderId,
+          amount: Number(payment.amount || 0),
+          upiId: payment.upiId || null,
+          status: payment.status,
+          ownerMarkedPaidAt: payment.ownerMarkedPaidAt || null,
+          dpAcknowledgedAt: payment.dpAcknowledgedAt || null,
+        },
+      });
+    }
+
+    if (payment.status !== 'OWNER_MARKED_PAID') {
+      return res.status(400).json({
+        success: false,
+        message:
+          'The owner must mark the payment as sent before you can acknowledge it',
+      });
+    }
+
+    payment.status = 'BOTH_MARKED_PAID';
+    payment.dpAcknowledgedAt = new Date();
+    payment.dpAcknowledgedBy = deliveryPerson._id;
+
+    await order.save();
+
+    return res.status(200).json({
+      success: true,
+      message:
+        'Acknowledgement submitted. RMA admin must verify the actual incoming transaction.',
+      payment: {
+        orderId: order.orderId,
+        amount: Number(payment.amount || 0),
+        upiId: payment.upiId || null,
+        status: payment.status,
+        ownerMarkedPaidAt: payment.ownerMarkedPaidAt || null,
+        dpAcknowledgedAt: payment.dpAcknowledgedAt,
+      },
+    });
+  } catch (error) {
+    console.error('Acknowledge RMA collection payment failed:', error);
+
+    return res.status(500).json({
+      success: false,
+      message: 'Unable to acknowledge RMA collection payment',
+    });
+  }
+};
+
 module.exports = {
   acceptDeliveryAssignment,
   rejectDeliveryAssignment,
   getPendingDeliveryAssignments,
   collectDeliveryOrder,
   getDeliveryChargePayment,
+  acknowledgeRmaCollectionPayment,
 };

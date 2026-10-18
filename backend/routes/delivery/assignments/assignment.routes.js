@@ -8,6 +8,7 @@ const {
   getPendingDeliveryAssignments,
   collectDeliveryOrder,
   getDeliveryChargePayment,
+  acknowledgeRmaCollectionPayment,
 } = require('./assignment.controller');
 
 const router = express.Router();
@@ -32,6 +33,12 @@ router.get(
   '/orders/:orderId/delivery-charge-payment',
   deliveryAuth,
   getDeliveryChargePayment,
+);
+
+router.patch(
+  '/orders/:orderId/delivery-charge-payment/acknowledge',
+  deliveryAuth,
+  acknowledgeRmaCollectionPayment,
 );
 
 module.exports = router;

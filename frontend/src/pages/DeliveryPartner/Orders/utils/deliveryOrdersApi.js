@@ -196,3 +196,28 @@ export const fetchDeliveryChargePayment = async (token, orderId) => {
 
   return data;
 };
+
+export const acknowledgeRmaCollectionPayment = async (token, orderId) => {
+  const response = await fetch(
+    `${API_URL}api/delivery/orders/${encodeURIComponent(orderId)}/delivery-charge-payment/acknowledge`,
+    {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    const error = new Error(
+      data.message || 'Failed to acknowledge RMA payment',
+    );
+    error.status = response.status;
+    error.code = data.code;
+    throw error;
+  }
+
+  return data;
+};

@@ -7,6 +7,7 @@ import {
   fetchDeliveryRoute,
   collectDeliveryOrder,
   fetchDeliveryChargePayment,
+  acknowledgeRmaCollectionPayment,
 } from '../utils/deliveryOrdersApi';
 
 function DeliveryOrderDetails({
@@ -28,6 +29,10 @@ function DeliveryOrderDetails({
   );
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [paymentError, setPaymentError] = useState('');
+
+  const [acknowledgingPayment, setAcknowledgingPayment] = useState(false);
+  const [paymentAcknowledgementMessage, setPaymentAcknowledgementMessage] =
+    useState('');
 
   const isCollected = order.deliveryPickupStatus === 'COLLECTED';
 
@@ -150,6 +155,47 @@ function DeliveryOrderDetails({
     order.deliveryAssignmentStatus,
     order.deliveryPickupStatus,
   ]);
+
+  const handleAcknowledgeRmaPayment = async () => {
+    if (
+      acknowledgingPayment ||
+      rmaCollectionPayment?.status !== 'OWNER_MARKED_PAID'
+    ) {
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `Have you reviewed the owner's payment evidence for order ${order.orderId} and are you ready to acknowledge it for RMA admin review? This does not confirm that RMA received the money.`,
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setAcknowledgingPayment(true);
+      setPaymentError('');
+      setPaymentAcknowledgementMessage('');
+
+      const token = localStorage.getItem('delivery_token');
+
+      const data = await acknowledgeRmaCollectionPayment(token, order.orderId);
+
+      setRmaCollectionPayment(
+        data.payment ||
+          data.rmaCollectionPayment ||
+          data.order?.rmaCollectionPayment ||
+          null,
+      );
+
+      setPaymentAcknowledgementMessage(
+        data.message ||
+          'Acknowledgement submitted. RMA admin must verify the actual transaction.',
+      );
+    } catch (error) {
+      setPaymentError(error.message || 'Unable to acknowledge the payment.');
+    } finally {
+      setAcknowledgingPayment(false);
+    }
+  };
 
   const handleCollectOrder = async () => {
     if (collecting) return;
@@ -366,63 +412,92 @@ function DeliveryOrderDetails({
 
             {paymentLoading ? (
               <p>Loading RMA payment details...</p>
-            ) : paymentError ? (
-              <p className="delivery_payment_error" role="alert">
-                {paymentError}
-              </p>
-            ) : rmaCollectionPayment?.status === 'CONFIRMED' ? (
-              <p className="delivery_payment_confirmed">
-                RMA admin has confirmed payment. You can collect the order.
-              </p>
-            ) : rmaCollectionPayment?.status === 'OWNER_MARKED_PAID' ? (
-              <p>
-                The shop owner has marked the payment as sent. Waiting for RMA
-                admin to verify receipt. You cannot collect the order yet.
-              </p>
-            ) : rmaCollectionPayment?.status === 'DISPUTED' ? (
-              <p className="delivery_payment_error" role="alert">
-                This payment is under review by RMA. Contact the administrator
-                before collecting the order.
-              </p>
-            ) : rmaCollectionPayment?.status === 'PENDING' &&
-              rmaCollectionPayment?.upiId &&
-              Number(rmaCollectionPayment?.amount) > 0 ? (
-              <>
-                <div className="delivery_payment_qr">
-                  <QRCodeSVG
-                    value={`upi://pay?pa=${encodeURIComponent(
-                      rmaCollectionPayment.upiId,
-                    )}&am=${Number(rmaCollectionPayment.amount).toFixed(
-                      2,
-                    )}&cu=INR&tn=${encodeURIComponent(
-                      `RMA order ${order.orderId}`,
-                    )}`}
-                    size={220}
-                    level="M"
-                    includeMargin
-                  />
-                </div>
-
-                <p>
-                  Show this QR code to the shop owner. The owner must pay RMA
-                  the exact amount shown above. Do not confirm or collect the
-                  payment yourself.
-                </p>
-
-                <p>
-                  RMA UPI ID: <strong>{rmaCollectionPayment.upiId}</strong>
-                </p>
-
-                <p>
-                  Collection will be enabled after RMA admin verifies the
-                  payment.
-                </p>
-              </>
             ) : (
-              <p>
-                RMA payment details are not available yet. Refresh or try again
-                later.
-              </p>
+              <>
+                {paymentError && (
+                  <p className="delivery_payment_error" role="alert">
+                    {paymentError}
+                  </p>
+                )}
+
+                {paymentAcknowledgementMessage && (
+                  <p role="status">{paymentAcknowledgementMessage}</p>
+                )}
+
+                {rmaCollectionPayment?.status === 'CONFIRMED' ? (
+                  <p className="delivery_payment_confirmed">
+                    RMA admin has confirmed payment. You can collect the order.
+                  </p>
+                ) : rmaCollectionPayment?.status === 'OWNER_MARKED_PAID' ? (
+                  <>
+                    <p>
+                      The owner has marked this payment as sent. Review the
+                      owner's payment evidence before acknowledging it. Your
+                      acknowledgement is not proof that RMA received the money.
+                    </p>
+
+                    <button
+                      type="button"
+                      onClick={handleAcknowledgeRmaPayment}
+                      disabled={acknowledgingPayment}
+                    >
+                      {acknowledgingPayment
+                        ? 'Submitting acknowledgement...'
+                        : "I've Reviewed the Payment Evidence"}
+                    </button>
+                  </>
+                ) : rmaCollectionPayment?.status === 'BOTH_MARKED_PAID' ? (
+                  <p>
+                    You and the owner have acknowledged the payment. Waiting for
+                    RMA admin to verify the actual incoming transaction. Do not
+                    collect the order yet.
+                  </p>
+                ) : rmaCollectionPayment?.status === 'DISPUTED' ? (
+                  <p className="delivery_payment_error" role="alert">
+                    This payment is under review by RMA. Contact the
+                    administrator before collecting the order.
+                  </p>
+                ) : rmaCollectionPayment?.status === 'PENDING' &&
+                  rmaCollectionPayment?.upiId &&
+                  Number(rmaCollectionPayment?.amount) > 0 ? (
+                  <>
+                    <div className="delivery_payment_qr">
+                      <QRCodeSVG
+                        value={`upi://pay?pa=${encodeURIComponent(
+                          rmaCollectionPayment.upiId,
+                        )}&am=${Number(rmaCollectionPayment.amount).toFixed(
+                          2,
+                        )}&cu=INR&tn=${encodeURIComponent(
+                          `RMA order ${order.orderId}`,
+                        )}`}
+                        size={220}
+                        level="M"
+                        includeMargin
+                      />
+                    </div>
+
+                    <p>
+                      Show this QR code to the shop owner. The owner must pay
+                      RMA the exact amount shown above. Do not confirm or
+                      collect the payment yourself.
+                    </p>
+
+                    <p>
+                      RMA UPI ID: <strong>{rmaCollectionPayment.upiId}</strong>
+                    </p>
+
+                    <p>
+                      Collection will be enabled after RMA admin verifies the
+                      payment.
+                    </p>
+                  </>
+                ) : (
+                  <p>
+                    RMA payment details are not available yet. Refresh or try
+                    again later.
+                  </p>
+                )}
+              </>
             )}
           </section>
         )}

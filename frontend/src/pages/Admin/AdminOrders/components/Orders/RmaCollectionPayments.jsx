@@ -11,14 +11,14 @@ function RmaCollectionPayments({ orders = [], onOrderUpdated, formatDate }) {
       order.orderType === 'delivery' &&
       order.deliveryAssignmentType === 'RMA' &&
       order.deliveryAssignmentStatus === 'ACCEPTED' &&
-      order.rmaCollectionPayment?.status === 'OWNER_MARKED_PAID',
+      order.rmaCollectionPayment?.status === 'BOTH_MARKED_PAID',
   );
 
   const handleConfirm = async (order) => {
     const payment = order.rmaCollectionPayment;
 
     const approved = window.confirm(
-      `Confirm ₹${Number(payment?.amount || 0).toFixed(2)} received for order ${order.orderId}?\n\nOnly confirm if you have independently verified the actual incoming transaction in the RMA UPI/bank account.`,
+      `Confirm ₹${Number(payment?.amount || 0).toFixed(2)} received for order ${order.orderId}?\n\nVerify the actual incoming transaction in the RMA UPI/bank account. Match the amount and transaction reference where available. Owner and DP acknowledgements are not proof that the money arrived.`,
     );
 
     if (!approved) return;
@@ -52,8 +52,10 @@ function RmaCollectionPayments({ orders = [], onOrderUpdated, formatDate }) {
       <h2>RMA Payments Awaiting Verification</h2>
 
       <p>
-        Verify the actual incoming payment in your UPI/bank account before
-        confirming. An owner's claim or screenshot alone is not proof.
+        These payments have been acknowledged by both the owner and assigned
+        delivery partner. Verify the actual incoming transaction in your
+        UPI/bank account before confirming. Screenshots and acknowledgements
+        alone are not proof.
       </p>
 
       {error && <p role="alert">{error}</p>}
@@ -84,7 +86,9 @@ function RmaCollectionPayments({ orders = [], onOrderUpdated, formatDate }) {
                 </p>
 
                 <p>RMA UPI ID: {payment.upiId || '-'}</p>
-                <p>Reference: {payment.reference || 'Not provided'}</p>
+                <p>
+                  Transaction reference: {payment.reference || 'Not provided'}
+                </p>
 
                 <p>
                   Owner marked sent:{' '}
@@ -93,10 +97,27 @@ function RmaCollectionPayments({ orders = [], onOrderUpdated, formatDate }) {
                     : '-'}
                 </p>
 
+                <p>
+                  DP acknowledged:{' '}
+                  {payment.dpAcknowledgedAt
+                    ? formatDate(payment.dpAcknowledgedAt)
+                    : '-'}
+                </p>
+
+                <p>
+                  DP acknowledgment recorded:{' '}
+                  {payment.dpAcknowledgedBy ? 'Yes' : 'Missing'}
+                </p>
+
                 <button
                   type="button"
                   onClick={() => handleConfirm(order)}
-                  disabled={confirmingOrderId !== null}
+                  disabled={
+                    confirmingOrderId !== null ||
+                    !payment.ownerMarkedPaidAt ||
+                    !payment.dpAcknowledgedAt ||
+                    !payment.dpAcknowledgedBy
+                  }
                 >
                   {confirmingOrderId === order.orderId
                     ? 'Confirming...'

@@ -102,7 +102,12 @@ const getAllOrders = async (req, res) => {
 
       const rmaFee = Number(((order.subtotal || 0) * 0.025).toFixed(2));
 
-      const ownerAmount = Number(((order.subtotal || 0) - rmaFee).toFixed(2));
+      const ownerAmount = Number(
+        (
+          Number(order.ownerAmount ?? order.subtotal ?? 0) -
+          (order.ownerAmount == null ? rmaFee : 0)
+        ).toFixed(2),
+      );
 
       return {
         ...orderData,
@@ -570,6 +575,13 @@ const confirmRmaCollectionPayment = async (req, res) => {
   try {
     const { orderId } = req.params;
 
+    if (!req.admin?._id) {
+      return res.status(401).json({
+        success: false,
+        message: 'Admin authentication required',
+      });
+    }
+
     const order = await Order.findOne({
       orderId,
       orderType: 'delivery',
@@ -577,6 +589,7 @@ const confirmRmaCollectionPayment = async (req, res) => {
 
     if (!order) {
       return res.status(404).json({
+        success: false,
         message: 'Delivery order not found',
       });
     }
@@ -587,6 +600,7 @@ const confirmRmaCollectionPayment = async (req, res) => {
       order.deliveryAssignmentStatus !== 'ACCEPTED'
     ) {
       return res.status(400).json({
+        success: false,
         message:
           'An accepted RMA delivery assignment is required before confirming payment',
       });
@@ -596,28 +610,57 @@ const confirmRmaCollectionPayment = async (req, res) => {
 
     if (!payment) {
       return res.status(400).json({
+        success: false,
         message: 'RMA collection payment has not been initialized',
       });
     }
 
     if (payment.status === 'CONFIRMED') {
       return res.status(409).json({
+        success: false,
         message: 'RMA collection payment is already confirmed',
         paymentStatus: payment.status,
       });
     }
 
-    if (payment.status !== 'OWNER_MARKED_PAID') {
-      return res.status(400).json({
+    if (payment.status === 'DISPUTED') {
+      return res.status(409).json({
+        success: false,
         message:
-          'The owner must mark the payment as sent before admin verification',
+          'This payment is disputed and cannot be confirmed until the dispute is resolved',
         paymentStatus: payment.status,
       });
     }
 
+    if (payment.status !== 'BOTH_MARKED_PAID') {
+      return res.status(400).json({
+        success: false,
+        message:
+          'Both the owner and assigned delivery partner must acknowledge the payment before admin verification',
+        paymentStatus: payment.status,
+      });
+    }
+
+    if (
+      !payment.ownerMarkedPaidAt ||
+      !payment.dpAcknowledgedAt ||
+      !payment.dpAcknowledgedBy ||
+      payment.dpAcknowledgedBy.toString() !== order.deliveryPersonId.toString()
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          'Required owner and assigned delivery partner acknowledgements are missing or invalid',
+      });
+    }
+
     // IMPORTANT:
-    // The admin must independently verify the incoming transaction
-    // in the RMA bank/UPI account before calling this endpoint.
+    // Before continuing, independently verify the actual incoming
+    // transaction in RMA's bank/UPI account.
+    //
+    // Match the received amount against payment.amount and verify
+    // the transaction reference when available.
+    // Never confirm based only on the owner's or DP's acknowledgement.
 
     payment.status = 'CONFIRMED';
     payment.confirmedAt = new Date();
@@ -626,6 +669,7 @@ const confirmRmaCollectionPayment = async (req, res) => {
     await order.save();
 
     return res.status(200).json({
+      success: true,
       message: 'RMA collection payment confirmed successfully',
       orderId: order.orderId,
       payment: {
@@ -634,6 +678,8 @@ const confirmRmaCollectionPayment = async (req, res) => {
         upiId: payment.upiId,
         reference: payment.reference,
         ownerMarkedPaidAt: payment.ownerMarkedPaidAt,
+        dpAcknowledgedAt: payment.dpAcknowledgedAt,
+        dpAcknowledgedBy: payment.dpAcknowledgedBy,
         confirmedAt: payment.confirmedAt,
         confirmedBy: payment.confirmedBy,
       },
@@ -642,6 +688,7 @@ const confirmRmaCollectionPayment = async (req, res) => {
     console.error('Admin RMA collection payment confirmation error:', error);
 
     return res.status(500).json({
+      success: false,
       message: 'Failed to confirm RMA collection payment',
     });
   }
