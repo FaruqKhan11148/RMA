@@ -1,28 +1,25 @@
 /* =========================================================
    ORDER LOCATION MAP
-   ========================================================= */
+========================================================= */
 
 .order_location_map {
+  position: relative;
   width: 100%;
   height: 100%;
   min-height: 300px;
-
   overflow: hidden;
-
   border-radius: 15px;
-
   background: #eef2ef;
 }
 
 /* =========================================================
    LEAFLET MAP
-   ========================================================= */
+========================================================= */
 
 .order_location_leaflet_map {
   width: 100%;
   height: 100%;
   min-height: 300px;
-
   z-index: 1;
 }
 
@@ -54,55 +51,28 @@
 }
 
 /* =========================================================
-   LOCATION PULSE
-   ========================================================= */
-
-@keyframes delivery_partner_location_pulse {
-  0% {
-    transform: scale(0.85);
-    opacity: 0.9;
-  }
-
-  70% {
-    transform: scale(1.15);
-    opacity: 0.35;
-  }
-
-  100% {
-    transform: scale(1.25);
-    opacity: 0;
-  }
-}
-
-/* =========================================================
    FULLSCREEN MAP
-   ========================================================= */
+========================================================= */
 
 .order_location_map_fullscreen {
   position: fixed;
-
   inset: 0;
-
   width: 100vw;
   height: 100vh;
-
   min-height: 100vh;
-
   border-radius: 0;
-
   z-index: 9999;
 }
 
 .order_location_map_fullscreen .order_location_leaflet_map {
   width: 100%;
   height: 100vh;
-
   min-height: 100vh;
 }
 
 /* =========================================================
    DARK MODE
-   ========================================================= */
+========================================================= */
 
 [data-theme='dark'] .order_location_map {
   background: #151b17;
@@ -110,7 +80,6 @@
 
 /* =========================================================
    RMA CUSTOMER LOCATION MARKER
-   Same visual marker used by MapPicker
 ========================================================= */
 
 .rma_location_marker {
@@ -119,19 +88,15 @@
 }
 
 .rma_location_pin {
+  position: relative;
   width: 44px;
   height: 54px;
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-
   background: #0a9f4a;
-
   border-radius: 50% 50% 50% 0;
-
   transform: rotate(-45deg);
-
   box-shadow:
     0 3px 8px rgba(0, 0, 0, 0.28),
     0 1px 3px rgba(0, 0, 0, 0.16);
@@ -140,68 +105,26 @@
 .rma_location_pin::after {
   content: '';
   position: absolute;
-
   width: 18px;
   height: 18px;
-
   left: 50%;
   top: 50%;
-
   background: #ffffff;
-
   border-radius: 50%;
-
   transform: translate(-50%, -50%);
 }
 
 .rma_location_pin_inner {
   position: relative;
-
   z-index: 2;
-
   width: 18px;
   height: 18px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   color: #0a9f4a;
-
   font-size: 11px;
   font-weight: 900;
-
   line-height: 1;
-
   transform: rotate(45deg);
-}
-
-/* MAP ROTATION CONTROLS */
-
-.map_rotation_controls {
-  position: absolute;
-  right: 12px;
-  bottom: 24px;
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.map_rotation_controls button {
-  width: 42px;
-  height: 42px;
-  border: 1px solid #d7ded9;
-  border-radius: 50%;
-  background: #ffffff;
-  color: #202820;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  font-size: 22px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.order_location_map {
-  position: relative;
-  touch-action: pan-x pan-y;
 }
