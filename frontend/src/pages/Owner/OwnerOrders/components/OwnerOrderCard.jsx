@@ -1,4 +1,5 @@
 import './OwnerOrderCard.css';
+import { optimizeCloudinaryImage } from '../../../../utils/optimizeCloudinaryImage';
 
 function OwnerOrderCard({
   order,
@@ -170,6 +171,10 @@ function OwnerOrderCard({
           const itemImage =
             item.imageUrl || item.productImage || item.image || '';
 
+          const optimizedImage = itemImage
+            ? optimizeCloudinaryImage(itemImage, 200)
+            : '';
+
           return (
             <div
               className="owner_order_item_preview"
@@ -179,9 +184,10 @@ function OwnerOrderCard({
                 {itemImage ? (
                   <img
                     className="owner_order_item_image"
-                    src={itemImage}
+                    src={optimizedImage}
                     alt={item.productName || 'Ordered product'}
                     loading="lazy"
+                    decoding="async"
                   />
                 ) : (
                   <div

@@ -10,6 +10,11 @@ const orderItemSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    imageUrl: {
+      type: String,
+      default: '',
+      trim: true,
+    },
     price: {
       type: Number,
       required: true,
@@ -74,6 +79,12 @@ const orderSchema = new mongoose.Schema(
         trim: true,
         default: '',
       },
+    },
+
+    imageUrl: {
+      type: String,
+      default: '',
+      trim: true,
     },
 
     orderType: {

@@ -303,6 +303,7 @@ async function createOrder(req, res) {
       calculatedItems.push({
         productId: product.productId,
         productName: product.name,
+        imageUrl: product.imageUrl || '',
         price,
         quantity,
         unit: product.unit,

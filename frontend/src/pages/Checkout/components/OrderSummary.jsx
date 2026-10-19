@@ -14,9 +14,11 @@ function OrderSummary({
   orderType,
   deliveryLoading,
   deliveryCharge,
-  paymentMethod,
-  payuPricing,
 }) {
+  const customerTotal =
+    Number(totalPrice || 0) +
+    (orderType === 'delivery' ? Number(deliveryCharge || 0) : 0);
+
   return (
     <section className="checkout_summary_card">
       <div className="checkout_summary_header">
@@ -47,8 +49,7 @@ function OrderSummary({
 
       <div className="summary_row">
         <span>Item Total</span>
-
-        <strong>₹{totalPrice}</strong>
+        <strong>₹{Number(totalPrice || 0).toFixed(2)}</strong>
       </div>
 
       <div className="summary_row summary_delivery_row">
@@ -62,20 +63,10 @@ function OrderSummary({
           ) : deliveryLoading ? (
             <SummaryValueSkeleton width="78px" />
           ) : (
-            `₹${deliveryCharge.toFixed(2)}`
+            `₹${Number(deliveryCharge || 0).toFixed(2)}`
           )}
         </strong>
       </div>
-
-      {paymentMethod === 'ONLINE' && (
-        <div className="summary_row summary_payu_row">
-          <div className="summary_payu_label">
-            <span>Convenience Charge</span>
-          </div>
-
-          <strong>₹{payuPricing.payuCharges.toFixed(2)}</strong>
-        </div>
-      )}
 
       <div className="checkout_summary_divider" />
 
@@ -83,10 +74,10 @@ function OrderSummary({
         <span>Final Customer Total</span>
 
         <strong>
-          {deliveryLoading ? (
+          {deliveryLoading && orderType === 'delivery' ? (
             <SummaryValueSkeleton width="110px" />
           ) : (
-            `₹${payuPricing.customerPayableAmount.toFixed(2)}`
+            `₹${customerTotal.toFixed(2)}`
           )}
         </strong>
       </div>

@@ -792,7 +792,6 @@ function Checkout() {
               deliveryLoading={deliveryLoading}
               deliveryCharge={deliveryCharge}
               paymentMethod={paymentMethod}
-              payuPricing={payuPricing}
             />
 
             <SecureNote />
