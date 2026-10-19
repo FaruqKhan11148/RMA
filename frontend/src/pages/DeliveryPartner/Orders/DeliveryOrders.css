@@ -5283,3 +5283,384 @@
     font-size: 13px;
   }
 }
+
+/* ==========================================
+   SHOP AND CUSTOMER DETAILS
+========================================== */
+
+.delivery_customer_details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 14px;
+}
+
+.delivery_customer_details > div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  padding: 14px;
+  background: var(--delivery-card-bg, #f7f9f8);
+  border: 1px solid var(--delivery-border, #e5e9e7);
+  border-radius: 12px;
+}
+
+.delivery_customer_details > div > span:first-child {
+  color: var(--delivery-muted, #69756f);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.delivery_customer_details > div > strong,
+.delivery_customer_details > div > a {
+  color: var(--delivery-text, #17231d);
+  font-size: 14px;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+
+.delivery_customer_details > div > a {
+  text-decoration: none;
+}
+
+.delivery_customer_details > div > a:hover {
+  color: #16803d;
+  text-decoration: underline;
+}
+
+.delivery_details_section > .delivery_address {
+  margin-top: 12px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+/* ==========================================
+   GOOGLE MAPS DIRECTIONS BUTTON
+========================================== */
+
+.delivery_directions_button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: fit-content;
+  max-width: 100%;
+  min-height: 44px;
+  margin-top: 12px;
+  padding: 11px 16px;
+  border: 1px solid #16803d;
+  border-radius: 10px;
+  background: #16803d;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.delivery_directions_button:hover {
+  background: #116b32;
+}
+
+.delivery_directions_button:active {
+  transform: scale(0.98);
+}
+
+.delivery_directions_button:focus-visible {
+  outline: 3px solid rgba(22, 128, 61, 0.25);
+  outline-offset: 3px;
+}
+
+/* ==========================================
+   LIVE ROUTE DISTANCE AND ETA
+========================================== */
+
+.delivery_route_summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.delivery_route_summary > div {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+  padding: 16px;
+  background: #f1f8f3;
+  border: 1px solid #dceee1;
+  border-radius: 12px;
+}
+
+.delivery_route_summary > div > span {
+  color: #5d7063;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.delivery_route_summary > div > strong {
+  color: #176b35;
+  font-size: 20px;
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+
+.delivery_distance {
+  margin-top: 12px;
+  padding: 11px 13px;
+  border-radius: 9px;
+  background: var(--delivery-card-bg, #f7f9f8);
+  color: var(--delivery-text, #27342c);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.delivery_route_message {
+  margin-top: 12px;
+  color: var(--delivery-muted, #69756f);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* ==========================================
+   ORDER ITEM DETAILS
+========================================== */
+
+.delivery_order_items {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 12px;
+}
+
+.delivery_order_item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--delivery-border, #e5e9e7);
+}
+
+.delivery_order_item:last-child {
+  border-bottom: none;
+}
+
+.delivery_order_item > div {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.delivery_order_item > div > strong {
+  color: var(--delivery-text, #17231d);
+  font-size: 14px;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+
+.delivery_order_item > div > span {
+  color: var(--delivery-muted, #69756f);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.delivery_order_item > strong {
+  flex-shrink: 0;
+  color: var(--delivery-text, #17231d);
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* ==========================================
+   ORDER TOTALS
+========================================== */
+
+.delivery_details_total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--delivery-border, #e5e9e7);
+}
+
+.delivery_details_total > span {
+  color: var(--delivery-muted, #69756f);
+  font-size: 13px;
+}
+
+.delivery_details_total > strong {
+  color: var(--delivery-text, #17231d);
+  font-size: 14px;
+  font-weight: 700;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.delivery_order_items + .delivery_details_total {
+  margin-top: 4px;
+}
+
+.delivery_details_total:last-child {
+  margin-bottom: 0;
+}
+
+/* ==========================================
+   DELIVERY EARNINGS
+========================================== */
+
+.delivery_details_section:has(.delivery_customer_details)
+  .delivery_customer_details
+  > div
+  > strong {
+  font-variant-numeric: tabular-nums;
+}
+
+.delivery_details_section
+  > .delivery_customer_details
+  > div:first-child
+  > strong {
+  color: #16803d;
+}
+
+.delivery_details_section > .delivery_route_message {
+  padding: 11px 13px;
+  border-radius: 9px;
+  background: var(--delivery-card-bg, #f7f9f8);
+}
+
+/* ==========================================
+   FULLSCREEN MAP INFORMATION
+========================================== */
+
+.delivery_fullscreen_map_info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  padding: 14px 16px;
+  background: #ffffff;
+  color: #17231d;
+}
+
+.delivery_fullscreen_map_info > strong {
+  width: 100%;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.delivery_fullscreen_map_info > span {
+  color: #176b35;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.delivery_fullscreen_map > .delivery_directions_button {
+  margin: 0 16px 16px;
+}
+
+/* ==========================================
+   PAYMENT AND OTP CONTROLS
+========================================== */
+
+.delivery_details_section button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.delivery_otp_action input {
+  min-width: 0;
+  min-height: 46px;
+  padding: 12px;
+  border: 1px solid var(--delivery-border, #d8dfdb);
+  border-radius: 10px;
+  background: var(--delivery-input-bg, #ffffff);
+  color: var(--delivery-text, #17231d);
+  font-size: 16px;
+  letter-spacing: 3px;
+}
+
+.delivery_otp_action input:focus {
+  border-color: #16803d;
+  outline: 3px solid rgba(22, 128, 61, 0.12);
+}
+
+/* ==========================================
+   MOBILE RESPONSIVENESS
+========================================== */
+
+@media (max-width: 600px) {
+  .delivery_customer_details {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .delivery_customer_details > div {
+    padding: 12px;
+  }
+
+  .delivery_route_summary {
+    gap: 9px;
+  }
+
+  .delivery_route_summary > div {
+    padding: 12px;
+  }
+
+  .delivery_route_summary > div > strong {
+    font-size: 17px;
+  }
+
+  .delivery_directions_button {
+    width: 100%;
+    min-height: 46px;
+  }
+
+  .delivery_order_item {
+    gap: 10px;
+    padding: 14px 0;
+  }
+
+  .delivery_order_item > div > strong {
+    font-size: 13px;
+  }
+
+  .delivery_order_item > strong {
+    font-size: 13px;
+  }
+
+  .delivery_details_total {
+    gap: 8px;
+    padding: 11px 0;
+  }
+
+  .delivery_fullscreen_map_info {
+    gap: 8px 12px;
+  }
+
+  .delivery_otp_action {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .delivery_otp_action input,
+  .delivery_otp_action button {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .delivery_directions_button {
+    transition: none;
+  }
+}

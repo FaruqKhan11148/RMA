@@ -10,6 +10,52 @@ import {
   acknowledgeRmaCollectionPayment,
 } from '../utils/deliveryOrdersApi';
 
+function formatMoney(value) {
+  const amount = Number(value);
+  return `₹${(Number.isFinite(amount) ? amount : 0).toFixed(2)}`;
+}
+
+function formatDistance(value) {
+  const distance = Number(value);
+  return Number.isFinite(distance) ? `${distance.toFixed(2)} km` : '—';
+}
+
+function formatDuration(value) {
+  const minutes = Number(value);
+
+  if (!Number.isFinite(minutes) || minutes < 0) return '—';
+  if (minutes < 1) return 'Less than 1 min';
+
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = Math.round(minutes % 60);
+
+  if (hours === 0) return `${Math.round(minutes)} min`;
+  if (remainingMinutes === 0) return `${hours} hr`;
+
+  return `${hours} hr ${remainingMinutes} min`;
+}
+
+function getItemName(item) {
+  return item.productName || item.name || 'Product';
+}
+
+function getItemTotal(item) {
+  const explicitTotal = Number(item.total);
+
+  if (item.total != null && Number.isFinite(explicitTotal)) {
+    return explicitTotal;
+  }
+
+  const price = Number(item.price) || 0;
+  const quantity = Number(item.quantity) || 0;
+
+  return price * quantity;
+}
+
+function getPhoneHref(phone) {
+  return phone ? `tel:${String(phone).replace(/\s+/g, '')}` : undefined;
+}
+
 function DeliveryOrderDetails({
   order,
   onBack,
@@ -23,6 +69,7 @@ function DeliveryOrderDetails({
   const [routeError, setRouteError] = useState('');
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
   const [collecting, setCollecting] = useState(false);
+  const [verifyingOtp, setVerifyingOtp] = useState(false);
 
   const [rmaCollectionPayment, setRmaCollectionPayment] = useState(
     order.rmaCollectionPayment || null,
@@ -36,17 +83,57 @@ function DeliveryOrderDetails({
 
   const isCollected = order.deliveryPickupStatus === 'COLLECTED';
 
+  const owner =
+    order.ownerId && typeof order.ownerId === 'object' ? order.ownerId : null;
+
+  const shopName = owner?.shopName || 'Shop';
+  const shopOwnerName = owner?.ownerName || '';
+  const shopPhone = owner?.phone || '';
+  const shopId = owner?.shopId || '';
+
   const destination = isCollected
     ? order.deliveryLocation
     : order.pickupLocation;
 
   const destinationTitle = isCollected
-    ? 'Delivery Address'
-    : 'Pickup From Shop';
+    ? 'Customer Delivery Address'
+    : 'Shop Pickup Location';
 
   const routeTitle = isCollected ? 'Route to Customer' : 'Route to Shop';
 
-  const distance = isCollected ? order.deliveryDistance : null;
+  const hasDestinationCoordinates =
+    destination?.latitude != null &&
+    destination?.longitude != null &&
+    Number.isFinite(Number(destination.latitude)) &&
+    Number.isFinite(Number(destination.longitude));
+
+  const routeDistance = route?.distance?.kilometers;
+  const routeDuration = route?.duration?.minutes;
+
+  const recordedDeliveryDistance = Number(order.deliveryDistance);
+
+  const deliveryDistance =
+    order.deliveryDistance != null && Number.isFinite(recordedDeliveryDistance)
+      ? recordedDeliveryDistance
+      : null;
+
+  const items = Array.isArray(order.items) ? order.items : [];
+
+  const subtotal = Number(order.subtotal);
+  const deliveryCharge = Number(order.deliveryCharge);
+  const riderEarnings = Number(order.deliveryRiderAmount);
+
+  const hasSubtotal = order.subtotal != null && Number.isFinite(subtotal);
+  const hasDeliveryCharge =
+    order.deliveryCharge != null && Number.isFinite(deliveryCharge);
+  const hasRiderEarnings =
+    order.deliveryRiderAmount != null && Number.isFinite(riderEarnings);
+
+  const customerTotal = Number(
+    order.customerPayableAmount ?? order.totalPrice ?? 0,
+  );
+
+  const hasValidCustomerTotal = Number.isFinite(customerTotal);
 
   useEffect(() => {
     let cancelled = false;
@@ -56,8 +143,14 @@ function DeliveryOrderDetails({
     const loadRoute = async (showLoader = false) => {
       if (requestInProgress) return;
 
-      if (destination?.latitude == null || destination?.longitude == null) {
+      if (
+        destination?.latitude == null ||
+        destination?.longitude == null ||
+        !Number.isFinite(Number(destination.latitude)) ||
+        !Number.isFinite(Number(destination.longitude))
+      ) {
         setRouteLoading(false);
+        setRoute(null);
         setRouteError(
           isCollected
             ? 'Customer delivery location is not available for this order.'
@@ -76,7 +169,6 @@ function DeliveryOrderDetails({
         setRouteError('');
 
         const token = localStorage.getItem('delivery_token');
-
         const data = await fetchDeliveryRoute(token, order.orderId);
 
         if (!cancelled && data.route) {
@@ -223,7 +315,20 @@ function DeliveryOrderDetails({
   const handleCollectOrder = async () => {
     if (collecting) return;
 
-    if (rmaCollectionPayment?.status !== 'CONFIRMED') {
+    if (order.deliveryAssignmentStatus !== 'ACCEPTED') {
+      alert('Accept this delivery assignment before collecting the order.');
+      return;
+    }
+
+    if (order.status !== 'Ready' || isCollected) {
+      alert('This order is not currently ready for collection.');
+      return;
+    }
+
+    if (
+      order.deliveryAssignmentType === 'RMA' &&
+      rmaCollectionPayment?.status !== 'CONFIRMED'
+    ) {
       alert(
         'RMA admin must confirm the payment before you can collect this order.',
       );
@@ -247,13 +352,40 @@ function DeliveryOrderDetails({
     }
   };
 
-  const handleSubmitOtp = () => {
-    if (!otp.trim()) {
-      alert('Please enter the delivery OTP.');
+  const handleSubmitOtp = async () => {
+    const enteredOtp = otp.trim();
+
+    if (!/^\d{6}$/.test(enteredOtp)) {
+      alert('Please enter the valid 6-digit delivery OTP.');
       return;
     }
 
-    onVerifyOtp(order.orderId, otp);
+    if (verifyingOtp) return;
+
+    if (typeof onVerifyOtp !== 'function') {
+      alert('OTP verification is currently unavailable. Please try again.');
+      return;
+    }
+
+    try {
+      setVerifyingOtp(true);
+      await onVerifyOtp(order.orderId, enteredOtp);
+    } finally {
+      setVerifyingOtp(false);
+    }
+  };
+
+  const openMapDirections = () => {
+    if (!hasDestinationCoordinates) return;
+
+    const latitude = Number(destination.latitude);
+    const longitude = Number(destination.longitude);
+
+    const url = isCollected
+      ? `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}&travelmode=driving`
+      : `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}&travelmode=driving`;
+
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -261,14 +393,12 @@ function DeliveryOrderDetails({
       <div className="delivery_details_header">
         <button type="button" className="delivery_back_button" onClick={onBack}>
           <span className="delivery_back_icon">←</span>
-
           <span>Back to Orders</span>
         </button>
 
         <div className="delivery_details_header_main">
           <div className="delivery_details_heading">
             <span>DELIVERY ORDER</span>
-
             <h2>#{order.orderId}</h2>
           </div>
 
@@ -285,21 +415,63 @@ function DeliveryOrderDetails({
       </div>
 
       <section className="delivery_details_section">
-        <h3>Customer</h3>
+        <h3>Shop Details</h3>
+
+        <div className="delivery_customer_details">
+          <div>
+            <span>Shop Name</span>
+            <strong>{shopName}</strong>
+          </div>
+
+          {shopOwnerName && (
+            <div>
+              <span>Shop Owner</span>
+              <strong>{shopOwnerName}</strong>
+            </div>
+          )}
+
+          {shopId && (
+            <div>
+              <span>Shop ID</span>
+              <strong>{shopId}</strong>
+            </div>
+          )}
+
+          <div>
+            <span>Shop Phone</span>
+
+            {shopPhone ? (
+              <a href={getPhoneHref(shopPhone)}>{shopPhone}</a>
+            ) : (
+              <span>Not available</span>
+            )}
+          </div>
+        </div>
+
+        {owner?.location?.address && (
+          <p className="delivery_address">{owner.location.address}</p>
+        )}
+      </section>
+
+      <section className="delivery_details_section">
+        <h3>Customer Details</h3>
 
         <div className="delivery_customer_details">
           <div>
             <span>Name</span>
-
             <strong>{order.customer?.name || 'Customer'}</strong>
           </div>
 
           <div>
             <span>Phone</span>
 
-            <a href={`tel:${order.customer?.phone}`}>
-              {order.customer?.phone || 'Not available'}
-            </a>
+            {order.customer?.phone ? (
+              <a href={getPhoneHref(order.customer.phone)}>
+                {order.customer.phone}
+              </a>
+            ) : (
+              <span>Not available</span>
+            )}
           </div>
         </div>
       </section>
@@ -310,12 +482,22 @@ function DeliveryOrderDetails({
         <p className="delivery_address">
           {destination?.address || 'Address not available'}
         </p>
+
+        {hasDestinationCoordinates && (
+          <button
+            type="button"
+            className="delivery_directions_button"
+            onClick={openMapDirections}
+          >
+            Navigate with Google Maps
+          </button>
+        )}
       </section>
 
       <section className="delivery_details_section">
         <h3>{routeTitle}</h3>
 
-        {!destination?.latitude || !destination?.longitude ? (
+        {!hasDestinationCoordinates ? (
           <div className="delivery_route_error">
             {isCollected
               ? 'Customer delivery location is not available for this order.'
@@ -323,7 +505,7 @@ function DeliveryOrderDetails({
           </div>
         ) : routeLoading ? (
           <div className="delivery_route_message">Loading route...</div>
-        ) : routeError ? (
+        ) : routeError && !route ? (
           <div className="delivery_route_error">{routeError}</div>
         ) : (
           <>
@@ -334,13 +516,14 @@ function DeliveryOrderDetails({
               tabIndex={0}
               onKeyDown={(event) => {
                 if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
                   setIsMapFullscreen(true);
                 }
               }}
             >
               <OrderLocationMap
-                latitude={destination.latitude}
-                longitude={destination.longitude}
+                latitude={Number(destination.latitude)}
+                longitude={Number(destination.longitude)}
                 route={route}
                 currentLocation={currentLocation}
               />
@@ -350,16 +533,34 @@ function DeliveryOrderDetails({
               </div>
             </div>
 
-            {distance && (
+            <div className="delivery_route_summary">
+              <div>
+                <span>Route Distance</span>
+                <strong>{formatDistance(routeDistance)}</strong>
+              </div>
+
+              <div>
+                <span>Estimated Travel Time</span>
+                <strong>{formatDuration(routeDuration)}</strong>
+              </div>
+            </div>
+
+            {routeError && (
+              <p className="delivery_route_error" role="status">
+                Could not refresh the route: {routeError}
+              </p>
+            )}
+
+            {isCollected && deliveryDistance != null && (
               <div className="delivery_distance">
-                Distance: {Number(distance).toFixed(2)} km
+                Recorded Delivery Distance: {formatDistance(deliveryDistance)}
               </div>
             )}
           </>
         )}
       </section>
 
-      {isMapFullscreen && (
+      {isMapFullscreen && hasDestinationCoordinates && (
         <div className="delivery_fullscreen_map">
           <button
             type="button"
@@ -371,8 +572,8 @@ function DeliveryOrderDetails({
           </button>
 
           <OrderLocationMap
-            latitude={destination.latitude}
-            longitude={destination.longitude}
+            latitude={Number(destination.latitude)}
+            longitude={Number(destination.longitude)}
             route={route}
             currentLocation={currentLocation}
             fullscreen
@@ -380,42 +581,100 @@ function DeliveryOrderDetails({
 
           <div className="delivery_fullscreen_map_info">
             <strong>{routeTitle}</strong>
-
-            {distance && <span>{Number(distance).toFixed(2)} km</span>}
+            <span>{formatDistance(routeDistance)}</span>
+            <span>{formatDuration(routeDuration)}</span>
           </div>
+
+          <button
+            type="button"
+            className="delivery_directions_button"
+            onClick={openMapDirections}
+          >
+            Navigate with Google Maps
+          </button>
         </div>
       )}
 
       <section className="delivery_details_section">
-        <h3>Order Items</h3>
+        <h3>Order Items ({items.length})</h3>
 
-        <div className="delivery_order_items">
-          {order.items?.map((item, index) => (
-            <div
-              className="delivery_order_item"
-              key={`${item.productId || item.name}-${index}`}
-            >
-              <div>
-                <strong>{item.name || item.productName}</strong>
+        {items.length === 0 ? (
+          <p>No item details are available for this order.</p>
+        ) : (
+          <div className="delivery_order_items">
+            {items.map((item, index) => (
+              <div
+                className="delivery_order_item"
+                key={`${item.productId || item.catalogueProductId || getItemName(item)}-${index}`}
+              >
+                <div>
+                  <strong>{getItemName(item)}</strong>
 
-                <span>Qty: {item.quantity}</span>
+                  <span>
+                    Qty: {Number(item.quantity) || 0}
+                    {item.unit ? ` ${item.unit}` : ''}
+                  </span>
+
+                  {item.price != null && (
+                    <span>Unit Price: {formatMoney(item.price)}</span>
+                  )}
+                </div>
+
+                <strong>{formatMoney(getItemTotal(item))}</strong>
               </div>
-
-              <strong>
-                ₹
-                {Number(
-                  item.total || item.price * item.quantity || item.price || 0,
-                ).toFixed(2)}
-              </strong>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         <div className="delivery_details_total">
-          <span>Total</span>
-
-          <strong>₹{Number(order.totalPrice || 0).toFixed(2)}</strong>
+          <span>Item Subtotal</span>
+          <strong>
+            {hasSubtotal
+              ? formatMoney(subtotal)
+              : formatMoney(
+                  items.reduce((sum, item) => sum + getItemTotal(item), 0),
+                )}
+          </strong>
         </div>
+
+        {hasDeliveryCharge && (
+          <div className="delivery_details_total">
+            <span>Delivery Charge</span>
+            <strong>{formatMoney(deliveryCharge)}</strong>
+          </div>
+        )}
+
+        {hasValidCustomerTotal && (
+          <div className="delivery_details_total">
+            <span>Customer Total</span>
+            <strong>{formatMoney(customerTotal)}</strong>
+          </div>
+        )}
+      </section>
+
+      <section className="delivery_details_section">
+        <h3>Delivery Earnings</h3>
+
+        <div className="delivery_customer_details">
+          <div>
+            <span>Delivery Partner Earnings</span>
+            <strong>
+              {hasRiderEarnings ? formatMoney(riderEarnings) : 'Not available'}
+            </strong>
+          </div>
+
+          {hasDeliveryCharge && (
+            <div>
+              <span>Customer Delivery Charge</span>
+              <strong>{formatMoney(deliveryCharge)}</strong>
+            </div>
+          )}
+        </div>
+
+        <p className="delivery_route_message">
+          Earnings shown here are the amounts recorded on this order. They may
+          differ from the customer delivery charge.
+        </p>
       </section>
 
       {!isCollected &&
@@ -428,9 +687,7 @@ function DeliveryOrderDetails({
 
             <p className="delivery_charge_amount">
               Owner must pay RMA:{' '}
-              <strong>
-                ₹{Number(rmaCollectionPayment?.amount ?? 0).toFixed(2)}
-              </strong>
+              <strong>{formatMoney(rmaCollectionPayment?.amount ?? 0)}</strong>
             </p>
 
             {paymentLoading ? (
@@ -550,12 +807,15 @@ function DeliveryOrderDetails({
                 className="delivery_collect_button"
                 onClick={handleCollectOrder}
                 disabled={
-                  collecting || rmaCollectionPayment?.status !== 'CONFIRMED'
+                  collecting ||
+                  (order.deliveryAssignmentType === 'RMA' &&
+                    rmaCollectionPayment?.status !== 'CONFIRMED')
                 }
               >
                 {collecting
                   ? 'Collecting...'
-                  : rmaCollectionPayment?.status === 'CONFIRMED'
+                  : order.deliveryAssignmentType !== 'RMA' ||
+                      rmaCollectionPayment?.status === 'CONFIRMED'
                     ? "I've Collected"
                     : 'Waiting for RMA Payment'}
               </button>
@@ -575,14 +835,23 @@ function DeliveryOrderDetails({
           <div className="delivery_otp_action">
             <input
               type="text"
+              inputMode="numeric"
+              autoComplete="one-time-code"
               value={otp}
-              onChange={(event) => setOtp(event.target.value)}
-              placeholder="Enter OTP"
+              onChange={(event) =>
+                setOtp(event.target.value.replace(/\D/g, '').slice(0, 6))
+              }
+              placeholder="Enter 6-digit OTP"
               maxLength={6}
+              aria-label="Customer delivery OTP"
             />
 
-            <button type="button" onClick={handleSubmitOtp}>
-              Verify & Deliver
+            <button
+              type="button"
+              onClick={handleSubmitOtp}
+              disabled={verifyingOtp || !/^\d{6}$/.test(otp.trim())}
+            >
+              {verifyingOtp ? 'Verifying...' : 'Verify & Deliver'}
             </button>
           </div>
         </section>
