@@ -5,10 +5,6 @@ function OwnerStep2Form({
   setAddress,
   description,
   setDescription,
-  delivery,
-  setDelivery,
-  pickup,
-  setPickup,
   error,
   handleContinue,
   handleBack,
@@ -55,25 +51,12 @@ function OwnerStep2Form({
           <h2>Order Options</h2>
 
           <p className="section_description">
-            Select how customers can receive their orders.
+            Orders are delivered directly to customers.
           </p>
 
           <label className="checkbox_label">
-            <input
-              type="checkbox"
-              checked={delivery}
-              onChange={(e) => setDelivery(e.target.checked)}
-            />
+            <input type="checkbox" checked readOnly />
             Delivery Available
-          </label>
-
-          <label className="checkbox_label">
-            <input
-              type="checkbox"
-              checked={pickup}
-              onChange={(e) => setPickup(e.target.checked)}
-            />
-            Pickup Available
           </label>
         </section>
 
@@ -97,7 +80,9 @@ function OwnerStep2Form({
       <div className="owner_step_footer">
         <p>Already have a shop?</p>
 
-        <button onClick={() => navigate('/owner/login')}>Back to Login</button>
+        <button type="button" onClick={() => navigate('/owner/login')}>
+          Back to Login
+        </button>
       </div>
     </>
   );

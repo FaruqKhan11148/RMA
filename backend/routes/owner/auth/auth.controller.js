@@ -22,10 +22,7 @@ async function registerOwner(req, res) {
       products,
       location,
       referralCode,
-      bankHolderName,
-      bankAccountNumber,
-      ifscCode,
-      bankName,
+      upiAccountHolderName,
       upiMobileNumber,
       upiId,
       termsAccepted,
@@ -47,37 +44,28 @@ async function registerOwner(req, res) {
       });
     }
 
+    const normalizedUpiAccountHolderName =
+      typeof upiAccountHolderName === 'string'
+        ? upiAccountHolderName.trim().replace(/\s+/g, ' ')
+        : '';
+
     const normalizedUpiId =
       typeof upiId === 'string' ? upiId.trim().toLowerCase() : '';
-
-    const normalizedBankName =
-      typeof bankName === 'string' ? bankName.trim() : '';
 
     const normalizedUpiMobileNumber =
       typeof upiMobileNumber === 'string'
         ? upiMobileNumber.replace(/\D/g, '')
         : '';
 
-    const normalizedBankHolderName =
-      typeof bankHolderName === 'string' ? bankHolderName.trim() : '';
-
-    const normalizedBankAccountNumber =
-      typeof bankAccountNumber === 'string' ? bankAccountNumber.trim() : '';
-
-    const normalizedIfscCode =
-      typeof ifscCode === 'string' ? ifscCode.trim().toUpperCase() : '';
-
     const upiRegex = /^[a-zA-Z0-9._-]{2,256}@[a-zA-Z0-9.-]{2,64}$/;
 
-    if (normalizedUpiId && !upiRegex.test(normalizedUpiId)) {
+    if (
+      !normalizedUpiAccountHolderName ||
+      normalizedUpiAccountHolderName.length > 100
+    ) {
       return res.status(400).json({
-        message: 'Please enter a valid UPI ID',
-      });
-    }
-
-    if (!normalizedBankName) {
-      return res.status(400).json({
-        message: 'Bank name is required',
+        message:
+          'Enter a valid UPI account holder name (maximum 100 characters)',
       });
     }
 
@@ -87,21 +75,9 @@ async function registerOwner(req, res) {
       });
     }
 
-    if (!normalizedBankHolderName) {
+    if (!upiRegex.test(normalizedUpiId)) {
       return res.status(400).json({
-        message: 'Account holder name is required',
-      });
-    }
-
-    if (!/^\d{9,18}$/.test(normalizedBankAccountNumber)) {
-      return res.status(400).json({
-        message: 'Enter a valid bank account number',
-      });
-    }
-
-    if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(normalizedIfscCode)) {
-      return res.status(400).json({
-        message: 'Enter a valid IFSC code',
+        message: 'Please enter a valid UPI ID',
       });
     }
 
@@ -144,7 +120,7 @@ async function registerOwner(req, res) {
     }
 
     // Check products
-    if (!products || products.length === 0) {
+    if (!Array.isArray(products) || products.length === 0) {
       return res.status(400).json({
         message: 'Please add at least one product',
       });
@@ -209,13 +185,9 @@ async function registerOwner(req, res) {
       payment: {
         provider: 'DIRECT_UPI',
 
-        bankName: normalizedBankName,
+        upiAccountHolderName: normalizedUpiAccountHolderName,
         upiMobileNumber: normalizedUpiMobileNumber,
         upiId: normalizedUpiId,
-
-        bankHolderName: normalizedBankHolderName,
-        bankAccountNumber: normalizedBankAccountNumber,
-        ifscCode: normalizedIfscCode,
 
         rmaApprovalStatus: 'PENDING',
         onboardingStatus: 'NOT_STARTED',

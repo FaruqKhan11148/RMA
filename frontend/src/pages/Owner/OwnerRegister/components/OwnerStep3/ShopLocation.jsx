@@ -42,7 +42,11 @@ function ShopLocation({ shopLocation, setShopLocation }) {
             {Number(shopLocation.longitude).toFixed(6)}
           </small>
 
-          <button type="button" onClick={handleChangeLocation}>
+          <button
+            className="changeLocationBtn"
+            type="button"
+            onClick={handleChangeLocation}
+          >
             Change Location
           </button>
         </div>

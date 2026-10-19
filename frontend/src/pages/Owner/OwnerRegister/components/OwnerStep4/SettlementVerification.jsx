@@ -1,18 +1,18 @@
 function SettlementVerification() {
   return (
     <section className="settlement_section">
-      <h2>Settlement Verification</h2>
+      <h2>UPI Payment Verification</h2>
 
       <div className="settlement_steps">
         <div className="settlement_step">
           <span>1</span>
 
           <div>
-            <strong>Submit Bank Details</strong>
+            <strong>Submit UPI Details</strong>
 
             <p>
-              Your bank account details will be submitted with your shop
-              registration.
+              Provide your UPI ID, UPI-linked mobile number, and account holder
+              name during shop registration.
             </p>
           </div>
         </div>
@@ -24,8 +24,8 @@ function SettlementVerification() {
             <strong>RMA Verification</strong>
 
             <p>
-              An RMA administrator will review and approve your settlement
-              account.
+              An RMA administrator will review your submitted shop and UPI
+              details before approval.
             </p>
           </div>
         </div>
@@ -34,11 +34,12 @@ function SettlementVerification() {
           <span>3</span>
 
           <div>
-            <strong>PayU Onboarding</strong>
+            <strong>UPI Details Confirmation</strong>
 
             <p>
-              PayU child-merchant onboarding will be connected when the required
-              PayU access is enabled.
+              Ensure your UPI ID and account details are accurate. RMA may
+              require additional verification before enabling payments or
+              settlements.
             </p>
           </div>
         </div>
@@ -47,11 +48,12 @@ function SettlementVerification() {
           <span>4</span>
 
           <div>
-            <strong>Receive Settlements</strong>
+            <strong>Settlement Activation</strong>
 
             <p>
-              Once the settlement account is activated, future eligible
-              settlements can be processed.
+              Once the required verification and payment setup are complete,
+              eligible settlements can be enabled according to RMA's payment
+              process.
             </p>
           </div>
         </div>

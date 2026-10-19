@@ -15,7 +15,7 @@ function OwnerStep2() {
   const [description, setDescription] = useState('');
 
   const [delivery, setDelivery] = useState(true);
-  const [pickup, setPickup] = useState(true);
+  const [pickup, setPickup] = useState(false);
 
   const [error, setError] = useState('');
 
@@ -24,10 +24,10 @@ function OwnerStep2() {
 
     setError('');
 
-    if (!delivery && !pickup) {
-      setError('Please select at least one order type.');
-      return;
-    }
+    // if (!delivery && !pickup) {
+    //   setError('Please select at least one order type.');
+    //   return;
+    // }
 
     // Get Step 1 data
     const savedData = sessionStorage.getItem('rma_owner_registration');
@@ -45,8 +45,8 @@ function OwnerStep2() {
       shopName,
       address,
       description,
-      delivery,
-      pickup,
+      delivery: true,
+      pickup: false,
     };
 
     // Save everything again

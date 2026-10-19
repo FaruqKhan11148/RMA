@@ -163,27 +163,55 @@ function OwnerOrderCard({
       </div>
 
       {/* ORDER ITEMS */}
-
       <div className="owner_order_items_preview">
-        <strong>Order items</strong>
+        <strong className="owner_order_items_heading">Order items</strong>
 
-        {order.items?.map((item, index) => (
-          <div
-            className="owner_order_item_preview"
-            key={`${item.productId || item.productName}-${index}`}
-          >
-            <span>
-              {item.productName} × {item.quantity} {item.unit || ''}
-            </span>
+        {order.items?.map((item, index) => {
+          const itemImage =
+            item.imageUrl || item.productImage || item.image || '';
 
-            <strong>
-              ₹
-              {(Number(item.price || 0) * Number(item.quantity || 0)).toFixed(
-                2,
-              )}
-            </strong>
-          </div>
-        ))}
+          return (
+            <div
+              className="owner_order_item_preview"
+              key={`${item.productId || item.productName}-${index}`}
+            >
+              <div className="owner_order_item_image_wrapper">
+                {itemImage ? (
+                  <img
+                    className="owner_order_item_image"
+                    src={itemImage}
+                    alt={item.productName || 'Ordered product'}
+                    loading="lazy"
+                  />
+                ) : (
+                  <div
+                    className="owner_order_item_image_placeholder"
+                    aria-label="Product image unavailable"
+                  >
+                    No image
+                  </div>
+                )}
+              </div>
+
+              <div className="owner_order_item_details">
+                <span className="owner_order_item_name">
+                  {item.productName}
+                </span>
+
+                <span className="owner_order_item_quantity">
+                  Qty: {item.quantity} {item.unit || ''}
+                </span>
+              </div>
+
+              <strong className="owner_order_item_price">
+                ₹
+                {(Number(item.price || 0) * Number(item.quantity || 0)).toFixed(
+                  2,
+                )}
+              </strong>
+            </div>
+          );
+        })}
       </div>
 
       {/* ORDER META */}

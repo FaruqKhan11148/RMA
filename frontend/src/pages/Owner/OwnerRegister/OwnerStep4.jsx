@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import OwnerStep4Header from './components/OwnerStep4/OwnerStep4Header';
 import OwnerStep4Progress from './components/OwnerStep4/OwnerStep4Progress';
 import PaymentSetup from './components/OwnerStep4/PaymentSetup';
-import BankDetails from './components/OwnerStep4/BankDetails';
 import SecuritySection from './components/OwnerStep4/SecuritySection';
 import SettlementVerification from './components/OwnerStep4/SettlementVerification';
 import OwnerStep4Actions from './components/OwnerStep4/OwnerStep4Actions';
@@ -19,35 +18,28 @@ function OwnerStep4() {
   const navigate = useNavigate();
 
   const savedOwnerData = sessionStorage.getItem('rma_owner_registration');
-
   const ownerData = savedOwnerData ? JSON.parse(savedOwnerData) : null;
 
-  const [bankHolderName, setBankHolderName] = useState('');
-  const [bankAccountNumber, setBankAccountNumber] = useState('');
-  const [confirmAccountNumber, setConfirmAccountNumber] = useState('');
-  const [ifscCode, setIfscCode] = useState('');
+  const [upiAccountHolderName, setUpiAccountHolderName] = useState('');
+  const [upiMobileNumber, setUpiMobileNumber] = useState('');
+  const [upiId, setUpiId] = useState('');
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
   const [ownerTermsAccepted, setOwnerTermsAccepted] = useState(
     sessionStorage.getItem('rma_owner_terms_accepted') === 'true' &&
       sessionStorage.getItem('rma_owner_terms_version') === 'owner-terms-v1',
   );
 
   const [showTermsModal, setShowTermsModal] = useState(false);
-
   const [flashMessage, setFlashMessage] = useState('');
-
-  const [bankName, setBankName] = useState('');
-  const [upiMobileNumber, setUpiMobileNumber] = useState('');
-  const [upiId, setUpiId] = useState('');
 
   if (!ownerData) {
     return (
       <main className="owner_step4">
         <section className="owner_step4_card">
           <h1>Registration information not found</h1>
-
           <p>Please start the shop registration again.</p>
 
           <button
@@ -73,64 +65,32 @@ function OwnerStep4() {
       setLoading(true);
       setError('');
 
-      const trimmedHolderName = bankHolderName.trim();
-      const trimmedAccountNumber = bankAccountNumber.trim();
-      const trimmedConfirmAccountNumber = confirmAccountNumber.trim();
-      const normalizedIfsc = ifscCode.trim().toUpperCase();
-
-      // ========================================
-      // VALIDATION
-      // ========================================
-
-      if (!trimmedHolderName) {
-        throw new Error('Account holder name is required');
-      }
-
-      if (!/^\d{9,18}$/.test(trimmedAccountNumber)) {
-        throw new Error('Enter a valid bank account number');
-      }
-
-      if (trimmedAccountNumber !== trimmedConfirmAccountNumber) {
-        throw new Error('Bank account numbers do not match');
-      }
-
-      if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(normalizedIfsc)) {
-        throw new Error('Enter a valid IFSC code');
-      }
-
-      if (!bankName.trim()) {
-        throw new Error('Bank name is required');
-      }
+      const normalizedUpiAccountHolderName = upiAccountHolderName
+        .trim()
+        .replace(/\s+/g, ' ');
 
       const normalizedUpiMobile = upiMobileNumber.replace(/\D/g, '');
+      const normalizedUpiId = upiId.trim().toLowerCase();
+
+      if (!normalizedUpiAccountHolderName) {
+        throw new Error('UPI account holder name is required');
+      }
 
       if (!/^\d{10}$/.test(normalizedUpiMobile)) {
         throw new Error('Enter a valid 10-digit UPI-linked mobile number');
       }
 
-      const normalizedUpiId = upiId.trim().toLowerCase();
-
-      if (
-        normalizedUpiId &&
-        !/^[a-z0-9._-]{2,256}@[a-z0-9.-]{2,64}$/.test(normalizedUpiId)
-      ) {
+      if (!/^[a-z0-9._-]{2,256}@[a-z0-9.-]{2,64}$/.test(normalizedUpiId)) {
         throw new Error('Please enter a valid UPI ID');
       }
-
-      // ========================================
-      // FINAL OWNER DATA
-      // ========================================
 
       const finalOwnerData = {
         ...ownerData,
 
-        bankHolderName: trimmedHolderName,
-        bankAccountNumber: trimmedAccountNumber,
-        ifscCode: normalizedIfsc,
-
-        bankName: bankName.trim(),
-        upiMobileNumber: upiMobileNumber.replace(/\D/g, ''),
-        upiId: upiId.trim().toLowerCase(),
+        // UPI settlement details
+        upiAccountHolderName: normalizedUpiAccountHolderName,
+        upiMobileNumber: normalizedUpiMobile,
+        upiId: normalizedUpiId,
 
         // Shop owner agreement acceptance
         termsAccepted: true,
@@ -141,7 +101,6 @@ function OwnerStep4() {
 
       console.log('Owner registered successfully:', data);
 
-      // Registration is complete
       sessionStorage.removeItem('rma_owner_registration');
       sessionStorage.removeItem('rma_owner_terms_accepted');
       sessionStorage.removeItem('rma_owner_terms_version');
@@ -154,7 +113,6 @@ function OwnerStep4() {
       });
     } catch (error) {
       console.error('Owner registration failed:', error);
-
       setError(error.message || 'Unable to complete registration.');
     } finally {
       setLoading(false);
@@ -179,22 +137,68 @@ function OwnerStep4() {
 
         <PaymentSetup />
 
-        <BankDetails
-          bankHolderName={bankHolderName}
-          setBankHolderName={setBankHolderName}
-          bankAccountNumber={bankAccountNumber}
-          setBankAccountNumber={setBankAccountNumber}
-          confirmAccountNumber={confirmAccountNumber}
-          setConfirmAccountNumber={setConfirmAccountNumber}
-          ifscCode={ifscCode}
-          setIfscCode={setIfscCode}
-          bankName={bankName}
-          setBankName={setBankName}
-          upiMobileNumber={upiMobileNumber}
-          setUpiMobileNumber={setUpiMobileNumber}
-          upiId={upiId}
-          setUpiId={setUpiId}
-        />
+        <section className="owner_upi_setup">
+          <h2>UPI Settlement Details</h2>
+
+          <p>
+            Enter the UPI details for the account where you want to receive your
+            shop settlements. Make sure the account holder name matches the name
+            registered with your UPI account.
+          </p>
+
+          <div className="owner_upi_field">
+            <label htmlFor="upiAccountHolderName">
+              UPI Account Holder Name
+            </label>
+
+            <input
+              id="upiAccountHolderName"
+              type="text"
+              autoComplete="name"
+              placeholder="Enter the exact name linked to your UPI"
+              value={upiAccountHolderName}
+              onChange={(event) => setUpiAccountHolderName(event.target.value)}
+              disabled={loading}
+              required
+            />
+          </div>
+
+          <div className="owner_upi_field">
+            <label htmlFor="upiMobileNumber">UPI-Linked Mobile Number</label>
+
+            <input
+              id="upiMobileNumber"
+              type="tel"
+              inputMode="numeric"
+              autoComplete="tel-national"
+              maxLength={10}
+              placeholder="Enter 10-digit mobile number"
+              value={upiMobileNumber}
+              onChange={(event) =>
+                setUpiMobileNumber(
+                  event.target.value.replace(/\D/g, '').slice(0, 10),
+                )
+              }
+              disabled={loading}
+              required
+            />
+          </div>
+
+          <div className="owner_upi_field">
+            <label htmlFor="upiId">UPI ID</label>
+
+            <input
+              id="upiId"
+              type="text"
+              autoComplete="off"
+              placeholder="example@upi"
+              value={upiId}
+              onChange={(event) => setUpiId(event.target.value)}
+              disabled={loading}
+              required
+            />
+          </div>
+        </section>
 
         <SecuritySection />
 

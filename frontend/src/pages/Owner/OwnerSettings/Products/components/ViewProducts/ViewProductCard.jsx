@@ -1,3 +1,5 @@
+import { optimizeCloudinaryImage } from '../../../../../../utils/optimizeCloudinaryImage';
+
 function ViewProductCard({
   product,
   navigate,
@@ -14,9 +16,10 @@ function ViewProductCard({
       <div className="product-image-wrapper">
         {product.imageUrl ? (
           <img
-            src={product.imageUrl}
+            src={optimizeCloudinaryImage(product.imageUrl)}
             alt={product.name}
             className="product-image"
+            loading="lazy"
           />
         ) : (
           <div className="product-image-placeholder">
@@ -48,7 +51,6 @@ function ViewProductCard({
         <div className="product-card-top">
           <div>
             <span className="product-category">{product.category}</span>
-
             <h3>{product.name}</h3>
           </div>
 

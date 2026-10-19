@@ -86,14 +86,6 @@ const ownerSchema = new mongoose.Schema(
       trim: true,
     },
 
-    // OWNER DETAILS
-
-    ownerName: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
     authVersion: {
       type: Number,
       default: 0,
@@ -197,6 +189,13 @@ const ownerSchema = new mongoose.Schema(
         type: String,
         enum: ['PAYU', 'CASHFREE', 'DIRECT_UPI'],
         default: 'PAYU',
+      },
+
+      upiAccountHolderName: {
+        type: String,
+        default: '',
+        trim: true,
+        maxlength: 100,
       },
 
       upiId: {
