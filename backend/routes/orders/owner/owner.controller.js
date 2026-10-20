@@ -125,9 +125,17 @@ async function getOwnerEarnings(req, res) {
     const orders = await Order.find({
       ownerId: owner._id,
       paymentStatus: 'Paid',
-      settlementStatus: {
-        $in: ['Pending', 'Processing', 'Settled'],
-      },
+      $or: [
+        {
+          settlementStatus: {
+            $in: ['Pending', 'Processing', 'Settled'],
+          },
+        },
+        {
+          paymentProvider: 'DIRECT_UPI',
+          ownerPaymentConfirmation: 'CONFIRMED',
+        },
+      ],
     }).sort({ createdAt: -1 });
 
     let totalSettledEarnings = 0;

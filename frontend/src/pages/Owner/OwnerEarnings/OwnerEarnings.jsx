@@ -56,7 +56,7 @@ function OwnerEarnings() {
           settledOrders: Number(data.earnings?.settledOrders || 0),
           recentEarnings: data.recentEarnings || [],
         });
-      } catch (error) {
+      } catch (error) { 
         console.error('Fetch owner earnings failed:', error);
         setError(error.message || 'Failed to load earnings');
       } finally {
