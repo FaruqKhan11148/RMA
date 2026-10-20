@@ -1,7 +1,6 @@
 const Owner = require('../../../models/Owner');
 const Order = require('../../../models/Order');
 const TestBankAccount = require('../../../models/TestBankAccount');
-
 // ============================================================
 // START PAYU ONBOARDING
 // TEST / DUMMY MODE
@@ -524,59 +523,133 @@ const getPendingRegistrations = async (req, res) => {
 };
 
 // APPROVE SHOP REGISTRATION
+// APPROVE SHOP REGISTRATION AND CREATE TESTBANK OWNER ACCOUNT
 const approveOwnerRegistration = async (req, res) => {
+  const session = await mongoose.startSession();
+
   try {
     const { ownerId } = req.params;
+    let result;
 
-    const owner = await Owner.findById(ownerId);
+    await session.withTransaction(async () => {
+      const owner = await Owner.findById(ownerId).session(session);
 
-    if (!owner) {
-      return res.status(404).json({
-        message: 'Owner not found',
-      });
-    }
+      if (!owner) {
+        const error = new Error('Owner not found');
+        error.statusCode = 404;
+        throw error;
+      }
 
-    if (owner.payment?.rmaApprovalStatus === 'APPROVED') {
-      return res.status(409).json({
-        message: 'Shop registration is already approved',
-      });
-    }
+      if (!owner.payment) {
+        const error = new Error(
+          'Owner payment registration details are missing',
+        );
+        error.statusCode = 400;
+        throw error;
+      }
 
-    if (owner.payment?.rmaApprovalStatus === 'REJECTED') {
-      return res.status(409).json({
-        message:
+      if (owner.payment.rmaApprovalStatus === 'REJECTED') {
+        const error = new Error(
           'This registration was rejected. Review and reinstate it explicitly before approval.',
-      });
-    }
+        );
+        error.statusCode = 409;
+        throw error;
+      }
 
-    if (!owner.payment) {
-      return res.status(400).json({
-        message: 'Owner payment registration details are missing',
-      });
-    }
+      if (!owner.shopId) {
+        const error = new Error(
+          'Cannot create TestBank account because the shop ID is missing.',
+        );
+        error.statusCode = 400;
+        throw error;
+      }
 
-    owner.payment.rmaApprovalStatus = 'APPROVED';
-    owner.payment.rmaApprovedAt = new Date();
-    owner.payment.rmaRejectedAt = null;
+      // Find an existing account first to avoid duplicate creation.
+      let testBankAccount = await TestBankAccount.findOne({
+        ownerId: owner._id,
+        accountType: 'OWNER',
+      }).session(session);
 
-    await owner.save();
+      if (!testBankAccount) {
+        const accountNumber = `RMA-OWNER-${owner.shopId}`;
+
+        // Avoid conflicting with an account number already in use.
+        const accountNumberExists = await TestBankAccount.findOne({
+          accountNumber,
+        }).session(session);
+
+        if (accountNumberExists) {
+          const error = new Error(
+            'This TestBank account number already belongs to another account. Please investigate before approving.',
+          );
+          error.statusCode = 409;
+          throw error;
+        }
+
+        [testBankAccount] = await TestBankAccount.create(
+          [
+            {
+              accountNumber,
+              accountName: owner.shopName || 'RMA Shop Owner',
+              accountType: 'OWNER',
+              ownerId: owner._id,
+              balance: 0,
+              availableBalance: 0,
+              heldBalance: 0,
+              currency: 'INR',
+              status: 'ACTIVE',
+            },
+          ],
+          { session },
+        );
+      }
+
+      const alreadyApproved = owner.payment.rmaApprovalStatus === 'APPROVED';
+
+      if (!alreadyApproved) {
+        owner.payment.rmaApprovalStatus = 'APPROVED';
+        owner.payment.rmaApprovedAt = new Date();
+        owner.payment.rmaRejectedAt = null;
+
+        await owner.save({ session });
+      }
+
+      result = {
+        registration: {
+          ownerId: owner._id,
+          shopId: owner.shopId,
+          shopName: owner.shopName,
+          rmaApprovalStatus: owner.payment.rmaApprovalStatus,
+          rmaApprovedAt: owner.payment.rmaApprovedAt,
+        },
+        testBankAccount: {
+          id: testBankAccount._id,
+          accountNumber: testBankAccount.accountNumber,
+          accountName: testBankAccount.accountName,
+          accountType: testBankAccount.accountType,
+          balance: testBankAccount.balance,
+          availableBalance: testBankAccount.availableBalance,
+          heldBalance: testBankAccount.heldBalance,
+          status: testBankAccount.status,
+        },
+      };
+    });
 
     return res.status(200).json({
-      message: 'Shop registration approved successfully',
-      registration: {
-        ownerId: owner._id,
-        shopId: owner.shopId,
-        shopName: owner.shopName,
-        rmaApprovalStatus: owner.payment.rmaApprovalStatus,
-        rmaApprovedAt: owner.payment.rmaApprovedAt,
-      },
+      message:
+        'Shop registration approved and TestBank owner account verified successfully.',
+      ...result,
     });
   } catch (error) {
     console.error('Shop registration approval failed:', error);
 
-    return res.status(500).json({
-      message: 'Failed to approve shop registration',
+    return res.status(error.statusCode || 500).json({
+      message: error.statusCode
+        ? error.message
+        : 'Failed to approve shop registration and create TestBank account.',
     });
+  } finally {
+    await session.endSession();
   }
 };
 
