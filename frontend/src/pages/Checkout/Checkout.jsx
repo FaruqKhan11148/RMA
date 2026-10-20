@@ -70,12 +70,13 @@ function Checkout() {
   const [showPaymentOverlay, setShowPaymentOverlay] = useState(false);
   const paymentSuccessHandled = useRef(false);
 
-  const [payuPricing, setPayuPricing] = useState({
-    baseAmount: 0,
-    payuFee: 0,
-    payuGst: 0,
-    customerPayableAmount: 0,
-  });
+  // const [payuPricing, setPayuPricing] = useState({
+  //   baseAmount: 0,
+  //   payuFee: 0,
+  //   payuGst: 0,
+  //   payuCharges: 0,
+  //   customerPayableAmount: 0,
+  // });
 
   const qrRef = useRef(null);
 
@@ -231,11 +232,11 @@ function Checkout() {
     calculateDeliveryCharge();
   }, [deliveryLocation, orderType, cartItems]);
 
-  useEffect(() => {
-    const pricing = calculatePayuPricing(totalPrice, deliveryCharge);
+  // useEffect(() => {
+  //   const pricing = calculatePayuPricing(totalPrice, deliveryCharge);
 
-    setPayuPricing(pricing);
-  }, [totalPrice, deliveryCharge]);
+  //   setPayuPricing(pricing);
+  // }, [totalPrice, deliveryCharge]);
 
   useEffect(() => {
     if (!location.state?.openLocationSheet) {
