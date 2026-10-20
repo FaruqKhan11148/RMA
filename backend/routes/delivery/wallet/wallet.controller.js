@@ -72,16 +72,32 @@ async function getDeliveryWallet(req, res) {
       }
     }
 
-    const walletBalance = Math.max(0, availableGross - processingAmount);
+    const dpAccount = await TestBankAccount.findOne({
+      deliveryPersonId: deliveryPerson._id,
+      accountType: 'DELIVERY_PARTNER',
+      status: 'ACTIVE',
+    });
+
+    if (!dpAccount) {
+      return res.status(404).json({
+        message: 'Active delivery partner Test Bank account not found',
+      });
+    }
+
+    const availableAmount = Number(
+      Number(dpAccount.availableBalance || 0).toFixed(2),
+    );
+
+    const walletBalance = availableAmount;
 
     return res.status(200).json({
       wallet: {
         totalEarned: Number(totalEarned.toFixed(2)),
         pendingAmount: Number(Math.max(0, pendingAmount).toFixed(2)),
-        availableAmount: Number(Math.max(0, availableGross).toFixed(2)),
+        availableAmount,
         processingAmount: Number(processingAmount.toFixed(2)),
         withdrawnAmount: Number(withdrawnAmount.toFixed(2)),
-        walletBalance: Number(walletBalance.toFixed(2)),
+        walletBalance,
       },
     });
   } catch (error) {
@@ -92,6 +108,7 @@ async function getDeliveryWallet(req, res) {
     });
   }
 }
+
 async function requestWithdrawal(req, res) {
   const deliveryPerson = req.deliveryPerson;
   const amount = Number(req.body.amount);

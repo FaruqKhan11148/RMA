@@ -573,7 +573,6 @@ const assignRmaDeliveryPartner = async (req, res) => {
     });
   }
 };
-
 // ============================================================
 // CONFIRM RMA COLLECTION PAYMENT (ADMIN ONLY)
 // ============================================================
@@ -692,7 +691,8 @@ const confirmRmaCollectionPayment = async (req, res) => {
         throw error;
       }
 
-      // Locate existing TestBank accounts; never create duplicate accounts here.
+      // Locate the exact RMA system account used by the RMA Account page.
+      // Do not accidentally update a different RMA account if duplicates exist.
       const [ownerAccount, rmaAccount, dpAccount] = await Promise.all([
         TestBankAccount.findOne({
           ownerId: order.ownerId,
@@ -702,6 +702,7 @@ const confirmRmaCollectionPayment = async (req, res) => {
 
         TestBankAccount.findOne({
           accountType: 'RMA',
+          accountNumber: 'RMA-SYSTEM-000001',
           status: 'ACTIVE',
         }).session(session),
 
@@ -714,14 +715,14 @@ const confirmRmaCollectionPayment = async (req, res) => {
 
       if (!ownerAccount || !rmaAccount || !dpAccount) {
         const error = new Error(
-          'Required active TestBank accounts are missing',
+          'Required active TestBank accounts are missing. Verify the owner account, RMA-SYSTEM-000001 account, and assigned DP account.',
         );
         error.statusCode = 409;
         throw error;
       }
 
       // Idempotently record the collection in TestBank.
-      // This helper must reuse the supplied session.
+      // All balance updates must happen within the same MongoDB session.
       const ledgerResult = await confirmDirectUpiRmaCollection({
         ownerAccountId: ownerAccount._id,
         rmaAccountId: rmaAccount._id,
@@ -739,7 +740,7 @@ const confirmRmaCollectionPayment = async (req, res) => {
         session,
       });
 
-      // Keep the existing delivery wallet earning.
+      // Preserve the existing delivery wallet earning flow.
       const earningAmount = dpAmount;
 
       let earning = await DeliveryWalletTransaction.findOne({
@@ -784,6 +785,7 @@ const confirmRmaCollectionPayment = async (req, res) => {
         orderId: order.orderId,
         paymentStatus: payment.status,
         paymentAmount: collectionAmount,
+        rmaAccountNumber: rmaAccount.accountNumber,
         earning,
         earningAmount,
         alreadyProcessed: Boolean(ledgerResult?.alreadyProcessed),
@@ -796,6 +798,7 @@ const confirmRmaCollectionPayment = async (req, res) => {
       orderId: result.orderId,
       paymentStatus: result.paymentStatus,
       paymentAmount: result.paymentAmount,
+      rmaAccountNumber: result.rmaAccountNumber,
       dpEarning: result.earning
         ? {
             transactionId: result.earning._id,
