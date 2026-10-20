@@ -113,7 +113,6 @@ async function getOwnerEarnings(req, res) {
       });
     }
 
-    // Find archived records for this owner only.
     const archivedRecords = await OwnerEarningsArchive.find({
       ownerId: owner._id,
     }).select('orderId -_id');
@@ -122,8 +121,6 @@ async function getOwnerEarnings(req, res) {
       archivedRecords.map((record) => record.orderId),
     );
 
-    // Include paid orders from the existing payment workflow
-    // and confirmed DIRECT_UPI orders.
     const orders = await Order.find({
       ownerId: owner._id,
       paymentStatus: 'Paid',
@@ -148,6 +145,9 @@ async function getOwnerEarnings(req, res) {
     let totalProductSales = 0;
     let totalRmaFees = 0;
     let totalOwnerEarnings = 0;
+
+    let pendingRmaPayment = 0;
+    let pendingRmaPaymentOrders = 0;
 
     const now = new Date();
 
@@ -190,13 +190,30 @@ async function getOwnerEarnings(req, res) {
         Number(order.ownerAmount ?? calculatedOwnerAmount).toFixed(2),
       );
 
-      // Earnings are based on eligible paid orders,
-      // not on a settlement status.
+      const deliveryCharge = Number(
+        Number(order.deliveryCharge || 0).toFixed(2),
+      );
+
+      // Pending RMA collection:
+      // RMA fee + delivery charge owed to the delivery partner.
+      // Count only DIRECT_UPI orders whose collection has not
+      // been fully confirmed by the admin.
+      const isDirectUpiOrder =
+        order.paymentProvider === 'DIRECT_UPI' &&
+        order.paymentMethod === 'DIRECT_UPI';
+
+      const rmaCollectionStatus = order.rmaCollectionPayment?.status;
+
+      if (isDirectUpiOrder && rmaCollectionStatus !== 'CONFIRMED') {
+        pendingRmaPayment += rmaFee + deliveryCharge;
+        pendingRmaPaymentOrders += 1;
+      }
+
+      // Owner earnings remain separate from pending collections.
       totalOwnerEarnings += ownerAmount;
       totalProductSales += productSubtotal;
       totalRmaFees += rmaFee;
 
-      // Use the completion date, falling back to creation date.
       const earningsDate = order.completedAt || order.createdAt;
 
       if (earningsDate) {
@@ -215,10 +232,6 @@ async function getOwnerEarnings(req, res) {
         }
       }
 
-      const deliveryCharge = Number(
-        Number(order.deliveryCharge || 0).toFixed(2),
-      );
-
       const payuFee = Number(Number(order.payuFee || 0).toFixed(2));
 
       const payuGst = Number(Number(order.payuGst || 0).toFixed(2));
@@ -231,8 +244,6 @@ async function getOwnerEarnings(req, res) {
         Number(order.customerPayableAmount || order.totalPrice || 0).toFixed(2),
       );
 
-      // Archived orders count toward totals but are hidden
-      // from the Recent Earnings list.
       if (archivedOrderIds.has(order.orderId)) {
         archivedOrders++;
         return;
@@ -287,6 +298,9 @@ async function getOwnerEarnings(req, res) {
         monthEarnings: Number(monthEarnings.toFixed(2)),
         totalProductSales: Number(totalProductSales.toFixed(2)),
         totalRmaFees: Number(totalRmaFees.toFixed(2)),
+
+        pendingRmaPayment: Number(pendingRmaPayment.toFixed(2)),
+        pendingRmaPaymentOrders,
       },
 
       orders: {
