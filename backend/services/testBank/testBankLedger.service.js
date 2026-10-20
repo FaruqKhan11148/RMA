@@ -866,18 +866,35 @@ async function recordDirectUpiCustomerPayment({
     }).session(session);
 
     if (existing) {
-      if (
-        existing.status !== 'COMPLETED' ||
-        roundAmount(existing.amount) !== total ||
-        String(existing.creditAccountId) !== String(ownerAccountId)
-      ) {
-        throw new Error('Existing Direct UPI payment does not match');
-      }
+      const existing = await TestBankTransaction.findOne({
+        transactionType: 'DIRECT_UPI_CUSTOMER_PAYMENT',
+        referenceType: 'ORDER',
+        referenceId: String(referenceId),
+      }).session(session);
 
-      return {
-        alreadyProcessed: true,
-        transaction: existing,
-      };
+      if (existing) {
+        const existingMetadata = existing.metadata || {};
+
+        if (
+          existing.status !== 'COMPLETED' ||
+          roundAmount(existing.amount) !== total ||
+          String(existing.creditAccountId) !== String(ownerAccountId) ||
+          roundAmount(existingMetadata.ownerAmount) !== ownerNet ||
+          roundAmount(existingMetadata.rmaFee) !== fee ||
+          roundAmount(existingMetadata.dpAmount) !== delivery
+        ) {
+          const error = new Error(
+            'Existing Direct UPI payment does not match this order payment',
+          );
+          error.statusCode = 409;
+          throw error;
+        }
+
+        return {
+          alreadyProcessed: true,
+          transaction: existing,
+        };
+      }
     }
 
     const owner = await getActiveAccount(ownerAccountId, session);

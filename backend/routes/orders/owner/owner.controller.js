@@ -2,6 +2,8 @@ const Order = require('../../../models/Order');
 const Referral = require('../../../models/Referral');
 const Owner = require('../../../models/Owner');
 
+const TestBankAccount = require('../../../models/TestBankAccount');
+
 const {
   getOwnerOfferProgress,
   finalizeOwnerOffer,
@@ -113,6 +115,15 @@ async function getOwnerEarnings(req, res) {
       });
     }
 
+    const ownerTestBankAccount = await TestBankAccount.findOne({
+      ownerId: owner._id,
+      accountType: 'OWNER',
+    });
+
+    const pendingRmaPayment = Number(
+      Number(ownerTestBankAccount?.heldBalance || 0).toFixed(2),
+    );
+
     const archivedRecords = await OwnerEarningsArchive.find({
       ownerId: owner._id,
     }).select('orderId -_id');
@@ -146,7 +157,6 @@ async function getOwnerEarnings(req, res) {
     let totalRmaFees = 0;
     let totalOwnerEarnings = 0;
 
-    let pendingRmaPayment = 0;
     let pendingRmaPaymentOrders = 0;
 
     const now = new Date();
@@ -175,11 +185,11 @@ async function getOwnerEarnings(req, res) {
 
     orders.forEach((order) => {
       const productSubtotal = Number(
-        Number(order.productSubtotal || order.subtotal || 0).toFixed(2),
+        Number(order.productSubtotal ?? order.subtotal ?? 0).toFixed(2),
       );
 
       const rmaFee = Number(
-        Number(order.rmaFee || order.rmaAmount || 0).toFixed(2),
+        Number(order.rmaFee ?? order.rmaAmount ?? 0).toFixed(2),
       );
 
       const calculatedOwnerAmount = Number(
@@ -191,25 +201,26 @@ async function getOwnerEarnings(req, res) {
       );
 
       const deliveryCharge = Number(
-        Number(order.deliveryCharge || 0).toFixed(2),
+        Number(order.deliveryRiderAmount ?? order.deliveryCharge ?? 0).toFixed(
+          2,
+        ),
       );
 
-      // Pending RMA collection:
-      // RMA fee + delivery charge owed to the delivery partner.
-      // Count only DIRECT_UPI orders whose collection has not
-      // been fully confirmed by the admin.
       const isDirectUpiOrder =
         order.paymentProvider === 'DIRECT_UPI' &&
         order.paymentMethod === 'DIRECT_UPI';
 
-      const rmaCollectionStatus = order.rmaCollectionPayment?.status;
+      const ownerConfirmed =
+        order.ownerPaymentConfirmation?.status === 'CONFIRMED';
 
-      if (isDirectUpiOrder && rmaCollectionStatus !== 'CONFIRMED') {
-        pendingRmaPayment += rmaFee + deliveryCharge;
+      const collectionConfirmed =
+        order.rmaCollectionPayment?.status === 'CONFIRMED';
+
+      if (isDirectUpiOrder && ownerConfirmed && !collectionConfirmed) {
         pendingRmaPaymentOrders += 1;
       }
 
-      // Owner earnings remain separate from pending collections.
+      // Owner earnings
       totalOwnerEarnings += ownerAmount;
       totalProductSales += productSubtotal;
       totalRmaFees += rmaFee;
@@ -299,7 +310,7 @@ async function getOwnerEarnings(req, res) {
         totalProductSales: Number(totalProductSales.toFixed(2)),
         totalRmaFees: Number(totalRmaFees.toFixed(2)),
 
-        pendingRmaPayment: Number(pendingRmaPayment.toFixed(2)),
+        pendingRmaPayment,
         pendingRmaPaymentOrders,
       },
 

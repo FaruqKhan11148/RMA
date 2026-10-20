@@ -45,6 +45,13 @@ function OwnerEarnings() {
           monthEarnings: Number(apiEarnings.monthEarnings || 0),
           totalProductSales: Number(apiEarnings.totalProductSales || 0),
           totalRmaFees: Number(apiEarnings.totalRmaFees || 0),
+
+          // Pending Direct UPI collection
+          pendingRmaPayment: Number(apiEarnings.pendingRmaPayment || 0),
+          pendingRmaPaymentOrders: Number(
+            apiEarnings.pendingRmaPaymentOrders || 0,
+          ),
+
           totalOrders: Number(data.orders?.total || 0),
           recentEarnings: data.recentEarnings || [],
         });
