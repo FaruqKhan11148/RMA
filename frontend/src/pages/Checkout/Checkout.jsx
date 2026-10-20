@@ -27,7 +27,7 @@ import {
   createCashfreePayment,
 } from './utils/checkoutApi';
 
-import { calculatePayuPricing } from './utils/checkoutHelpers';
+// import { calculatePayuPricing } from './utils/checkoutHelpers';
 
 function Checkout() {
   const navigate = useNavigate();
