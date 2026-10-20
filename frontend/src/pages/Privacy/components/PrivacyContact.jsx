@@ -4,11 +4,13 @@ function PrivacyContact({ onContact }) {
       <h2>Questions about privacy?</h2>
 
       <p>
-        If you have questions or concerns about this Privacy Policy, please
-        contact RMA through our support page.
+        If you have questions about this Privacy Policy or need assistance with
+        your personal information, contact RMA through our support page.
       </p>
 
-      <button onClick={onContact}>Contact RMA Support</button>
+      <button type="button" onClick={onContact}>
+        Contact RMA Support
+      </button>
     </section>
   );
 }

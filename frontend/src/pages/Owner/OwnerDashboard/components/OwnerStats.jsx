@@ -23,7 +23,7 @@ function OwnerStats({
 
       <div className="owner_stat_card">
         <span>Today's Revenue</span>
-        <strong>₹{totalRevenue}</strong>
+        <strong>₹{Number(totalRevenue || 0).toFixed(2)}</strong>
       </div>
     </section>
   );

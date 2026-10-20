@@ -927,7 +927,7 @@
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 33px;
+  bottom: 0px;
   z-index: 5000;
   width: 100%;
   box-sizing: border-box;
@@ -936,7 +936,7 @@
   border-radius: 28px 28px 0 0;
   box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.16);
   pointer-events: auto;
-  height: 270px;
+  height: 300px;
 }
 
 .location_sheet_handle {

@@ -9,6 +9,7 @@ import NearbyShops from './components/NearbyShops';
 import PopularProducts from './components/PopularProducts';
 import HomeExploreEnd from './components/HomeExploreEnd';
 import HomeLocationSheet from './components/HomeLocationSheet';
+import MapPicker from '../../components/map/MapPicker';
 
 import {
   fetchSavedAddresses as fetchSavedAddressesApi,
@@ -35,6 +36,7 @@ function Home() {
   const [locationLoading, setLocationLoading] = useState(false);
 
   const [showLocationSheet, setShowLocationSheet] = useState(false);
+  const [showMapPicker, setShowMapPicker] = useState(false);
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [loadingAddresses, setLoadingAddresses] = useState(false);
 
@@ -266,6 +268,33 @@ function Home() {
     }
   };
 
+  const handleMapLocationSelect = (selectedLocation) => {
+    const { latitude, longitude, address } = selectedLocation;
+
+    if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+      return;
+    }
+
+    const selectedLocationName = address || 'Selected location';
+
+    setUserLocation({ latitude, longitude });
+    setLocationName(selectedLocationName);
+
+    localStorage.setItem(
+      RMA_LOCATION_KEY,
+      JSON.stringify({
+        latitude,
+        longitude,
+        locationName: selectedLocationName,
+      }),
+    );
+
+    setShowMapPicker(false);
+    setShowLocationSheet(false);
+
+    fetchNearbyShops(latitude, longitude);
+  };
+
   const handleSavedAddressSelect = (savedAddress) => {
     const selectedLocation = {
       latitude: savedAddress.latitude,
@@ -347,12 +376,14 @@ function Home() {
       <HomeLocationSheet
         showLocationSheet={showLocationSheet}
         setShowLocationSheet={setShowLocationSheet}
-        handleLocationClick={handleLocationClick}
+        showMapPicker={showMapPicker}
+        setShowMapPicker={setShowMapPicker}
         customerLoggedIn={customerLoggedIn}
         navigate={navigate}
         loadingAddresses={loadingAddresses}
         savedAddresses={savedAddresses}
         handleSavedAddressSelect={handleSavedAddressSelect}
+        onLocationSelect={handleMapLocationSelect}
       />
     </main>
   );

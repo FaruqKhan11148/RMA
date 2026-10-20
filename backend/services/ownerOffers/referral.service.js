@@ -465,7 +465,35 @@ async function getOwnerReferralProgress(ownerId) {
     ),
   );
 
-  const ownerData = await Owner.findById(ownerId).select('referralCode').lean();
+  const ownerData = await Owner.findById(ownerId).select('referralCode');
+
+  if (!ownerData) {
+    throw new Error('Owner not found');
+  }
+
+  if (!ownerData.referralCode) {
+    const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+
+    let referralCode;
+    let exists = true;
+
+    while (exists) {
+      let randomPart = '';
+
+      for (let i = 0; i < 8; i += 1) {
+        randomPart += characters.charAt(
+          Math.floor(Math.random() * characters.length),
+        );
+      }
+
+      referralCode = `RMA-${randomPart}`;
+
+      exists = await Owner.exists({ referralCode });
+    }
+
+    ownerData.referralCode = referralCode;
+    await ownerData.save();
+  }
 
   return {
     referralCode: ownerData?.referralCode || null,

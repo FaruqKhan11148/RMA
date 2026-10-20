@@ -11,6 +11,8 @@ import {
   useMapEvents,
 } from 'react-leaflet';
 
+import { MapPin } from 'lucide-react';
+
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -82,7 +84,7 @@ function LocationMarker({ position, onSelect }) {
 // Main Component
 // =========================
 
-function MapPicker({ onLocationSelect }) {
+function MapPicker({ onLocationSelect, onBack }) {
   const navigate = useNavigate();
   const [position, setPosition] = useState(null);
 
@@ -308,7 +310,7 @@ function MapPicker({ onLocationSelect }) {
           <button
             type="button"
             className="map_back_button"
-            onClick={() => navigate(-1)}
+            onClick={onBack || (() => navigate(-1))}
           >
             ←
           </button>
@@ -330,7 +332,7 @@ function MapPicker({ onLocationSelect }) {
             onClick={getCurrentLocation}
             disabled={loadingLocation}
           >
-            <span className="current_location_icon">◎</span>
+            <MapPin size={20} />
 
             <span>
               {loadingLocation
@@ -360,7 +362,7 @@ function MapPicker({ onLocationSelect }) {
           </div>
 
           <div className="selected_address_card">
-            <div className="address_icon">⌖</div>
+            <MapPin size={25} />
 
             <div className="address_content">
               <span className="address_label">Delivery address</span>
