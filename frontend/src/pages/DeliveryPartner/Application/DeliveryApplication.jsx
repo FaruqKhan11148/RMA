@@ -317,6 +317,14 @@ function DeliveryApplication() {
               Your application has been submitted successfully. RMA will review
               your details and documents.
             </p>
+
+            <button
+              type="button"
+              className="delivery_application_dashboard_button"
+              onClick={() => navigate('/delivery/dashboard')}
+            >
+              Go to Dashboard
+            </button>
           </div>
         )}
 

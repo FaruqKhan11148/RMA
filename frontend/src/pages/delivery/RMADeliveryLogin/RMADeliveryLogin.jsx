@@ -1,67 +1,45 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './RMADeliveryLogin.css';
 
 import PhoneLoginForm from './components/PhoneLoginForm';
-import OtpVerificationForm from './components/OtpVerificationForm';
-import DeliveryLoginMessages from './components/DeliveryLoginMessages';
 
-import {
-  requestRmaDeliveryOtp,
-  verifyRmaDeliveryOtp,
-} from './utils/deliveryAuthApi';
+import { loginRmaDeliveryPartner } from './utils/deliveryAuthApi';
 
 function RMADeliveryLogin() {
   const navigate = useNavigate();
   const location = useLocation();
 
   const [phone, setPhone] = useState(location.state?.phone || '');
-  const [otp, setOtp] = useState('');
-  const [loginStep, setLoginStep] = useState('login');
+  const [password, setPassword] = useState('');
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState(
-    location.state?.message || '',
-  );
-  const [generatedOtp, setGeneratedOtp] = useState('');
+  const [lockoutSeconds, setLockoutSeconds] = useState(0);
+  const [successMessage] = useState(location.state?.message || '');
 
-  const handleRequestOtp = async () => {
-    if (!phone.trim()) {
-      setError('Please enter your phone number');
-      return;
-    }
+  useEffect(() => {
+    if (lockoutSeconds <= 0) return;
 
-    if (phone.trim().length !== 10) {
+    const timer = setTimeout(() => {
+      setLockoutSeconds((seconds) => Math.max(0, seconds - 1));
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [lockoutSeconds]);
+
+  const handleLogin = async () => {
+    if (loading || lockoutSeconds > 0) return;
+
+    const trimmedPhone = phone.trim();
+
+    if (!/^\d{10}$/.test(trimmedPhone)) {
       setError('Please enter a valid 10-digit phone number');
       return;
     }
 
-    try {
-      setLoading(true);
-      setError('');
-      setSuccessMessage('');
-
-      const data = await requestRmaDeliveryOtp(phone.trim());
-
-      setGeneratedOtp(data.otp || '');
-
-      setSuccessMessage(
-        data.otp ? 'OTP generated successfully' : 'OTP sent successfully',
-      );
-
-      setLoginStep('otp');
-    } catch (error) {
-      console.error('RMA delivery OTP request failed:', error);
-      setError(error.message || 'Unable to connect to server');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleVerifyOtp = async () => {
-    if (otp.length !== 6) {
-      setError('Please enter the 6-digit OTP');
+    if (!password) {
+      setError('Please enter your password');
       return;
     }
 
@@ -69,10 +47,9 @@ function RMADeliveryLogin() {
       setLoading(true);
       setError('');
 
-      const data = await verifyRmaDeliveryOtp(phone.trim(), otp);
+      const data = await loginRmaDeliveryPartner(trimmedPhone, password);
 
       localStorage.setItem('delivery_token', data.token);
-
       localStorage.setItem(
         'delivery_person',
         JSON.stringify(data.deliveryPerson),
@@ -84,7 +61,15 @@ function RMADeliveryLogin() {
         navigate('/delivery/rma/application');
       }
     } catch (error) {
-      console.error('RMA delivery OTP verification failed:', error);
+      console.error('RMA delivery password login failed:', error);
+
+      if (
+        error.code === 'LOGIN_TEMPORARILY_LOCKED' &&
+        Number(error.retryAfterSeconds) > 0
+      ) {
+        setLockoutSeconds(Number(error.retryAfterSeconds));
+      }
+
       setError(error.message || 'Unable to connect to server');
     } finally {
       setLoading(false);
@@ -92,20 +77,15 @@ function RMADeliveryLogin() {
   };
 
   const handlePhoneChange = (event) => {
-    setPhone(event.target.value.replace(/\D/g, ''));
+    if (lockoutSeconds > 0) return;
+    setPhone(event.target.value.replace(/\D/g, '').slice(0, 10));
     setError('');
   };
 
-  const handleOtpChange = (event) => {
-    setOtp(event.target.value.replace(/\D/g, ''));
+  const handlePasswordChange = (event) => {
+    if (lockoutSeconds > 0) return;
+    setPassword(event.target.value);
     setError('');
-  };
-
-  const handleChangePhone = () => {
-    setOtp('');
-    setError('');
-    setSuccessMessage('');
-    setLoginStep('login');
   };
 
   return (
@@ -119,27 +99,25 @@ function RMADeliveryLogin() {
           ← Back
         </button>
 
-        {loginStep === 'login' ? (
-          <PhoneLoginForm
-            phone={phone}
-            loading={loading}
-            onPhoneChange={handlePhoneChange}
-            onRequestOtp={handleRequestOtp}
-            onRegister={() => navigate('/delivery-partner/register')}
-            onParticularShop={() => navigate('/delivery/orders-delivery')}
-          />
-        ) : (
-          <OtpVerificationForm
-            otp={otp}
-            generatedOtp={generatedOtp}
-            loading={loading}
-            onOtpChange={handleOtpChange}
-            onVerifyOtp={handleVerifyOtp}
-            onChangePhone={handleChangePhone}
-          />
-        )}
+        <PhoneLoginForm
+          phone={phone}
+          password={password}
+          loading={loading || lockoutSeconds > 0}
+          lockoutSeconds={lockoutSeconds}
+          successMessage={successMessage}
+          error={error}
+          onPhoneChange={handlePhoneChange}
+          onPasswordChange={handlePasswordChange}
+          onLogin={handleLogin}
+          onRegister={() => navigate('/delivery-partner/register')}
+          onParticularShop={() => navigate('/delivery/orders-delivery')}
+        />
 
-        <DeliveryLoginMessages successMessage={successMessage} error={error} />
+        {lockoutSeconds > 0 && (
+          <p className="rma_delivery_lockout" role="status">
+            Too many failed attempts. Try again in {lockoutSeconds}s.
+          </p>
+        )}
       </section>
     </main>
   );

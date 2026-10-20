@@ -3,13 +3,9 @@ const express = require('express');
 const adminAuth = require('../../../middleware/adminAuth');
 
 const {
-  startPayuOnboarding,
-  verifyOwnerBank,
-  verifyOwnerKyc,
-  completePayuOnboarding,
-  getPendingSettlements,
-  approveOwnerSettlement,
-  rejectOwnerSettlement,
+  getPendingRegistrations,
+  approveOwnerRegistration,
+  rejectOwnerRegistration,
   getAllOwners,
   getShopStatistics,
   getSingleOwner,
@@ -17,30 +13,22 @@ const {
 
 const router = express.Router();
 
-// PAYU ONBOARDING
-router.patch('/:ownerId/payu/onboarding/start', adminAuth, startPayuOnboarding);
+// GET PENDING SHOP REGISTRATIONS
+router.get('/registrations/pending', adminAuth, getPendingRegistrations);
 
-// VERIFY OWNER BANK
-router.patch('/:ownerId/payu/bank/verify', adminAuth, verifyOwnerBank);
-
-// VERIFY OWNER KYC
-router.patch('/:ownerId/payu/kyc/verify', adminAuth, verifyOwnerKyc);
-
-// COMPLETE PAYU ONBOARDING
+// APPROVE SHOP REGISTRATION
 router.patch(
-  '/:ownerId/payu/onboarding/complete',
+  '/:ownerId/registration/approve',
   adminAuth,
-  completePayuOnboarding,
+  approveOwnerRegistration,
 );
 
-// GET PENDING SETTLEMENTS
-router.get('/settlements', adminAuth, getPendingSettlements);
-
-// APPROVE OWNER SETTLEMENT
-router.patch('/:ownerId/settlement/approve', adminAuth, approveOwnerSettlement);
-
-// REJECT OWNER SETTLEMENT
-router.patch('/:ownerId/settlement/reject', adminAuth, rejectOwnerSettlement);
+// REJECT SHOP REGISTRATION
+router.patch(
+  '/:ownerId/registration/reject',
+  adminAuth,
+  rejectOwnerRegistration,
+);
 
 // GET SHOP STATISTICS
 router.get('/stats/:shopId', adminAuth, getShopStatistics);

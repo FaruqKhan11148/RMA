@@ -511,3 +511,44 @@
 [data-theme='dark'] .owner_login input:focus-visible {
   outline-color: rgba(22, 128, 58, 0.35);
 }
+
+.owner_reset_success {
+  color: #198754;
+  background: #eaf7ef;
+  border: 1px solid #b8e5c8;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.owner_forgot_password {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -8px;
+  margin-bottom: 4px;
+}
+
+.owner_forgot_password .owner_register_link {
+  background: transparent;
+  border: none;
+  padding: 4px 0 4px 8px;
+  color: #198754;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.owner_forgot_password .owner_register_link:hover {
+  color: #146c43;
+  text-decoration: underline;
+}
+
+.owner_forgot_password .owner_register_link:focus-visible {
+  outline: 2px solid #198754;
+  outline-offset: 3px;
+  border-radius: 3px;
+}

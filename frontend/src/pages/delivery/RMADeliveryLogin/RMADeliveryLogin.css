@@ -583,3 +583,11 @@
 [data-theme='dark'] .rma_delivery_otp_display strong {
   color: #72d38f;
 }
+
+.rma_delivery_lockout {
+  margin: 12px 0;
+  color: #b42318;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+}

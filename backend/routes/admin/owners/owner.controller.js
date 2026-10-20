@@ -1,5 +1,3 @@
-const crypto = require('crypto');
-
 const Owner = require('../../../models/Owner');
 const Order = require('../../../models/Order');
 const TestBankAccount = require('../../../models/TestBankAccount');
@@ -500,6 +498,140 @@ const rejectOwnerSettlement = async (req, res) => {
   }
 };
 
+// GET PENDING SHOP REGISTRATIONS
+const getPendingRegistrations = async (req, res) => {
+  try {
+    const owners = await Owner.find({
+      'payment.rmaApprovalStatus': 'PENDING',
+    })
+      .select(
+        'ownerName shopName shopId phone email address description location delivery pickup products payment.provider payment.upiAccountHolderName payment.upiMobileNumber payment.upiId payment.rmaApprovalStatus createdAt',
+      )
+      .sort({ createdAt: -1 })
+      .lean();
+
+    return res.status(200).json({
+      count: owners.length,
+      registrations: owners,
+    });
+  } catch (error) {
+    console.error('Pending registrations fetch failed:', error);
+
+    return res.status(500).json({
+      message: 'Failed to fetch pending shop registrations',
+    });
+  }
+};
+
+// APPROVE SHOP REGISTRATION
+const approveOwnerRegistration = async (req, res) => {
+  try {
+    const { ownerId } = req.params;
+
+    const owner = await Owner.findById(ownerId);
+
+    if (!owner) {
+      return res.status(404).json({
+        message: 'Owner not found',
+      });
+    }
+
+    if (owner.payment?.rmaApprovalStatus === 'APPROVED') {
+      return res.status(409).json({
+        message: 'Shop registration is already approved',
+      });
+    }
+
+    if (owner.payment?.rmaApprovalStatus === 'REJECTED') {
+      return res.status(409).json({
+        message:
+          'This registration was rejected. Review and reinstate it explicitly before approval.',
+      });
+    }
+
+    if (!owner.payment) {
+      return res.status(400).json({
+        message: 'Owner payment registration details are missing',
+      });
+    }
+
+    owner.payment.rmaApprovalStatus = 'APPROVED';
+    owner.payment.rmaApprovedAt = new Date();
+    owner.payment.rmaRejectedAt = null;
+
+    await owner.save();
+
+    return res.status(200).json({
+      message: 'Shop registration approved successfully',
+      registration: {
+        ownerId: owner._id,
+        shopId: owner.shopId,
+        shopName: owner.shopName,
+        rmaApprovalStatus: owner.payment.rmaApprovalStatus,
+        rmaApprovedAt: owner.payment.rmaApprovedAt,
+      },
+    });
+  } catch (error) {
+    console.error('Shop registration approval failed:', error);
+
+    return res.status(500).json({
+      message: 'Failed to approve shop registration',
+    });
+  }
+};
+
+// REJECT SHOP REGISTRATION
+const rejectOwnerRegistration = async (req, res) => {
+  try {
+    const { ownerId } = req.params;
+    const { reason } = req.body;
+
+    const owner = await Owner.findById(ownerId);
+
+    if (!owner) {
+      return res.status(404).json({
+        message: 'Owner not found',
+      });
+    }
+
+    if (owner.payment?.rmaApprovalStatus === 'APPROVED') {
+      return res.status(409).json({
+        message:
+          'This shop is already approved. Use a separate suspension process if access must be disabled.',
+      });
+    }
+
+    if (!owner.payment) {
+      return res.status(400).json({
+        message: 'Owner payment registration details are missing',
+      });
+    }
+
+    owner.payment.rmaApprovalStatus = 'REJECTED';
+    owner.payment.rmaRejectedAt = new Date();
+    owner.payment.rmaApprovedAt = null;
+
+    await owner.save();
+
+    return res.status(200).json({
+      message: 'Shop registration rejected',
+      registration: {
+        ownerId: owner._id,
+        shopId: owner.shopId,
+        rmaApprovalStatus: owner.payment.rmaApprovalStatus,
+        rejectionReason: typeof reason === 'string' ? reason.trim() : '',
+        rmaRejectedAt: owner.payment.rmaRejectedAt,
+      },
+    });
+  } catch (error) {
+    console.error('Shop registration rejection failed:', error);
+
+    return res.status(500).json({
+      message: 'Failed to reject shop registration',
+    });
+  }
+};
+
 const getAllOwners = async (req, res) => {
   try {
     const owners = await Owner.find()
@@ -636,13 +768,9 @@ const getSingleOwner = async (req, res) => {
 };
 
 module.exports = {
-  startPayuOnboarding,
-  verifyOwnerBank,
-  verifyOwnerKyc,
-  completePayuOnboarding,
-  getPendingSettlements,
-  approveOwnerSettlement,
-  rejectOwnerSettlement,
+  getPendingRegistrations,
+  approveOwnerRegistration,
+  rejectOwnerRegistration,
   getAllOwners,
   getShopStatistics,
   getSingleOwner,

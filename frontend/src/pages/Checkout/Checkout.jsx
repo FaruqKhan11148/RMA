@@ -74,7 +74,6 @@ function Checkout() {
     baseAmount: 0,
     payuFee: 0,
     payuGst: 0,
-    payuCharges: 0,
     customerPayableAmount: 0,
   });
 

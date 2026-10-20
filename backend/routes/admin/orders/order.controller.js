@@ -1,5 +1,12 @@
+const mongoose = require('mongoose');
 const Order = require('../../../models/Order');
 const DeliveryPerson = require('../../../models/DeliveryPerson');
+const DeliveryWalletTransaction = require('../../../models/DeliveryWalletTransaction');
+const TestBankAccount = require('../../../models/TestBankAccount');
+
+const {
+  confirmDirectUpiRmaCollection,
+} = require('../../../services/testBank/testBankLedger.service');
 
 // ============================================================
 // DISTANCE CALCULATOR
@@ -572,6 +579,8 @@ const assignRmaDeliveryPartner = async (req, res) => {
 // ============================================================
 
 const confirmRmaCollectionPayment = async (req, res) => {
+  const session = await mongoose.startSession();
+
   try {
     const { orderId } = req.params;
 
@@ -582,115 +591,235 @@ const confirmRmaCollectionPayment = async (req, res) => {
       });
     }
 
-    const order = await Order.findOne({
-      orderId,
-      orderType: 'delivery',
+    let result;
+
+    await session.withTransaction(async () => {
+      const order = await Order.findOne({
+        orderId,
+        orderType: 'delivery',
+      }).session(session);
+
+      if (!order) {
+        const error = new Error('Delivery order not found');
+        error.statusCode = 404;
+        throw error;
+      }
+
+      if (
+        order.deliveryAssignmentType !== 'RMA' ||
+        !order.deliveryPersonId ||
+        order.deliveryAssignmentStatus !== 'ACCEPTED'
+      ) {
+        const error = new Error(
+          'An accepted RMA delivery assignment is required',
+        );
+        error.statusCode = 400;
+        throw error;
+      }
+
+      const payment = order.rmaCollectionPayment;
+
+      if (!payment) {
+        const error = new Error(
+          'RMA collection payment has not been initialized',
+        );
+        error.statusCode = 400;
+        throw error;
+      }
+
+      if (
+        payment.status !== 'BOTH_MARKED_PAID' &&
+        payment.status !== 'CONFIRMED'
+      ) {
+        const error = new Error(
+          payment.status === 'DISPUTED'
+            ? 'This payment is disputed and cannot be confirmed'
+            : 'Both owner and assigned DP must acknowledge payment first',
+        );
+        error.statusCode = 400;
+        throw error;
+      }
+
+      if (
+        !payment.ownerMarkedPaidAt ||
+        !payment.dpAcknowledgedAt ||
+        !payment.dpAcknowledgedBy ||
+        payment.dpAcknowledgedBy.toString() !==
+          order.deliveryPersonId.toString()
+      ) {
+        const error = new Error(
+          'Required owner and assigned DP acknowledgements are missing or invalid',
+        );
+        error.statusCode = 400;
+        throw error;
+      }
+
+      // Admin must independently verify the actual incoming bank/UPI transfer.
+      const productSubtotal = Number(
+        Number(order.productSubtotal ?? order.subtotal ?? 0).toFixed(2),
+      );
+
+      const rmaFee = Number(Number(order.rmaFee ?? 0).toFixed(2));
+
+      const dpAmount = Number(
+        Number(order.deliveryRiderAmount ?? order.deliveryCharge ?? 0).toFixed(
+          2,
+        ),
+      );
+
+      const collectionAmount = Number(Number(payment.amount ?? 0).toFixed(2));
+
+      if (
+        !Number.isFinite(productSubtotal) ||
+        !Number.isFinite(rmaFee) ||
+        !Number.isFinite(dpAmount) ||
+        !Number.isFinite(collectionAmount) ||
+        productSubtotal <= 0 ||
+        rmaFee < 0 ||
+        dpAmount < 0 ||
+        collectionAmount <= 0
+      ) {
+        const error = new Error('Invalid RMA collection payment breakdown');
+        error.statusCode = 400;
+        throw error;
+      }
+
+      if (Number((rmaFee + dpAmount).toFixed(2)) !== collectionAmount) {
+        const error = new Error(
+          'RMA fee and delivery charge do not match the collection amount',
+        );
+        error.statusCode = 400;
+        throw error;
+      }
+
+      // Locate existing TestBank accounts; never create duplicate accounts here.
+      const [ownerAccount, rmaAccount, dpAccount] = await Promise.all([
+        TestBankAccount.findOne({
+          ownerId: order.ownerId,
+          accountType: 'OWNER',
+          status: 'ACTIVE',
+        }).session(session),
+
+        TestBankAccount.findOne({
+          accountType: 'RMA',
+          status: 'ACTIVE',
+        }).session(session),
+
+        TestBankAccount.findOne({
+          deliveryPersonId: order.deliveryPersonId,
+          accountType: 'DELIVERY_PARTNER',
+          status: 'ACTIVE',
+        }).session(session),
+      ]);
+
+      if (!ownerAccount || !rmaAccount || !dpAccount) {
+        const error = new Error(
+          'Required active TestBank accounts are missing',
+        );
+        error.statusCode = 409;
+        throw error;
+      }
+
+      // Idempotently record the collection in TestBank.
+      // This helper must reuse the supplied session.
+      const ledgerResult = await confirmDirectUpiRmaCollection({
+        ownerAccountId: ownerAccount._id,
+        rmaAccountId: rmaAccount._id,
+        dpAccountId: dpAccount._id,
+        amount: collectionAmount,
+        fee: rmaFee,
+        delivery: dpAmount,
+        referenceId: order.orderId,
+        metadata: {
+          source: 'RMA_COLLECTION_ADMIN_CONFIRMED',
+          ownerId: String(order.ownerId),
+          deliveryPersonId: String(order.deliveryPersonId),
+          confirmedBy: String(req.admin._id),
+        },
+        session,
+      });
+
+      // Keep the existing delivery wallet earning.
+      const earningAmount = dpAmount;
+
+      let earning = await DeliveryWalletTransaction.findOne({
+        deliveryPersonId: order.deliveryPersonId,
+        orderId: order.orderId,
+        type: 'ORDER_DELIVERY_EARNING',
+      }).session(session);
+
+      if (!earning && earningAmount > 0) {
+        earning = new DeliveryWalletTransaction({
+          deliveryPersonId: order.deliveryPersonId,
+          orderId: order.orderId,
+          type: 'ORDER_DELIVERY_EARNING',
+          amount: earningAmount,
+          status: 'PENDING',
+          description: `Delivery earning for order ${order.orderId}`,
+          metadata: {
+            source: 'RMA_COLLECTION_ADMIN_CONFIRMED',
+            rmaCollectionPaymentAmount: collectionAmount,
+            confirmedBy: String(req.admin._id),
+          },
+        });
+
+        await earning.save({ session });
+      } else if (earning && Number(earning.amount) !== earningAmount) {
+        const error = new Error(
+          'Existing delivery earning does not match the order amount',
+        );
+        error.statusCode = 409;
+        throw error;
+      }
+
+      if (payment.status !== 'CONFIRMED') {
+        payment.status = 'CONFIRMED';
+        payment.confirmedAt = new Date();
+        payment.confirmedBy = req.admin._id;
+
+        await order.save({ session });
+      }
+
+      result = {
+        orderId: order.orderId,
+        paymentStatus: payment.status,
+        paymentAmount: collectionAmount,
+        earning,
+        earningAmount,
+        alreadyProcessed: Boolean(ledgerResult?.alreadyProcessed),
+      };
     });
-
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: 'Delivery order not found',
-      });
-    }
-
-    if (
-      order.deliveryAssignmentType !== 'RMA' ||
-      !order.deliveryPersonId ||
-      order.deliveryAssignmentStatus !== 'ACCEPTED'
-    ) {
-      return res.status(400).json({
-        success: false,
-        message:
-          'An accepted RMA delivery assignment is required before confirming payment',
-      });
-    }
-
-    const payment = order.rmaCollectionPayment;
-
-    if (!payment) {
-      return res.status(400).json({
-        success: false,
-        message: 'RMA collection payment has not been initialized',
-      });
-    }
-
-    if (payment.status === 'CONFIRMED') {
-      return res.status(409).json({
-        success: false,
-        message: 'RMA collection payment is already confirmed',
-        paymentStatus: payment.status,
-      });
-    }
-
-    if (payment.status === 'DISPUTED') {
-      return res.status(409).json({
-        success: false,
-        message:
-          'This payment is disputed and cannot be confirmed until the dispute is resolved',
-        paymentStatus: payment.status,
-      });
-    }
-
-    if (payment.status !== 'BOTH_MARKED_PAID') {
-      return res.status(400).json({
-        success: false,
-        message:
-          'Both the owner and assigned delivery partner must acknowledge the payment before admin verification',
-        paymentStatus: payment.status,
-      });
-    }
-
-    if (
-      !payment.ownerMarkedPaidAt ||
-      !payment.dpAcknowledgedAt ||
-      !payment.dpAcknowledgedBy ||
-      payment.dpAcknowledgedBy.toString() !== order.deliveryPersonId.toString()
-    ) {
-      return res.status(400).json({
-        success: false,
-        message:
-          'Required owner and assigned delivery partner acknowledgements are missing or invalid',
-      });
-    }
-
-    // IMPORTANT:
-    // Before continuing, independently verify the actual incoming
-    // transaction in RMA's bank/UPI account.
-    //
-    // Match the received amount against payment.amount and verify
-    // the transaction reference when available.
-    // Never confirm based only on the owner's or DP's acknowledgement.
-
-    payment.status = 'CONFIRMED';
-    payment.confirmedAt = new Date();
-    payment.confirmedBy = req.admin._id;
-
-    await order.save();
 
     return res.status(200).json({
       success: true,
-      message: 'RMA collection payment confirmed successfully',
-      orderId: order.orderId,
-      payment: {
-        status: payment.status,
-        amount: payment.amount,
-        upiId: payment.upiId,
-        reference: payment.reference,
-        ownerMarkedPaidAt: payment.ownerMarkedPaidAt,
-        dpAcknowledgedAt: payment.dpAcknowledgedAt,
-        dpAcknowledgedBy: payment.dpAcknowledgedBy,
-        confirmedAt: payment.confirmedAt,
-        confirmedBy: payment.confirmedBy,
-      },
+      message: 'RMA collection payment verified successfully',
+      orderId: result.orderId,
+      paymentStatus: result.paymentStatus,
+      paymentAmount: result.paymentAmount,
+      dpEarning: result.earning
+        ? {
+            transactionId: result.earning._id,
+            amount: result.earning.amount,
+            status: result.earning.status,
+          }
+        : {
+            amount: result.earningAmount,
+            status: 'NOT_CREATED',
+            message: 'No positive delivery earning is due for this order',
+          },
+      alreadyProcessed: result.alreadyProcessed,
     });
   } catch (error) {
     console.error('Admin RMA collection payment confirmation error:', error);
 
-    return res.status(500).json({
+    return res.status(error.statusCode || 500).json({
       success: false,
-      message: 'Failed to confirm RMA collection payment',
+      message: error.statusCode
+        ? error.message
+        : 'Failed to confirm RMA collection payment',
     });
+  } finally {
+    await session.endSession();
   }
 };
 

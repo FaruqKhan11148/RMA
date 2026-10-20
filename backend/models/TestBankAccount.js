@@ -22,6 +22,9 @@ const testBankAccountSchema = new mongoose.Schema(
         'OWNER',
         'DELIVERY_PARTNER',
         'CUSTOMER',
+        'DIRECT_UPI',
+
+        // Legacy account types: retained for existing records.
         'PAYU',
         'CASHFREE',
       ],

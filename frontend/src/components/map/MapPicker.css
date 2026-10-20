@@ -341,7 +341,7 @@
 
   left: 0;
   right: 0;
-  bottom: 0;
+  bottom: 33px;
 
   z-index: 800;
 
@@ -927,7 +927,7 @@
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 0;
+  bottom: 33px;
   z-index: 5000;
   width: 100%;
   box-sizing: border-box;

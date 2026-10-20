@@ -4,13 +4,15 @@ const API_URL =
     ? 'http://localhost:5000/'
     : 'https://rma-backend-bo4a.onrender.com/';
 
-export const requestDeliveryOtp = async (phone) => {
-  const response = await fetch(`${API_URL}api/delivery/rma/request-otp`, {
+// SHOP DELIVERY PARTNER OTP LOGIN
+export const requestDeliveryOtp = async (shopId, phone) => {
+  const response = await fetch(`${API_URL}api/delivery/request-otp`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
+      shopId,
       phone,
     }),
   });
@@ -24,13 +26,14 @@ export const requestDeliveryOtp = async (phone) => {
   return data;
 };
 
-export const verifyDeliveryOtp = async (phone, otp) => {
-  const response = await fetch(`${API_URL}api/delivery/rma/verify-otp`, {
+export const verifyDeliveryOtp = async (shopId, phone, otp) => {
+  const response = await fetch(`${API_URL}api/delivery/verify-otp`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
+      shopId,
       phone,
       otp,
     }),
@@ -45,42 +48,28 @@ export const verifyDeliveryOtp = async (phone, otp) => {
   return data;
 };
 
-export const requestRmaDeliveryOtp = async (phone) => {
-  const response = await fetch(`${API_URL}api/delivery/rma/request-otp`, {
+// RMA DELIVERY PARTNER PASSWORD LOGIN
+export const loginRmaDeliveryPartner = async (phone, password) => {
+  const response = await fetch(`${API_URL}api/delivery/rma/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       phone,
+      password,
     }),
   });
 
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.message || 'Unable to send OTP');
-  }
+    const error = new Error(data.message || 'Unable to log in');
 
-  return data;
-};
+    error.code = data.code;
+    error.retryAfterSeconds = Number(data.retryAfterSeconds) || 0;
 
-export const verifyRmaDeliveryOtp = async (phone, otp) => {
-  const response = await fetch(`${API_URL}api/delivery/rma/verify-otp`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      phone,
-      otp,
-    }),
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || 'Invalid OTP');
+    throw error;
   }
 
   return data;

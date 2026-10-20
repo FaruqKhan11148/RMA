@@ -12,6 +12,7 @@ import {
   CircleHelp,
   Info,
   MapPin,
+  Settings,
 } from 'lucide-react';
 
 import { useNavigate } from 'react-router-dom';
@@ -82,6 +83,12 @@ function DeliveryProfile() {
           description: phone,
           icon: UserRound,
           onClick: () => navigate('/delivery/profile/details'),
+        },
+        {
+          label: 'Settings',
+          description: 'Manage your account and preferences',
+          icon: Settings,
+          onClick: () => navigate('/delivery/settings'),
         },
         {
           label: 'Delivery Area',

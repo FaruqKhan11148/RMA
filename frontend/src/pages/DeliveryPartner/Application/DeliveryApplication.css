@@ -810,3 +810,28 @@
     font-size: 14px;
   }
 }
+
+.delivery_application_dashboard_button {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  margin: 24px auto 0;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 10px;
+  background: #198754;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.delivery_application_dashboard_button:hover {
+  background: #146c43;
+}
+
+.delivery_application_dashboard_button:focus-visible {
+  outline: 3px solid #8bd3ad;
+  outline-offset: 3px;
+}

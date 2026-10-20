@@ -57,6 +57,17 @@ const deliveryPersonSchema = new mongoose.Schema(
       trim: true,
     },
 
+    // ==========================================
+    // PASSWORD AUTHENTICATION
+    // RMA partners use phone + password.
+    // Store only a secure password hash.
+    // ==========================================
+    passwordHash: {
+      type: String,
+      default: null,
+      select: false,
+    },
+
     profile: {
       dateOfBirth: {
         type: Date,
@@ -463,6 +474,7 @@ const deliveryPersonSchema = new mongoose.Schema(
 
     // ==========================================
     // OTP AUTHENTICATION
+    // Retained for shop delivery login.
     // ==========================================
     otp: {
       type: String,
@@ -474,6 +486,10 @@ const deliveryPersonSchema = new mongoose.Schema(
       default: null,
     },
 
+    // ==========================================
+    // LOGIN SESSION
+    // Shared by shop and RMA login.
+    // ==========================================
     loginToken: {
       type: String,
       default: null,

@@ -105,10 +105,10 @@ function OwnerStep4() {
       sessionStorage.removeItem('rma_owner_terms_accepted');
       sessionStorage.removeItem('rma_owner_terms_version');
 
-      navigate('/owner/shop-created', {
+      navigate('/owner/registration-pending', {
+        replace: true,
         state: {
-          owner: data.owner,
-          paymentStatus: 'PENDING',
+          status: 'PENDING_APPROVAL',
         },
       });
     } catch (error) {

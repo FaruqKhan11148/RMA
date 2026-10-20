@@ -6,8 +6,6 @@ const deliveryAuth = require('../../../middleware/deliveryAuth');
 const {
   registerDeliveryPerson,
   registerRmaDeliveryPartner,
-  requestRmaDeliveryOtp,
-  verifyRmaDeliveryOtp,
   requestDeliveryOtp,
   logoutDeliveryPerson,
   verifyDeliveryOtp,
@@ -15,14 +13,14 @@ const {
   updateRmaDeliveryApplication,
   submitRmaDeliveryApplication,
   acceptRmaDeliveryAgreement,
+  loginRmaDeliveryPartner,
 } = require('./auth.controller');
 
 const router = express.Router();
 
 router.post('/register', ownerAuth, registerDeliveryPerson);
 router.post('/rma/register', registerRmaDeliveryPartner);
-router.post('/rma/request-otp', requestRmaDeliveryOtp);
-router.post('/rma/verify-otp', verifyRmaDeliveryOtp);
+router.post('/rma/login', loginRmaDeliveryPartner);
 router.post('/request-otp', requestDeliveryOtp);
 router.post('/logout', deliveryAuth, logoutDeliveryPerson);
 router.post('/verify-otp', verifyDeliveryOtp);

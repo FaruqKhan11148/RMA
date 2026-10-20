@@ -1,4 +1,5 @@
 const Order = require('../../../models/Order');
+const mongoose = require('mongoose');
 const DeliveryWalletTransaction = require('../../../models/DeliveryWalletTransaction');
 const {
   releaseDpWalletEarning,
@@ -600,30 +601,44 @@ async function rejectDeliveryWithdrawal(req, res) {
   try {
     const { transactionId } = req.params;
 
-    const withdrawal = await DeliveryWalletTransaction.findOne({
-      _id: transactionId,
-      type: 'WITHDRAWAL_REQUEST',
-      status: 'PROCESSING',
-    });
-
-    if (!withdrawal) {
-      return res.status(404).json({
-        message: 'Processing withdrawal request not found',
+    if (!mongoose.Types.ObjectId.isValid(transactionId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid withdrawal transaction ID',
       });
     }
 
-    withdrawal.type = 'WITHDRAWAL_FAILED';
-    withdrawal.status = 'FAILED';
-    withdrawal.processedAt = new Date();
+    // Atomic state transition: only one competing action can win.
+    const withdrawal = await DeliveryWalletTransaction.findOneAndUpdate(
+      {
+        _id: transactionId,
+        type: 'WITHDRAWAL_REQUEST',
+        status: 'PROCESSING',
+      },
+      {
+        $set: {
+          type: 'WITHDRAWAL_FAILED',
+          status: 'FAILED',
+          processedAt: new Date(),
+          'metadata.rejectedBy': 'ADMIN',
+        },
+      },
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
 
-    withdrawal.metadata = {
-      ...withdrawal.metadata,
-      rejectedBy: 'ADMIN',
-    };
-
-    await withdrawal.save();
+    if (!withdrawal) {
+      return res.status(409).json({
+        success: false,
+        message:
+          'Withdrawal is no longer processing or has already been completed or rejected',
+      });
+    }
 
     return res.status(200).json({
+      success: true,
       message: 'Delivery withdrawal rejected successfully',
       withdrawal,
     });
@@ -631,6 +646,7 @@ async function rejectDeliveryWithdrawal(req, res) {
     console.error('Reject delivery withdrawal failed:', error);
 
     return res.status(500).json({
+      success: false,
       message: 'Server error',
     });
   }

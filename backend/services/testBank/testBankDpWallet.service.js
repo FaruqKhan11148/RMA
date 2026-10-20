@@ -4,153 +4,202 @@ const DeliveryWalletTransaction = require('../../models/DeliveryWalletTransactio
 const TestBankAccount = require('../../models/TestBankAccount');
 const TestBankTransaction = require('../../models/TestBankTransaction');
 
-const {
-  releaseDeliveryEarning: releaseTestBankDeliveryEarning,
-  withdrawDeliveryPartnerMoney,
-} = require('./testBankLedger.service');
+function roundAmount(value) {
+  return Number(Number(value).toFixed(2));
+}
+
+function validateAmount(value, label) {
+  const amount = roundAmount(value);
+
+  if (!Number.isFinite(amount) || amount <= 0) {
+    throw new Error(`Invalid ${label} amount`);
+  }
+
+  return amount;
+}
+
+function generateTransactionId(prefix) {
+  return `${prefix}${Date.now()}${Math.floor(1000 + Math.random() * 9000)}`;
+}
+
+async function getActiveDpAccount(deliveryPersonId, session) {
+  const account = await TestBankAccount.findOne({
+    deliveryPersonId,
+    accountType: 'DELIVERY_PARTNER',
+    status: 'ACTIVE',
+  }).session(session);
+
+  if (!account) {
+    throw new Error(
+      'Active Test Bank account not found for this delivery partner',
+    );
+  }
+
+  return account;
+}
 
 async function releaseDpWalletEarning(transactionId) {
   if (!mongoose.Types.ObjectId.isValid(transactionId)) {
     throw new Error('Invalid delivery wallet transaction ID');
   }
 
-  const walletTransaction = await DeliveryWalletTransaction.findOne({
-    _id: transactionId,
-    type: 'ORDER_DELIVERY_EARNING',
-    status: 'PENDING',
-  });
+  const session = await mongoose.startSession();
 
-  if (!walletTransaction) {
-    throw new Error('Pending delivery earning not found');
-  }
+  try {
+    let result;
 
-  const deliveryPersonId = walletTransaction.deliveryPersonId;
+    await session.withTransaction(async () => {
+      const walletTransaction = await DeliveryWalletTransaction.findOne({
+        _id: transactionId,
+        type: 'ORDER_DELIVERY_EARNING',
+      }).session(session);
 
-  const dpAccount = await TestBankAccount.findOne({
-    deliveryPersonId,
-    accountType: 'DELIVERY_PARTNER',
-    status: 'ACTIVE',
-  });
+      if (!walletTransaction) {
+        throw new Error('Delivery earning not found');
+      }
 
-  if (!dpAccount) {
-    throw new Error(
-      'Active Test Bank account not found for this delivery partner',
-    );
-  }
+      const referenceId = walletTransaction._id.toString();
 
-  const amount = Number(Number(walletTransaction.amount).toFixed(2));
+      const existingBankTransaction = await TestBankTransaction.findOne({
+        transactionType: 'DP_WALLET_CREDIT',
+        referenceType: 'SETTLEMENT',
+        referenceId,
+      }).session(session);
 
-  if (!Number.isFinite(amount) || amount <= 0) {
-    throw new Error('Invalid delivery earning amount');
-  }
+      // Recovery path for a release already recorded in the ledger.
+      // Do not move the account balance a second time.
+      if (existingBankTransaction) {
+        if (existingBankTransaction.status !== 'COMPLETED') {
+          throw new Error(
+            `Existing DP release is in ${existingBankTransaction.status} status`,
+          );
+        }
 
-  /*
-   * Check whether this wallet earning has already
-   * created a Test Bank release transaction.
-   */
-  const existingBankTransaction = await TestBankTransaction.findOne({
-    transactionType: 'DP_WALLET_CREDIT',
-    referenceType: 'SETTLEMENT',
-    referenceId: walletTransaction._id.toString(),
-    status: 'COMPLETED',
-  });
+        if (!['PENDING', 'AVAILABLE'].includes(walletTransaction.status)) {
+          throw new Error(
+            'The earning has changed state and cannot be released',
+          );
+        }
 
-  if (existingBankTransaction) {
-    const updatedWalletTransaction =
-      await DeliveryWalletTransaction.findByIdAndUpdate(
-        walletTransaction._id,
-        {
-          $set: {
-            status: 'AVAILABLE',
-            availableAt: walletTransaction.availableAt || new Date(),
-            'metadata.testBankRelease': {
-              transactionId: existingBankTransaction.transactionId,
-              bankAccountId: dpAccount._id.toString(),
-              releasedAt:
-                walletTransaction.metadata?.testBankRelease?.releasedAt ||
-                existingBankTransaction.createdAt ||
-                new Date(),
-            },
-          },
-        },
-        {
-          new: true,
-        },
+        const dpAccount = await getActiveDpAccount(
+          walletTransaction.deliveryPersonId,
+          session,
+        );
+
+        if (walletTransaction.status === 'PENDING') {
+          walletTransaction.status = 'AVAILABLE';
+          walletTransaction.availableAt =
+            existingBankTransaction.createdAt || new Date();
+
+          walletTransaction.set('metadata.testBankRelease', {
+            transactionId: existingBankTransaction.transactionId,
+            bankAccountId: dpAccount._id.toString(),
+            releasedAt: existingBankTransaction.createdAt || new Date(),
+          });
+
+          await walletTransaction.save({ session });
+        }
+
+        result = {
+          walletTransaction,
+          bankTransaction: existingBankTransaction,
+          dpAccount,
+          alreadyProcessed: true,
+        };
+
+        return;
+      }
+
+      if (walletTransaction.status !== 'PENDING') {
+        throw new Error('Only pending delivery earnings can be released');
+      }
+
+      const amount = validateAmount(
+        walletTransaction.amount,
+        'delivery earning',
       );
 
-    return {
-      walletTransaction: updatedWalletTransaction,
-      bankTransaction: existingBankTransaction,
-      dpAccount: await TestBankAccount.findById(dpAccount._id),
-      alreadyProcessed: true,
-    };
-  }
+      const dpAccount = await getActiveDpAccount(
+        walletTransaction.deliveryPersonId,
+        session,
+      );
 
-  /*
-   * Release held Test Bank money:
-   *
-   * DP heldBalance    -> decreases
-   * DP availableBalance -> increases
-   */
-  const result = await releaseTestBankDeliveryEarning({
-    dpAccountId: dpAccount._id,
-    amount,
-    referenceId: walletTransaction._id.toString(),
-    description: `Release delivery earning for order ${
-      walletTransaction.orderId || 'N/A'
-    }`,
-    metadata: {
-      source: 'RMA_DP_WALLET_RELEASE',
-      walletTransactionId: walletTransaction._id.toString(),
-      orderId: walletTransaction.orderId,
-      deliveryPersonId: deliveryPersonId.toString(),
-    },
-  });
+      if (Number(dpAccount.heldBalance) < amount) {
+        throw new Error(
+          `Insufficient held balance. Held: ₹${Number(
+            dpAccount.heldBalance,
+          ).toFixed(2)}`,
+        );
+      }
 
-  /*
-   * Only after Test Bank succeeds do we make
-   * the RMA wallet earning AVAILABLE.
-   */
-  const updatedWalletTransaction =
-    await DeliveryWalletTransaction.findOneAndUpdate(
-      {
-        _id: walletTransaction._id,
-        type: 'ORDER_DELIVERY_EARNING',
-        status: 'PENDING',
-      },
-      {
-        $set: {
-          status: 'AVAILABLE',
-          availableAt: new Date(),
-          'metadata.testBankRelease': {
-            transactionId: result.transaction.transactionId,
-            bankAccountId: dpAccount._id.toString(),
-            releasedAt: new Date(),
+      // Update all three records in the same transaction.
+      dpAccount.heldBalance = roundAmount(
+        Number(dpAccount.heldBalance) - amount,
+      );
+
+      dpAccount.availableBalance = roundAmount(
+        Number(dpAccount.availableBalance) + amount,
+      );
+
+      await dpAccount.save({ session });
+
+      const now = new Date();
+
+      walletTransaction.status = 'AVAILABLE';
+      walletTransaction.availableAt = now;
+
+      walletTransaction.set('metadata.testBankRelease', {
+        bankAccountId: dpAccount._id.toString(),
+        releasedAt: now,
+      });
+
+      await walletTransaction.save({ session });
+
+      const [bankTransaction] = await TestBankTransaction.create(
+        [
+          {
+            transactionId: generateTransactionId('TBTDPR'),
+            debitAccountId: null,
+            creditAccountId: dpAccount._id,
+            amount,
+            transactionType: 'DP_WALLET_CREDIT',
+            status: 'COMPLETED',
+            referenceType: 'SETTLEMENT',
+            referenceId,
+            description: `Release delivery earning for order ${
+              walletTransaction.orderId || 'N/A'
+            }`,
+            metadata: {
+              source: 'RMA_DP_WALLET_RELEASE',
+              walletTransactionId: referenceId,
+              orderId: walletTransaction.orderId,
+              deliveryPersonId: walletTransaction.deliveryPersonId.toString(),
+            },
           },
-        },
-      },
-      {
-        new: true,
-      },
-    );
+        ],
+        { session },
+      );
 
-  /*
-   * If another request changed the wallet transaction
-   * while the Test Bank operation was running, don't
-   * overwrite that state.
-   */
-  if (!updatedWalletTransaction) {
-    throw new Error(
-      'Delivery earning was already released or changed by another request',
-    );
+      walletTransaction.set('metadata.testBankRelease', {
+        transactionId: bankTransaction.transactionId,
+        bankAccountId: dpAccount._id.toString(),
+        releasedAt: now,
+      });
+
+      await walletTransaction.save({ session });
+
+      result = {
+        walletTransaction,
+        bankTransaction,
+        dpAccount,
+        alreadyProcessed: false,
+      };
+    });
+
+    return result;
+  } finally {
+    await session.endSession();
   }
-
-  return {
-    walletTransaction: updatedWalletTransaction,
-    bankTransaction: result.transaction,
-    dpAccount: result.dpAccount,
-    alreadyProcessed: false,
-  };
 }
 
 async function completeDpWalletWithdrawal(transactionId) {
@@ -158,142 +207,154 @@ async function completeDpWalletWithdrawal(transactionId) {
     throw new Error('Invalid delivery wallet transaction ID');
   }
 
-  const withdrawal = await DeliveryWalletTransaction.findOne({
-    _id: transactionId,
-    type: 'WITHDRAWAL_REQUEST',
-    status: 'PROCESSING',
-  });
+  const session = await mongoose.startSession();
 
-  if (!withdrawal) {
-    throw new Error('Processing withdrawal request not found');
-  }
+  try {
+    let result;
 
-  const deliveryPersonId = withdrawal.deliveryPersonId;
+    await session.withTransaction(async () => {
+      const withdrawal = await DeliveryWalletTransaction.findOne({
+        _id: transactionId,
+        type: {
+          $in: ['WITHDRAWAL_REQUEST', 'WITHDRAWAL_COMPLETED'],
+        },
+      }).session(session);
 
-  const dpAccount = await TestBankAccount.findOne({
-    deliveryPersonId,
-    accountType: 'DELIVERY_PARTNER',
-    status: 'ACTIVE',
-  });
+      if (!withdrawal) {
+        throw new Error('Withdrawal request not found');
+      }
 
-  if (!dpAccount) {
-    throw new Error(
-      'Active Test Bank account not found for this delivery partner',
-    );
-  }
+      const referenceId = withdrawal._id.toString();
 
-  const amount = Number(Number(withdrawal.amount).toFixed(2));
+      const existingBankTransaction = await TestBankTransaction.findOne({
+        transactionType: 'DP_WITHDRAWAL',
+        referenceType: 'WITHDRAWAL',
+        referenceId,
+      }).session(session);
 
-  if (!Number.isFinite(amount) || amount <= 0) {
-    throw new Error('Invalid withdrawal amount');
-  }
+      // Recovery path for a previously completed bank debit.
+      if (existingBankTransaction) {
+        if (existingBankTransaction.status !== 'COMPLETED') {
+          throw new Error(
+            `Existing DP withdrawal is in ${existingBankTransaction.status} status`,
+          );
+        }
 
-  /*
-   * Check whether this withdrawal has already
-   * created a Test Bank withdrawal transaction.
-   */
-  const existingBankTransaction = await TestBankTransaction.findOne({
-    transactionType: 'DP_WITHDRAWAL',
-    referenceType: 'WITHDRAWAL',
-    referenceId: withdrawal._id.toString(),
-    status: 'COMPLETED',
-  });
+        if (withdrawal.type === 'WITHDRAWAL_FAILED') {
+          throw new Error('A rejected withdrawal cannot be marked completed');
+        }
 
-  if (existingBankTransaction) {
-    const updatedWithdrawal = await DeliveryWalletTransaction.findByIdAndUpdate(
-      withdrawal._id,
-      {
-        $set: {
-          type: 'WITHDRAWAL_COMPLETED',
-          status: 'COMPLETED',
-          processedAt:
-            withdrawal.processedAt ||
-            existingBankTransaction.createdAt ||
-            new Date(),
-          'metadata.testBankWithdrawal': {
+        if (withdrawal.type === 'WITHDRAWAL_REQUEST') {
+          if (withdrawal.status !== 'PROCESSING') {
+            throw new Error('Withdrawal is no longer processing');
+          }
+
+          withdrawal.type = 'WITHDRAWAL_COMPLETED';
+          withdrawal.status = 'COMPLETED';
+          withdrawal.processedAt =
+            existingBankTransaction.createdAt || new Date();
+
+          withdrawal.set('metadata.testBankWithdrawal', {
             transactionId: existingBankTransaction.transactionId,
-            bankAccountId: dpAccount._id.toString(),
-            processedAt:
-              withdrawal.metadata?.testBankWithdrawal?.processedAt ||
-              existingBankTransaction.createdAt ||
-              new Date(),
+            processedAt: existingBankTransaction.createdAt || new Date(),
+          });
+
+          await withdrawal.save({ session });
+        }
+
+        const dpAccount = await getActiveDpAccount(
+          withdrawal.deliveryPersonId,
+          session,
+        );
+
+        result = {
+          withdrawal,
+          bankTransaction: existingBankTransaction,
+          dpAccount,
+          account: dpAccount,
+          alreadyProcessed: true,
+        };
+
+        return;
+      }
+
+      if (
+        withdrawal.type !== 'WITHDRAWAL_REQUEST' ||
+        withdrawal.status !== 'PROCESSING'
+      ) {
+        throw new Error('Only processing withdrawal requests can be completed');
+      }
+
+      const amount = validateAmount(withdrawal.amount, 'withdrawal');
+
+      const dpAccount = await getActiveDpAccount(
+        withdrawal.deliveryPersonId,
+        session,
+      );
+
+      // The withdrawal amount was already reserved when the DP
+      // submitted the request. At completion, deduct only total balance.
+      // Do not deduct availableBalance a second time.
+      if (Number(dpAccount.balance) < amount) {
+        throw new Error(
+          'Insufficient Test Bank balance to complete withdrawal',
+        );
+      }
+
+      dpAccount.balance = roundAmount(Number(dpAccount.balance) - amount);
+
+      await dpAccount.save({ session });
+      const now = new Date();
+
+      withdrawal.type = 'WITHDRAWAL_COMPLETED';
+      withdrawal.status = 'COMPLETED';
+      withdrawal.processedAt = now;
+
+      await withdrawal.save({ session });
+
+      const [bankTransaction] = await TestBankTransaction.create(
+        [
+          {
+            transactionId: generateTransactionId('TBTDPW'),
+            debitAccountId: dpAccount._id,
+            creditAccountId: null,
+            amount,
+            transactionType: 'DP_WITHDRAWAL',
+            status: 'COMPLETED',
+            referenceType: 'WITHDRAWAL',
+            referenceId,
+            description: `Delivery partner withdrawal of ₹${amount.toFixed(2)}`,
+            metadata: {
+              source: 'RMA_DP_WALLET_WITHDRAWAL',
+              walletTransactionId: referenceId,
+              deliveryPersonId: withdrawal.deliveryPersonId.toString(),
+            },
           },
-        },
-      },
-      {
-        new: true,
-      },
-    );
+        ],
+        { session },
+      );
 
-    return {
-      withdrawal: updatedWithdrawal,
-      bankTransaction: existingBankTransaction,
-      dpAccount: await TestBankAccount.findById(dpAccount._id),
-      alreadyProcessed: true,
-    };
+      withdrawal.set('metadata.testBankWithdrawal', {
+        transactionId: bankTransaction.transactionId,
+        bankAccountId: dpAccount._id.toString(),
+        processedAt: now,
+      });
+
+      await withdrawal.save({ session });
+
+      result = {
+        withdrawal,
+        bankTransaction,
+        dpAccount,
+        account: dpAccount,
+        alreadyProcessed: false,
+      };
+    });
+
+    return result;
+  } finally {
+    await session.endSession();
   }
-
-  /*
-   * Actually withdraw money from Test Bank.
-   *
-   * DP availableBalance -> decreases
-   * DP balance          -> decreases
-   */
-  const result = await withdrawDeliveryPartnerMoney({
-    dpAccountId: dpAccount._id,
-    amount,
-    referenceId: withdrawal._id.toString(),
-    description: `Delivery partner withdrawal of ₹${amount.toFixed(2)}`,
-    metadata: {
-      source: 'RMA_DP_WALLET_WITHDRAWAL',
-      walletTransactionId: withdrawal._id.toString(),
-      deliveryPersonId: deliveryPersonId.toString(),
-    },
-  });
-
-  /*
-   * Only after Test Bank succeeds do we mark
-   * the RMA withdrawal as COMPLETED.
-   */
-  const updatedWithdrawal = await DeliveryWalletTransaction.findOneAndUpdate(
-    {
-      _id: withdrawal._id,
-      type: 'WITHDRAWAL_REQUEST',
-      status: 'PROCESSING',
-    },
-    {
-      $set: {
-        type: 'WITHDRAWAL_COMPLETED',
-        status: 'COMPLETED',
-        processedAt: new Date(),
-        'metadata.testBankWithdrawal': {
-          transactionId: result.transaction.transactionId,
-          bankAccountId: dpAccount._id.toString(),
-          processedAt: new Date(),
-        },
-      },
-    },
-    {
-      new: true,
-    },
-  );
-
-  /*
-   * If another request changed the withdrawal
-   * while Test Bank was processing, don't overwrite it.
-   */
-  if (!updatedWithdrawal) {
-    throw new Error(
-      'Withdrawal was already completed or changed by another request',
-    );
-  }
-
-  return {
-    withdrawal: updatedWithdrawal,
-    bankTransaction: result.transaction,
-    dpAccount: result.account,
-    alreadyProcessed: false,
-  };
 }
 
 module.exports = {

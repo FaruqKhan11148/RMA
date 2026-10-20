@@ -1,10 +1,15 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+const crypto = require('crypto');
+const OwnerPasswordReset = require('../../../models/OwnerPasswordReset');
+const { sendPasswordResetEmail } = require('../../../services/emailService');
+
 const Owner = require('../../../models/Owner');
 const Counter = require('../../../models/Counter');
 const getShopStatus = require('../../../utils/shopStatus');
 const Referral = require('../../../models/Referral');
+const LoginAttempt = require('../../../models/LoginAttempt');
 
 // REGISTER OWNER
 async function registerOwner(req, res) {
@@ -260,11 +265,13 @@ async function registerOwner(req, res) {
 
     // Send safe owner data to frontend
     return res.status(201).json({
-      message: 'Owner registered successfully',
+      message:
+        'Registration submitted successfully. Your shop is awaiting RMA admin approval.',
 
       owner: {
         id: owner._id,
         shopId: owner.shopId,
+        registrationStatus: 'PENDING_APPROVAL',
         ownerName: owner.ownerName,
         shopName: owner.shopName,
         description: owner.description,
@@ -293,7 +300,62 @@ async function registerOwner(req, res) {
   }
 }
 
+const LOGIN_MAX_ATTEMPTS = 3;
+const LOGIN_LOCK_MS = 30 * 1000;
+const LOGIN_RECORD_TTL_MS = 24 * 60 * 60 * 1000;
+
+function getLoginAttemptKey(phone, ip) {
+  const normalizedPhone = typeof phone === 'string' ? phone.trim() : '';
+
+  return `owner:${normalizedPhone}:${ip}`;
+}
+
+async function getLoginAttemptRecord(key) {
+  return LoginAttempt.findOne({ key });
+}
+
+async function recordFailedLogin(key) {
+  const now = new Date();
+
+  let attempt = await LoginAttempt.findOne({ key });
+
+  if (!attempt) {
+    try {
+      attempt = await LoginAttempt.create({
+        key,
+        failedAttempts: 1,
+        lockedUntil: null,
+        expiresAt: new Date(Date.now() + LOGIN_RECORD_TTL_MS),
+      });
+    } catch (error) {
+      // Handle simultaneous first attempts for the same key.
+      if (error.code !== 11000) {
+        throw error;
+      }
+
+      attempt = await LoginAttempt.findOne({ key });
+    }
+  } else {
+    attempt.failedAttempts += 1;
+    attempt.expiresAt = new Date(Date.now() + LOGIN_RECORD_TTL_MS);
+  }
+
+  if (attempt.failedAttempts >= LOGIN_MAX_ATTEMPTS) {
+    attempt.lockedUntil = new Date(now.getTime() + LOGIN_LOCK_MS);
+    attempt.failedAttempts = 0;
+  }
+
+  await attempt.save();
+
+  return attempt;
+}
+
+async function clearFailedLogins(key) {
+  await LoginAttempt.deleteOne({ key });
+}
+
 // OWNER LOGIN
+
 async function loginOwner(req, res) {
   try {
     const { phone, password } = req.body;
@@ -304,19 +366,88 @@ async function loginOwner(req, res) {
       });
     }
 
-    const owner = await Owner.findOne({ phone });
+    const normalizedPhone = String(phone).trim();
+    const ip = req.ip || req.socket?.remoteAddress || 'unknown';
+    const attemptKey = getLoginAttemptKey(normalizedPhone, ip);
 
-    if (!owner) {
-      return res.status(401).json({
-        message: 'Invalid phone number or password',
+    const existingAttempt = await getLoginAttemptRecord(attemptKey);
+    const now = Date.now();
+
+    if (
+      existingAttempt?.lockedUntil &&
+      existingAttempt.lockedUntil.getTime() > now
+    ) {
+      const retryAfterSeconds = Math.ceil(
+        (existingAttempt.lockedUntil.getTime() - now) / 1000,
+      );
+
+      res.set('Retry-After', String(retryAfterSeconds));
+
+      return res.status(429).json({
+        code: 'LOGIN_TEMPORARILY_LOCKED',
+        message: 'Too many failed attempts. Please try again later.',
+        retryAfterSeconds,
       });
     }
 
-    const passwordMatch = await bcrypt.compare(password, owner.password);
+    // Expired lockout: allow another set of attempts.
+    if (
+      existingAttempt?.lockedUntil &&
+      existingAttempt.lockedUntil.getTime() <= now
+    ) {
+      await LoginAttempt.deleteOne({ key: attemptKey });
+    }
 
-    if (!passwordMatch) {
+    const owner = await Owner.findOne({ phone: normalizedPhone });
+
+    const passwordMatch =
+      owner && typeof password === 'string'
+        ? await bcrypt.compare(password, owner.password)
+        : false;
+
+    if (!owner || !passwordMatch) {
+      const attempt = await recordFailedLogin(attemptKey);
+
+      if (attempt.lockedUntil) {
+        res.set('Retry-After', '30');
+
+        return res.status(429).json({
+          code: 'LOGIN_TEMPORARILY_LOCKED',
+          message: 'Too many failed attempts. Please try again in 30 seconds.',
+          retryAfterSeconds: 30,
+        });
+      }
+
       return res.status(401).json({
         message: 'Invalid phone number or password',
+        remainingAttempts: Math.max(
+          0,
+          LOGIN_MAX_ATTEMPTS - attempt.failedAttempts,
+        ),
+      });
+    }
+
+    // Correct credentials: clear previous failed attempts.
+    await clearFailedLogins(attemptKey);
+
+    // Preserve the existing owner approval checks.
+    const approvalStatus = owner.payment?.rmaApprovalStatus;
+
+    if (approvalStatus === 'PENDING') {
+      return res.status(403).json({
+        code: 'OWNER_APPROVAL_PENDING',
+        message:
+          'Your shop registration is awaiting RMA admin approval. You can log in after your registration is approved.',
+        registrationStatus: 'PENDING_APPROVAL',
+      });
+    }
+
+    if (approvalStatus === 'REJECTED') {
+      return res.status(403).json({
+        code: 'OWNER_REGISTRATION_REJECTED',
+        message:
+          'Your shop registration was not approved. Please contact RMA support for assistance.',
+        registrationStatus: 'REJECTED',
       });
     }
 
@@ -335,10 +466,13 @@ async function loginOwner(req, res) {
     return res.status(200).json({
       message: 'Login successful',
       token,
-
       owner: {
         id: owner._id,
         shopId: owner.shopId,
+        registrationStatus:
+          owner.payment?.rmaApprovalStatus === 'APPROVED'
+            ? 'APPROVED'
+            : 'LEGACY',
         ownerName: owner.ownerName,
         shopName: owner.shopName,
         description: owner.description,
@@ -482,6 +616,151 @@ async function getOwnerProfile(req, res) {
   }
 }
 
+const PASSWORD_RESET_GENERIC_MESSAGE =
+  'If an owner account exists with that email, a password-reset link will be sent shortly.';
+
+async function forgotOwnerPassword(req, res) {
+  const email =
+    typeof req.body.email === 'string'
+      ? req.body.email.trim().toLowerCase()
+      : '';
+
+  // Always return the same response to avoid revealing registered emails.
+  if (!email || email.length > 254) {
+    return res.status(200).json({
+      message: PASSWORD_RESET_GENERIC_MESSAGE,
+    });
+  }
+
+  try {
+    const owner = await Owner.findOne({ email });
+
+    if (!owner) {
+      return res.status(200).json({
+        message: PASSWORD_RESET_GENERIC_MESSAGE,
+      });
+    }
+
+    // Limit reset-email requests for this owner to one per minute.
+    const recentRequest = await OwnerPasswordReset.findOne({
+      ownerId: owner._id,
+      createdAt: { $gt: new Date(Date.now() - 60 * 1000) },
+    }).select('_id');
+
+    if (recentRequest) {
+      return res.status(200).json({
+        message: PASSWORD_RESET_GENERIC_MESSAGE,
+      });
+    }
+
+    // Invalidate previous unused reset links for this owner.
+    await OwnerPasswordReset.deleteMany({
+      ownerId: owner._id,
+    });
+
+    const rawToken = crypto.randomBytes(32).toString('hex');
+    const tokenHash = crypto
+      .createHash('sha256')
+      .update(rawToken)
+      .digest('hex');
+
+    await OwnerPasswordReset.create({
+      ownerId: owner._id,
+      tokenHash,
+      expiresAt: new Date(Date.now() + 15 * 60 * 1000),
+    });
+
+    const frontendUrl = process.env.FRONTEND_URL?.replace(/\/$/, '');
+
+    if (!frontendUrl) {
+      throw new Error('FRONTEND_URL is not configured');
+    }
+
+    const resetUrl = `${frontendUrl}/owner/reset-password?token=${encodeURIComponent(rawToken)}`;
+
+    await sendPasswordResetEmail(owner.email, resetUrl);
+
+    return res.status(200).json({
+      message: PASSWORD_RESET_GENERIC_MESSAGE,
+    });
+  } catch (error) {
+    console.error('Owner password-reset request failed:', error.message);
+
+    return res.status(200).json({
+      message: PASSWORD_RESET_GENERIC_MESSAGE,
+    });
+  }
+}
+
+async function resetOwnerPassword(req, res) {
+  const token = typeof req.body.token === 'string' ? req.body.token.trim() : '';
+  const password =
+    typeof req.body.password === 'string' ? req.body.password : '';
+
+  if (!/^[a-f0-9]{64}$/i.test(token)) {
+    return res.status(400).json({
+      message: 'This password-reset link is invalid or has expired.',
+    });
+  }
+
+  if (password.length < 8 || password.length > 128) {
+    return res.status(400).json({
+      message: 'Password must be between 8 and 128 characters.',
+    });
+  }
+
+  try {
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
+    // Atomically claim the token so it cannot be used twice.
+    const resetRecord = await OwnerPasswordReset.findOneAndUpdate(
+      {
+        tokenHash,
+        expiresAt: { $gt: new Date() },
+        usedAt: null,
+      },
+      {
+        $set: { usedAt: new Date() },
+      },
+      { returnDocument: 'after' },
+    );
+
+    if (!resetRecord) {
+      return res.status(400).json({
+        message: 'This password-reset link is invalid or has expired.',
+      });
+    }
+
+    const owner = await Owner.findById(resetRecord.ownerId);
+
+    if (!owner) {
+      return res.status(400).json({
+        message: 'This password-reset link is invalid or has expired.',
+      });
+    }
+
+    owner.password = await bcrypt.hash(password, 10);
+    owner.authVersion = (owner.authVersion || 0) + 1;
+
+    await owner.save();
+
+    // Remove outstanding reset links for this owner.
+    await OwnerPasswordReset.deleteMany({
+      ownerId: owner._id,
+    });
+
+    return res.status(200).json({
+      message: 'Your password has been reset successfully. Please log in.',
+    });
+  } catch (error) {
+    console.error('Owner password reset failed:', error.message);
+
+    return res.status(500).json({
+      message: 'Unable to reset your password right now. Please try again.',
+    });
+  }
+}
+
 module.exports = {
   registerOwner,
   loginOwner,
@@ -489,4 +768,6 @@ module.exports = {
   saveOwnerNotificationToken,
   protectedOwnerTest,
   getOwnerProfile,
+  forgotOwnerPassword,
+  resetOwnerPassword,
 };

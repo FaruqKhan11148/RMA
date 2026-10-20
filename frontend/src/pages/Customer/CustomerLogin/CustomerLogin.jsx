@@ -1,6 +1,6 @@
 import './CustomerLogin.css';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const API_URL =
@@ -23,6 +23,18 @@ function CustomerLogin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const [lockoutSeconds, setLockoutSeconds] = useState(0);
+
+  useEffect(() => {
+    if (lockoutSeconds <= 0) return;
+
+    const timer = setTimeout(() => {
+      setLockoutSeconds((seconds) => Math.max(0, seconds - 1));
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [lockoutSeconds]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -34,6 +46,8 @@ function CustomerLogin() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (loading || lockoutSeconds > 0) return;
 
     try {
       setLoading(true);
@@ -51,7 +65,10 @@ function CustomerLogin() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
+        const loginError = new Error(data.message || 'Login failed');
+        loginError.code = data.code;
+        loginError.retryAfterSeconds = Number(data.retryAfterSeconds) || 0;
+        throw loginError;
       }
 
       console.log('Customer login successful:', data.customer);
@@ -59,6 +76,13 @@ function CustomerLogin() {
       navigate(redirect || '/customer/profile');
     } catch (error) {
       console.error('Customer login error:', error);
+
+      if (
+        error.code === 'LOGIN_TEMPORARILY_LOCKED' &&
+        error.retryAfterSeconds > 0
+      ) {
+        setLockoutSeconds(error.retryAfterSeconds);
+      }
 
       setError(error.message || 'Unable to login');
     } finally {
@@ -109,9 +133,13 @@ function CustomerLogin() {
           <button
             type="submit"
             className="customer_login_button"
-            disabled={loading}
+            disabled={loading || lockoutSeconds > 0}
           >
-            {loading ? 'Logging in...' : 'Login'}
+            {lockoutSeconds > 0
+              ? `Try again in ${lockoutSeconds}s`
+              : loading
+                ? 'Logging in...'
+                : 'Login'}
           </button>
         </form>
 

@@ -38,13 +38,22 @@ function OwnerEarnings() {
         const data = await fetchOwnerEarnings(owner.id);
 
         setEarnings({
-          totalSettledEarnings: data.earnings?.totalSettledEarnings || 0,
-          todayEarnings: data.earnings?.todayEarnings || 0,
-          weekEarnings: data.earnings?.weekEarnings || 0,
-          monthEarnings: data.earnings?.monthEarnings || 0,
-          totalProductSales: data.earnings?.totalProductSales || 0,
-          totalRmaFees: data.earnings?.totalRmaFees || 0,
-          settledOrders: data.earnings?.settledOrders || 0,
+          totalSettledEarnings: Number(
+            data.earnings?.totalSettledEarnings || 0,
+          ),
+          totalOwnerEarnings: Number(data.earnings?.totalOwnerEarnings || 0),
+          pendingSettlementEarnings: Number(
+            data.earnings?.pendingSettlementEarnings || 0,
+          ),
+          pendingSettlementOrders: Number(
+            data.earnings?.pendingSettlementOrders || 0,
+          ),
+          todayEarnings: Number(data.earnings?.todayEarnings || 0),
+          weekEarnings: Number(data.earnings?.weekEarnings || 0),
+          monthEarnings: Number(data.earnings?.monthEarnings || 0),
+          totalProductSales: Number(data.earnings?.totalProductSales || 0),
+          totalRmaFees: Number(data.earnings?.totalRmaFees || 0),
+          settledOrders: Number(data.earnings?.settledOrders || 0),
           recentEarnings: data.recentEarnings || [],
         });
       } catch (error) {

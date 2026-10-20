@@ -139,6 +139,10 @@ async function getOwnerEarnings(req, res) {
     let totalRmaFees = 0;
     let settledOrders = 0;
 
+    let totalOwnerEarnings = 0;
+    let pendingSettlementEarnings = 0;
+    let pendingSettlementOrders = 0;
+
     const now = new Date();
 
     const startOfToday = new Date(now);
@@ -171,7 +175,22 @@ async function getOwnerEarnings(req, res) {
         Number(order.rmaFee || order.rmaAmount || 0).toFixed(2),
       );
 
-      const ownerAmount = Number(Number(order.ownerAmount || 0).toFixed(2));
+      const calculatedOwnerAmount = Number(
+        (productSubtotal - rmaFee).toFixed(2),
+      );
+
+      const ownerAmount = Number(
+        Number(order.ownerAmount ?? calculatedOwnerAmount).toFixed(2),
+      );
+
+      // All paid orders contribute to confirmed owner earnings.
+      // Delivery charges are excluded from owner product earnings.
+      totalOwnerEarnings += ownerAmount;
+
+      if (order.settlementStatus !== 'Settled') {
+        pendingSettlementEarnings += ownerAmount;
+        pendingSettlementOrders++;
+      }
 
       const deliveryCharge = Number(
         Number(order.deliveryCharge || 0).toFixed(2),
@@ -275,6 +294,13 @@ async function getOwnerEarnings(req, res) {
         totalProductSales: Number(totalProductSales.toFixed(2)),
         totalRmaFees: Number(totalRmaFees.toFixed(2)),
         settledOrders,
+
+        // Earnings across all eligible paid orders.
+        totalOwnerEarnings: Number(totalOwnerEarnings.toFixed(2)),
+
+        // Earnings for orders not yet marked Settled.
+        pendingSettlementEarnings: Number(pendingSettlementEarnings.toFixed(2)),
+        pendingSettlementOrders,
       },
 
       orders: {
@@ -380,8 +406,14 @@ async function getDeliveryChargePayment(req, res) {
       });
     }
 
-    const deliveryCharge = Number(order.deliveryCharge || 0);
-    const rmaFee = Number((Number(order.subtotal || 0) * 0.025).toFixed(2));
+    const deliveryCharge = Number(Number(order.deliveryCharge || 0).toFixed(2));
+
+    const productSubtotal = Number(
+      Number(order.productSubtotal ?? order.subtotal ?? 0).toFixed(2),
+    );
+
+    const rmaFee = Number((productSubtotal * 0.025).toFixed(2));
+
     const amount = Number((deliveryCharge + rmaFee).toFixed(2));
 
     if (!Number.isFinite(amount) || amount <= 0) {
@@ -572,7 +604,7 @@ async function getDeliveryChargePaymentStatus(req, res) {
       ownerId: authenticatedOwnerId,
       orderType: 'delivery',
     }).select(
-      'orderId subtotal deliveryCharge deliveryPersonId deliveryAssignmentType deliveryAssignmentStatus rmaCollectionPayment',
+      'orderId subtotal productSubtotal deliveryCharge deliveryPersonId deliveryAssignmentType deliveryAssignmentStatus rmaCollectionPayment',
     );
 
     if (!order) {
@@ -588,7 +620,11 @@ async function getDeliveryChargePaymentStatus(req, res) {
       payment: {
         orderId: order.orderId,
         deliveryCharge: Number(order.deliveryCharge || 0),
-        rmaFee: Number((Number(order.subtotal || 0) * 0.025).toFixed(2)),
+        rmaFee: Number(
+          (
+            Number(order.productSubtotal ?? order.subtotal ?? 0) * 0.025
+          ).toFixed(2),
+        ),
         amount: payment?.amount ?? null,
         upiId: payment?.upiId ?? null,
         status: payment?.status || 'PENDING',
@@ -605,7 +641,6 @@ async function getDeliveryChargePaymentStatus(req, res) {
     });
   }
 }
-
 
 async function getReferralProgress(req, res) {
   try {

@@ -14,13 +14,14 @@ function DeliveryPartnerRegister() {
 
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     setError('');
 
     const trimmedName = name.trim();
@@ -36,6 +37,16 @@ function DeliveryPartnerRegister() {
       return;
     }
 
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters long.');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
+
     try {
       setLoading(true);
 
@@ -47,13 +58,14 @@ function DeliveryPartnerRegister() {
         body: JSON.stringify({
           name: trimmedName,
           phone: trimmedPhone,
+          password,
         }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Unable to submit your application.');
+        throw new Error(data.message || 'Unable to register.');
       }
 
       navigate('/delivery/rma-login', {
@@ -61,16 +73,13 @@ function DeliveryPartnerRegister() {
         state: {
           phone: trimmedPhone,
           message:
-            'Registration successful! Verify your mobile number to continue your application.',
+            'Registration successful! Log in with your mobile number and password to continue your application.',
         },
       });
     } catch (submitError) {
       console.error('RMA delivery partner registration failed:', submitError);
 
-      setError(
-        submitError.message ||
-          'Unable to submit your application. Please try again.',
-      );
+      setError(submitError.message || 'Unable to register. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -109,6 +118,7 @@ function DeliveryPartnerRegister() {
               onChange={(event) => setName(event.target.value)}
               disabled={loading}
               autoComplete="name"
+              required
             />
           </div>
 
@@ -123,11 +133,45 @@ function DeliveryPartnerRegister() {
               placeholder="Enter 10-digit mobile number"
               value={phone}
               onChange={(event) => {
-                const value = event.target.value.replace(/\D/g, '');
-                setPhone(value);
+                setPhone(event.target.value.replace(/\D/g, '').slice(0, 10));
               }}
               disabled={loading}
               autoComplete="tel"
+              required
+            />
+          </div>
+
+          <div className="delivery_partner_field">
+            <label htmlFor="delivery-partner-password">Create Password</label>
+
+            <input
+              id="delivery-partner-password"
+              type="password"
+              placeholder="At least 8 characters"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              disabled={loading}
+              autoComplete="new-password"
+              minLength={8}
+              required
+            />
+          </div>
+
+          <div className="delivery_partner_field">
+            <label htmlFor="delivery-partner-confirm-password">
+              Confirm Password
+            </label>
+
+            <input
+              id="delivery-partner-confirm-password"
+              type="password"
+              placeholder="Re-enter your password"
+              value={confirmPassword}
+              onChange={(event) => setConfirmPassword(event.target.value)}
+              disabled={loading}
+              autoComplete="new-password"
+              minLength={8}
+              required
             />
           </div>
 
@@ -138,17 +182,19 @@ function DeliveryPartnerRegister() {
             className="delivery_partner_primary_button"
             disabled={loading}
           >
-            {loading ? 'Submitting...' : 'Apply as Delivery Partner'}
+            {loading ? 'Creating account...' : 'Create Account'}
           </button>
         </form>
 
         <div className="delivery_partner_info">
           <strong>How it works</strong>
 
-          <p>1. Submit your details.</p>
-          <p>2. RMA reviews your application.</p>
-          <p>3. Once approved, you can log in with your mobile number.</p>
-          <p>4. Receive delivery assignments from RMA shops.</p>
+          <p>
+            1. Create your account using your name, mobile number and password.
+          </p>
+          <p>2. Log in to complete your delivery partner application.</p>
+          <p>3. RMA reviews your application.</p>
+          <p>4. Once approved, you can receive delivery assignments.</p>
         </div>
       </section>
     </main>

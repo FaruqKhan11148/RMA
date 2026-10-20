@@ -3,6 +3,9 @@ const crypto = require('crypto');
 const RMA_DELIVERY_AGREEMENT_VERSION = 'RMA-DP-1.0';
 const DeliveryPerson = require('../../../models/DeliveryPerson');
 const Owner = require('../../../models/Owner');
+const LoginAttempt = require('../../../models/LoginAttempt');
+
+const bcrypt = require('bcryptjs');
 
 // ==========================================
 // REGISTER SHOP DELIVERY PERSON
@@ -84,22 +87,29 @@ const registerDeliveryPerson = async (req, res) => {
 // ==========================================
 // REGISTER RMA DELIVERY PARTNER
 // ==========================================
+
 const registerRmaDeliveryPartner = async (req, res) => {
   try {
-    const { name, phone } = req.body;
+    const { name, phone, password } = req.body;
 
     const trimmedName = name?.trim();
     const trimmedPhone = phone?.trim();
 
-    if (!trimmedName || !trimmedPhone) {
+    if (!trimmedName || !trimmedPhone || !password) {
       return res.status(400).json({
-        message: 'Name and phone are required',
+        message: 'Name, phone and password are required',
       });
     }
 
     if (!/^\d{10}$/.test(trimmedPhone)) {
       return res.status(400).json({
         message: 'Please enter a valid 10-digit mobile number',
+      });
+    }
+
+    if (typeof password !== 'string' || password.length < 8) {
+      return res.status(400).json({
+        message: 'Password must be at least 8 characters long',
       });
     }
 
@@ -113,23 +123,24 @@ const registerRmaDeliveryPartner = async (req, res) => {
       });
     }
 
+    const passwordHash = await bcrypt.hash(password, 12);
+
     const deliveryPerson = await DeliveryPerson.create({
       deliveryType: 'RMA',
       ownerId: null,
       shopId: null,
-      name,
-      phone,
+      name: trimmedName,
+      phone: trimmedPhone,
+      passwordHash,
 
       isActive: false,
       applicationStatus: 'INCOMPLETE',
       submittedAt: null,
-
       availabilityStatus: 'OFFLINE',
     });
 
     return res.status(201).json({
-      message: 'RMA delivery partner application submitted successfully',
-
+      message: 'RMA delivery partner registered successfully',
       deliveryPerson: {
         id: deliveryPerson._id,
         name: deliveryPerson.name,
@@ -149,106 +160,168 @@ const registerRmaDeliveryPartner = async (req, res) => {
   }
 };
 
-// ==========================================
-// REQUEST RMA DELIVERY PARTNER OTP
-// ==========================================
-const requestRmaDeliveryOtp = async (req, res) => {
-  try {
-    const { phone } = req.body;
+const LOGIN_MAX_ATTEMPTS = 3;
+const LOGIN_LOCK_MS = 30 * 1000;
+const LOGIN_RECORD_TTL_MS = 24 * 60 * 60 * 1000;
 
-    if (!phone) {
-      return res.status(400).json({
-        message: 'Phone number is required',
+function getRmaDeliveryLoginAttemptKey(phone, ip) {
+  const normalizedPhone = typeof phone === 'string' ? phone.trim() : '';
+
+  return `rma-delivery:${normalizedPhone}:${ip}`;
+}
+
+async function getLoginAttemptRecord(key) {
+  return LoginAttempt.findOne({ key });
+}
+
+async function recordFailedLogin(key) {
+  const now = new Date();
+
+  let attempt = await LoginAttempt.findOne({ key });
+
+  if (!attempt) {
+    try {
+      attempt = await LoginAttempt.create({
+        key,
+        failedAttempts: 1,
+        lockedUntil: null,
+        expiresAt: new Date(Date.now() + LOGIN_RECORD_TTL_MS),
       });
+    } catch (error) {
+      if (error.code !== 11000) {
+        throw error;
+      }
+
+      attempt = await LoginAttempt.findOne({ key });
+
+      if (!attempt) {
+        throw error;
+      }
+
+      attempt.failedAttempts += 1;
+      attempt.expiresAt = new Date(Date.now() + LOGIN_RECORD_TTL_MS);
     }
-
-    const deliveryPerson = await DeliveryPerson.findOne({
-      phone: phone.trim(),
-      deliveryType: 'RMA',
-    });
-
-    if (!deliveryPerson) {
-      return res.status(404).json({
-        message: 'RMA delivery partner application not found',
-      });
-    }
-
-    if (deliveryPerson.applicationStatus === 'REJECTED') {
-      return res.status(403).json({
-        message: 'Your RMA delivery partner application was rejected',
-      });
-    }
-
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-    deliveryPerson.otp = otp;
-    deliveryPerson.otpExpiresAt = new Date(Date.now() + 5 * 60 * 1000);
-
-    await deliveryPerson.save();
-
-    console.log(`RMA delivery OTP for ${deliveryPerson.phone}: ${otp}`);
-
-    return res.status(200).json({
-      message: 'OTP sent successfully',
-    });
-  } catch (error) {
-    console.error('RMA delivery OTP request error:', error);
-
-    return res.status(500).json({
-      message: 'Server error',
-    });
+  } else {
+    attempt.failedAttempts += 1;
+    attempt.expiresAt = new Date(Date.now() + LOGIN_RECORD_TTL_MS);
   }
-};
 
-// ==========================================
-// VERIFY RMA DELIVERY PARTNER OTP
-// ==========================================
-const verifyRmaDeliveryOtp = async (req, res) => {
+  if (attempt.failedAttempts >= LOGIN_MAX_ATTEMPTS) {
+    attempt.lockedUntil = new Date(now.getTime() + LOGIN_LOCK_MS);
+    attempt.failedAttempts = 0;
+  }
+
+  await attempt.save();
+
+  return attempt;
+}
+
+async function clearFailedLogins(key) {
+  await LoginAttempt.deleteOne({ key });
+}
+
+/* ==========================================
+   RMA DELIVERY PARTNER PASSWORD LOGIN
+========================================== */
+const loginRmaDeliveryPartner = async (req, res) => {
   try {
-    const { phone, otp } = req.body;
+    const { phone, password } = req.body;
 
-    if (!phone || !otp) {
-      return res.status(400).json({
-        message: 'Phone number and OTP are required',
-      });
-    }
-
-    const deliveryPerson = await DeliveryPerson.findOne({
-      phone: phone.trim(),
-      deliveryType: 'RMA',
-    });
-
-    if (!deliveryPerson) {
-      return res.status(404).json({
-        message: 'RMA delivery partner application not found',
-      });
-    }
-
-    if (deliveryPerson.applicationStatus === 'REJECTED') {
-      return res.status(403).json({
-        message: 'Your RMA delivery partner application was rejected',
-      });
-    }
+    const trimmedPhone = typeof phone === 'string' ? phone.trim() : '';
 
     if (
-      !deliveryPerson.otp ||
-      deliveryPerson.otp !== otp ||
-      !deliveryPerson.otpExpiresAt ||
-      deliveryPerson.otpExpiresAt < new Date()
+      !/^\d{10}$/.test(trimmedPhone) ||
+      typeof password !== 'string' ||
+      !password
     ) {
       return res.status(400).json({
-        message: 'Invalid or expired OTP',
+        message: 'Valid 10-digit phone number and password are required',
       });
     }
 
+    const ip = req.ip || req.socket?.remoteAddress || 'unknown';
+    const attemptKey = getRmaDeliveryLoginAttemptKey(trimmedPhone, ip);
+
+    const existingAttempt = await getLoginAttemptRecord(attemptKey);
+    const now = Date.now();
+
+    // Reject login attempts while the account/IP combination is locked.
+    if (
+      existingAttempt?.lockedUntil &&
+      existingAttempt.lockedUntil.getTime() > now
+    ) {
+      const retryAfterSeconds = Math.ceil(
+        (existingAttempt.lockedUntil.getTime() - now) / 1000,
+      );
+
+      res.set('Retry-After', String(retryAfterSeconds));
+
+      return res.status(429).json({
+        code: 'LOGIN_TEMPORARILY_LOCKED',
+        message: 'Too many failed attempts. Please try again later.',
+        retryAfterSeconds,
+      });
+    }
+
+    // Remove an expired lockout before starting a fresh attempt cycle.
+    if (
+      existingAttempt?.lockedUntil &&
+      existingAttempt.lockedUntil.getTime() <= now
+    ) {
+      await LoginAttempt.deleteOne({ key: attemptKey });
+    }
+
+    // Only find RMA delivery partners, never shop delivery accounts.
+    const deliveryPerson = await DeliveryPerson.findOne({
+      phone: trimmedPhone,
+      deliveryType: 'RMA',
+    }).select('+passwordHash');
+
+    const passwordMatch =
+      deliveryPerson?.passwordHash &&
+      (await bcrypt.compare(password, deliveryPerson.passwordHash));
+
+    // Keep the response generic so login doesn't reveal registered phones.
+    if (!deliveryPerson || !passwordMatch) {
+      const attempt = await recordFailedLogin(attemptKey);
+
+      if (attempt.lockedUntil) {
+        res.set('Retry-After', '30');
+
+        return res.status(429).json({
+          code: 'LOGIN_TEMPORARILY_LOCKED',
+          message: 'Too many failed attempts. Please try again in 30 seconds.',
+          retryAfterSeconds: 30,
+        });
+      }
+
+      return res.status(401).json({
+        message: 'Invalid phone number or password',
+        remainingAttempts: Math.max(
+          0,
+          LOGIN_MAX_ATTEMPTS - attempt.failedAttempts,
+        ),
+      });
+    }
+
+    // Correct credentials: clear failed attempts for this key.
+    await clearFailedLogins(attemptKey);
+
+    if (deliveryPerson.applicationStatus === 'REJECTED') {
+      return res.status(403).json({
+        message: 'Your RMA delivery partner application was rejected',
+      });
+    }
+
+    // Allow INCOMPLETE and UNDER_REVIEW partners to log in.
     const loginToken = crypto.randomBytes(32).toString('hex');
 
     deliveryPerson.loginToken = loginToken;
-
     deliveryPerson.loginTokenExpiresAt = new Date(
       Date.now() + 7 * 24 * 60 * 60 * 1000,
     );
 
+    // Clear any old OTP on this RMA account.
     deliveryPerson.otp = null;
     deliveryPerson.otpExpiresAt = null;
 
@@ -256,9 +329,7 @@ const verifyRmaDeliveryOtp = async (req, res) => {
 
     return res.status(200).json({
       message: 'Login successful',
-
       token: loginToken,
-
       deliveryPerson: {
         id: deliveryPerson._id,
         name: deliveryPerson.name,
@@ -269,7 +340,7 @@ const verifyRmaDeliveryOtp = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error('RMA delivery OTP verification error:', error);
+    console.error('RMA delivery partner password login error:', error);
 
     return res.status(500).json({
       message: 'Server error',
@@ -1123,8 +1194,6 @@ const submitRmaDeliveryApplication = async (req, res) => {
 module.exports = {
   registerDeliveryPerson,
   registerRmaDeliveryPartner,
-  requestRmaDeliveryOtp,
-  verifyRmaDeliveryOtp,
   requestDeliveryOtp,
   logoutDeliveryPerson,
   verifyDeliveryOtp,
@@ -1132,4 +1201,5 @@ module.exports = {
   updateRmaDeliveryApplication,
   submitRmaDeliveryApplication,
   acceptRmaDeliveryAgreement,
+  loginRmaDeliveryPartner,
 };

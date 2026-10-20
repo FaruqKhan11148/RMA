@@ -1,6 +1,6 @@
 import './OwnerLogin.css';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const API_URL =
@@ -18,8 +18,22 @@ function OwnerLogin() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const [lockoutSeconds, setLockoutSeconds] = useState(0);
+
+  useEffect(() => {
+    if (lockoutSeconds <= 0) return;
+
+    const timer = setTimeout(() => {
+      setLockoutSeconds((seconds) => Math.max(0, seconds - 1));
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [lockoutSeconds]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (lockoutSeconds > 0) return;
 
     setError('');
     setLoading(true);
@@ -39,6 +53,13 @@ function OwnerLogin() {
       const data = await response.json();
 
       if (!response.ok) {
+        if (
+          data.code === 'LOGIN_TEMPORARILY_LOCKED' &&
+          Number(data.retryAfterSeconds) > 0
+        ) {
+          setLockoutSeconds(Number(data.retryAfterSeconds));
+        }
+
         setError(data.message || 'Login failed');
         return;
       }
@@ -92,14 +113,28 @@ function OwnerLogin() {
             />
           </label>
 
+          {/* <div className="owner_forgot_password">
+            <button
+              type="button"
+              onClick={() => navigate('/owner/forgot-password')}
+              className="owner_register_link"
+            >
+              Forgot Password?
+            </button>
+          </div> */}
+
           {error && <p className="owner_login_error">{error}</p>}
 
           <button
             className="owner_login_button"
             type="submit"
-            disabled={loading}
+            disabled={loading || lockoutSeconds > 0}
           >
-            {loading ? 'Logging in...' : 'Login'}
+            {loading
+              ? 'Logging in...'
+              : lockoutSeconds > 0
+                ? `Try again in ${lockoutSeconds}s`
+                : 'Login'}
           </button>
         </form>
 

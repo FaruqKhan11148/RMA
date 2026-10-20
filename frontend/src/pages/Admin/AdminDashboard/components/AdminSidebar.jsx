@@ -22,6 +22,13 @@ function AdminSidebar({ admin, onNavigate, onLogout }) {
 
         <button
           className="admin-nav-item"
+          onClick={() => onNavigate('/admin/owner-approvals')}
+        >
+          Owner Approvals
+        </button>
+
+        <button
+          className="admin-nav-item"
           onClick={() => onNavigate('/admin/shops')}
         >
           Shops

@@ -29,6 +29,26 @@ const ownerAuth = async (req, res, next) => {
       });
     }
 
+    // Check RMA admin approval before allowing protected owner API access.
+    const approvalStatus = owner.payment?.rmaApprovalStatus;
+
+    if (approvalStatus === 'PENDING') {
+      return res.status(403).json({
+        code: 'OWNER_APPROVAL_PENDING',
+        message: 'Your shop registration is awaiting RMA admin approval.',
+        registrationStatus: 'PENDING_APPROVAL',
+      });
+    }
+
+    if (approvalStatus === 'REJECTED') {
+      return res.status(403).json({
+        code: 'OWNER_REGISTRATION_REJECTED',
+        message:
+          'Your shop registration was not approved. Please contact RMA support.',
+        registrationStatus: 'REJECTED',
+      });
+    }
+
     req.owner = owner;
 
     next();

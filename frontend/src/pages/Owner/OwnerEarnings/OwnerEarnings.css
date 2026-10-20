@@ -2104,3 +2104,169 @@
     font-size: 14px;
   }
 }
+
+/* Owner Earnings Summary */
+.owner_earnings_summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  width: 100%;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+.owner_earnings_summary_item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding: 16px;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+}
+
+.owner_earnings_summary_item span {
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.owner_earnings_summary_item strong {
+  color: #166534;
+  font-size: clamp(18px, 2.5vw, 24px);
+  font-weight: 700;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.owner_earnings_summary_item small {
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* Earnings Period Cards */
+.owner_earnings_period_cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.owner_earnings_period_card {
+  min-width: 0;
+  padding: 20px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgb(15 23 42 / 4%);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.owner_earnings_period_card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 16px rgb(15 23 42 / 8%);
+}
+
+.owner_earnings_period_icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #15803d;
+  background: #dcfce7;
+  border-radius: 11px;
+}
+
+.owner_earnings_period_card > span {
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.owner_earnings_period_card > strong {
+  color: #14532d;
+  font-size: clamp(18px, 2vw, 24px);
+  font-weight: 700;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+  .owner_earnings_period_cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .owner_earnings_period_card {
+    padding: 16px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .owner_earnings_summary {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 16px;
+  }
+
+  .owner_earnings_summary_item {
+    padding: 14px;
+    gap: 6px;
+  }
+
+  .owner_earnings_summary_item strong {
+    font-size: 21px;
+  }
+
+  .owner_earnings_period_cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .owner_earnings_period_card {
+    padding: 14px;
+    gap: 10px;
+    border-radius: 12px;
+  }
+
+  .owner_earnings_period_icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .owner_earnings_period_card > span {
+    font-size: 12px;
+  }
+
+  .owner_earnings_period_card > strong {
+    font-size: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .owner_earnings_period_card {
+    transition: none;
+  }
+
+  .owner_earnings_period_card:hover {
+    transform: none;
+  }
+}

@@ -68,6 +68,8 @@ import Appearance from './pages/Profile/Appearance/Appearance';
 import OwnerSettings from './pages/Owner/OwnerSettings/OwnerSettings';
 
 import OwnerLogin from './pages/Owner/OwnerLogin/OwnerLogin';
+import OwnerForgotPassword from './pages/Owner/OwnerLogin/OwnerForgotPassword';
+import OwnerResetPassword from './pages/Owner/OwnerLogin/OwnerResetPassword';
 import OwnerDashboard from './pages/Owner/OwnerDashboard/OwnerDashboard';
 import OwnerOrders from './pages/Owner/OwnerOrders/OwnerOrders';
 import Offers from './pages/Owner/Offers/Offers';
@@ -117,6 +119,8 @@ import OwnerShop from './pages/Owner/OwnerShop/OwnerShop';
 import AdminLogin from './pages/Admin/AdminLogin/AdminLogin';
 import AdminDashboard from './pages/Admin/AdminDashboard/AdminDashboard';
 import AdminOwners from './pages/Admin/AdminOwners/AdminOwners';
+import RegistrationPending from './pages/Owner/RegistrationPending/RegistrationPending';
+import AdminOwnerApprovals from './pages/Admin/AdminOwnerApprovals/AdminOwnerApprovals';
 import AdminCustomers from './pages/Admin/AdminCustomers/AdminCustomers';
 import AdminOrders from './pages/Admin/AdminOrders/AdminOrders';
 import AdminDelivery from './pages/Admin/AdminDelivery/AdminDelivery';
@@ -377,6 +381,15 @@ function AppLayout() {
 
           <Route path="/owner/login" element={<OwnerLogin />} />
 
+          <Route
+            path="/owner/forgot-password"
+            element={<OwnerForgotPassword />}
+          />
+
+          <Route
+            path="/owner/reset-password"
+            element={<OwnerResetPassword />}
+          />
           {/* ==================== OWNER PROTECTED ROUTES ==================== */}
 
           <Route element={<OwnerProtectedRoute />}>
@@ -581,6 +594,16 @@ function AppLayout() {
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
 
           <Route path="/admin/owners" element={<AdminOwners />} />
+
+          <Route
+            path="/owner/registration-pending"
+            element={<RegistrationPending />}
+          />
+
+          <Route
+            path="/admin/owner-approvals"
+            element={<AdminOwnerApprovals />}
+          />
 
           <Route path="/admin/customers" element={<AdminCustomers />} />
 

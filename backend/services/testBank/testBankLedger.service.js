@@ -835,6 +835,247 @@ async function transferOutOfAccount({
   }
 }
 
+async function recordDirectUpiCustomerPayment({
+  ownerAccountId,
+  amount,
+  ownerAmount,
+  rmaFee,
+  dpAmount,
+  referenceId,
+  metadata = {},
+  session: externalSession = null,
+}) {
+  const total = validateAmount(amount);
+  const ownerNet = roundAmount(ownerAmount);
+  const fee = roundAmount(rmaFee);
+  const delivery = roundAmount(dpAmount);
+
+  if (!referenceId) {
+    throw new Error('Order referenceId is required');
+  }
+
+  if (roundAmount(ownerNet + fee + delivery) !== total) {
+    throw new Error('Direct UPI payment split does not match total');
+  }
+
+  const processPayment = async (session) => {
+    const existing = await TestBankTransaction.findOne({
+      transactionType: 'DIRECT_UPI_CUSTOMER_PAYMENT',
+      referenceType: 'ORDER',
+      referenceId: String(referenceId),
+    }).session(session);
+
+    if (existing) {
+      if (
+        existing.status !== 'COMPLETED' ||
+        roundAmount(existing.amount) !== total ||
+        String(existing.creditAccountId) !== String(ownerAccountId)
+      ) {
+        throw new Error('Existing Direct UPI payment does not match');
+      }
+
+      return {
+        alreadyProcessed: true,
+        transaction: existing,
+      };
+    }
+
+    const owner = await getActiveAccount(ownerAccountId, session);
+
+    owner.balance = roundAmount(owner.balance + total);
+    owner.availableBalance = roundAmount(owner.availableBalance + ownerNet);
+    owner.heldBalance = roundAmount(owner.heldBalance + fee + delivery);
+
+    await owner.save({ session });
+
+    const [transaction] = await TestBankTransaction.create(
+      [
+        {
+          transactionId: generateTransactionId('TBTDUPC'),
+          debitAccountId: null,
+          creditAccountId: owner._id,
+          amount: total,
+          transactionType: 'DIRECT_UPI_CUSTOMER_PAYMENT',
+          status: 'COMPLETED',
+          referenceType: 'ORDER',
+          referenceId: String(referenceId),
+          description: `Direct UPI customer payment for order ${referenceId}`,
+          metadata: {
+            ...metadata,
+            ownerAmount: ownerNet,
+            rmaFee: fee,
+            dpAmount: delivery,
+          },
+        },
+      ],
+      { session },
+    );
+
+    return {
+      alreadyProcessed: false,
+      transaction,
+      owner,
+    };
+  };
+
+  // Reuse the controller's transaction when one is supplied.
+  if (externalSession) {
+    return processPayment(externalSession);
+  }
+
+  // Preserve standalone use by existing callers.
+  const session = await mongoose.startSession();
+
+  try {
+    let result;
+
+    await session.withTransaction(async () => {
+      result = await processPayment(session);
+    });
+
+    return result;
+  } finally {
+    await session.endSession();
+  }
+}
+
+async function confirmDirectUpiRmaCollection({
+  ownerAccountId,
+  rmaAccountId,
+  dpAccountId,
+  amount,
+  fee: feeInput,
+  rmaFee,
+  delivery,
+  dpAmount,
+  referenceId,
+  metadata = {},
+  session: externalSession = null,
+}) {
+  const collectionAmount = validateAmount(amount);
+  const fee = roundAmount(feeInput ?? rmaFee);
+  const deliveryAmount = roundAmount(delivery ?? dpAmount);
+
+  if (!referenceId) {
+    throw new Error('Order referenceId is required');
+  }
+
+  if (roundAmount(fee + deliveryAmount) !== collectionAmount) {
+    throw new Error('RMA collection split does not match amount');
+  }
+
+  const processCollection = async (session) => {
+    const existing = await TestBankTransaction.findOne({
+      transactionType: 'DIRECT_UPI_RMA_COLLECTION',
+      referenceType: 'ORDER',
+      referenceId: String(referenceId),
+    }).session(session);
+
+    if (existing) {
+      const existingMetadata = existing.metadata || {};
+
+      if (
+        existing.status !== 'COMPLETED' ||
+        roundAmount(existing.amount) !== collectionAmount ||
+        String(existing.debitAccountId) !== String(ownerAccountId) ||
+        String(existing.creditAccountId) !== String(rmaAccountId) ||
+        roundAmount(existingMetadata.rmaFee) !== fee ||
+        roundAmount(existingMetadata.dpAmount) !== deliveryAmount ||
+        String(existingMetadata.dpAccountId) !== String(dpAccountId)
+      ) {
+        const error = new Error(
+          'Existing RMA collection does not match this order payment',
+        );
+        error.statusCode = 409;
+        throw error;
+      }
+
+      return {
+        alreadyProcessed: true,
+        transaction: existing,
+      };
+    }
+
+    const owner = await getActiveAccount(ownerAccountId, session);
+    const rma = await getActiveAccount(rmaAccountId, session);
+    const dp = await getActiveAccount(dpAccountId, session);
+
+    if (owner.heldBalance < collectionAmount) {
+      const error = new Error(
+        'Owner held balance is insufficient for RMA collection',
+      );
+      error.statusCode = 409;
+      throw error;
+    }
+
+    owner.balance = roundAmount(owner.balance - collectionAmount);
+    owner.heldBalance = roundAmount(owner.heldBalance - collectionAmount);
+
+    rma.balance = roundAmount(rma.balance + collectionAmount);
+    rma.availableBalance = roundAmount(rma.availableBalance + fee);
+    rma.heldBalance = roundAmount(rma.heldBalance + deliveryAmount);
+
+    dp.balance = roundAmount(dp.balance + deliveryAmount);
+    dp.heldBalance = roundAmount(dp.heldBalance + deliveryAmount);
+
+    await owner.save({ session });
+    await rma.save({ session });
+    await dp.save({ session });
+
+    const [transaction] = await TestBankTransaction.create(
+      [
+        {
+          transactionId: generateTransactionId('TBTDUPR'),
+          debitAccountId: owner._id,
+          creditAccountId: rma._id,
+          amount: collectionAmount,
+          transactionType: 'DIRECT_UPI_RMA_COLLECTION',
+          status: 'COMPLETED',
+          referenceType: 'ORDER',
+          referenceId: String(referenceId),
+          description: `Admin-confirmed Direct UPI RMA collection for order ${referenceId}`,
+          metadata: {
+            ...metadata,
+            rmaFee: fee,
+            dpAmount: deliveryAmount,
+            dpAccountId: String(dp._id),
+            adminConfirmed: true,
+          },
+        },
+      ],
+      { session },
+    );
+
+    return {
+      alreadyProcessed: false,
+      transaction,
+      owner,
+      rma,
+      dp,
+    };
+  };
+
+  // Participate in the controller's transaction when supplied.
+  if (externalSession) {
+    return processCollection(externalSession);
+  }
+
+  // Preserve standalone use by other callers.
+  const session = await mongoose.startSession();
+
+  try {
+    let result;
+
+    await session.withTransaction(async () => {
+      result = await processCollection(session);
+    });
+
+    return result;
+  } finally {
+    await session.endSession();
+  }
+}
+
 module.exports = {
   receiveCustomerPayment,
   settleOwnerAmount,
@@ -849,4 +1090,6 @@ module.exports = {
   transferOutOfAccount,
   creditOwnerOffer,
   creditReferralReward,
+  recordDirectUpiCustomerPayment,
+  confirmDirectUpiRmaCollection,
 };

@@ -8,6 +8,12 @@ const Owner = require('../../../models/Owner');
 const Customer = require('../../../models/Customer');
 const DeliveryPerson = require('../../../models/DeliveryPerson');
 
+const TestBankAccount = require('../../../models/TestBankAccount');
+
+const {
+  recordDirectUpiCustomerPayment,
+} = require('../../../services/testBank/testBankLedger.service');
+
 const PaymentAuditLog = require('../../../models/PaymentAuditLog');
 const {
   recordPaymentAudit,
@@ -694,6 +700,83 @@ async function confirmDirectUpiPayment(req, res) {
 
       order.paymentStatus = 'Paid';
       order.paidAt = confirmedAt;
+
+      // Record the Direct UPI split in TestBank using this same
+      // MongoDB transaction as the order confirmation.
+      const productSubtotal = Number(
+        Number(order.productSubtotal ?? order.subtotal ?? 0).toFixed(2),
+      );
+
+      const rmaFee = Number(
+        Number(order.rmaFee ?? order.rmaAmount ?? 0).toFixed(2),
+      );
+
+      const ownerAmount = Number(
+        Number(order.ownerAmount ?? productSubtotal - rmaFee).toFixed(2),
+      );
+
+      const dpAmount = Number(Number(order.deliveryCharge ?? 0).toFixed(2));
+
+      const customerPaymentAmount = Number(
+        Number(order.customerPayableAmount ?? order.totalPrice ?? 0).toFixed(2),
+      );
+
+      if (
+        !Number.isFinite(productSubtotal) ||
+        !Number.isFinite(rmaFee) ||
+        !Number.isFinite(ownerAmount) ||
+        !Number.isFinite(dpAmount) ||
+        !Number.isFinite(customerPaymentAmount) ||
+        productSubtotal <= 0 ||
+        rmaFee < 0 ||
+        ownerAmount < 0 ||
+        dpAmount < 0
+      ) {
+        const error = new Error('Invalid Direct UPI payment breakdown');
+        error.statusCode = 400;
+        throw error;
+      }
+
+      if (
+        Number((ownerAmount + rmaFee + dpAmount).toFixed(2)) !==
+        customerPaymentAmount
+      ) {
+        const error = new Error(
+          'Direct UPI payment breakdown does not match the customer payment amount',
+        );
+        error.statusCode = 400;
+        throw error;
+      }
+
+      const ownerAccount = await TestBankAccount.findOne({
+        ownerId: order.ownerId,
+        accountType: 'OWNER',
+        status: 'ACTIVE',
+      }).session(session);
+
+      if (!ownerAccount) {
+        const error = new Error(
+          'The owner TestBank account is not available. Payment confirmation was not saved.',
+        );
+        error.statusCode = 409;
+        throw error;
+      }
+
+      await recordDirectUpiCustomerPayment({
+        ownerAccountId: ownerAccount._id,
+        amount: customerPaymentAmount,
+        ownerAmount,
+        rmaFee,
+        dpAmount,
+        referenceId: order.orderId,
+        metadata: {
+          paymentProvider: 'DIRECT_UPI',
+          paymentMethod: 'DIRECT_UPI',
+          ownerId: String(order.ownerId),
+          customerReference: reference?.trim() || null,
+        },
+        session,
+      });
 
       await order.save({ session });
 
