@@ -36,27 +36,19 @@ function OwnerEarnings() {
         }
 
         const data = await fetchOwnerEarnings(owner.id);
+        const apiEarnings = data.earnings || {};
 
         setEarnings({
-          totalSettledEarnings: Number(
-            data.earnings?.totalSettledEarnings || 0,
-          ),
-          totalOwnerEarnings: Number(data.earnings?.totalOwnerEarnings || 0),
-          pendingSettlementEarnings: Number(
-            data.earnings?.pendingSettlementEarnings || 0,
-          ),
-          pendingSettlementOrders: Number(
-            data.earnings?.pendingSettlementOrders || 0,
-          ),
-          todayEarnings: Number(data.earnings?.todayEarnings || 0),
-          weekEarnings: Number(data.earnings?.weekEarnings || 0),
-          monthEarnings: Number(data.earnings?.monthEarnings || 0),
-          totalProductSales: Number(data.earnings?.totalProductSales || 0),
-          totalRmaFees: Number(data.earnings?.totalRmaFees || 0),
-          settledOrders: Number(data.earnings?.settledOrders || 0),
+          totalOwnerEarnings: Number(apiEarnings.totalOwnerEarnings || 0),
+          todayEarnings: Number(apiEarnings.todayEarnings || 0),
+          weekEarnings: Number(apiEarnings.weekEarnings || 0),
+          monthEarnings: Number(apiEarnings.monthEarnings || 0),
+          totalProductSales: Number(apiEarnings.totalProductSales || 0),
+          totalRmaFees: Number(apiEarnings.totalRmaFees || 0),
+          totalOrders: Number(data.orders?.total || 0),
           recentEarnings: data.recentEarnings || [],
         });
-      } catch (error) { 
+      } catch (error) {
         console.error('Fetch owner earnings failed:', error);
         setError(error.message || 'Failed to load earnings');
       } finally {
@@ -85,7 +77,9 @@ function OwnerEarnings() {
   return (
     <main className="owner_earnings_page">
       <OwnerEarningsHeader />
+
       <OwnerEarningsTotal earnings={earnings} />
+
       <OwnerEarningsCards earnings={earnings} />
 
       <section className="owner_earnings_navigation">
@@ -99,10 +93,12 @@ function OwnerEarnings() {
             onClick={() => navigate('/owner/earnings/recent')}
           >
             <span className="owner_earnings_navigation_icon">₹</span>
+
             <span className="owner_earnings_navigation_text">
               <strong>Recent Earnings</strong>
               <small>View recent orders and earning details</small>
             </span>
+
             <span className="owner_earnings_navigation_arrow">→</span>
           </button>
 
@@ -112,10 +108,12 @@ function OwnerEarnings() {
             onClick={() => navigate('/owner/offers/referrals')}
           >
             <span className="owner_earnings_navigation_icon">↗</span>
+
             <span className="owner_earnings_navigation_text">
               <strong>Referral Offer Earnings</strong>
               <small>Track referrals and referral rewards</small>
             </span>
+
             <span className="owner_earnings_navigation_arrow">→</span>
           </button>
 
@@ -125,10 +123,12 @@ function OwnerEarnings() {
             onClick={() => navigate('/owner/offers')}
           >
             <span className="owner_earnings_navigation_icon">25+</span>
+
             <span className="owner_earnings_navigation_text">
               <strong>Daily Order Offer</strong>
               <small>Check your daily order target and rewards</small>
             </span>
+
             <span className="owner_earnings_navigation_arrow">→</span>
           </button>
         </div>

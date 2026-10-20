@@ -1,9 +1,4 @@
-import {
-  CalendarDays,
-  PackageCheck,
-  Clock3,
-  CalendarRange,
-} from 'lucide-react';
+import { CalendarDays, Clock3, CalendarRange, Wallet } from 'lucide-react';
 
 function OwnerEarningsCards({ earnings }) {
   const formatAmount = (amount) => `₹${Number(amount || 0).toFixed(2)}`;
@@ -28,18 +23,18 @@ function OwnerEarningsCards({ earnings }) {
 
       <div className="owner_earnings_period_card">
         <div className="owner_earnings_period_icon">
-          <PackageCheck size={19} />
+          <Wallet size={19} />
         </div>
-        <span>Settled Orders</span>
-        <strong>{Number(earnings?.settledOrders || 0)}</strong>
+        <span>Pending Payment to RMA</span>
+        <strong>{formatAmount(earnings?.pendingRmaPayment)}</strong>
       </div>
 
       <div className="owner_earnings_period_card">
         <div className="owner_earnings_period_icon">
           <Clock3 size={19} />
         </div>
-        <span>Pending Settlement</span>
-        <strong>{Number(earnings?.pendingSettlementOrders || 0)} orders</strong>
+        <span>Orders Awaiting Confirmation</span>
+        <strong>{Number(earnings?.pendingRmaPaymentOrders || 0)} orders</strong>
       </div>
     </section>
   );

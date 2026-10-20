@@ -5,13 +5,10 @@ function OwnerEarningsTotal({ earnings }) {
 
   const todayEarnings = Number(earnings?.todayEarnings || 0);
   const totalOwnerEarnings = Number(earnings?.totalOwnerEarnings || 0);
-  const pendingSettlementEarnings = Number(
-    earnings?.pendingSettlementEarnings || 0,
+  const pendingRmaPayment = Number(earnings?.pendingRmaPayment || 0);
+  const pendingRmaPaymentOrders = Number(
+    earnings?.pendingRmaPaymentOrders || 0,
   );
-  const pendingSettlementOrders = Number(
-    earnings?.pendingSettlementOrders || 0,
-  );
-  const settledOrders = Number(earnings?.settledOrders || 0);
 
   return (
     <section className="owner_earnings_total">
@@ -19,21 +16,15 @@ function OwnerEarningsTotal({ earnings }) {
         <IndianRupee size={24} />
       </div>
 
-      <span className="owner_earnings_total_label">
-        Today's Settled Earnings
-      </span>
+      <span className="owner_earnings_total_label">Today's Earnings</span>
 
       <strong className="owner_earnings_total_amount">
         {formatAmount(todayEarnings)}
       </strong>
 
       <p className="owner_earnings_total_description">
-        Your earnings from orders settled today.
+        Your earnings from paid orders.
       </p>
-
-      <span className="owner_earnings_total_orders">
-        {settledOrders} settled orders
-      </span>
 
       <div className="owner_earnings_summary">
         <div className="owner_earnings_summary_item">
@@ -42,9 +33,13 @@ function OwnerEarningsTotal({ earnings }) {
         </div>
 
         <div className="owner_earnings_summary_item">
-          <span>Pending Settlement Earnings</span>
-          <strong>{formatAmount(pendingSettlementEarnings)}</strong>
-          <small>{pendingSettlementOrders} orders pending settlement</small>
+          <span>Pending Payment to RMA</span>
+          <strong>{formatAmount(pendingRmaPayment)}</strong>
+          <small>
+            {pendingRmaPaymentOrders}{' '}
+            {pendingRmaPaymentOrders === 1 ? 'order' : 'orders'} awaiting
+            confirmation
+          </small>
         </div>
       </div>
     </section>

@@ -122,6 +122,8 @@ async function getOwnerEarnings(req, res) {
       archivedRecords.map((record) => record.orderId),
     );
 
+    // Include paid orders from the existing payment workflow
+    // and confirmed DIRECT_UPI orders.
     const orders = await Order.find({
       ownerId: owner._id,
       paymentStatus: 'Paid',
@@ -133,23 +135,19 @@ async function getOwnerEarnings(req, res) {
         },
         {
           paymentProvider: 'DIRECT_UPI',
-          ownerPaymentConfirmation: 'CONFIRMED',
+          paymentMethod: 'DIRECT_UPI',
+          'ownerPaymentConfirmation.status': 'CONFIRMED',
         },
       ],
     }).sort({ createdAt: -1 });
 
-    let totalSettledEarnings = 0;
     let todayEarnings = 0;
     let weekEarnings = 0;
     let monthEarnings = 0;
 
     let totalProductSales = 0;
     let totalRmaFees = 0;
-    let settledOrders = 0;
-
     let totalOwnerEarnings = 0;
-    let pendingSettlementEarnings = 0;
-    let pendingSettlementOrders = 0;
 
     const now = new Date();
 
@@ -162,6 +160,7 @@ async function getOwnerEarnings(req, res) {
     const startOfWeek = new Date(startOfToday);
     const day = startOfWeek.getDay();
     const diff = day === 0 ? 6 : day - 1;
+
     startOfWeek.setDate(startOfWeek.getDate() - diff);
 
     const startOfNextWeek = new Date(startOfWeek);
@@ -191,13 +190,29 @@ async function getOwnerEarnings(req, res) {
         Number(order.ownerAmount ?? calculatedOwnerAmount).toFixed(2),
       );
 
-      // All paid orders contribute to confirmed owner earnings.
-      // Delivery charges are excluded from owner product earnings.
+      // Earnings are based on eligible paid orders,
+      // not on a settlement status.
       totalOwnerEarnings += ownerAmount;
+      totalProductSales += productSubtotal;
+      totalRmaFees += rmaFee;
 
-      if (order.settlementStatus !== 'Settled') {
-        pendingSettlementEarnings += ownerAmount;
-        pendingSettlementOrders++;
+      // Use the completion date, falling back to creation date.
+      const earningsDate = order.completedAt || order.createdAt;
+
+      if (earningsDate) {
+        const date = new Date(earningsDate);
+
+        if (date >= startOfToday && date < startOfTomorrow) {
+          todayEarnings += ownerAmount;
+        }
+
+        if (date >= startOfWeek && date < startOfNextWeek) {
+          weekEarnings += ownerAmount;
+        }
+
+        if (date >= startOfMonth && date < startOfNextMonth) {
+          monthEarnings += ownerAmount;
+        }
       }
 
       const deliveryCharge = Number(
@@ -216,35 +231,8 @@ async function getOwnerEarnings(req, res) {
         Number(order.customerPayableAmount || order.totalPrice || 0).toFixed(2),
       );
 
-      // Financial totals always include archived orders.
-      if (order.settlementStatus === 'Settled') {
-        settledOrders++;
-
-        totalSettledEarnings += ownerAmount;
-        totalProductSales += productSubtotal;
-        totalRmaFees += rmaFee;
-
-        const settlementDate =
-          order.settledAt || order.completedAt || order.createdAt;
-
-        if (settlementDate) {
-          const date = new Date(settlementDate);
-
-          if (date >= startOfToday && date < startOfTomorrow) {
-            todayEarnings += ownerAmount;
-          }
-
-          if (date >= startOfWeek && date < startOfNextWeek) {
-            weekEarnings += ownerAmount;
-          }
-
-          if (date >= startOfMonth && date < startOfNextMonth) {
-            monthEarnings += ownerAmount;
-          }
-        }
-      }
-
-      // Archive hides the order only from the recent list.
+      // Archived orders count toward totals but are hidden
+      // from the Recent Earnings list.
       if (archivedOrderIds.has(order.orderId)) {
         archivedOrders++;
         return;
@@ -255,10 +243,8 @@ async function getOwnerEarnings(req, res) {
 
         orderDate: order.createdAt,
         completedAt: order.completedAt,
-        settledAt: order.settledAt,
 
         orderStatus: order.status,
-        settlementStatus: order.settlementStatus,
         paymentStatus: order.paymentStatus,
 
         productSubtotal,
@@ -295,29 +281,17 @@ async function getOwnerEarnings(req, res) {
 
     return res.status(200).json({
       earnings: {
-        totalSettledEarnings: Number(totalSettledEarnings.toFixed(2)),
+        totalOwnerEarnings: Number(totalOwnerEarnings.toFixed(2)),
         todayEarnings: Number(todayEarnings.toFixed(2)),
         weekEarnings: Number(weekEarnings.toFixed(2)),
         monthEarnings: Number(monthEarnings.toFixed(2)),
         totalProductSales: Number(totalProductSales.toFixed(2)),
         totalRmaFees: Number(totalRmaFees.toFixed(2)),
-        settledOrders,
-
-        // Earnings across all eligible paid orders.
-        totalOwnerEarnings: Number(totalOwnerEarnings.toFixed(2)),
-
-        // Earnings for orders not yet marked Settled.
-        pendingSettlementEarnings: Number(pendingSettlementEarnings.toFixed(2)),
-        pendingSettlementOrders,
       },
 
       orders: {
-        // Counts all eligible paid orders, including archived ones.
         total: orders.length,
-        settled: settledOrders,
         archived: archivedOrders,
-
-        // Counts records currently visible in Recent Earnings.
         visible: recentEarnings.length,
       },
 
