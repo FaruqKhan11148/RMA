@@ -8,7 +8,7 @@ function HelpSupportContact() {
       </div>
 
       <div className="support_contact_list">
-        <a className="support_contact_item" href="tel:+919999999999">
+        <a className="support_contact_item" href="tel:+916363120602">
           <div className="support_contact_icon">☎</div>
 
           <div className="support_contact_text">

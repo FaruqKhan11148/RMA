@@ -8,7 +8,7 @@ function CustomerSupport() {
       </div>
 
       <div className="contact_cards">
-        <a href="tel:+919999999999" className="contact_card">
+        <a href="tel:+916363120602" className="contact_card">
           <div className="contact_card_icon">☎</div>
 
           <div className="contact_card_content">
@@ -19,7 +19,7 @@ function CustomerSupport() {
 
           <span className="contact_card_arrow">›</span>
         </a>
-        
+
         <a
           href="mailto:rma.customer.support@gmail.com"
           className="contact_card"
