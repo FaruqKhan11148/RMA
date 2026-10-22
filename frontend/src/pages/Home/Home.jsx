@@ -9,7 +9,6 @@ import NearbyShops from './components/NearbyShops';
 import PopularProducts from './components/PopularProducts';
 import HomeExploreEnd from './components/HomeExploreEnd';
 import HomeLocationSheet from './components/HomeLocationSheet';
-import MapPicker from '../../components/map/MapPicker';
 
 import {
   fetchSavedAddresses as fetchSavedAddressesApi,
