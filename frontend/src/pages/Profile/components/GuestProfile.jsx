@@ -1,3 +1,5 @@
+import RMAPromotion from './RMAPromotion';
+
 import {
   ShoppingBag,
   Languages,
@@ -138,6 +140,7 @@ function GuestProfile({ t, navigate, setLoginSheetOpen }) {
           <span className="profile_item_arrow">›</span>
         </button>
       </section>
+      <RMAPromotion />
     </main>
   );
 }

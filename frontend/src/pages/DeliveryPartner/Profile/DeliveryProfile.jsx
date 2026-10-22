@@ -1,3 +1,5 @@
+import RMAPromotion from './RMAPromotion';
+
 import {
   UserRound,
   Phone,
@@ -244,6 +246,9 @@ function DeliveryProfile() {
       <footer className="delivery_profile_footer">
         RMA · Delivery Partner
       </footer>
+
+      {/* RMA promotional poster */}
+      <RMAPromotion />
     </main>
   );
 }

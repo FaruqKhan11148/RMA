@@ -61,6 +61,11 @@ function OwnerSettings() {
           path: '/owner/settings/shop/location',
         },
         {
+          title: 'Opening Hours',
+          description: 'Set your daily opening and closing times',
+          path: '/owner/settings/shop/opening-hours',
+        },
+        {
           title: 'Shop Status',
           description: 'Open or close your shop',
           path: '/owner/settings/shop/open-closed',
@@ -88,7 +93,7 @@ function OwnerSettings() {
 
     {
       title: 'Delivery',
-      description: 'Configure your delivery and pickup options',
+      description: 'Manage delivery, pickup, and delivery personnel',
       items: [
         {
           title: 'Delivery Available',
@@ -99,12 +104,6 @@ function OwnerSettings() {
           title: 'Pickup Available',
           description: 'Enable or disable shop pickup',
           path: '/owner/settings/delivery/pickup',
-        },
-        {
-          title: 'Delivery Settings',
-          description:
-            'Configure radius, charges, minimum order and delivery time',
-          path: '/owner/settings/delivery/settings',
         },
         {
           title: 'Delivery Person',

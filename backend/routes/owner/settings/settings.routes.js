@@ -15,6 +15,7 @@ const {
   updateDeliveryAvailability,
   updatePickupAvailability,
   updateDeliverySettings,
+  updateOpeningHours,
   updateOwnerPayment,
 } = require('./settings.controller');
 
@@ -37,5 +38,6 @@ router.patch(
 router.patch('/settings/pickup-available', ownerAuth, updatePickupAvailability);
 router.patch('/settings/delivery-settings', ownerAuth, updateDeliverySettings);
 router.patch('/settings/payment', ownerAuth, updateOwnerPayment);
+router.patch('/settings/opening-hours', ownerAuth, updateOpeningHours);
 
 module.exports = router;

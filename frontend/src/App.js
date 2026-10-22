@@ -78,6 +78,7 @@ import ShopCreated from './pages/Owner/ShopCreated/ShopCreated';
 import Location from './pages/Owner/OwnerSettings/Shop/Location';
 import OpenClosed from './pages/Owner/OwnerSettings/Shop/OpenClosed';
 import ShopClosed from './pages/ShopClosed/ShopClosed';
+import OpeningHours from './pages/Owner/OwnerSettings/Shop/OpeningHours';
 
 import DeliveryAvailable from './pages/Owner/OwnerSettings/Delivery/DeliveryAvailable';
 import PickupAvailable from './pages/Owner/OwnerSettings/Delivery/PickupAvailable';
@@ -446,6 +447,11 @@ function AppLayout() {
             <Route
               path="/owner/settings/shop/open-closed"
               element={<OpenClosed />}
+            />
+
+            <Route
+              path="/owner/settings/shop/opening-hours"
+              element={<OpeningHours />}
             />
 
             {/* ---------- DELIVERY SETTINGS ---------- */}

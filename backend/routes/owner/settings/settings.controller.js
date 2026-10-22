@@ -865,6 +865,73 @@ async function updateOwnerPayment(req, res) {
   }
 }
 
+// UPDATE SHOP OPENING HOURS
+async function updateOpeningHours(req, res) {
+  try {
+    const { openingTime, closingTime, shopStatusMode } = req.body;
+
+    const timeRegex = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
+
+    if (!timeRegex.test(openingTime)) {
+      return res.status(400).json({
+        message: 'Opening time must be in HH:mm format',
+      });
+    }
+
+    if (!timeRegex.test(closingTime)) {
+      return res.status(400).json({
+        message: 'Closing time must be in HH:mm format',
+      });
+    }
+
+    if (!['auto', 'open', 'closed'].includes(shopStatusMode)) {
+      return res.status(400).json({
+        message: 'Invalid shop status mode',
+      });
+    }
+
+    const updatedOwner = await Owner.findByIdAndUpdate(
+      req.owner._id,
+      {
+        $set: {
+          'deliverySettings.openingTime': openingTime,
+          'deliverySettings.closingTime': closingTime,
+          'deliverySettings.shopStatusMode': shopStatusMode,
+        },
+      },
+      {
+        new: true,
+        runValidators: true,
+      },
+    ).select('-password');
+
+    if (!updatedOwner) {
+      return res.status(404).json({
+        message: 'Owner account not found',
+      });
+    }
+
+    return res.status(200).json({
+      message: 'Opening hours updated successfully',
+      owner: {
+        id: updatedOwner._id,
+        shopId: updatedOwner.shopId,
+        shopName: updatedOwner.shopName,
+        isOpen: updatedOwner.isOpen,
+        statusOverride: updatedOwner.statusOverride,
+        statusOverrideAt: updatedOwner.statusOverrideAt,
+        deliverySettings: updatedOwner.deliverySettings,
+      },
+    });
+  } catch (error) {
+    console.error('Update opening hours failed:', error);
+
+    return res.status(500).json({
+      message: 'Failed to update opening hours',
+    });
+  }
+}
+
 module.exports = {
   updateOwnerPhone,
   updateOwnerEmail,
@@ -878,5 +945,6 @@ module.exports = {
   updateDeliveryAvailability,
   updatePickupAvailability,
   updateDeliverySettings,
+  updateOpeningHours,
   updateOwnerPayment,
 };

@@ -212,7 +212,7 @@ function Navbar() {
 
             <p>
               But don't worry — we're working on it and plan to make it
-              available before <strong>1 October 2026</strong>.
+              available before <strong>20 November 2026</strong>.
             </p>
 
             <p>
