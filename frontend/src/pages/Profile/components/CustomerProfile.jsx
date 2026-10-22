@@ -16,6 +16,7 @@ import {
 
 import RoleSwitchSheet from './RoleSwitchSheet';
 import DeliveryLoginTypeSheet from './DeliveryLoginTypeSheet';
+import RMAPromotion from './RMAPromotion';
 
 function CustomerProfile({
   customer,
@@ -245,6 +246,16 @@ function CustomerProfile({
 
         <span className="profile_item_arrow">›</span>
       </button>
+
+      <RMAPromotion />
+
+      <RoleSwitchSheet
+        switchRole={switchRole}
+        switchingRole={switchingRole}
+        currentRole="customer"
+        onCancel={() => setSwitchRole(null)}
+        onConfirm={handleRoleSwitch}
+      />
 
       <RoleSwitchSheet
         switchRole={switchRole}

@@ -20,7 +20,8 @@ import 'leaflet/dist/leaflet.css';
 // Constants
 // =========================
 
-const fallbackPosition = [14.6224, 75.6295];
+// const fallbackPosition = [14.6224, 75.6295];
+const fallbackPosition = [12.989303, 77.588629];
 
 const MAPTILER_KEY = process.env.REACT_APP_MAPTILER_KEY;
 
