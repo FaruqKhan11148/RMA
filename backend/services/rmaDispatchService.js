@@ -97,20 +97,6 @@ async function findEligibleRmaDeliveryPartners(
     return [];
   }
 
-  console.log('[RMA DISPATCH] Shop pickup:', {
-    latitude: shopLatitude,
-    longitude: shopLongitude,
-  });
-
-  console.log(
-    '[RMA DISPATCH] Eligible-status partners:',
-    partners.map((partner) => ({
-      id: String(partner._id),
-      availabilityStatus: partner.availabilityStatus,
-      currentLocation: partner.currentLocation,
-    })),
-  );
-
   const activeOrderCounts = await getActiveOrderCounts(
     partners.map((partner) => partner._id),
   );

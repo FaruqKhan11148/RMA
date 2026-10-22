@@ -13,7 +13,6 @@ async function checkRefundIndexes() {
 
     const indexes = await PaymentRefund.collection.indexes();
 
-    console.log('\nPaymentRefund indexes:');
     console.dir(
       indexes.filter(
         (index) =>

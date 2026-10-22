@@ -19,7 +19,6 @@ const {
 
 async function handlePayUSuccess(req, res) {
   try {
-    console.log('PayU SUCCESS CALLBACK:', req.body);
 
     const data = req.body;
 
@@ -184,11 +183,6 @@ async function handlePayUSuccess(req, res) {
         },
       });
 
-      console.log('TestBank customer payment recorded:', {
-        orderId: order.orderId,
-        amount: customerPaymentAmount,
-        payuAccount: payuAccount.accountNumber,
-      });
     } catch (testBankError) {
       console.error(
         `TestBank customer payment recording failed for ${order.orderId}:`,
@@ -217,8 +211,6 @@ async function handlePayUSuccess(req, res) {
         );
       }
     }
-
-    console.log('PayU payment verified successfully:', order.orderId);
 
     return res.redirect(`${FRONTEND_URL}/delivery-status/${order.orderId}`);
   } catch (error) {

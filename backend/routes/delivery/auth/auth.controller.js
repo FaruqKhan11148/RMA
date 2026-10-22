@@ -392,7 +392,7 @@ const requestDeliveryOtp = async (req, res) => {
 
     await deliveryPerson.save();
 
-    console.log(`Delivery login OTP for ${phone}: ${otp}`);
+    // console.log(`Delivery login OTP for ${phone}: ${otp}`);
 
     return res.status(200).json({
       message: 'OTP sent successfully',

@@ -105,19 +105,6 @@ async function initiatePayURefund(order, refundAmount) {
       ? 'https://secure.payu.in/merchant/postservice.php?form=2'
       : 'https://test.payu.in/merchant/postservice.php?form=2';
 
-  console.log('========== PAYU REFUND REQUEST ==========');
-
-  console.log({
-    orderId: order.orderId,
-    paymentId: order.paymentId,
-    originalPaidAmount: paidAmount.toFixed(2),
-    refundAmount: finalRefundAmount.toFixed(2),
-    refundToken,
-    payuRefundUrl,
-  });
-
-  console.log('==========================================');
-
   const response = await fetch(payuRefundUrl, {
     method: 'POST',
     headers: {
@@ -132,10 +119,6 @@ async function initiatePayURefund(order, refundAmount) {
   }
 
   const data = await response.json();
-
-  console.log('========== PAYU REFUND RESPONSE ==========');
-  console.log(data);
-  console.log('===========================================');
 
   if (Number(data.status) !== 1) {
     throw new Error(data.msg || 'PayU refund request failed');
@@ -264,14 +247,6 @@ async function createOrder(req, res) {
       paymentProvider === 'DIRECT_UPI'
         ? owner.payment.upiMobileNumber || ''
         : '';
-
-    console.log('DIRECT UPI OWNER PAYMENT DEBUG:', {
-      paymentProvider,
-      bankName: owner.payment?.bankName,
-      upiMobileNumber: owner.payment?.upiMobileNumber,
-      shopBankName,
-      shopUpiMobileNumber,
-    });
 
     // ==========================================
     // CALCULATE ORDER AMOUNTS ON BACKEND
@@ -474,38 +449,6 @@ async function createOrder(req, res) {
     }
 
     const storedGuestId = customerId ? null : guestId;
-
-    console.log('ORDER DATA BEFORE MONGODB:', {
-      ownerId,
-      customerId,
-      customer,
-      orderType,
-
-      // Pickup location
-      pickupLocation,
-
-      // Customer delivery location
-      deliveryLocation,
-
-      items: calculatedItems,
-      totalItems: calculatedTotalItems,
-
-      // Financial breakdown
-      subtotal,
-      deliveryDistance,
-      deliveryCharge,
-
-      rmaFee,
-      deliveryRiderAmount,
-      deliveryRmaAmount,
-      deliveryOwnerAmount,
-      rmaAmount,
-      ownerAmount,
-
-      totalPrice,
-      customerPayableAmount: paymentProvider === 'DIRECT_UPI' ? totalPrice : 0,
-      paymentMethod,
-    });
 
     // ==========================================
     // OPTIONAL CUSTOMER REFUND UPI ID
@@ -1036,15 +979,6 @@ async function updateOrderStatus(req, res) {
 
           const settlementResult = await settleCompletedOrder(order.orderId);
 
-          console.log('========== ORDER SETTLEMENT SUCCESS ==========');
-          console.log({
-            orderId: order.orderId,
-            alreadySettled: settlementResult.alreadySettled,
-            settlementStatus: settlementResult.order.settlementStatus,
-            settledAt: settlementResult.order.settledAt,
-          });
-          console.log('===============================================');
-
           // Refresh the order after settlement.
           const settledOrder = await Order.findOne({
             orderId: order.orderId,
@@ -1558,22 +1492,6 @@ async function createDeliveryAssignment(req, res) {
       });
     }
 
-    console.log('[OWNER ASSIGNMENT DEBUG]', {
-      orderId: order.orderId,
-      selectedDeliveryPersonId: String(selectedDeliveryPerson._id),
-      deliveryType: selectedDeliveryPerson.deliveryType,
-      availabilityStatus: selectedDeliveryPerson.availabilityStatus,
-      applicationStatus: selectedDeliveryPerson.applicationStatus,
-      isActive: selectedDeliveryPerson.isActive,
-      locationUpdatedAt: selectedDeliveryPerson.currentLocation?.updatedAt,
-      activeOrders: await Order.countDocuments({
-        deliveryPersonId: selectedDeliveryPerson._id,
-        orderType: 'delivery',
-        deliveryAssignmentStatus: 'ACCEPTED',
-        status: { $in: ['Ready', 'OutForDelivery'] },
-      }),
-    });
-
     // ==========================================
     // RMA DELIVERY PARTNER VALIDATION
     // ==========================================
@@ -1861,23 +1779,6 @@ async function startRmaDispatch(req, res) {
           candidate.distance <= 5,
       )
       .sort((a, b) => a.distance - b.distance);
-
-    // Temporary diagnostics: inspect backend logs after trying dispatch.
-    console.log('[RMA DISPATCH DIAGNOSTICS]', {
-      orderId: order.orderId,
-      totalApprovedActiveRmaPartners: rmaPartners.length,
-      candidates: candidates.map((candidate) => ({
-        partnerId: String(candidate.partner._id),
-        availabilityStatus: candidate.partner.availabilityStatus,
-        activeOrders: candidate.activeCount,
-        hasValidCoordinates: candidate.hasValidCoordinates,
-        hasFreshLocation: candidate.hasFreshLocation,
-        distanceKm: Number.isFinite(candidate.distance)
-          ? Number(candidate.distance.toFixed(2))
-          : null,
-      })),
-      eligiblePartnerCount: eligiblePartners.length,
-    });
 
     if (eligiblePartners.length === 0) {
       return res.status(409).json({

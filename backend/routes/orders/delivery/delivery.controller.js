@@ -114,12 +114,6 @@ async function verifyDeliveryOtp(req, res) {
       const availability = await refreshDeliveryAvailability(
         deliveryPerson._id,
       );
-
-      console.log(
-        `Delivery partner ${deliveryPerson._id}: ` +
-          `${availability.activeCount} active order(s), ` +
-          `availability ${availability.availabilityStatus}`,
-      );
     } catch (availabilityError) {
       console.error(
         `Failed to refresh availability for delivery partner ${deliveryPerson._id}:`,

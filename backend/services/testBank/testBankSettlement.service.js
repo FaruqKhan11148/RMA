@@ -84,10 +84,6 @@ async function recordCustomerPayment({
       );
     }
 
-    console.log(
-      `TestBank customer payment already recorded for ${normalizedOrderId}: ${existingTransaction.transactionId}`,
-    );
-
     return {
       alreadyProcessed: true,
       transaction: existingTransaction,

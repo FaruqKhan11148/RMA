@@ -25,14 +25,14 @@ async function finalizeClosedOwnerOffers() {
         const result = await finalizeOwnerOffer(owner._id);
 
         if (result.finalized) {
-          console.log('[OWNER OFFER] Transaction:', {
-            transactionType: result.transaction?.transactionType,
-            description: result.transaction?.description,
-            transactionId: result.transaction?.transactionId,
-            referenceId: result.transaction?.referenceId,
-            amount: result.transaction?.amount,
-            status: result.transaction?.status,
-          });
+          // console.log('[OWNER OFFER] Transaction:', {
+          //   transactionType: result.transaction?.transactionType,
+          //   description: result.transaction?.description,
+          //   transactionId: result.transaction?.transactionId,
+          //   referenceId: result.transaction?.referenceId,
+          //   amount: result.transaction?.amount,
+          //   status: result.transaction?.status,
+          // });
           if (result.alreadyProcessed) {
             console.log(
               `[OWNER OFFER] Already processed for owner ${owner._id}`,

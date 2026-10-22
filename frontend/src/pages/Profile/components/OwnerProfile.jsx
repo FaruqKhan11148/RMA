@@ -1,5 +1,3 @@
-import RMAPromotion from './RMAPromotion';
-
 import {
   LayoutDashboard,
   Gift,

@@ -55,10 +55,6 @@ const sendPushNotification = async ({ tokens, title, body, data = {} }) => {
     }
   });
 
-  console.log(
-    `FCM notification sent: ${response.successCount} successful, ${response.failureCount} failed`,
-  );
-
   return {
     ...response,
     invalidTokens,
@@ -173,7 +169,6 @@ const createAndSendNotification = async ({
   // 3. SEND PUSH NOTIFICATION
   // ----------------------------------------
   if (tokens.length === 0) {
-    console.log(`No FCM tokens found for ${recipientType}: ${recipientId}`);
 
     return notification;
   }

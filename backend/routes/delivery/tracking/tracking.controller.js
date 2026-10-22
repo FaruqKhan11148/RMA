@@ -196,12 +196,12 @@ const updateDeliveryLocation = async (req, res) => {
       },
     ).select('name phone shopId currentLocation');
 
-    console.log('[DELIVERY GPS SAVED]', {
-      deliveryPersonId: deliveryPerson?._id?.toString(),
-      latitude: deliveryPerson?.currentLocation?.latitude,
-      longitude: deliveryPerson?.currentLocation?.longitude,
-      updatedAt: deliveryPerson?.currentLocation?.updatedAt,
-    });
+    // console.log('[DELIVERY GPS SAVED]', {
+    //   deliveryPersonId: deliveryPerson?._id?.toString(),
+    //   latitude: deliveryPerson?.currentLocation?.latitude,
+    //   longitude: deliveryPerson?.currentLocation?.longitude,
+    //   updatedAt: deliveryPerson?.currentLocation?.updatedAt,
+    // });
 
     if (!deliveryPerson) {
       return res.status(404).json({
