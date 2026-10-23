@@ -12,6 +12,11 @@ function Navbar() {
   const [isVisible, setIsVisible] = useState(true);
   const [showAppModal, setShowAppModal] = useState(false);
 
+  const [installPrompt, setInstallPrompt] = useState(null);
+  const [isAppInstalled, setIsAppInstalled] = useState(false);
+  const [installMessage, setInstallMessage] = useState('');
+  const [isIOS, setIsIOS] = useState(false);
+
   useEffect(() => {
     document.body.classList.toggle('rma_navbar_offset', !isHomePage);
 
@@ -61,6 +66,93 @@ function Navbar() {
     }
 
     navigate('/customer/profile');
+  };
+
+  useEffect(() => {
+    const checkInstallation = () => {
+      const standalone =
+        window.matchMedia('(display-mode: standalone)').matches ||
+        window.navigator.standalone === true;
+
+      setIsAppInstalled(standalone);
+    };
+
+    const handleBeforeInstallPrompt = (event) => {
+      event.preventDefault();
+      setInstallPrompt(event);
+    };
+
+    const handleAppInstalled = () => {
+      setIsAppInstalled(true);
+      setInstallPrompt(null);
+      setInstallMessage('RMA has been installed successfully.');
+    };
+
+    const userAgent = window.navigator.userAgent || '';
+    const isAppleMobile =
+      /iPad|iPhone|iPod/.test(userAgent) ||
+      (userAgent.includes('Macintosh') && window.navigator.maxTouchPoints > 1);
+
+    setIsIOS(isAppleMobile);
+    checkInstallation();
+
+    const displayMode = window.matchMedia('(display-mode: standalone)');
+    displayMode.addEventListener?.('change', checkInstallation);
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', handleAppInstalled);
+
+    return () => {
+      displayMode.removeEventListener?.('change', checkInstallation);
+      window.removeEventListener(
+        'beforeinstallprompt',
+        handleBeforeInstallPrompt,
+      );
+      window.removeEventListener('appinstalled', handleAppInstalled);
+    };
+  }, []);
+
+  const handleInstallApp = async () => {
+    if (isAppInstalled) {
+      setInstallMessage('RMA is already installed on this device.');
+      return;
+    }
+
+    if (!installPrompt) {
+      if (isIOS) {
+        setInstallMessage(
+          'To install RMA on your iPhone or iPad, open this website in Safari, tap Share, then choose Add to Home Screen.',
+        );
+      } else {
+        setInstallMessage(
+          "To install RMA, open your browser's menu and look for Install app or Add to Home screen. If the option is missing, the website may not yet meet the browser's installation requirements.",
+        );
+      }
+
+      return;
+    }
+
+    try {
+      await installPrompt.prompt();
+
+      const choice = await installPrompt.userChoice;
+
+      if (choice.outcome === 'accepted') {
+        setInstallMessage('RMA installation was accepted by your browser.');
+      } else {
+        setInstallMessage(
+          'Installation was cancelled. You can try again whenever you are ready.',
+        );
+      }
+
+      setInstallPrompt(null);
+    } catch (error) {
+      console.error('RMA installation prompt failed:', error);
+
+      setInstallMessage(
+        'The installation prompt could not be opened. Please try your browser menu instead.',
+      );
+    }
   };
 
   return (
@@ -204,33 +296,56 @@ function Navbar() {
               </svg>
             </div>
 
-            <h2 id="rma-app-modal-title">RMA Mobile App</h2>
+            <h2 id="rma-app-modal-title">
+              {isAppInstalled ? 'RMA Is Installed' : 'Install RMA App'}
+            </h2>
 
-            <p className="rma_app_modal_message">
-              Our mobile app isn't available yet.
-            </p>
+            {installMessage ? (
+              <p className="rma_app_modal_message" role="status">
+                {installMessage}
+              </p>
+            ) : isAppInstalled ? (
+              <p className="rma_app_modal_message">
+                You can open RMA directly from your device's home screen.
+              </p>
+            ) : installPrompt ? (
+              <>
+                <p className="rma_app_modal_message">
+                  Install RMA on your device for quick access to local meat
+                  shops, ordering, payments, and delivery tracking.
+                </p>
 
-            <p>
-              But don't worry — we're working on it and plan to make it
-              available before <strong>20 November 2026</strong>.
-            </p>
-
-            <p>
-              Soon you'll be able to find local meat shops, place orders, track
-              deliveries and manage everything directly from the RMA app.
-            </p>
-
-            <div className="rma_app_modal_note">
-              <span>Coming soon</span>
-              <span>RMA on mobile</span>
-            </div>
+                <div className="rma_app_modal_note">
+                  <span>Install available</span>
+                  <span>RMA on your device</span>
+                </div>
+              </>
+            ) : isIOS ? (
+              <p>
+                Open RMA in Safari, tap the Share button, and select{' '}
+                <strong>Add to Home Screen</strong>.
+              </p>
+            ) : (
+              <p>
+                Open this website in Chrome and check the three-dot menu for{' '}
+                <strong>Install app</strong> or{' '}
+                <strong>Add to Home screen</strong>. If neither option appears,
+                we need to verify the website's installation requirements.
+              </p>
+            )}
 
             <button
               type="button"
               className="rma_app_modal_button"
-              onClick={() => setShowAppModal(false)}
+              onClick={
+                isAppInstalled ? () => setShowAppModal(false) : handleInstallApp
+              }
             >
-              Got it
+              {isAppInstalled
+                ? 'Done'
+                : installPrompt
+                  ? 'Install RMA App'
+                  : 'Got it'}
             </button>
           </section>
         </div>
